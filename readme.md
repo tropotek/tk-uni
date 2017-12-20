@@ -10,6 +10,7 @@ __Authors:__ Michael Mifsud <http://www.tropotek.com/>
 - [Installation](#installation)
 - [Introduction](#introduction)
 
+A base lib for all university institution sites
 
 ## Installation
 
