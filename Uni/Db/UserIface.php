@@ -21,6 +21,16 @@ interface UserIface
     public function getId();
 
     /**
+     * @return int
+     */
+    public function getName();
+
+    /**
+     * @return int
+     */
+    public function getEmail();
+
+    /**
      * @return null|\Tk\Uri
      */
     public function getHomeUrl();
