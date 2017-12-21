@@ -106,7 +106,7 @@ class Config extends \Tk\Config
     public function getResolver()
     {
         if (!$this->get('resolver')) {
-            $obj = new \Uni\Controller\PageResolver(self::getInstance()->getLog());
+            $obj = new \Uni\Controller\PageResolver($this->getLog());
             $this->set('resolver', $obj);
         }
         return $this->get('resolver');
