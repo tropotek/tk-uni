@@ -24,6 +24,16 @@ class Crumbs extends \Dom\Renderer\Renderer
      */
     const CRUMB_IGNORE = 'crumb_ignore';
 
+    /**
+     * @var string
+     */
+    public static $homeUrl = '/index.html';
+
+    /**
+     * @var string
+     */
+    public static $homeTitle = 'Home';
+
 
     /**
      * @var Crumbs
@@ -86,7 +96,10 @@ class Crumbs extends \Dom\Renderer\Renderer
                 $crumbs->setList();
             }
             if (!count($crumbs->getList())) {
-                $crumbs->addCrumb('Dashboard', $user->getHomeUrl());
+                if ($crumbs->getUser())
+                    $crumbs->addCrumb('Dashboard', $user->getHomeUrl());
+                else
+                    $crumbs->addCrumb(self::$homeTitle, \Tk\Uri::create(self::$homeUrl));
             }
             self::$instance = $crumbs;
         }
@@ -102,8 +115,14 @@ class Crumbs extends \Dom\Renderer\Renderer
     {
         $crumbs = self::getInstance();
         if ($crumbs && !\Uni\Config::getInstance()->getRequest()->has(self::CRUMB_IGNORE)) {
-            if (!$url)
-                $url = $crumbs->getUser()->getHomeUrl();
+            if (!$url) {
+                if ($crumbs->getUser()) {
+                    $url = $crumbs->getUser()->getHomeUrl();
+                } else {
+                    $homeTitle = self::$homeTitle;
+                    $url = \Tk\Uri::create(self::$homeUrl);
+                }
+            }
             $crumbs->getSession()->remove($crumbs->getSid());
             $crumbs->setList();
             $crumbs->addCrumb($homeTitle, $url);
@@ -151,7 +170,10 @@ class Crumbs extends \Dom\Renderer\Renderer
      */
     public function getSid()
     {
-        return 'crumbs.' . $this->getUser()->getId();
+        $uid = '000';
+        if ($this->getUser())
+            $uid = $this->getUser()->getId();
+        return 'crumbs.' . $uid;
     }
 
     /**
