@@ -85,20 +85,6 @@ class Config extends \Tk\Config
     }
 
     /**
-     * getResolver
-     *
-     * @return \Tk\Controller\Resolver
-     */
-    public function getResolver()
-    {
-        if (!$this->get('resolver')) {
-            $obj = new \Uni\Controller\PageResolver(self::getInstance()->getLog());
-            $this->set('resolver', $obj);
-        }
-        return $this->get('resolver');
-    }
-
-    /**
      * getEventDispatcher
      *
      * @return \Tk\Event\Dispatcher
@@ -113,16 +99,17 @@ class Config extends \Tk\Config
     }
 
     /**
-     * getPluginFactory
+     * getResolver
      *
-     * @return \Tk\Plugin\Factory
+     * @return \Tk\Controller\Resolver
      */
-    public function getPluginFactory()
+    public function getResolver()
     {
-        if (!$this->get('plugin.factory')) {
-            $this->set('plugin.factory', \Tk\Plugin\Factory::getInstance($this->getDb(), $this->getPluginPath(), $this->getEventDispatcher()));
+        if (!$this->get('resolver')) {
+            $obj = new \Uni\Controller\PageResolver(self::getInstance()->getLog());
+            $this->set('resolver', $obj);
         }
-        return $this->get('plugin.factory');
+        return $this->get('resolver');
     }
 
     /**
@@ -211,6 +198,19 @@ class Config extends \Tk\Config
             $this->set('email.gateway', $gateway);
         }
         return $this->get('email.gateway');
+    }
+
+    /**
+     * getPluginFactory
+     *
+     * @return \Tk\Plugin\Factory
+     */
+    public function getPluginFactory()
+    {
+        if (!$this->get('plugin.factory')) {
+            $this->set('plugin.factory', \Tk\Plugin\Factory::getInstance($this->getDb(), $this->getPluginPath(), $this->getEventDispatcher()));
+        }
+        return $this->get('plugin.factory');
     }
 
 
