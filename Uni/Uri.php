@@ -26,8 +26,8 @@ class Uri extends \Tk\Uri
             return clone $spec;
 
         $home = '';
-        $user = \App\Factory::getConfig()->getUser();
-        if ($user instanceof \App\Db\User) {
+        $user = Config::getInstance()->getUser();
+        if ($user instanceof \Uni\Db\UserIface) {
             $home = $user->getHomeUrl();
             if($home instanceof \Tk\Uri) {
                 $home = $home->getRelativePath();
@@ -41,7 +41,7 @@ class Uri extends \Tk\Uri
      * Create a course URL in the form of '/ems/staff/VETS50001_2014_SM1/index.html'
      *
      * @param null|string|\Tk\Uri $spec
-     * @param null|\App\Db\Course $course
+     * @param null|Db\CourseIface $course
      * @return string|\Tk\Uri|static
      */
     public static function createCourseUrl($spec = null, $course = null)
@@ -50,7 +50,7 @@ class Uri extends \Tk\Uri
             return clone $spec;
 
         if ($course === null)
-            $course = \App\Factory::getCourse();
+            $course = Config::getInstance()->getCourse();
         $courseCode = '';
         if ($course) {
             $courseCode = $course->code . '/';
@@ -62,7 +62,7 @@ class Uri extends \Tk\Uri
      * Create a course URL in the form of '/ems/staff/VETS50001_2014_SM1/index.html'
      *
      * @param null|string|\Tk\Uri $spec
-     * @param null|\App\Db\Institution $institution
+     * @param null|Db\InstitutionIface $institution
      * @return string|\Tk\Uri|static
      */
     public static function createInstitutionUrl($spec = null, $institution = null)
@@ -70,8 +70,8 @@ class Uri extends \Tk\Uri
         if ($spec instanceof \Tk\Uri)
             return clone $spec;
         if ($institution === null)
-            $institution = \App\Factory::getInstitution();
-        return self::create('/inst/'.$institution->hash . '/' . trim($spec,'/'));
+            $institution = Config::getInstance()->getInstitution();
+        return self::create('/inst/'.$institution->getHash() . '/' . trim($spec,'/'));
     }
 
     /**
@@ -83,9 +83,9 @@ class Uri extends \Tk\Uri
     public function ignoreCrumb($b = true)
     {
         if ($b)
-            $this->set(\App\Ui\Crumbs::CRUMB_IGNORE);
+            $this->set(\Uni\Ui\Crumbs::CRUMB_IGNORE);
         else
-            $this->remove(\App\Ui\Crumbs::CRUMB_IGNORE);
+            $this->remove(\Uni\Ui\Crumbs::CRUMB_IGNORE);
         return $this;
     }
 
@@ -98,7 +98,7 @@ class Uri extends \Tk\Uri
      */
     public function noLog($b = true)
     {
-        if (!\App\Factory::getConfig()->isDebug()) return $this;
+        if (!Config::getInstance()->isDebug()) return $this;
 
         if ($b)
             $this->set('nolog');
