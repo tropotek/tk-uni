@@ -60,31 +60,6 @@ class Config extends \Tk\Config
     }
 
     /**
-     * Create a page for the request
-     *
-     * @param \Tk\Controller\Iface $controller
-     * @return Controller\Page
-     */
-    public static function createPage($controller)
-    {
-        $page = new Controller\Page();
-        $page->setController($controller);
-        if (!$controller->getPageTitle()) {     // Set a default page Title for the crumbs
-            $controller->setPageTitle($controller->getDefaultTitle());
-        }
-        return $page;
-    }
-
-    /**
-     * @todo This must be implemented in your \App\Config object (for now)
-     * @return null|PluginApi
-     */
-    public function getPluginApi()
-    {
-        return null;
-    }
-
-    /**
      * Ways to get the db after calling this method
      *
      *  - \Uni\Config::getInstance()->getDb()       //
@@ -145,7 +120,7 @@ class Config extends \Tk\Config
     public function getPluginFactory()
     {
         if (!$this->get('plugin.factory')) {
-            $this->set('plugin.factory', \Tk\Plugin\Factory::getInstance(self::getDb(), $this->getPluginPath(), self::getEventDispatcher()));
+            $this->set('plugin.factory', \Tk\Plugin\Factory::getInstance($this->getDb(), $this->getPluginPath(), $this->getEventDispatcher()));
         }
         return $this->get('plugin.factory');
     }
@@ -224,6 +199,33 @@ class Config extends \Tk\Config
     }
 
     /**
+     * getEmailGateway
+     *
+     * @return \Tk\Mail\Gateway
+     */
+    public function getEmailGateway()
+    {
+        if (!$this->get('email.gateway')) {
+            $gateway = new \Tk\Mail\Gateway($this);
+            $gateway->setDispatcher(self::getEventDispatcher());
+            $this->set('email.gateway', $gateway);
+        }
+        return $this->get('email.gateway');
+    }
+
+
+
+
+    /**
+     * @todo This must be implemented in your \App\Config object (for now)
+     * @return null|PluginApi
+     */
+    public function getPluginApi()
+    {
+        return null;
+    }
+
+    /**
      * Get the Institution object for the logged in user
      *
      * @return Db\InstitutionIface
@@ -299,25 +301,26 @@ class Config extends \Tk\Config
         return $this;
     }
 
-    /**
-     * getEmailGateway
-     *
-     * @return \Tk\Mail\Gateway
-     */
-    public function getEmailGateway()
-    {
-        if (!$this->get('email.gateway')) {
-            $gateway = new \Tk\Mail\Gateway($this);
-            $gateway->setDispatcher(self::getEventDispatcher());
-            $this->set('email.gateway', $gateway);
-        }
-        return $this->get('email.gateway');
-    }
-
 
 
     //  -----------------------  Create methods  -----------------------
 
+
+    /**
+     * Create a page for the request
+     *
+     * @param \Tk\Controller\Iface $controller
+     * @return Controller\Page
+     */
+    public static function createPage($controller)
+    {
+        $page = new Controller\Page();
+        $page->setController($controller);
+        if (!$controller->getPageTitle()) {     // Set a default page Title for the crumbs
+            $controller->setPageTitle($controller->getDefaultTitle());
+        }
+        return $page;
+    }
 
     /**
      * @param string $formId
