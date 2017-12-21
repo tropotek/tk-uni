@@ -160,7 +160,7 @@ class Config extends \Tk\Config
             $dl = \Dom\Loader::getInstance()->setParams($this->all());
             $dl->addAdapter(new \Dom\Loader\Adapter\DefaultLoader());
             /** @var \Uni\Controller\Iface $controller */
-            $controller = self::getRequest()->getAttribute('controller.object');
+            $controller = $this->getRequest()->getAttribute('controller.object');
             if ($controller->getPage()) {
                 $templatePath = dirname($controller->getPage()->getTemplatePath());
                 $xtplPath = str_replace('{templatePath}', $templatePath, $this['template.xtpl.path']);
@@ -194,7 +194,7 @@ class Config extends \Tk\Config
     {
         if (!$this->get('email.gateway')) {
             $gateway = new \Tk\Mail\Gateway($this);
-            $gateway->setDispatcher(self::getEventDispatcher());
+            $gateway->setDispatcher($this->getEventDispatcher());
             $this->set('email.gateway', $gateway);
         }
         return $this->get('email.gateway');
@@ -265,9 +265,9 @@ class Config extends \Tk\Config
             if ($this->getRequest()->getAttribute('courseCode')) {
                 $courseCode = strip_tags(trim($this->getRequest()->getAttribute('courseCode')));
                 $course = $this->getInstitution()->findCourseByCode($courseCode);
-            } else if (self::getRequest()->has('courseId')) {
+            } else if ($this->getRequest()->has('courseId')) {
                 /** @var Db\CourseIface $c */
-                $c = $this->getInstitution()->findCourse(self::getRequest()->get('courseId'));
+                $c = $this->getInstitution()->findCourse($this->getRequest()->get('courseId'));
                 if ($c && $this->getInstitution() && $c->getInstitutionId() == $this->getInstitution()->getId()) {
                     $course = $c;
                 }
