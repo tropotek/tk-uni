@@ -43,9 +43,10 @@ class CrumbsHandler implements Subscriber
     public function onShow(\Tk\Event\Event $event)
     {
         $controller = $event->get('controller');
-        if ($controller instanceof \Uni\Controller\Page) {
-            /** @var \Uni\Controller\Page $page */
-            $page = $controller->getPage();
+        /** @var \Uni\Controller\Page $page */
+        $page = $controller->getPage();
+
+        if ($page instanceof \Uni\Controller\Page) {
             $crumbs = \Uni\Ui\Crumbs::getInstance();
             if (!$crumbs) return;
 
@@ -62,7 +63,6 @@ jQuery(function($) {
 });
 JS;
             $template->appendjs($js);
-
             if ($template->keyExists('var', 'breadcrumb')) {
                 $template->replaceTemplate('breadcrumb', $crumbs->show());
                 $template->setChoice('breadcrumb');
