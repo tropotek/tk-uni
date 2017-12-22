@@ -43,6 +43,16 @@ abstract class Iface extends \Tk\Controller\Iface
     }
 
     /**
+     * Get the global config object.
+     *
+     * @return \Uni\Config
+     */
+    public function getConfig()
+    {
+        return \Tk\Config::getInstance();
+    }
+
+    /**
      * DomTemplate magic method example
      *
      * @return \Dom\Template
