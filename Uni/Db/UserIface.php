@@ -21,12 +21,12 @@ interface UserIface
     public function getId();
 
     /**
-     * @return int
+     * @return string
      */
     public function getName();
 
     /**
-     * @return int
+     * @return string
      */
     public function getEmail();
 

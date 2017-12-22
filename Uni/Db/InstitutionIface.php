@@ -48,14 +48,14 @@ interface InstitutionIface
     /**
      * @param string $courseCode
      * @return CourseIface
-     * @todo: \App\Db\CourseMap::create()->findByCode($courseCode, self::getInstitution()->getId());
+     * @todo: \App\Db\CourseMap::create()->findByCode($courseCode, $this->getId());
      */
     public function findCourseByCode($courseCode);
 
     /**
      * @param int $courseId
      * @return CourseIface
-     * @todo: \App\Db\CourseMap::create()->find(self::getRequest()->get('courseId'));
+     * @todo: \App\Db\CourseMap::create()->find($courseId);
      */
     public function findCourse($courseId);
 

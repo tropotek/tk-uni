@@ -51,12 +51,26 @@ class Config extends \Tk\Config
     public function getSession()
     {
         if (!parent::getSession()) {
-            $adapter = null;
-            $adapter = new \Tk\Session\Adapter\Database($this->getDb(), new \Tk\Encrypt());
+            $adapter = $this->getSessionAdapter();
             $obj = \Tk\Session::getInstance($adapter, $this, $this->getRequest(), $this->getCookie());
             parent::setSession($obj);
         }
         return parent::getSession();
+    }
+
+    /**
+     * getSessionAdapter
+     *
+     * @return \Tk\Session\Adapter\Iface|null
+     */
+    public function getSessionAdapter()
+    {
+        if (!$this->get('session.adapter')) {
+            //$adapter = null;
+            $adapter = new \Tk\Session\Adapter\Database($this->getDb(), new \Tk\Encrypt());
+            $this->set('session.adapter', $adapter);
+        }
+        return $this->get('session.adapter');
     }
 
     /**
@@ -281,6 +295,25 @@ class Config extends \Tk\Config
             }
         }
         return $this->get('course');
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getCourseId()
+    {
+        if ($this->getCourse())
+            return $this->getId();
+        return 0;
+    }
+
+    /**
+     * unset the course from the session
+     */
+    public function unsetCourse()
+    {
+        $this->getSession()->remove(self::SID_COURSE);
+        $this->remove('course');
     }
 
     /**
