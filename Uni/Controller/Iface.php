@@ -45,7 +45,7 @@ abstract class Iface extends \Tk\Controller\Iface
     /**
      * Get the global config object.
      *
-     * @return \Uni\Config
+     * @return \Tk\Config|\Uni\Config
      */
     public function getConfig()
     {

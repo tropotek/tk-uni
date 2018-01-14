@@ -19,6 +19,11 @@ abstract class Iface extends \Tk\Controller\Page
     {
         $template = parent::show();
 
+        if (\Tk\AlertCollection::hasMessages()) {
+            $template->insertTemplate('alerts', \Tk\AlertCollection::getInstance()->show());
+            $template->setChoice('alerts');
+        }
+
         if ($this->getUser()) {
             $template->insertText('username', $this->getUser()->getDisplayName());
             $template->setAttr('dashUrl', 'href', \Uni\Uri::createHomeUrl('/index.html'));
@@ -30,11 +35,6 @@ abstract class Iface extends \Tk\Controller\Page
             $template->setChoice('logout');
         } else {
             $template->setChoice('login');
-        }
-
-        if (\Tk\AlertCollection::hasMessages()) {
-            $template->insertTemplate('alerts', \Tk\AlertCollection::getInstance()->show());
-            $template->setChoice('alerts');
         }
 
 
