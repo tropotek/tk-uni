@@ -93,7 +93,7 @@ class Crumbs extends \Dom\Renderer\Renderer
         if (!self::$instance) {
             $crumbs = self::create($user, $session);
             if ($session->has($crumbs->getSid())) {
-                $crumbs->setList();
+                $crumbs->setList($session->get($crumbs->getSid()));
             }
             if (!count($crumbs->getList())) {
                 if ($crumbs->getUser())
@@ -115,6 +115,7 @@ class Crumbs extends \Dom\Renderer\Renderer
     {
         $crumbs = self::getInstance();
         if ($crumbs && !\Uni\Config::getInstance()->getRequest()->has(self::CRUMB_IGNORE)) {
+            \Tk\Log::info('Crumbs: Resetting crumb list.');
             if (!$url) {
                 if ($crumbs->getUser()) {
                     $url = $crumbs->getUser()->getHomeUrl();
@@ -238,6 +239,7 @@ class Crumbs extends \Dom\Renderer\Renderer
      */
     public function addCrumb($title, $url)
     {
+        \Tk\Log::info('Crumbs Add: ' . $title . ' - ' . $url);
         $url = \Tk\Uri::create($url);
         $this->list[$title] = $url->toString();
         return $this;

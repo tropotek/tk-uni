@@ -35,7 +35,7 @@ abstract class Iface extends \Tk\Controller\Iface
     /**
      * Get the currently logged in user
      *
-     * @return \Uni\Db\UserIface
+     * @return \Uni\Db\UserIface|\App\Db\User
      */
     public function getUser()
     {

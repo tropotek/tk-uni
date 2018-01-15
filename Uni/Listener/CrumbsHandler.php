@@ -84,7 +84,7 @@ JS;
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::CONTROLLER => array('onController', 0),
+            KernelEvents::CONTROLLER => array('onController', 11),
             \Tk\PageEvents::CONTROLLER_SHOW =>  array('onShow', 0),
             KernelEvents::FINISH_REQUEST => 'onFinishRequest'
         );
