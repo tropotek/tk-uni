@@ -21,7 +21,7 @@ class PageResolver extends \Tk\Controller\Resolver
         /** @var Iface $controller */
         if ($controller[0] instanceof Iface) {
             $cObj = $controller[0];
-            $page = \Uni\Config::createPage($cObj);
+            $page = \Uni\Config::getInstance()->createPage($cObj);
             $cObj->setPage($page);
             $request->setAttribute('controller.object', $cObj);
         }

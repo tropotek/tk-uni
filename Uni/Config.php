@@ -345,7 +345,7 @@ class Config extends \Tk\Config
      * @param \Tk\Controller\Iface $controller
      * @return Controller\Page
      */
-    public static function createPage($controller)
+    public function createPage($controller)
     {
         $page = new Controller\Page();
         $page->setController($controller);
