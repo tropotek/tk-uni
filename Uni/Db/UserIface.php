@@ -40,5 +40,10 @@ interface UserIface
      */
     public function getInstitution();
 
+    /**
+     * @return string
+     */
+    public function getRole();
+
 
 }

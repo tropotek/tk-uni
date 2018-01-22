@@ -9,7 +9,6 @@ namespace Uni\Controller;
 class Page extends \Tk\Controller\Page
 {
 
-
     /**
      * Set the page heading, should be set from main controller
      *
@@ -37,6 +36,11 @@ class Page extends \Tk\Controller\Page
             $template->setChoice('alerts');
         }
 
+        $role = $this->getUser()->getRole();
+        $js = <<<JS
+config.role = '$role';
+JS;
+        $template->appendJs($js, array('data-jsl-priority' => -1000));
 
         return $template;
     }
