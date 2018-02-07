@@ -303,7 +303,7 @@ class Config extends \Tk\Config
     public function getCourseId()
     {
         if ($this->getCourse())
-            return $this->getId();
+            return $this->getCourse()->getId();
         return 0;
     }
 
