@@ -36,11 +36,13 @@ class Page extends \Tk\Controller\Page
             $template->setChoice('alerts');
         }
 
-        $role = $this->getUser()->getRole();
-        $js = <<<JS
+        if ($this->getUser()) {
+            $role = $this->getUser()->getRole();
+            $js = <<<JS
 config.role = '$role';
 JS;
-        $template->appendJs($js, array('data-jsl-priority' => -1000));
+            $template->appendJs($js, array('data-jsl-priority' => -1000));
+        }
 
         return $template;
     }
