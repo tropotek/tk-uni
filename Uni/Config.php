@@ -106,7 +106,11 @@ class Config extends \Tk\Config
     public function getEventDispatcher()
     {
         if (!$this->get('event.dispatcher')) {
-            $obj = new \Tk\Event\Dispatcher($this->getLog());
+            $log = null;
+            if ($this->get('event.dispatcher.log')) {
+                $log = $this->getLog();
+            }
+            $obj = new \Tk\Event\Dispatcher($log);
             $this->set('event.dispatcher', $obj);
         }
         return $this->get('event.dispatcher');
