@@ -290,6 +290,9 @@ class Config extends \Tk\Config
                     $course = $c;
                 }
             }
+            if (!$course && $this->getSession()->has('lti.courseId')) { // Check for an LTI default course selection
+                $course = $this->getInstitution()->findCourse(self::getSession()->get('lti.courseId'));
+            }
             if (!$course && $this->getSession()->has(self::SID_COURSE)) {
                 $course = $this->getInstitution()->findCourse(self::getSession()->get(self::SID_COURSE));
             }
