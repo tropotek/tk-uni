@@ -420,7 +420,7 @@ class Config extends \Tk\Config
     {
         $ap = \Tk\Ui\Admin\ActionPanel::create($title, $icon);
         if ($withBack) {
-            $ap->addButton(\Tk\Ui\Button::create('Back', 'javascript: window.history.back();', 'fa fa-arrow-left'))
+            $ap->add(\Tk\Ui\Button::create('Back', 'javascript: window.history.back();', 'fa fa-arrow-left'))
                 ->addCss('btn-default btn-once back');
         }
         return $ap;
