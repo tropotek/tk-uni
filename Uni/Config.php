@@ -37,6 +37,7 @@ class Config extends \Tk\Config
     public function getCookie()
     {
         if (!parent::getCookie()) {
+            vd($this->getSiteUrl());
             $obj = new \Tk\Cookie($this->getSiteUrl());
             parent::setCookie($obj);
         }
