@@ -37,8 +37,12 @@ class Page extends \Tk\Controller\Page
         }
 
         if ($this->getUser()) {
+            $institutionId = $this->getConfig()->getInstitutionId();
+            $courseId = $this->getConfig()->getCourseId();
             $role = $this->getUser()->getRole();
             $js = <<<JS
+config.courseId = $courseId;
+config.institutionId = $institutionId;
 config.role = '$role';
 JS;
             $template->appendJs($js, array('data-jsl-priority' => -1000));
@@ -55,6 +59,16 @@ JS;
     public function getUser()
     {
         return $this->getConfig()->getUser();
+    }
+
+    /**
+     * Get the global config object.
+     *
+     * @return \Uni\Config
+     */
+    public function getConfig()
+    {
+        return \Uni\Config::getInstance();
     }
 
 }
