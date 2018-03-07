@@ -71,7 +71,13 @@ class Uri extends \Tk\Uri
             return clone $spec;
         if ($institution === null)
             $institution = Config::getInstance()->getInstitution();
-        return self::create('/inst/'.$institution->getHash() . '/' . trim($spec,'/'));
+        if (!$institution) return static::create($spec);
+
+        $url = self::create('/inst/' . $institution->getHash() . '/' . trim($spec,'/'));
+        if ($institution->getDomain())
+            $url = static::create($spec)->setHost($institution->getDomain());
+
+        return $url;
     }
 
     /**
