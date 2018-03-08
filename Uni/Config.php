@@ -8,7 +8,7 @@ use Tk\Db\Pdo;
  * @link http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
  */
-class Config extends \Tk\Config
+abstract class Config extends \Tk\Config
 {
 
     const SID_COURSE = 'last.courseId';
@@ -244,14 +244,38 @@ class Config extends \Tk\Config
     }
 
     /**
+     * @param int $id
+     * @return \Uni\Db\InstitutionIface
+     */
+    abstract public function findInstitution($id);
+
+    /**
+     * @param int $id
+     * @return \Uni\Db\CourseIface
+     */
+    abstract public function findCourse($id);
+
+    /**
+     * @param int $id
+     * @return \Uni\Db\UserIface
+     */
+    abstract public function findUser($id);
+
+    /**
      * Get the Institution object for the logged in user
      *
      * @return Db\InstitutionIface
      */
     public function getInstitution()
     {
-        if (!$this->get('institution') && $this->getUser()) {
-            $obj = $this->getUser()->getInstitution();
+        if (!$this->get('institution')) {
+            $obj = null;
+            if ($this->getUser()) {
+                $obj = $this->getUser()->getInstitution();
+            } else if ($this->getRequest()->has('courseId')) {
+                $course = $this->findCourse($this->getRequest()->has('courseId'));
+                if ($course) $obj = $course->getInstitution();
+            }
             $this->set('institution', $obj);
         }
         return $this->get('institution');
@@ -283,7 +307,7 @@ class Config extends \Tk\Config
             if ($this->getRequest()->getAttribute('courseCode')) {
                 $courseCode = strip_tags(trim($this->getRequest()->getAttribute('courseCode')));
                 $course = $this->getInstitution()->findCourseByCode($courseCode);
-            } else if ($this->getInstitution() && $this->getRequest()->has('courseId')) {
+            } else if ($this->getRequest()->has('courseId')) {
                 /** @var Db\CourseIface $c */
                 $c = $this->getInstitution()->findCourse($this->getRequest()->get('courseId'));
                 if ($c && $this->getInstitution() && $c->getInstitutionId() == $this->getInstitution()->getId()) {
