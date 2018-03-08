@@ -283,7 +283,7 @@ class Config extends \Tk\Config
             if ($this->getRequest()->getAttribute('courseCode')) {
                 $courseCode = strip_tags(trim($this->getRequest()->getAttribute('courseCode')));
                 $course = $this->getInstitution()->findCourseByCode($courseCode);
-            } else if ($this->getRequest()->has('courseId')) {
+            } else if ($this->getInstitution() && $this->getRequest()->has('courseId')) {
                 /** @var Db\CourseIface $c */
                 $c = $this->getInstitution()->findCourse($this->getRequest()->get('courseId'));
                 if ($c && $this->getInstitution() && $c->getInstitutionId() == $this->getInstitution()->getId()) {
