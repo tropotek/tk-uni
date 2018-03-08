@@ -304,21 +304,21 @@ abstract class Config extends \Tk\Config
     {
         if (!$this->get('course') && $this->getUser()) {
             $course = null;
-            if ($this->getRequest()->getAttribute('courseCode')) {
+            if ($this->getInstitution() && $this->getRequest()->getAttribute('courseCode')) {
                 $courseCode = strip_tags(trim($this->getRequest()->getAttribute('courseCode')));
                 $course = $this->getInstitution()->findCourseByCode($courseCode);
             } else if ($this->getRequest()->has('courseId')) {
                 /** @var Db\CourseIface $c */
-                $c = $this->getInstitution()->findCourse($this->getRequest()->get('courseId'));
+                $c = $this->findCourse($this->getRequest()->get('courseId'));
                 if ($c && $this->getInstitution() && $c->getInstitutionId() == $this->getInstitution()->getId()) {
                     $course = $c;
                 }
             }
             if (!$course && $this->getSession()->has('lti.courseId')) { // Check for an LTI default course selection
-                $course = $this->getInstitution()->findCourse(self::getSession()->get('lti.courseId'));
+                $course = $this->findCourse(self::getSession()->get('lti.courseId'));
             }
             if (!$course && $this->getSession()->has(self::SID_COURSE)) {
-                $course = $this->getInstitution()->findCourse(self::getSession()->get(self::SID_COURSE));
+                $course = $this->findCourse(self::getSession()->get(self::SID_COURSE));
             }
             $this->set('course', $course);
             if ($course) {
