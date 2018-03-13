@@ -67,15 +67,20 @@ class Uri extends \Tk\Uri
      */
     public static function createInstitutionUrl($spec = null, $institution = null)
     {
-        if ($spec instanceof \Tk\Uri)
+        if ($spec instanceof \Tk\Uri) {
             return clone $spec;
-        if ($institution === null)
+        }
+        if ($institution === null) {
             $institution = Config::getInstance()->getInstitution();
-        if (!$institution) return static::create($spec);
+        }
+        if (!$institution) {
+            return static::create($spec);
+        }
 
         $url = self::create('/inst/' . $institution->getHash() . '/' . trim($spec,'/'));
-        if ($institution->getDomain())
-            $url = static::create($spec)->setHost($institution->getDomain());
+        if ($institution->getDomain()) {
+            $url = $url->setHost($institution->getDomain());
+        }
 
         return $url;
     }
