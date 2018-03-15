@@ -38,10 +38,10 @@ class Page extends \Tk\Controller\Page
 
         if ($this->getUser()) {
             $institutionId = $this->getConfig()->getInstitutionId();
-            $courseId = $this->getConfig()->getCourseId();
+            $subjectId = $this->getConfig()->getSubjectId();
             $role = $this->getUser()->getRole();
             $js = <<<JS
-config.courseId = $courseId;
+config.subjectId = $subjectId;
 config.institutionId = $institutionId;
 config.role = '$role';
 JS;

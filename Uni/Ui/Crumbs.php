@@ -132,21 +132,21 @@ class Crumbs extends \Dom\Renderer\Renderer
     }
 
     /**
-     * Reset the crumb stack to the `Dashboard` -> `Course Dashboard` level
+     * Reset the crumb stack to the `Dashboard` -> `Subject Dashboard` level
      *
-     * @param null|\Uni\Db\CourseIface $course
-     * @param string $courseHomeTitle
+     * @param null|\Uni\Db\SubjectIface $subject
+     * @param string $subjectHomeTitle
      * @param string $homeTitle
      * @return null|Crumbs
      * @todo do we need this here or should it reside in the App factory as a utility function
      */
-    public static function resetCourse($course = null, $courseHomeTitle = 'Course Dashboard', $homeTitle = 'Dashboard')
+    public static function resetSubject($subject = null, $subjectHomeTitle = 'Subject Dashboard', $homeTitle = 'Dashboard')
     {
         $config = \Uni\Config::getInstance();
         $crumbs = self::reset($homeTitle);
         if ($crumbs && !$config->getRequest()->has(self::CRUMB_IGNORE)) {
-            if ($course) {
-                $crumbs->addCrumb($courseHomeTitle, \Uni\Uri::createCourseUrl('/index.html', $course));
+            if ($subject) {
+                $crumbs->addCrumb($subjectHomeTitle, \Uni\Uri::createSubjectUrl('/index.html', $subject));
             }
             return $crumbs;
         }

@@ -33,18 +33,18 @@ to load the classes.
 
 ## Introduction
 
-### Course Routes
+### Subject Routes
 
-An example of staff course routes setup in the `config/routes.php`: 
+An example of staff subject routes setup in the `subject/routes.php`: 
 
 ```php
-$params = array('role' => \App\Db\UserGroup::ROLE_STAFF, 'courseCode' = '');
+$params = array('role' => \App\Db\UserGroup::ROLE_STAFF, 'subjectCode' = '');
 
-$routes->add('staff-c-dashboard',       new \Tk\Routing\Route('/staff/{courseCode}/index.html', 'App\Controller\Staff\CourseDashboard::doDefault', $params));
-$routes->add('staff-c-settings',        new \Tk\Routing\Route('/staff/{courseCode}/settings.html', 'App\Controller\Course\Edit::doDefault', $params));
-$routes->add('staff-c-edit',            new \Tk\Routing\Route('/staff/{courseCode}/edit.html', 'App\Controller\Course\Edit::doDefault', $params));
-$routes->add('staff-c-student-manager', new \Tk\Routing\Route('/staff/{courseCode}/studentManager.html', 'App\Controller\User\StudentManager::doDefault', $params));
-$routes->add('staff-c-student-edit',    new \Tk\Routing\Route('/staff/{courseCode}/studentEdit.html', 'App\Controller\User\StudentEdit::doDefault', $params));
+$routes->add('staff-subject-dashboard',       new \Tk\Routing\Route('/staff/{subjectCode}/index.html', 'App\Controller\Staff\SubjectDashboard::doDefault', $params));
+$routes->add('staff-subject-settings',        new \Tk\Routing\Route('/staff/{subjectCode}/settings.html', 'App\Controller\Subject\Edit::doDefault', $params));
+$routes->add('staff-subject-edit',            new \Tk\Routing\Route('/staff/{subjectCode}/edit.html', 'App\Controller\Subject\Edit::doDefault', $params));
+$routes->add('staff-subject-student-manager', new \Tk\Routing\Route('/staff/{subjectCode}/studentManager.html', 'App\Controller\User\StudentManager::doDefault', $params));
+$routes->add('staff-subject-student-edit',    new \Tk\Routing\Route('/staff/{subjectCode}/studentEdit.html', 'App\Controller\User\StudentEdit::doDefault', $params));
 
 ```
 

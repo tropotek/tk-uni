@@ -24,29 +24,29 @@ interface PluginApi
     public function createUser($params = array());
 
     /**
-     * @param $courseId
-     * @return null|\Tk\Db\Map\Model|Db\CourseIface
+     * @param int $subjectId
+     * @return null|\Tk\Db\Map\Model|Db\SubjectIface
      */
-    public function findCourse($courseId);
+    public function findSubject($subjectId);
 
     /**
-     * @param $courseCode
-     * @param $institutionId
-     * @return null|\Tk\Db\ModelInterface|Db\CourseIface
+     * @param string $subjectCode
+     * @param int $institutionId
+     * @return null|\Tk\Db\ModelInterface|Db\SubjectIface
      */
-    public function findCourseByCode($courseCode, $institutionId);
+    public function findSubjectByCode($subjectCode, $institutionId);
 
     /**
-     * @param $params
-     * @return null|Db\CourseIface
+     * @param array $params
+     * @return null|Db\SubjectIface
      */
-    public function createCourse($params);
+    public function createSubject($params);
 
     /**
-     * @param Db\CourseIface $course
+     * @param Db\SubjectIface $subject
      * @param Db\UserIface $user
      */
-    public function addUserToCourse($course, $user);
+    public function addUserToSubject($subject, $user);
 
     /**
      * Log in a user object automatically without pass authentication
@@ -60,9 +60,9 @@ interface PluginApi
      * Return the Uri to redirect to on successful LTI login
      *
      * @param Db\UserIface $user
-     * @param Db\CourseIface $course
+     * @param Db\SubjectIface $subject
      * @return \Tk\Uri
      */
-    public function getLtiHome($user, $course);
+    public function getLtiHome($user, $subject);
 
 }

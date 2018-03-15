@@ -38,28 +38,28 @@ class Uri extends \Tk\Uri
     }
 
     /**
-     * Create a course URL in the form of '/ems/staff/VETS50001_2014_SM1/index.html'
+     * Create a URL in the form of '/{subjectCode}/index.html'
      *
      * @param null|string|\Tk\Uri $spec
-     * @param null|Db\CourseIface $course
+     * @param null|Db\SubjectIface $subject
      * @return string|\Tk\Uri|static
      */
-    public static function createCourseUrl($spec = null, $course = null)
+    public static function createSubjectUrl($spec = null, $subject = null)
     {
         if ($spec instanceof \Tk\Uri)
             return clone $spec;
 
-        if ($course === null)
-            $course = Config::getInstance()->getCourse();
-        $courseCode = '';
-        if ($course) {
-            $courseCode = $course->code . '/';
+        if ($subject === null)
+            $subject = Config::getInstance()->getSubject();
+        $subjectCode = '';
+        if ($subject) {
+            $subjectCode = $subject->code . '/';
         }
-        return self::createHomeUrl($courseCode . trim($spec,'/'));
+        return self::createHomeUrl($subjectCode . trim($spec,'/'));
     }
 
     /**
-     * Create a course URL in the form of '/ems/staff/VETS50001_2014_SM1/index.html'
+     * Create a URL in the form of '/inst/{institution.hash}/index.html'
      *
      * @param null|string|\Tk\Uri $spec
      * @param null|Db\InstitutionIface $institution

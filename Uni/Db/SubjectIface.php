@@ -7,7 +7,7 @@ namespace Uni\Db;
  * @link http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
  */
-interface CourseIface
+interface SubjectIface
 {
 
     /**

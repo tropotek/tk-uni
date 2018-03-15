@@ -11,7 +11,7 @@ use Tk\Db\Pdo;
 abstract class Config extends \Tk\Config
 {
 
-    const SID_COURSE = 'last.courseId';
+    const SID_SUBJECT = 'last.subjectId';
 
 
     /**
@@ -251,9 +251,9 @@ abstract class Config extends \Tk\Config
 
     /**
      * @param int $id
-     * @return \Uni\Db\CourseIface
+     * @return \Uni\Db\SubjectIface
      */
-    abstract public function findCourse($id);
+    abstract public function findSubject($id);
 
     /**
      * @param int $id
@@ -272,9 +272,9 @@ abstract class Config extends \Tk\Config
             $obj = null;
             if ($this->getUser()) {
                 $obj = $this->getUser()->getInstitution();
-            } else if ($this->getRequest()->has('courseId')) {
-                $course = $this->findCourse($this->getRequest()->has('courseId'));
-                if ($course) $obj = $course->getInstitution();
+            } else if ($this->getRequest()->has('subjectId')) {
+                $subject = $this->findSubject($this->getRequest()->has('subjectId'));
+                if ($subject) $obj = $subject->getInstitution();
             }
             $this->set('institution', $obj);
         }
@@ -294,57 +294,57 @@ abstract class Config extends \Tk\Config
     }
 
     /**
-     * If the the current page is a course page this wi;ll return the course object
-     * based on the course code in the URI: /staff/VETS50001_2014_SM1/index.html
+     * If the the current page is a subject page this wi;ll return the subject object
+     * based on the subject code in the URI: /staff/VETS50001_2014_SM1/index.html
      *
-     * @return \App\Db\Course|null
+     * @return \App\Db\Subject|null
      * @todo: test this is works for all tk2uni sites
      */
-    public function getCourse()
+    public function getSubject()
     {
-        if (!$this->get('course') && $this->getUser()) {
-            $course = null;
-            if ($this->getInstitution() && $this->getRequest()->getAttribute('courseCode')) {
-                $courseCode = strip_tags(trim($this->getRequest()->getAttribute('courseCode')));
-                $course = $this->getInstitution()->findCourseByCode($courseCode);
-            } else if ($this->getRequest()->has('courseId')) {
-                /** @var Db\CourseIface $c */
-                $c = $this->findCourse($this->getRequest()->get('courseId'));
+        if (!$this->get('subject') && $this->getUser()) {
+            $subject = null;
+            if ($this->getInstitution() && $this->getRequest()->getAttribute('subjectCode')) {
+                $subjectCode = strip_tags(trim($this->getRequest()->getAttribute('subjectCode')));
+                $subject = $this->getInstitution()->findSubjectByCode($subjectCode);
+            } else if ($this->getRequest()->has('subjectId')) {
+                /** @var Db\SubjectIface $c */
+                $c = $this->findSubject($this->getRequest()->get('subjectId'));
                 if ($c && $this->getInstitution() && $c->getInstitutionId() == $this->getInstitution()->getId()) {
-                    $course = $c;
+                    $subject = $c;
                 }
             }
-            if (!$course && $this->getSession()->has('lti.courseId')) { // Check for an LTI default course selection
-                $course = $this->findCourse(self::getSession()->get('lti.courseId'));
+            if (!$subject && $this->getSession()->has('lti.subjectId')) { // Check for an LTI default subject selection
+                $subject = $this->findSubject(self::getSession()->get('lti.subjectId'));
             }
-            if (!$course && $this->getSession()->has(self::SID_COURSE)) {
-                $course = $this->findCourse(self::getSession()->get(self::SID_COURSE));
+            if (!$subject && $this->getSession()->has(self::SID_SUBJECT)) {
+                $subject = $this->findSubject(self::getSession()->get(self::SID_SUBJECT));
             }
-            $this->set('course', $course);
-            if ($course) {
-                $this->getSession()->set(self::SID_COURSE, $course->getId());
+            $this->set('subject', $subject);
+            if ($subject) {
+                $this->getSession()->set(self::SID_SUBJECT, $subject->getId());
             }
         }
-        return $this->get('course');
+        return $this->get('subject');
     }
 
     /**
      * @return int|mixed
      */
-    public function getCourseId()
+    public function getSubjectId()
     {
-        if ($this->getCourse())
-            return $this->getCourse()->getId();
+        if ($this->getSubject())
+            return $this->getSubject()->getId();
         return 0;
     }
 
     /**
-     * unset the course from the session
+     * unset the subject from the session
      */
-    public function unsetCourse()
+    public function unsetSubject()
     {
-        $this->getSession()->remove(self::SID_COURSE);
-        $this->remove('course');
+        $this->getSession()->remove(self::SID_SUBJECT);
+        $this->remove('subject');
     }
 
     /**

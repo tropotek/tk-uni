@@ -46,17 +46,17 @@ interface InstitutionIface
     public function isActive();
 
     /**
-     * @param string $courseCode
-     * @return CourseIface
-     * @todo: \App\Db\CourseMap::create()->findByCode($courseCode, $this->getId());
+     * @param string $subjectCode
+     * @return SubjectIface
+     * @todo: \App\Db\SubjectMap::create()->findByCode($subjectCode, $this->getId());
      */
-    public function findCourseByCode($courseCode);
+    public function findSubjectByCode($subjectCode);
 
     /**
-     * @param int $courseId
-     * @return CourseIface
-     * @todo: \App\Db\CourseMap::create()->find($courseId);
+     * @param int $subjectId
+     * @return SubjectIface
+     * @todo: \App\Db\SubjectMap::create()->find($subjectId);
      */
-    public function findCourse($courseId);
+    public function findSubject($subjectId);
 
 }
