@@ -81,8 +81,6 @@ class Uri extends \Tk\Uri
         if ($institution->getDomain()) {
             $url = self::create($spec);
             $url = $url->setHost($institution->getDomain());
-        } else {
-            $url = self::create('/inst/' . $institution->getHash() . '/' . trim($spec,'/'));
         }
 
         return $url;
