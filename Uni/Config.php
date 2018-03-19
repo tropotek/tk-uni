@@ -47,6 +47,7 @@ abstract class Config extends \Tk\Config
      * getSession
      *
      * @return \Tk\Session
+     * @throws \Tk\Exception
      */
     public function getSession()
     {
@@ -62,6 +63,7 @@ abstract class Config extends \Tk\Config
      * getSessionAdapter
      *
      * @return \Tk\Session\Adapter\Iface|null
+     * @throws \Tk\Db\Exception
      */
     public function getSessionAdapter()
     {
@@ -193,6 +195,7 @@ abstract class Config extends \Tk\Config
      * getAuth
      *
      * @return \Tk\Auth
+     * @throws \Tk\Exception
      */
     public function getAuth()
     {
@@ -222,6 +225,8 @@ abstract class Config extends \Tk\Config
      * getPluginFactory
      *
      * @return \Tk\Plugin\Factory
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Plugin\Exception
      */
     public function getPluginFactory()
     {
@@ -298,6 +303,7 @@ abstract class Config extends \Tk\Config
      * based on the subject code in the URI: /staff/VETS50001_2014_SM1/index.html
      *
      * @return \App\Db\Subject|null
+     * @throws \Tk\Exception
      * @todo: test this is works for all tk2uni sites
      */
     public function getSubject()
@@ -330,6 +336,7 @@ abstract class Config extends \Tk\Config
 
     /**
      * @return int|mixed
+     * @throws \Tk\Exception
      */
     public function getSubjectId()
     {

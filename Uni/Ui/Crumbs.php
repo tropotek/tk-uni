@@ -82,6 +82,7 @@ class Crumbs extends \Dom\Renderer\Renderer
      * @param null|\Uni\Db\UserIface $user
      * @param null|\Tk\Session $session
      * @return Crumbs
+     * @throws \Tk\Exception
      */
     public static function getInstance($user = null, $session = null)
     {
@@ -110,6 +111,7 @@ class Crumbs extends \Dom\Renderer\Renderer
      * @param string $homeTitle
      * @param null|\Tk\Uri $url
      * @return null|Crumbs If null returned then the crumbs were not reset
+     * @throws \Tk\Exception
      */
     public static function reset($homeTitle = 'Dashboard', $url = null)
     {
@@ -138,6 +140,7 @@ class Crumbs extends \Dom\Renderer\Renderer
      * @param string $subjectHomeTitle
      * @param string $homeTitle
      * @return null|Crumbs
+     * @throws \Tk\Exception
      * @todo do we need this here or should it reside in the App factory as a utility function
      */
     public static function resetSubject($subject = null, $subjectHomeTitle = 'Subject Dashboard', $homeTitle = 'Dashboard')

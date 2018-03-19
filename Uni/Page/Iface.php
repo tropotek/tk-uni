@@ -14,6 +14,7 @@ abstract class Iface extends \Tk\Controller\Page
      * Set the page heading, should be set from main controller
      *
      * @return \Dom\Template
+     * @throws \Dom\Exception
      */
     public function show()
     {

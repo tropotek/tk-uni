@@ -39,6 +39,7 @@ class CrumbsHandler implements Subscriber
 
     /**
      * @param \Tk\Event\Event $event
+     * @throws \Tk\Exception
      */
     public function onShow(\Tk\Event\Event $event)
     {
