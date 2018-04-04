@@ -26,7 +26,7 @@ abstract class Iface extends \Tk\Controller\Page
         }
 
         if ($this->getUser()) {
-            $template->insertText('username', $this->getUser()->getDisplayName());
+            $template->insertText('username', $this->getUser()->getName());
             $template->setAttr('dashUrl', 'href', \Uni\Uri::createHomeUrl('/index.html'));
 // TODO
 //            if ($this->getUser()->isStudent() && $this->getUser()->getInstitution() && $this->getUser()->getInstitution()->logo) {
