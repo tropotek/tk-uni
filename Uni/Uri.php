@@ -18,15 +18,17 @@ class Uri extends \Tk\Uri
      * </code>
      *
      * @param null|string|\Tk\Uri $spec
+     * @param null|\Uni\Db\UserIface $user
      * @return string|\Tk\Uri|static
      */
-    public static function createHomeUrl($spec = null)
+    public static function createHomeUrl($spec = null, $user = null)
     {
         if ($spec instanceof \Tk\Uri)
             return clone $spec;
-
         $home = '';
-        $user = Config::getInstance()->getUser();
+        if (!$user) {
+            $user = Config::getInstance()->getUser();
+        }
         if ($user instanceof \Uni\Db\UserIface) {
             $home = $user->getHomeUrl();
             if($home instanceof \Tk\Uri) {
@@ -42,10 +44,11 @@ class Uri extends \Tk\Uri
      *
      * @param null|string|\Tk\Uri $spec
      * @param null|Db\SubjectIface $subject
+     * @param null|\Uni\Db\UserIface $user
      * @return string|\Tk\Uri|static
      * @throws \Tk\Exception
      */
-    public static function createSubjectUrl($spec = null, $subject = null)
+    public static function createSubjectUrl($spec = null, $subject = null, $user = null)
     {
         if ($spec instanceof \Tk\Uri)
             return clone $spec;
@@ -56,7 +59,7 @@ class Uri extends \Tk\Uri
         if ($subject) {
             $subjectCode = $subject->code . '/';
         }
-        return self::createHomeUrl($subjectCode . trim($spec,'/'));
+        return self::createHomeUrl($subjectCode . trim($spec,'/'), $user);
     }
 
     /**
