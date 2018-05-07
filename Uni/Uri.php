@@ -70,7 +70,8 @@ class Uri extends \Tk\Uri
      * @param bool $useDomain If set to false then the institution path is prepended (todo: see if this is needed)
      * @return string|\Tk\Uri|static
      */
-    public static function createInstitutionUrl($spec = null, $institution = null, $useDomain = true)
+    public static function ci
+createInstitutionUrl($spec = null, $institution = null, $useDomain = true)
     {
         if ($spec instanceof \Tk\Uri) {
             return clone $spec;
