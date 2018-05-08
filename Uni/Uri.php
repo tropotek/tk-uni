@@ -115,8 +115,6 @@ class Uri extends \Tk\Uri
      */
     public function noLog($b = true)
     {
-        if (!Config::getInstance()->isDebug()) return $this;
-
         if ($b)
             $this->set('nolog');
         else
