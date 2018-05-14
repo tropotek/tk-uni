@@ -47,7 +47,7 @@ abstract class Config extends \Tk\Config
      * getSession
      *
      * @return \Tk\Session
-     * @throws \Tk\Exception
+     * @throws \Tk\Db\Exception
      */
     public function getSession()
     {
