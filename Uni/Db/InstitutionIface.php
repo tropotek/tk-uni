@@ -18,12 +18,12 @@ interface InstitutionIface
     /**
      * @return int
      */
-    public function getOwnerId();
+    public function getUserId();
 
     /**
      * @return UserIface
      */
-    public function getOwner();
+    public function getUser();
 
     /**
      * @return string
