@@ -347,6 +347,7 @@ abstract class Config extends \Tk\Config
 
     /**
      * unset the subject from the session
+     * @throws \Tk\Db\Exception
      */
     public function unsetSubject()
     {
