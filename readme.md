@@ -38,7 +38,7 @@ to load the classes.
 An example of staff subject routes setup in the `subject/routes.php`: 
 
 ```php
-$params = array('role' => \App\Db\UserGroup::ROLE_STAFF, 'subjectCode' = '');
+$params = array('role' => \Uni\Db\UserIface::ROLE_STAFF, 'subjectCode' = '');
 
 $routes->add('staff-subject-dashboard',       new \Tk\Routing\Route('/staff/{subjectCode}/index.html', 'App\Controller\Staff\SubjectDashboard::doDefault', $params));
 $routes->add('staff-subject-settings',        new \Tk\Routing\Route('/staff/{subjectCode}/settings.html', 'App\Controller\Subject\Edit::doDefault', $params));
