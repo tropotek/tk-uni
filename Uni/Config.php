@@ -403,6 +403,7 @@ abstract class Config extends \Tk\Config
     public static function createForm($formId, $method = \Tk\Form::METHOD_POST, $action = null)
     {
         $form = \Tk\Form::create($formId, $method, $action);
+        $form->setDispatcher(self::getInstance()->getEventDispatcher());
         $form->addCss('form-horizontal');
         return $form;
     }
