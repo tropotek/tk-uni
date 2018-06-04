@@ -29,7 +29,9 @@ class Uri extends \Tk\Uri
         if (!$user) {
             $user = Config::getInstance()->getUser();
         }
-        if ($user instanceof \Uni\Db\UserIface) {
+        if ($user && is_string($user)) {
+            $home = $user;
+        } else if ($user instanceof \Uni\Db\UserIface) {
             $home = $user->getHomeUrl();
             if($home instanceof \Tk\Uri) {
                 $home = $home->getRelativePath();
