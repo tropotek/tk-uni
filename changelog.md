@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.12 [2018-06-19]:
+-------------------------------
+Added a new company-supervisor manager page as per Ted request.
+
+
 Ver 2.0.10 [2018-06-05]:
 -------------------------------
 Minor Code Updates
