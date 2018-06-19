@@ -157,6 +157,7 @@ class Crumbs extends \Dom\Renderer\Renderer
 
     /**
      * save the state of the crumb stack to the session
+     * @throws \Tk\Exception
      */
     public static function save()
     {
