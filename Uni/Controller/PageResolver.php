@@ -19,7 +19,7 @@ class PageResolver extends \Tk\Controller\Resolver
         $controller = parent::getController($request);
 
         /** @var Iface $controller */
-        if ($controller[0] instanceof Iface) {
+        if (is_array($controller) && $controller[0] instanceof Iface) {
             $cObj = $controller[0];
             $page = \Uni\Config::getInstance()->createPage($cObj);
             $cObj->setPage($page);
