@@ -15,7 +15,6 @@ class ActionPanelHandler implements Subscriber
 
     public function onShow(\Tk\Event\Event $event)
     {
-        vd();
         /** @var \Uni\Controller\AdminIface $controller */
         $controller = $event->get('controller');
         if ($controller instanceof \Uni\Controller\AdminIface && $controller->getActionPanel()) {
