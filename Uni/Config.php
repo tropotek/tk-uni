@@ -108,7 +108,7 @@ abstract class Config extends \Tk\Config
     public function getEventDispatcher()
     {
         if (!$this->get('event.dispatcher')) {
-            $log = null;
+            $log = new \Psr\Log\NullLogger();
             if ($this->get('event.dispatcher.log')) {
                 $log = $this->getLog();
             }
