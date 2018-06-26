@@ -460,6 +460,34 @@ abstract class Config extends \Tk\Config
     }
 
     /**
+     * @param string $xtplFile The mail template filename as found in the /html/xtpl/mail folder
+     * @return \Tk\Mail\CurlyMessage
+     */
+    public function createMessage($xtplFile = 'default')
+    {
+        $config = self::getInstance();
+        $request = $config->getRequest();
+
+        $template = null;
+        $xtplFile = str_replace(array('./', '../'), '', strip_tags(trim($xtplFile)));
+        $xtplFile = $config->get('template.xtpl.path') . '/mail/' . $xtplFile . $config->get('template.xtpl.ext');
+        if (is_file($xtplFile))
+            $template = file_get_contents($xtplFile);
+
+        if (!$template) {
+            \Tk\Alert::addWarning('Message cannot be sent. Please contact site administrator.');
+        }
+        $message = \Tk\Mail\CurlyMessage::create($template);
+        $message->setFrom($config->get('site.email'));
+        $message->set('_uri', $request->getUri()->toString());
+        $message->set('_referer', $request->getReferer()->toString());
+        $message->set('_ip', $request->getIp());
+        $message->set('_user_agent', $request->getUserAgent());
+
+        return $message;
+    }
+
+    /**
      * Helper Method
      * Make a default HTML template to create HTML emails
      * usage:
@@ -468,7 +496,7 @@ abstract class Config extends \Tk\Config
      * @param string $body
      * @param bool $showFooter
      * @return string
-     * @todo: Probably not the best place for this..... Dependant on the App
+     * @deprecated Change all code to use the \Uni\Config::createMessage() function
      */
     public static function createMailTemplate($body, $showFooter = true)
     {
