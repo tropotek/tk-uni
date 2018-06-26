@@ -73,6 +73,7 @@ JS;
 
     /**
      * @param \Tk\Event\RequestEvent $event
+     * @throws \Tk\Exception
      */
     public function onFinishRequest(\Tk\Event\RequestEvent $event)
     {
