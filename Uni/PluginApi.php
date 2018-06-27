@@ -18,13 +18,6 @@ interface PluginApi
     public function findUser($username, $institutionId);
 
     /**
-     * @param array $params
-     * @return null|Db\UserIface
-     * @deprecated Use the event
-     */
-    public function createUser($params = array());
-
-    /**
      * @param int $subjectId
      * @return null|\Tk\Db\Map\Model|Db\SubjectIface
      */
@@ -39,13 +32,23 @@ interface PluginApi
 
     /**
      * @param array $params
+     * @return null|Db\UserIface
+     * @deprecated Use the event
+     * @deprecated Use an event (TODO: yet to create one)
+     */
+    public function createUser($params = array());
+
+    /**
+     * @param array $params
      * @return null|Db\SubjectIface
+     * @deprecated Use an event (TODO: yet to create one)
      */
     public function createSubject($params);
 
     /**
      * @param Db\SubjectIface $subject
      * @param Db\UserIface $user
+     * @deprecated Use an event (TODO: yet to create one)
      */
     public function addUserToSubject($subject, $user);
 
@@ -54,6 +57,7 @@ interface PluginApi
      *
      * @param Db\UserIface $user
      * @return \Tk\Auth\Result
+     * @deprecated Use an event (TODO: yet to create one)
      */
     public function autoAuthenticate($user);
 
