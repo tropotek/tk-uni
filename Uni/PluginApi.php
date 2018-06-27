@@ -20,6 +20,7 @@ interface PluginApi
     /**
      * @param array $params
      * @return null|Db\UserIface
+     * @deprecated Use the event
      */
     public function createUser($params = array());
 
