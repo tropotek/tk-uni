@@ -6,6 +6,7 @@ namespace Uni;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
+ * @deprecated
  */
 abstract class PluginApi
 {
