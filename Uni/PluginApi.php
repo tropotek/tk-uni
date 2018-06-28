@@ -40,36 +40,6 @@ abstract class PluginApi
 
 
 
-    /**
-     * @param array $params
-     * @return null|Db\UserIface
-     * @deprecated Use the event
-     * @deprecated Use an event (TODO: yet to create one)
-     */
-    abstract public function createUser($params = array());
-
-    /**
-     * @param array $params
-     * @return null|Db\SubjectIface
-     * @deprecated Use an event (TODO: yet to create one)
-     */
-    abstract public function createSubject($params);
-
-    /**
-     * @param Db\SubjectIface $subject
-     * @param Db\UserIface $user
-     * @deprecated Use an event (TODO: yet to create one)
-     */
-    abstract public function addUserToSubject($subject, $user);
-
-    /**
-     * Log in a user object automatically without pass authentication
-     *
-     * @param Db\UserIface $user
-     * @return \Tk\Auth\Result
-     * @deprecated Use an event (TODO: yet to create one)
-     */
-    abstract public function autoAuthenticate($user);
 
     /**
      * Return the Uri to redirect to on successful LTI login
@@ -79,6 +49,38 @@ abstract class PluginApi
      * @return \Tk\Uri
      * @deprecated We need a way to better handle this one, HMMMM!!??
      */
-    abstract public function getLtiHome($user, $subject);
+    public function getLtiHome($user, $subject) {}
+
+
+    /**
+     * @param array $params
+     * @return null|Db\UserIface
+     * @deprecated Use the event
+     * @deprecated Use an event (TODO: yet to create one)
+     */
+    public function createUser($params = array()) {}
+
+    /**
+     * @param array $params
+     * @return null|Db\SubjectIface
+     * @deprecated Use an event (TODO: yet to create one)
+     */
+    public function createSubject($params) {}
+
+    /**
+     * @param Db\SubjectIface $subject
+     * @param Db\UserIface $user
+     * @deprecated Use an event (TODO: yet to create one)
+     */
+    public function addUserToSubject($subject, $user) {}
+
+    /**
+     * Log in a user object automatically without pass authentication
+     *
+     * @param Db\UserIface $user
+     * @return \Tk\Auth\Result
+     * @deprecated Use an event (TODO: yet to create one)
+     */
+    public function autoAuthenticate($user) {}
 
 }
