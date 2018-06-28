@@ -15,12 +15,14 @@ abstract class PluginApi
      * @param $username
      * @param $institutionId
      * @return null|\Tk\Db\Map\Model|Db\UserIface
+     * @deprecated
      */
     abstract public function findUser($username, $institutionId);
 
     /**
      * @param int $subjectId
      * @return null|\Tk\Db\Map\Model|Db\SubjectIface
+     * @deprecated
      */
     abstract public function findSubject($subjectId);
 
@@ -28,11 +30,13 @@ abstract class PluginApi
      * @param string $subjectCode
      * @param int $institutionId
      * @return null|\Tk\Db\ModelInterface|Db\SubjectIface
+     * @deprecated
      */
     abstract public function findSubjectByCode($subjectCode, $institutionId);
 
     /**
      * @return \Uni\Config
+     * @deprecated
      */
     public function getConfig()
     {

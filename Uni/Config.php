@@ -242,6 +242,7 @@ abstract class Config extends \Tk\Config
     /**
      * @todo This must be implemented in your \App\Config object (for now)
      * @return null|PluginApi
+     * @deprecated Find a way to avid using this mess
      */
     public function getPluginApi()
     {
