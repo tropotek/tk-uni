@@ -480,10 +480,19 @@ abstract class Config extends \Tk\Config
         }
         $message = \Tk\Mail\CurlyMessage::create($template);
         $message->setFrom($config->get('site.email'));
-        $message->set('_uri', $request->getUri()->toString());
-        $message->set('_referer', $request->getReferer()->toString());
-        $message->set('_ip', $request->getIp());
-        $message->set('_user_agent', $request->getUserAgent());
+
+        $message->set('_uri', '');
+        if ($request->getUri())
+            $message->set('_uri', \Tk\Uri::create()->toString());
+        $message->set('_referer', '');
+        if ($request->getReferer())
+            $message->set('_referer', $request->getReferer()->toString());
+        $message->set('_ip', '');
+        if ($request->getIp())
+            $message->set('_ip', $request->getIp());
+        $message->set('_user_agent', '');
+        if ($request->getUserAgent())
+            $message->set('_user_agent', $request->getUserAgent());
 
         return $message;
     }
