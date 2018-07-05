@@ -332,6 +332,7 @@ abstract class Config extends \Tk\Config
                 $this->getSession()->set(self::SID_SUBJECT, $subject->getId());
             }
         }
+
         return $this->get('subject');
     }
 
