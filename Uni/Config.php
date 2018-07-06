@@ -395,6 +395,18 @@ abstract class Config extends \Tk\Config
         }
         return $page;
     }
+    
+    /**
+     * Get the page role, if multiple roles return the first one.
+     *
+     * @return string
+     */
+    public function getPageRole()
+    {
+        $role = $this->getRequest()->getAttribute('role');
+        if (is_array($role)) $role = current($role);
+        return $role;
+    }
 
     /**
      * @param string $formId
@@ -459,18 +471,6 @@ abstract class Config extends \Tk\Config
                 ->addCss('btn-default btn-once back');
         }
         return $ap;
-    }
-
-    /**
-     * Get the page role, if multiple roles return the first one.
-     *
-     * @return string
-     */
-    public function getPageRole()
-    {
-        $role = $this->getRequest()->getAttribute('role');
-        if (is_array($role)) $role = current($role);
-        return $role;
     }
 
     /**
