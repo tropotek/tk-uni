@@ -462,6 +462,18 @@ abstract class Config extends \Tk\Config
     }
 
     /**
+     * Get the page role, if multiple roles return the first one.
+     *
+     * @return string
+     */
+    public function getPageRole()
+    {
+        $role = $this->getRequest()->getAttribute('role');
+        if (is_array($role)) $role = current($role);
+        return $role;
+    }
+
+    /**
      * @param string $xtplFile The mail template filename as found in the /html/xtpl/mail folder
      * @return \Tk\Mail\CurlyMessage
      */

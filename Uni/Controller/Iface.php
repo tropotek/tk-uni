@@ -23,16 +23,6 @@ abstract class Iface extends \Tk\Controller\Iface
     }
 
     /**
-     * @return string
-     */
-    public function getPageRole()
-    {
-        $role = $this->getRequest()->getAttribute('role');
-        if (is_array($role)) $role = current($role);
-        return $role;
-    }
-
-    /**
      * Get the currently logged in user
      *
      * @return \Uni\Db\UserIface|\App\Db\User
