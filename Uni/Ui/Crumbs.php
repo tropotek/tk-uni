@@ -24,6 +24,7 @@ class Crumbs extends \Dom\Renderer\Renderer
      */
     const CRUMB_IGNORE = 'crumb_ignore';
 
+
     /**
      * @var string
      */
@@ -34,11 +35,11 @@ class Crumbs extends \Dom\Renderer\Renderer
      */
     public static $homeTitle = 'Home';
 
-
     /**
      * @var Crumbs
      */
     public static $instance = null;
+
 
     /**
      * @var array
@@ -82,7 +83,6 @@ class Crumbs extends \Dom\Renderer\Renderer
      * @param null|\Uni\Db\UserIface $user
      * @param null|\Tk\Session $session
      * @return Crumbs
-     * @throws \Tk\Exception
      */
     public static function getInstance($user = null, $session = null)
     {
