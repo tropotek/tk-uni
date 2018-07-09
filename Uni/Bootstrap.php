@@ -60,6 +60,8 @@ class Bootstrap extends \Bs\Bootstrap
         include($config->getLibUniPath() . '/config/application.php');
         if (is_file($config->getSrcPath() . '/config/application.php'))
             include($config->getSrcPath() . '/config/application.php');
+        if (is_file($config->getSrcPath() . '/config/application.php'))
+            include($config->getSrcPath() . '/config/application.php');
         return $config;
     }
 
