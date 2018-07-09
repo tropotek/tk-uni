@@ -128,7 +128,7 @@ class Config extends \Bs\Config
      * If the the current page is a subject page this wi;ll return the subject object
      * based on the subject code in the URI: /staff/VETS50001_2014_SM1/index.html
      *
-     * @return \Uni\Db\Subject|null
+     * @return \Uni\Db\SubjectIface|null
      * @throws \Tk\Exception
      * @todo: test this is works for all tk2uni sites
      */
