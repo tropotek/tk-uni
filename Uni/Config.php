@@ -7,7 +7,7 @@ namespace Uni;
  * @see http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
  */
-abstract class Config extends \Bs\Config
+class Config extends \Bs\Config
 {
 
     const SID_SUBJECT = 'last.subjectId';
