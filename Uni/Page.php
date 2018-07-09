@@ -1,41 +1,27 @@
 <?php
-namespace Uni\Controller;
+namespace Uni;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Page extends \Tk\Controller\Page
+class Page extends \Bs\Page
 {
 
     /**
      * Set the page heading, should be set from main controller
      *
      * @return \Dom\Template
-     * @throws \Dom\Exception
      * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function show()
     {
         $template = parent::show();
 
         if ($this->getUser()) {
-            $template->insertText('username', $this->getUser()->getName());
             $template->setAttr('dashUrl', 'href', \Uni\Uri::createHomeUrl('/index.html'));
-// TODO
-//            if ($this->getUser()->isStudent() && $this->getUser()->getInstitution() && $this->getUser()->getInstitution()->logo) {
-//                $template->setAttr('logo-img', 'src', $this->getUser()->getInstitution()->getLogoUrl());
-//            }
-
-            $template->setChoice('logout');
-        } else {
-            $template->setChoice('login');
-        }
-
-        if (\Tk\AlertCollection::hasMessages()) {
-            $template->insertTemplate('alerts', \Tk\AlertCollection::getInstance()->show());
-            $template->setChoice('alerts');
         }
 
         if ($this->getUser()) {
@@ -56,7 +42,7 @@ JS;
     /**
      * Get the currently logged in user
      *
-     * @return \Uni\Db\UserIface
+     * @return \Uni\Db\User
      */
     public function getUser()
     {
