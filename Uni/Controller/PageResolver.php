@@ -25,7 +25,7 @@ class PageResolver extends \Tk\Controller\Resolver
             $cObj->setPage($page);
             $request->setAttribute('controller.object', $cObj);
         }
-
+vd();
         return $controller;
     }
 

@@ -62,7 +62,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public $created = null;
 
     /**
-     * @var \App\Db\Institution
+     * @var \Uni\Db\Institution
      */
     private $institution = null;
 
@@ -108,7 +108,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
             foreach ($emailList as $email) {
                 if ($found) break;
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) continue;
-                $subjectList = \App\Db\SubjectMap::create()->findPendingPreEnrollments($institutionId, $email);
+                $subjectList = \Uni\Db\SubjectMap::create()->findPendingPreEnrollments($institutionId, $email);
                 $found = (count($subjectList) > 0);
             }
         }
@@ -122,7 +122,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function getInstitution()
     {
         if (!$this->institution) {
-            $this->institution = \App\Db\InstitutionMap::create()->find($this->institutionId);
+            $this->institution = \Uni\Db\InstitutionMap::create()->find($this->institutionId);
         }
         return $this->institution;
     }
@@ -241,7 +241,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
             $errors['code'] = 'Please enter a valid code';
         } else {
             // Look for existing subjects with same code
-            $c = \App\Db\SubjectMap::create()->findByCode($this->code, $this->institutionId);
+            $c = \Uni\Db\SubjectMap::create()->findByCode($this->code, $this->institutionId);
             if ($c && $c->id != $this->id) {
                 $errors['code'] = 'Subject code already exists';
             }

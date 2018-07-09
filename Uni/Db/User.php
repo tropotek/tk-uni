@@ -93,7 +93,7 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
     public $created = null;
 
     /**
-     * @var \App\Db\Institution
+     * @var \Uni\Db\Institution
      */
     private $institution = null;
 
@@ -188,9 +188,9 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
     public function getInstitution()
     {
         if (!$this->institution) {
-            $this->institution = \App\Db\InstitutionMap::create()->find($this->institutionId);
-            if (!$this->institution && $this->hasRole(\App\Db\User::ROLE_CLIENT)) {
-                $this->institution = \App\Db\InstitutionMap::create()->findByUserId($this->id);
+            $this->institution = \Uni\Db\InstitutionMap::create()->find($this->institutionId);
+            if (!$this->institution && $this->hasRole(\Uni\Db\User::ROLE_CLIENT)) {
+                $this->institution = \Uni\Db\InstitutionMap::create()->findByUserId($this->id);
             }
         }
         return $this->institution;
@@ -303,7 +303,7 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
      */
     public function isEnrolled($subjectId)
     {
-        return \App\Db\SubjectMap::create()->hasUser($subjectId, $this->getVolatileId());
+        return \Uni\Db\SubjectMap::create()->hasUser($subjectId, $this->getVolatileId());
     }
 
     /**

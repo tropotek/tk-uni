@@ -1,0 +1,28 @@
+<?php
+namespace Uni\Controller;
+
+use Tk\Request;
+use Tk\Auth\AuthEvents;
+use Tk\Event\AuthEvent;
+use Bs\Controller\Iface;
+
+/**
+ * @author Michael Mifsud <info@tropotek.com>
+ * @link http://www.tropotek.com/
+ * @license Copyright 2015 Michael Mifsud
+ */
+class Logout extends Iface
+{
+
+    /**
+     * @param Request $request
+     */
+    public function doDefault(Request $request)
+    {
+        $event = new AuthEvent();
+        $this->getConfig()->getEventDispatcher()->dispatch(AuthEvents::LOGOUT, $event);
+        if ($event->getRedirect())
+            $event->getRedirect()->redirect();
+    }
+
+}

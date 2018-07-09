@@ -155,7 +155,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     public function getLogoUrl()
     {
         if ($this->logo)
-            return \Tk\Uri::create(\App\Config::getInstance()->getDataUrl().$this->logo);
+            return \Tk\Uri::create(\Uni\Config::getInstance()->getDataUrl().$this->logo);
     }
 
     /**
@@ -167,7 +167,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     public function getUser()
     {
         if (!$this->user)
-            $this->user = \App\Db\UserMap::create()->find($this->userId);
+            $this->user = \Uni\Db\UserMap::create()->find($this->userId);
         return $this->user;
     }
 
@@ -243,7 +243,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      */
     public function findSubjectByCode($subjectCode)
     {
-        return \App\Db\SubjectMap::create()->findByCode($subjectCode, $this->getId());
+        return \Uni\Db\SubjectMap::create()->findByCode($subjectCode, $this->getId());
     }
 
     /**
@@ -253,6 +253,6 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      */
     public function findSubject($subjectId)
     {
-        return \App\Db\SubjectMap::create()->find($subjectId);
+        return \Uni\Db\SubjectMap::create()->find($subjectId);
     }
 }

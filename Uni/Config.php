@@ -194,7 +194,7 @@ class Config extends \Bs\Config
      */
     public function getAuthDbTableAdapter($submittedData = array())
     {
-        $adapter = new \App\Auth\Adapter\DbTable(
+        $adapter = new \Uni\Auth\Adapter\DbTable(
             $this->getDb(),
             \Tk\Db\Map\Mapper::$DB_PREFIX . str_replace(\Tk\Db\Map\Mapper::$DB_PREFIX, '', $this['system.auth.dbtable.tableName']),
             $this['system.auth.dbtable.usernameColumn'],
@@ -266,6 +266,21 @@ class Config extends \Bs\Config
             $controller->setPageTitle($controller->getDefaultTitle());
         }
         return $page;
+    }
+
+    /**
+     * @return string
+     */
+    public function makePageTitle()
+    {
+        $replace = array('admin-', 'client-', 'staff-', 'student-', '-base');
+        /** @var \Tk\Request $request */
+        $routeName = $this->getRequest()->getAttribute('_route');
+        if ($routeName) {
+            $routeName = str_replace($replace, '', $routeName);
+            return ucwords(trim(str_replace('-', ' ', $routeName)));
+        }
+        return '';
     }
 
     /**
