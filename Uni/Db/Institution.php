@@ -214,7 +214,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
         $error = array();
 
         if (!$this->name) {
-            $error['name'] = 'Invalid field value';
+            $error['name'] = 'Invalid name value';
         }
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $error['email'] = 'Please enter a valid email address';

@@ -44,8 +44,8 @@ $routes->add('admin-user-profile', new \Tk\Routing\Route('/admin/profile.html', 
 
 // Client Pages
 $params = array('role' => \Uni\Db\User::ROLE_CLIENT);
-$routes->add('client-dashboard', new \Tk\Routing\Route('/client/index.html', 'Uni\Controller\Client\Dashboard::doDefault', $params));
-$routes->add('client-dashboard-base', new \Tk\Routing\Route('/client/', 'Uni\Controller\Client\Dashboard::doDefault', $params));
+//$routes->add('client-dashboard', new \Tk\Routing\Route('/client/index.html', 'Uni\Controller\Client\Dashboard::doDefault', $params));
+//$routes->add('client-dashboard-base', new \Tk\Routing\Route('/client/', 'Uni\Controller\Client\Dashboard::doDefault', $params));
 
 $routes->add('client-user-profile', new \Tk\Routing\Route('/client/profile.html', 'Uni\Controller\User\Profile::doDefault', $params));
 $routes->add('client-staff-manager', new \Tk\Routing\Route('/client/staffManager.html', 'Uni\Controller\User\StaffManager::doDefault', $params));
@@ -66,8 +66,8 @@ $routes->add('client-subject-enrollment', new \Tk\Routing\Route('/client/subject
 
 // Staff Pages
 $params = array('role' => \Uni\Db\User::ROLE_STAFF);
-$routes->add('staff-dashboard', new \Tk\Routing\Route('/staff/index.html', 'Uni\Controller\Staff\Dashboard::doDefault', $params));
-$routes->add('staff-dashboard-base', new \Tk\Routing\Route('/staff/', 'Uni\Controller\Staff\Dashboard::doDefault', $params));
+//$routes->add('staff-dashboard', new \Tk\Routing\Route('/staff/index.html', 'Uni\Controller\Staff\Dashboard::doDefault', $params));
+//$routes->add('staff-dashboard-base', new \Tk\Routing\Route('/staff/', 'Uni\Controller\Staff\Dashboard::doDefault', $params));
 
 $routes->add('staff-subject-manager', new \Tk\Routing\Route('/staff/subjectManager.html', 'Uni\Controller\Subject\Manager::doDefault', $params));
 $routes->add('staff-subject-edit', new \Tk\Routing\Route('/staff/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault', $params));
@@ -87,8 +87,8 @@ $routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 
 
 // Student Pages
 $params = array('role' => \Uni\Db\User::ROLE_STUDENT);
-$routes->add('student-dashboard', new \Tk\Routing\Route('/student/index.html', 'Uni\Controller\Student\Dashboard::doDefault', $params));
-$routes->add('student-dashboard-base', new \Tk\Routing\Route('/student/', 'Uni\Controller\Student\Dashboard::doDefault', $params));
+//$routes->add('student-dashboard', new \Tk\Routing\Route('/student/index.html', 'Uni\Controller\Student\Dashboard::doDefault', $params));
+//$routes->add('student-dashboard-base', new \Tk\Routing\Route('/student/', 'Uni\Controller\Student\Dashboard::doDefault', $params));
 
 $routes->add('student-user-profile', new \Tk\Routing\Route('/student/profile.html', 'Uni\Controller\User\Profile::doDefault', $params));
 

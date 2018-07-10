@@ -131,7 +131,6 @@ class Edit extends \Bs\Controller\AdminIface
             $form->addFieldError('newPassword', 'Please enter a new password.');
         }
 
-
         if ($form->hasErrors()) {
             return;
         }

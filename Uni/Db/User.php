@@ -201,10 +201,6 @@ class User extends \Bs\Db\User implements UserIface
     {
         $errors = array();
 
-        if (!$this->institutionId) {
-            $errors['institutionId'] = 'Invalid field value';
-        }
-        
         if (!$this->role || !in_array($this->role, \Tk\ObjectUtil::getClassConstants($this, 'ROLE_'))) {
             $errors['role'] = 'Invalid field role value';
         }

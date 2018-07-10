@@ -191,7 +191,7 @@ class SubjectMap extends Mapper
     public function addUser($subjectId, $userId)
     {
         if ($this->hasUser($subjectId, $userId)) return;
-        $stm = $this->getDb()->prepare('INSERT INTO subject_has_user (user_id, subject_id)  VALUES (?, ?)');
+        $stm = $this->getDb()->prepare('INSERT INTO subject_has_user (subject_id, user_id)  VALUES (?, ?)');
         $stm->execute(array($subjectId, $userId));
     }
 
@@ -207,7 +207,7 @@ class SubjectMap extends Mapper
     public function removeUser($subjectId = null, $userId = null)
     {
         if ($subjectId && $userId) {
-            $stm = $this->getDb()->prepare('DELETE FROM subject_has_user WHERE user_id = ? AND subject_id = ?');
+            $stm = $this->getDb()->prepare('DELETE FROM subject_has_user WHERE subject_id = ? AND user_id = ?');
             $stm->execute(array($subjectId, $userId));
         } else if(!$subjectId && $userId) {
             $stm = $this->getDb()->prepare('DELETE FROM subject_has_user WHERE user_id = ?');
@@ -286,25 +286,6 @@ WHERE a.subject_id = ? ' . $toolStr);
 
         $arr = $stm->fetchAll();
         return $arr;
-
-//        $sql = sprintf('SELECT a.subject_id, a.email, a.uid, b.id as \'user_id\', IF(c.subject_id IS NULL, 0, 1) as enrolled
-//FROM  %s a
-//  LEFT JOIN  %s b ON (b.email = a.email)
-//  LEFT JOIN %s c ON (b.id = c.user_id AND c.subject_id = %d)
-//WHERE a.subject_id = %d',
-//            $this->quoteTable('subject_pre_enrollment'), $this->quoteTable('user'), $this->quoteTable('subject_has_user'),
-//            (int)$subjectId, (int)$subjectId);
-//
-//        $toolStr = '';
-//        if ($tool) {
-//            $tool->setLimit(0);
-//            $toolStr = ' '.$tool->toSql('', $this->getDb());
-//        }
-//        $sql .= $toolStr;
-//
-//        $res = $this->getDb()->query($sql);
-//        $arr = $res->fetchAll();
-//        return $arr;
     }
 
     /**
