@@ -60,7 +60,6 @@ class SubjectMap extends Mapper
 
 
     /**
-     *
      * @param string $code
      * @param int $institutionId
      * @return Subject|\Tk\Db\ModelInterface
@@ -72,11 +71,10 @@ class SubjectMap extends Mapper
     }
 
     /**
-     *
      * @param int $userId
      * @param int $institutionId
      * @param Tool $tool
-     * @return ArrayObject
+     * @return ArrayObject|Subject[]
      * @throws \Tk\Db\Exception
      */
     public function findByUserId($userId, $institutionId = 0, $tool = null)
@@ -91,7 +89,6 @@ class SubjectMap extends Mapper
     }
 
     /**
-     *
      * @param int $institutionId
      * @param Tool $tool
      * @return ArrayObject|Subject[]
@@ -114,7 +111,7 @@ class SubjectMap extends Mapper
      *
      * @param array $filter
      * @param Tool $tool
-     * @return ArrayObject
+     * @return ArrayObject|Subject[]
      * @throws \Tk\Db\Exception
      */
     public function findFiltered($filter = array(), $tool = null)
@@ -156,13 +153,9 @@ class SubjectMap extends Mapper
         }
 
         if (!empty($filter['exclude'])) {
-            if (!is_array($filter['exclude'])) $filter['exclude'] = array($filter['exclude']);
-            $w = '';
-            foreach ($filter['exclude'] as $v) {
-                $w .= sprintf('a.id != %d AND ', (int)$v);
-            }
+            $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
             if ($w) {
-                $where .= ' ('. rtrim($w, ' AND ') . ') AND ';
+                $where .= '('. $w . ') AND ';
             }
         }
 
@@ -177,7 +170,7 @@ class SubjectMap extends Mapper
 
 
 
-    // Enrolment direct queries - subject_has_user holds the currently enrolld users
+    // Enrolment direct queries - subject_has_user holds the currently enrolled users
 
     /**
      * @param int $subjectId
@@ -293,8 +286,6 @@ WHERE a.subject_id = ? ' . $toolStr);
 
         $arr = $stm->fetchAll();
         return $arr;
-
-
 
 //        $sql = sprintf('SELECT a.subject_id, a.email, a.uid, b.id as \'user_id\', IF(c.subject_id IS NULL, 0, 1) as enrolled
 //FROM  %s a

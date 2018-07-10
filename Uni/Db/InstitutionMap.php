@@ -149,6 +149,13 @@ class InstitutionMap extends Mapper
             $where .= sprintf('a.active = %s AND ', (int)$filter['active']);
         }
 
+        if (!empty($filter['exclude'])) {
+            $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
+            if ($w) {
+                $where .= '('. $w . ') AND ';
+            }
+        }
+
         if ($where) {
             $where = substr($where, 0, -4);
         }

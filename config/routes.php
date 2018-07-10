@@ -18,9 +18,6 @@ if (!$routes) return;
 
 // Default Home catchall
 $params = array();
-//$routes->add('home', new \Tk\Routing\Route('/index.html', 'App\Controller\Index::doDefault', $params));
-//$routes->add('home-base', new \Tk\Routing\Route('/', 'App\Controller\Index::doDefault', $params));
-//$routes->add('contact', new \Tk\Routing\Route('/contact.html', 'App\Controller\Contact::doDefault', $params));
 
 $routes->add('login', new \Tk\Routing\Route('/login.html', 'Uni\Controller\Login::doDefault', $params));
 $routes->add('institution-login', new \Tk\Routing\Route('/inst/{instHash}/login.html', 'Uni\Controller\Login::doInsLogin', $params));

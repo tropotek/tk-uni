@@ -64,12 +64,12 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     /**
      * @var \Uni\Db\Institution
      */
-    private $institution = null;
+    protected $institution = null;
 
     /**
      * @var Data
      */
-    private $data = null;
+    protected $data = null;
 
 
     /**
@@ -121,7 +121,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function getInstitution()
     {
-        if (!$this->institution) {
+        if (!$this->getInstitution()) {
             $this->institution = \Uni\Db\InstitutionMap::create()->find($this->institutionId);
         }
         return $this->institution;
@@ -246,7 +246,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
                 $errors['code'] = 'Subject code already exists';
             }
         }
-        
+
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Please enter a valid email address';
         }

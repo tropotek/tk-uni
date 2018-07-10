@@ -31,6 +31,7 @@ class UserMap extends Mapper
             $this->dbMap->addPropertyMap(new Db\Text('name'));
             $this->dbMap->addPropertyMap(new Db\Text('role'));
             $this->dbMap->addPropertyMap(new Db\Text('email'));
+            $this->dbMap->addPropertyMap(new Db\Text('image'));
             $this->dbMap->addPropertyMap(new Db\Date('lastLogin', 'last_login'));
             $this->dbMap->addPropertyMap(new Db\Text('notes'));
             $this->dbMap->addPropertyMap(new Db\Text('sessionId', 'session_id'));
@@ -58,6 +59,7 @@ class UserMap extends Mapper
             $this->formMap->addPropertyMap(new Form\Text('name'));
             $this->formMap->addPropertyMap(new Form\Text('role'));
             $this->formMap->addPropertyMap(new Form\Text('email'));
+            $this->formMap->addPropertyMap(new Form\Text('image'));
             $this->formMap->addPropertyMap(new Form\Text('notes'));
             $this->formMap->addPropertyMap(new Form\Boolean('active'));
         }
@@ -72,7 +74,7 @@ class UserMap extends Mapper
      * @return Institution|null|Model
      * @throws \Tk\Db\Exception
      */
-    public function findByhash($hash, $institutionId = 0, $role = null)
+    public function findByHash($hash, $institutionId = 0, $role = null)
     {
         $where = sprintf('hash = %s ', $this->getDb()->quote($hash));
         if ($institutionId > 0) {
@@ -214,8 +216,11 @@ class UserMap extends Mapper
         }
 
         if (!empty($filter['institutionId'])) {
-            //$from .= sprintf(', user_institution b');
             $where .= sprintf('a.institution_id = %d AND ', (int)$filter['institutionId']);
+        }
+
+        if (!empty($filter['active'])) {
+            $where .= sprintf('a.active = %s AND ', (int)$filter['active']);
         }
 
         if (!empty($filter['subjectId'])) {
@@ -231,6 +236,13 @@ class UserMap extends Mapper
             }
             if ($w) {
                 $where .= '('. rtrim($w, ' OR ') . ') AND ';
+            }
+        }
+
+        if (!empty($filter['exclude'])) {
+            $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
+            if ($w) {
+                $where .= '('. $w . ') AND ';
             }
         }
 

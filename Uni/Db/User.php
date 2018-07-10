@@ -9,13 +9,8 @@ use Tk\Db\Data;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
+class User extends \Bs\Db\User implements UserIface
 {
-
-    /**
-     * @var int
-     */
-    public $id = 0;
 
     /**
      * @var int
@@ -30,90 +25,34 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
     /**
      * @var string
      */
-    public $username = '';
-
-    /**
-     * @var string
-     */
-    public $password = '';
-
-    /**
-     * @var string
-     */
-    public $role = '';
-
-    /**
-     * @var string
-     */
-    public $name = '';
-
-    /**
-     * @var string
-     */
     public $displayName = '';
 
     /**
      * @var string
      */
-    public $email = '';
+    public $image = '';
 
-    /**
-     * @var bool
-     */
-    public $active = true;
-
-    /**
-     * @var string
-     */
-    public $hash = '';
-
-    /**
-     * @var string
-     */
-    public $notes = '';
-
-    /**
-     * @var string
-     */
-    public $sessionId = '';
-
-    /**
-     * @var \DateTime
-     */
-    public $lastLogin = null;
-
-    /**
-     * @var \DateTime
-     */
-    public $modified = null;
-
-    /**
-     * @var \DateTime
-     */
-    public $created = null;
 
     /**
      * @var \Uni\Db\Institution
      */
-    private $institution = null;
+    protected $institution = null;
 
     /**
      * @var Data
      */
-    private $data = null;
+    protected $data = null;
 
 
     /**
-     *
+     * User constructor.
      */
     public function __construct()
     {
-        $this->modified = \Tk\Date::create();
-        $this->created = \Tk\Date::create();
+        parent::__construct();
     }
 
     /**
-     *
      * @throws \Tk\Exception
      */
     public function save()
@@ -124,6 +63,26 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
         $this->getHash();
         $this->getData()->save();
         parent::save();
+    }
+
+    /**
+     * Helper method to generate user hash
+     *
+     * @param bool $isTemp
+     * @return string
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
+     */
+    public function generateHash($isTemp = false)
+    {
+        if (!$this->institutionId || !$this->username) {
+            throw new \Tk\Exception('The username and institutionId must be set before generating a valid hash');
+        }
+        $key = sprintf('%s%s%s', $this->getVolatileId(), $this->institutionId, $this->username);
+        if ($isTemp) {
+            $key .= date('-YmdHis');
+        }
+        return \App\Config::getInstance()->hash($key);
     }
 
     /**
@@ -140,57 +99,15 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
     }
 
     /**
-     * Get the user hash or generate one if needed
-     *
-     * @return string
-     * @throws \Tk\Exception
-     */
-    public function getHash()
-    {
-        if (!$this->hash) {
-            $this->hash = $this->generateHash();
-        }
-        return $this->hash;
-    }
-
-    /**
-     * Helper method to generate user hash
-     * 
-     * @return string
-     * @throws \Tk\Exception
-     */
-    public function generateHash() 
-    {
-        if (!$this->username || !$this->role) {
-            throw new \Tk\Exception('The username, role and email must be set before generating a valid hash');
-        }
-        return \App\Config::getInstance()->hash(sprintf('%s%s%s', $this->getVolatileId(), $this->institutionId, $this->username));
-    }
-
-    /**
-     * Set the password from a plain string
-     *
-     * @param string $pwd
-     * @throws \Tk\Exception
-     */
-    public function setNewPassword($pwd = '')
-    {
-        if (!$pwd) {
-            $pwd = \Uni\Config::createPassword(10);
-        }
-        $this->password = \App\Config::getInstance()->hashPassword($pwd, $this);
-    }
-
-    /**
      * Get the institution related to this user
      * @throws \Tk\Db\Exception
      */
     public function getInstitution()
     {
         if (!$this->institution) {
-            $this->institution = \Uni\Db\InstitutionMap::create()->find($this->institutionId);
+            $this->institution = InstitutionMap::create()->find($this->institutionId);
             if (!$this->institution && $this->hasRole(\Uni\Db\User::ROLE_CLIENT)) {
-                $this->institution = \Uni\Db\InstitutionMap::create()->findByUserId($this->id);
+                $this->institution = InstitutionMap::create()->findByUserId($this->id);
             }
         }
         return $this->institution;
@@ -218,21 +135,12 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
     /**
      * Return the users home|dashboard relative url
      *
-     * @note \Uni\Uri::createHomeUrl() uses this method to get the home path
-     *
      * @return \Tk\Uri
+     * @deprecated Use \Bs\Config::getInstance()->getUserHomeUrl($user)
      */
     public function getHomeUrl()
     {
-        if ($this->isAdmin())
-            return \Tk\Uri::create('/admin/index.html');
-        if ($this->isClient())
-            return \Tk\Uri::create('/client/index.html');
-        if ($this->isStaff())
-            return \Tk\Uri::create('/staff/index.html');
-        if ($this->isStudent())
-            return \Tk\Uri::create('/student/index.html');
-        return \Tk\Uri::create('/index.html');   // Should not get here unless their is no roles
+        return \Uni\Config::getInstance()->getUserHomeUrl($this);
     }
 
     /**
@@ -241,30 +149,6 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
     public function getRole()
     {
         return $this->role;
-    }
-
-    /**
-     * @param string|array $role
-     * @return boolean
-     */
-    public function hasRole($role)
-    {
-        if (!is_array($role)) $role = array($role);
-        foreach ($role as $r) {
-            if ($r == $this->role || preg_match('/'.preg_quote($r).'/', $this->role)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function isAdmin()
-    {
-        return $this->hasRole(self::ROLE_ADMIN);
     }
 
     /**
@@ -277,7 +161,6 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
     }
 
     /**
-     *
      * @return boolean
      */
     public function isStaff()
@@ -286,7 +169,6 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
     }
 
     /**
-     *
      * @return boolean
      */
     public function isStudent()
@@ -303,7 +185,7 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
      */
     public function isEnrolled($subjectId)
     {
-        return \Uni\Db\SubjectMap::create()->hasUser($subjectId, $this->getVolatileId());
+        return SubjectMap::create()->hasUser($subjectId, $this->getVolatileId());
     }
 
     /**
@@ -319,9 +201,9 @@ class User extends \Tk\Db\Map\Model implements \Tk\ValidInterface, UserIface
     {
         $errors = array();
 
-//        if (!$this->name) {
-//            $errors['name'] = 'Invalid field name value';
-//        }
+        if (!$this->institutionId) {
+            $errors['institutionId'] = 'Invalid field value';
+        }
         
         if (!$this->role || !in_array($this->role, \Tk\ObjectUtil::getClassConstants($this, 'ROLE_'))) {
             $errors['role'] = 'Invalid field role value';

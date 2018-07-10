@@ -77,32 +77,32 @@ class PluginApi
      * @return Db\Subject|null
      * @throws \Tk\Db\Exception
      */
-    public function createSubject($params)
-    {
-        \Tk\Log::notice('PluginApi::createSubject() called!');
-        $subject = null;
-        switch($params['type']) {
-            case 'lti':
-            case 'ldap':
-                $subject = new \Uni\Db\Subject();
-                try {
-                    \Uni\Db\SubjectMap::create()->mapForm($params, $subject);
-                } catch (\Exception $e) {}
-                $subject->save();
-                $this->addUserToSubject($subject, $params['UserIface']);
-        }
-        return $subject;
-    }
+//    public function createSubject($params)
+//    {
+//        \Tk\Log::notice('PluginApi::createSubject() called!');
+//        $subject = null;
+//        switch($params['type']) {
+//            case 'lti':
+//            case 'ldap':
+//                $subject = new \Uni\Db\Subject();
+//                try {
+//                    \Uni\Db\SubjectMap::create()->mapForm($params, $subject);
+//                } catch (\Exception $e) {}
+//                $subject->save();
+//                $this->addUserToSubject($subject, $params['UserIface']);
+//        }
+//        return $subject;
+//    }
 
     /**
      * @param \Uni\Db\Subject $subject
      * @param \app\Db\User $user
      */
-    public function addUserToSubject($subject, $user)
-    {
-        \Tk\Log::notice('PluginApi::addUserToSubject() called!');
-        \Uni\Db\SubjectMap::create()->addUser($subject->getId(), $user->getId());
-    }
+//    public function addUserToSubject($subject, $user)
+//    {
+//        \Tk\Log::notice('PluginApi::addUserToSubject() called!');
+//        \Uni\Db\SubjectMap::create()->addUser($subject->getId(), $user->getId());
+//    }
 
     /**
      * Log in a user object automatically without pass authentication
@@ -111,16 +111,16 @@ class PluginApi
      * @return \Tk\Auth\Result
      * @throws \Tk\Exception
      */
-    public function autoAuthenticate($user)
-    {
-        \Tk\Log::notice('PluginApi::autoAuthenticate() called!');
-        $auth = $this->getConfig()->getAuth();
-        \App\Listener\MasqueradeHandler::masqueradeClear();
-        $authResult = new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $user->getId());
-        $auth->clearIdentity()->getStorage()->write($user->getId());
-        $this->getConfig()->setUser($user);
-        return $authResult;
-    }
+//    public function autoAuthenticate($user)
+//    {
+//        \Tk\Log::notice('PluginApi::autoAuthenticate() called!');
+//        $auth = $this->getConfig()->getAuth();
+//        \App\Listener\MasqueradeHandler::masqueradeClear();
+//        $authResult = new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $user->getId());
+//        $auth->clearIdentity()->getStorage()->write($user->getId());
+//        $this->getConfig()->setUser($user);
+//        return $authResult;
+//    }
 
     /**
      * Return the Uri to redirect to on successful LTI login
@@ -131,11 +131,11 @@ class PluginApi
      * @throws \Exception
      * @deprecated
      */
-    public function getLtiHome($user, $subject)
-    {
-        \Tk\Log::notice('PluginApi::getLtiHome() called!');
-        return $user->getHomeUrl();
-    }
+//    public function getLtiHome($user, $subject)
+//    {
+//        \Tk\Log::notice('PluginApi::getLtiHome() called!');
+//        return $user->getHomeUrl();
+//    }
 
 
     /**

@@ -27,17 +27,17 @@ class InstitutionHandler implements Subscriber
      */
     public function onRequest(GetResponseEvent $event)
     {
+        $config = \Uni\Config::getInstance();
         /** @var \Uni\Db\User $user */
-        $user = \Uni\Config::getInstance()->getUser();
+        $user = $config->getUser();
         if ($user && $user->getInstitution()) {
-            \Uni\Config::getInstance()->setInstitution($user->getInstitution());
+            $config->setInstitution($user->getInstitution());
         }
         if ($event->getRequest()->getAttribute('instHash')) {
             $institution = \Uni\Db\InstitutionMap::create()->findByHash($event->getRequest()->getAttribute('instHash'));
-            \Uni\Config::getInstance()->setInstitution($institution);
+            $config->setInstitution($institution);
         }
     }
-
 
     /**
      * getSubscribedEvents

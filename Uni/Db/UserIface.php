@@ -10,7 +10,7 @@ namespace Uni\Db;
 interface UserIface
 {
     const ROLE_PUBLIC = 'public';
-    const ROLE_ADMIN = 'admin';
+    //const ROLE_ADMIN = 'admin';
     const ROLE_CLIENT= 'client';
     const ROLE_STAFF = 'staff';
     const ROLE_STUDENT = 'student';
@@ -44,6 +44,12 @@ interface UserIface
      * @return string
      */
     public function getRole();
+
+    /**
+     * @return bool
+     */
+    public function isActive();
+
 
 
 }

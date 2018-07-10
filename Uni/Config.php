@@ -40,56 +40,6 @@ class Config extends \Bs\Config
         return $this->getSitePath() . rtrim($this->get('system.lib.uni.path'), '/');
     }
 
-
-
-
-    /**
-     * @todo This must be implemented in your \App\Config object (for now)
-     * @return null|PluginApi
-     * @deprecated Find a way to avid using this mess
-     */
-    public function getPluginApi()
-    {
-        if (!$this->get('plugin.api')) {
-            $this->set('plugin.api', new \Uni\PluginApi());
-        }
-        return $this->get('plugin.api');
-    }
-
-
-
-
-
-    /**
-     * @param int $id
-     * @return \Uni\Db\InstitutionIface|\Tk\Db\ModelInterface|\Uni\Db\Institution
-     * @throws \Tk\Db\Exception
-     */
-    public function findInstitution($id)
-    {
-        return \Uni\Db\InstitutionMap::create()->find($id);
-    }
-
-    /**
-     * @param int $id
-     * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\Subject
-     * @throws \Tk\Db\Exception
-     */
-    public function findSubject($id)
-    {
-        return \Uni\Db\SubjectMap::create()->find($id);
-    }
-
-    /**
-     * @param int $id
-     * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\User
-     * @throws \Tk\Db\Exception
-     */
-    public function findUser($id)
-    {
-        return \Uni\Db\UserMap::create()->find($id);
-    }
-
     /**
      * Get the Institution object for the logged in user
      *
@@ -128,9 +78,8 @@ class Config extends \Bs\Config
      * If the the current page is a subject page this wi;ll return the subject object
      * based on the subject code in the URI: /staff/VETS50001_2014_SM1/index.html
      *
-     * @return \Uni\Db\SubjectIface|null
+     * @return \Uni\Db\Subject|null
      * @throws \Tk\Exception
-     * @todo: test this is works for all tk2uni sites
      */
     public function getSubject()
     {
@@ -182,9 +131,6 @@ class Config extends \Bs\Config
         $this->remove('subject');
     }
 
-
-
-
     /**
      * A helper method to create an instance of an Auth adapter
      *
@@ -207,65 +153,6 @@ class Config extends \Bs\Config
         $adapter->setHashCallback(array(\Tk\Config::getInstance(), 'hashPassword'));
         $adapter->replace($submittedData);
         return $adapter;
-    }
-
-    /**
-     * @return \Bs\Listener\AuthHandler
-     */
-    public function getAuthHandler()
-    {
-        if (!$this->get('auth.handler')) {
-            $this->set('auth.handler', new \Uni\Listener\AuthHandler());
-        }
-        return $this->get('auth.handler');
-    }
-
-    /**
-     * @return \Uni\Listener\MasqueradeHandler
-     */
-    public function getMasqueradeHandler()
-    {
-        if (!$this->get('auth.masquerade.handler')) {
-            $this->set('auth.masquerade.handler', new \Uni\Listener\MasqueradeHandler());
-        }
-        return $this->get('auth.masquerade.handler');
-    }
-
-    /**
-     * @return Db\User
-     */
-    public function getUser()
-    {
-        return $this->get('user');
-    }
-
-    /**
-     * @param Db\User $user
-     * @return $this
-     */
-    public function setUser($user)
-    {
-        $this->set('user', $user);
-        return $this;
-    }
-
-    //  -----------------------  Create methods  -----------------------
-
-
-    /**
-     * Create a page for the request
-     *
-     * @param \Tk\Controller\Iface $controller
-     * @return Page
-     */
-    public function createPage($controller)
-    {
-        $page = new Page();
-        $page->setController($controller);
-        if (!$controller->getPageTitle()) {     // Set a default page Title for the crumbs
-            $controller->setPageTitle($controller->getDefaultTitle());
-        }
-        return $page;
     }
 
     /**
@@ -324,5 +211,148 @@ class Config extends \Bs\Config
         return $ap;
     }
 
+
+    // ------------------------------- Commonly Overridden ---------------------------------------
+
+
+    // TODO: for the find functions maybe we should return the mappers instead, more scalable
+    /**
+     * @param int $id
+     * @return \Uni\Db\InstitutionIface|\Tk\Db\ModelInterface|\Uni\Db\Institution
+     * @throws \Tk\Db\Exception
+     */
+    public function findInstitution($id)
+    {
+        return \Uni\Db\InstitutionMap::create()->find($id);
+    }
+
+    /**
+     * @param int $id
+     * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\Subject
+     * @throws \Tk\Db\Exception
+     */
+    public function findSubject($id)
+    {
+        return \Uni\Db\SubjectMap::create()->find($id);
+    }
+
+    /**
+     * @param int $id
+     * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\User
+     * @throws \Tk\Db\Exception
+     */
+    public function findUser($id)
+    {
+        return \Uni\Db\UserMap::create()->find($id);
+    }
+
+
+
+    /**
+     * Get the current logged in user
+     * @return Db\User|Db\UserIface
+     */
+    public function getUser()
+    {
+        return $this->get('user');
+    }
+
+    /**
+     * Set the current logged in user
+     * @param Db\User|Db\UserIface $user
+     * @return $this
+     */
+    public function setUser($user)
+    {
+        $this->set('user', $user);
+        return $this;
+    }
+
+    /**
+     * Return the users home|dashboard relative url
+     *
+     * @param \Uni\Db\UserIface|\Uni\Db\User|null $user
+     * @return \Tk\Uri
+     */
+    public function getUserHomeUrl($user = null)
+    {
+        if ($user) {
+            if ($user->isAdmin())
+                return \Tk\Uri::create('/admin/index.html');
+            if ($user->isClient())
+                return \Tk\Uri::create('/client/index.html');
+            if ($user->isStaff())
+                return \Tk\Uri::create('/staff/index.html');
+            if ($user->isStudent())
+                return \Tk\Uri::create('/student/index.html');
+        }
+        return \Tk\Uri::create('/index.html');   // Should not get here unless their is no roles
+    }
+
+    /**
+     * getFrontController
+     *
+     * @return \Bs\FrontController
+     * @throws \Tk\Exception
+     */
+    public function getFrontController()
+    {
+        if (!$this->get('front.controller')) {
+            $obj = new \Uni\FrontController($this->getEventDispatcher(), $this->getResolver());
+            $this->set('front.controller', $obj);
+        }
+        return parent::get('front.controller');
+    }
+
+    /**
+     * @return \Bs\Listener\AuthHandler
+     */
+    public function getAuthHandler()
+    {
+        if (!$this->get('auth.handler')) {
+            $this->set('auth.handler', new \Uni\Listener\AuthHandler());
+        }
+        return $this->get('auth.handler');
+    }
+
+    /**
+     * @return \Uni\Listener\MasqueradeHandler
+     */
+    public function getMasqueradeHandler()
+    {
+        if (!$this->get('auth.masquerade.handler')) {
+            $this->set('auth.masquerade.handler', new \Uni\Listener\MasqueradeHandler());
+        }
+        return $this->get('auth.masquerade.handler');
+    }
+
+    /**
+     * Create a page for the request
+     *
+     * @param \Tk\Controller\Iface $controller
+     * @return Page
+     */
+    public function createPage($controller)
+    {
+        $page = new Page();
+        $page->setController($controller);
+        if (!$controller->getPageTitle()) {     // Set a default page Title for the crumbs
+            $controller->setPageTitle($controller->getDefaultTitle());
+        }
+        return $page;
+    }
+
+    /**
+     * @todo This must be implemented in your \App\Config object (for now)
+     * @return null|PluginApi
+     * @deprecated Find a way to avid using this mess
+     */
+    public function getPluginApi()
+    {
+        if (!$this->get('plugin.api')) {
+            $this->set('plugin.api', new \Uni\PluginApi());
+        }
+        return $this->get('plugin.api');
+    }
 
 }

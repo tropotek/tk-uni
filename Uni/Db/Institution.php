@@ -70,12 +70,12 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     /**
      * @var User
      */
-    private $user = null;
+    protected $user = null;
 
     /**
      * @var Data
      */
-    private $data = null;
+    protected $data = null;
     
     
 

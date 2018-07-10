@@ -12,7 +12,7 @@ use Tk\Auth\AuthEvents;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class AuthHandler implements Subscriber
+class AuthHandler extends \Bs\Listener\AuthHandler
 {
 
     /**
@@ -28,8 +28,9 @@ class AuthHandler implements Subscriber
         // Only the identity details should be in the auth session not the full user object, to save space and be secure.
         $config = \Uni\Config::getInstance();
         $auth = $config->getAuth();
+
         /** @var \Uni\Db\User $user */
-        $user = \Uni\Db\User::getMapper()->find($auth->getIdentity());
+        $user = $config->findUser($auth->getIdentity());
         //if (!$user) $user = new \Uni\Db\User();     // public user
         $config->setUser($user);
 
@@ -41,12 +42,12 @@ class AuthHandler implements Subscriber
                 \Tk\Uri::create('/login.html')->redirect();
             } else {
                 \Tk\Alert::addWarning('You do not have access to the requested page.');
-                $user->getHomeUrl()->redirect();
+                $config->getUserHomeUrl($user)->redirect();
             }
         } else {
             if (!$user->hasRole($role)) {
                 \Tk\Alert::addWarning('You do not have access to the requested page.');
-                $user->getHomeUrl()->redirect();
+                $config->getUserHomeUrl($user)->redirect();
             }
             if ($user->sessionId != $config->getSession()->getId()) {
                 $user->sessionId = $config->getSession()->getId();
@@ -210,6 +211,7 @@ class AuthHandler implements Subscriber
      */
     public function onLoginSuccess(AuthEvent $event)
     {
+        $config = \Uni\Config::getInstance();
         $result = $event->getResult();
         if (!$result) {
             throw new \Tk\Auth\Exception('Invalid login credentials');
@@ -218,22 +220,25 @@ class AuthHandler implements Subscriber
             return;
         }
 
-        /* @var \Uni\Db\User $user */
-        $user = \Uni\Db\UserMap::create()->find($result->getIdentity());
+        /* @var \Uni\Db\User|\Uni\Db\UserIface $user */
+        //$user = $config->findUser($result->getIdentity());
+        $user = $config->getuser();
+
+
         if (!$user) {
             throw new \Tk\Auth\Exception('Invalid user login credentials');
         }
-        if (!$user->active) {
+        if (!$user->isActive()) {
             throw new \Tk\Auth\Exception('Inactive account, please contact your administrator.');
         }
 
         if($user && $event->getRedirect() == null) {
-            $event->setRedirect($user->getHomeUrl());
+            $event->setRedirect($config->getUserHomeUrl($user));
         }
 
         // Update the user record.
-        if ($user->sessionId != \Uni\Config::getInstance()->getSession()->getId()) {
-            $user->sessionId = \Uni\Config::getInstance()->getSession()->getId();
+        if (property_exists($user, 'sessionId') && $user->sessionId != $config->getSession()->getId()) {
+            $user->sessionId = $config->getSession()->getId();
         }
         $user->lastLogin = \Tk\Date::create();
         $user->save();
@@ -258,7 +263,7 @@ class AuthHandler implements Subscriber
             $event->setRedirect($url);
         }
 
-        if ($user && $user->getRole() != \Uni\Db\User::ROLE_PUBLIC) {
+        if ($user && $user->getRole() != \Uni\Db\User::ROLE_PUBLIC && property_exists($user, 'sessionId')) {
             $user->sessionId = '';
             $user->save();
         }
@@ -268,102 +273,6 @@ class AuthHandler implements Subscriber
         $config->getSession()->destroy();
     }
 
-    /**
-     * @param \Tk\Event\Event $event
-     * @throws \Exception
-     */
-    public function onRegister(\Tk\Event\Event $event)
-    {
-        /** @var \Uni\Db\User $user */
-        $user = $event->get('user');
-        $config = \Uni\Config::getInstance();
 
-        $url = \Tk\Uri::create('/register.html')->set('h', $user->hash);
-
-        $message = $config->createMessage('account.activated');
-        $message->setSubject('Account Registration.');
-        $message->addTo($user->email);
-        $message->set('name', $user->name);
-        $message->set('activate-url', $url->toString());
-        \Uni\Config::getInstance()->getEmailGateway()->send($message);
-    }
-
-    /**
-     * @param \Tk\Event\Event $event
-     * @throws \Exception
-     */
-    public function onRegisterConfirm(\Tk\Event\Event $event)
-    {
-        /** @var \Uni\Db\User $user */
-        $user = $event->get('user');
-        $config = \Uni\Config::getInstance();
-
-        // Send an email to confirm account active
-        $url = \Tk\Uri::create('/login.html');
-
-        $message = $config->createMessage('account.activated');
-        $message->setSubject('Account Activation.');
-        $message->addTo($user->email);
-        $message->set('name', $user->name);
-        $message->set('login-url', $url->toString());
-        \Uni\Config::getInstance()->getEmailGateway()->send($message);
-    }
-
-    /**
-     * @param \Tk\Event\Event $event
-     * @throws \Exception
-     */
-    public function onRecover(\Tk\Event\Event $event)
-    {
-        /** @var \Uni\Db\User $user */
-        $user = $event->get('user');
-        $pass = $event->get('password');
-        $config = \Uni\Config::getInstance();
-
-        $url = \Tk\Uri::create('/login.html');
-
-        $message = $config->createMessage('account.activated');
-        $message->setSubject('Password Recovery');
-        $message->addTo($user->email);
-        $message->set('name', $user->name);
-        $message->set('password', $pass);
-        $message->set('login-url', $url->toString());
-        \Uni\Config::getInstance()->getEmailGateway()->send($message);
-    }
-
-
-    /**
-     * Returns an array of event names this subscriber wants to listen to.
-     *
-     * The array keys are event names and the value can be:
-     *
-     *  * The method name to call (priority defaults to 0)
-     *  * An array composed of the method name to call and the priority
-     *  * An array of arrays composed of the method names to call and respective
-     *    priorities, or 0 if unset
-     *
-     * For instance:
-     *
-     *  * array('eventName' => 'methodName')
-     *  * array('eventName' => array('methodName', $priority))
-     *  * array('eventName' => array(array('methodName1', $priority), array('methodName2'))
-     *
-     * @return array The event names to listen to
-     *
-     * @api
-     */
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::REQUEST => 'onRequest',
-            AuthEvents::LOGIN => 'onLogin',
-            AuthEvents::LOGIN_PROCESS => 'onLoginProcess',
-            AuthEvents::LOGIN_SUCCESS => 'onLoginSuccess',
-            AuthEvents::LOGOUT => 'onLogout',
-            AuthEvents::REGISTER => 'onRegister',
-            AuthEvents::REGISTER_CONFIRM => 'onRegisterConfirm',
-            AuthEvents::RECOVER => 'onRecover'
-        );
-    }
 
 }
