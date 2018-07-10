@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.30 [2018-07-10]:
+-------------------------------
+Fixed ldap new user issue
+Minor Code Updates
+
+
 Ver 2.0.28 [2018-07-10]:
 -------------------------------
 Minor Code Updates
