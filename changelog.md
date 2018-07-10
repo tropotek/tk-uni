@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.32 [2018-07-11]:
+-------------------------------
+Finally found the issue with the LDAP adapter and login
+
+
 Ver 2.0.30 [2018-07-10]:
 -------------------------------
 Fixed ldap new user issue
