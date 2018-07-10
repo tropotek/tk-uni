@@ -224,24 +224,22 @@ class SubjectMap extends Mapper
     //  Enrolment Pending List Queries - The enrollment table holds emails of users that are to be enrolled on their next login.
 
     /**
-     * find all subjects that the user is pending enrolment
+     * find all subject that the user is pending enrolment
      *
      * @param $institutionId
      * @param $email
-     * @param null $tool
+     * @param null|\Tk\Db\Tool $tool
      * @return ArrayObject|Subject[]
      * @throws \Tk\Db\Exception
      */
     public function findPendingPreEnrollments($institutionId, $email, $tool = null)
     {
-        $from = sprintf('%s a, %s b, %s c LEFT JOIN %s d ON (c.id = d.user_id) ',
-            $this->quoteTable($this->getTable()),
-            $this->quoteTable('subject_pre_enrollment'),
-            $this->quoteTable('UserIface'),
-            $this->quoteTable('subject_has_user'));
-        $where = sprintf('a.id = b.subject_id AND b.email = c.email AND a.institution_id = %d AND b.email = %s AND d.user_id IS NULL',
-            (int)$institutionId, $this->quote($email));
-        return $this->selectFrom($from, $where, $tool);
+        $from = sprintf('%s a, %s b ',
+            $this->quoteTable($this->getTable()), $this->quoteTable('subject_pre_enrollment'));
+        $where = sprintf('a.id = b.subject_id AND a.institution_id = %d AND b.email = %s ', (int)$institutionId, $this->quote($email));
+
+        $ret = $this->selectFrom($from, $where, $tool);
+        return $ret;
     }
 
     /**
@@ -253,14 +251,13 @@ class SubjectMap extends Mapper
      */
     public function findPendingPreEnrollmentsByUid($institutionId, $uid, $tool = null)
     {
-        $from = sprintf('%s a, %s b, %s c LEFT JOIN %s d ON (c.id = d.user_id) ',
-            $this->quoteTable($this->getTable()), $this->quoteTable('subject_pre_enrollment'),
-            $this->quoteTable('user'), $this->quoteTable('subject_has_student'));
-        $where = sprintf('a.id = b.subject_id AND b.uid = c.uid AND a.institution_id = %d AND b.uid = %s AND d.user_id IS NULL', (int)$institutionId, $this->quote($uid));
-
+        $from = sprintf('%s a, %s b',
+            $this->quoteTable($this->getTable()), $this->quoteTable('subject_pre_enrollment'));
+        $where = sprintf('a.id = b.subject_id AND a.institution_id = %d AND b.uid = %s', (int)$institutionId, $this->quote($uid));
         $ret = $this->selectFrom($from, $where, $tool);
         return $ret;
     }
+
 
     /**
      * Find all pre enrolments for a subject and return with an `enrolled` boolean field
