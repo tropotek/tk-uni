@@ -96,14 +96,10 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                     // Use this info to create an LDAP user for their first login or to update their details
                     /* @var \Uni\Db\User $user */
                     $user = \Uni\Db\UserMap::create()->findByUsername($adapter->get('username'), $config->getInstitutionId());
-//                    if (!$user) { // Create a user record if none exists
+//                    if (!$user && false) { // Create a user record if none exists
 //                        $role = 'student';
 //                        if (preg_match('/(staff|student)/', strtolower($ldapData[0]['auedupersontype'][0]), $reg)) {
-//                            if ($reg[1] == 'staff') {
-//                                $role = 'staff';
-//                            } else if ($reg[1] == 'student') {
-//                                $role = 'student';
-//                            }
+//                            if ($reg[1] == 'staff') $role = 'staff';
 //                        }
 //                        if ($role == 'student') {
 //                            // To check if a user is pre-enrolled get an array of uid and emails for a user
@@ -111,13 +107,19 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                                array_merge($ldapData[0]['mail'], $ldapData[0]['mailalternateaddress']),
 //                                $ldapData[0]['auedupersonid'][0]
 //                            );
-//                            if (!$isPreEnrolled) return;  // Only create users accounts for enrolled students
+//
+////                            if (!$isPreEnrolled) {      // Only create users accounts for enrolled students
+////                                $msg = sprintf('We cannot find any enrolled subjects. Please contact your coordinator.' .
+////                                    "\ninstitutionId: %s\nusername: %s\nUID: %s\nEmail: %s", $config->getInstitutionId(), $adapter->get('username'), $uid, $email);
+////                                $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID, $adapter->get('username'), nl2br($msg)));
+////                                return;
+////                            }
 //
 //                            $userData = array(
 //                                'type' => 'ldap',
 //                                'institutionId' => $config->getInstitutionId(),
-//                                'username' => $event->get('username'),
-//                                'userGroupId' => $role,
+//                                'username' => $adapter->get('username'),
+//                                'role' => $role,
 //                                'active' => true,
 //                                'email' => $email,
 //                                'name' => $ldapData[0]['displayname'][0],
@@ -126,12 +128,24 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                            );
 //                            $user = new \Uni\Db\User();
 //                            \Uni\Db\UserMap::create()->mapForm($userData, $user);
-//                            $user->setNewPassword($event->get('password'));
-//                            $user->save();
-//
-//                            // Save the last ldap data for reference
-//                            $user->getData()->set('ldap.data', json_encode($ldapData, \JSON_PRETTY_PRINT));
-//                            $user->getData()->save();
+//                            $error = $user->validate();
+//                            if (count($error)) {
+//                                try {
+//                                    $user->setNewPassword($adapter->get('password'));
+//                                } catch (\Exception $e) {
+//                                    \Tk\Log::info($e->__toString());
+//                                }
+//                            } else {
+//                                $user->save();
+//                                // Save the last ldap data for reference
+//                                $user->getData()->set('ldap.data', json_encode($ldapData, \JSON_PRETTY_PRINT));
+//                                $user->getData()->save();
+//                            }
+//                        } else {
+//                            $msg = sprintf('Staff members can contact the site administrator to request access');
+//                            $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID,
+//                                $adapter->get('username'), $msg));
+//                            return;
 //                        }
 //                    }
                     if ($user && $user->active) {
@@ -267,10 +281,12 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             $user->sessionId = '';
             $user->save();
         }
+
+        $config->unsetSubject();
         $config->getSession()->remove('lti.subjectId'); // Remove limit the dashboard to one subject for LTI logins
         $config->getSession()->remove('auth.password.access');
         $auth->clearIdentity();
-        $config->getSession()->destroy();
+        //$config->getSession()->destroy();
     }
 
 
