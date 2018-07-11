@@ -2,6 +2,12 @@
 
 Ver 2.0.34 [2018-07-11]:
 -------------------------------
+Preparing branch master for new release
+Minor Code Updates
+
+
+Ver 2.0.34 [2018-07-11]:
+-------------------------------
 Minor Code Updates
 
 
