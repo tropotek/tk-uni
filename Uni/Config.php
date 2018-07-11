@@ -140,7 +140,7 @@ class Config extends \Bs\Config
      */
     public function getAuthDbTableAdapter($submittedData = array())
     {
-        $adapter = new \App\Auth\Adapter\DbTable(
+        $adapter = new \Uni\Auth\Adapter\DbTable(
             $this->getDb(),
             \Tk\Db\Map\Mapper::$DB_PREFIX . str_replace(\Tk\Db\Map\Mapper::$DB_PREFIX, '', $this['system.auth.dbtable.tableName']),
             $this['system.auth.dbtable.usernameColumn'],
