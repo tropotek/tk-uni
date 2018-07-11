@@ -1,5 +1,28 @@
 #CHANGELOG#
 
+Ver 2.0.36 [2018-07-12]:
+-------------------------------
+Minor Code Updates
+
+
+Ver 2.0.34 [2018-07-11]:
+-------------------------------
+Merge branch 'master' of https://github.com/tropotek/tk-uni
+Preparing branch master for new release
+Minor Code Updates
+
+
+Ver 2.0.34 [2018-07-11]:
+-------------------------------
+Preparing branch master for new release
+Minor Code Updates
+
+
+Ver 2.0.34 [2018-07-11]:
+-------------------------------
+Minor Code Updates
+
+
 Ver 2.0.32 [2018-07-11]:
 -------------------------------
 Finally found the issue with the LDAP adapter and login
