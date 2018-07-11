@@ -23,6 +23,26 @@ class Config extends \Bs\Config
         $this->set('system.lib.uni.path', $this['system.vendor.path'] . '/ttek/tk-uni');
     }
 
+    /**
+     * Load the site route config files
+     */
+    public function loadConfig()
+    {
+        include($this->getLibBasePath() . '/config/application.php');
+        include($this->getLibUniPath() . '/config/application.php');
+        \Tk\Config::loadConfig();
+    }
+
+    /**
+     * Load the site route config files
+     */
+    public function loadRoutes()
+    {
+        include($this->getLibBasePath() . '/config/routes.php');
+        include($this->getLibUniPath() . '/config/routes.php');
+        \Tk\Config::loadRoutes();
+    }
+
 
     /**
      * @return string
@@ -276,6 +296,7 @@ class Config extends \Bs\Config
      */
     public function getUserHomeUrl($user = null)
     {
+        if (!$user) $user = $this->getUser();
         if ($user) {
             if ($user->isAdmin())
                 return \Tk\Uri::create('/admin/index.html');

@@ -121,7 +121,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function getInstitution()
     {
-        if (!$this->getInstitution()) {
+        if (!$this->institution) {
             $this->institution = \Uni\Db\InstitutionMap::create()->find($this->institutionId);
         }
         return $this->institution;
