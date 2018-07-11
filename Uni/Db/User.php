@@ -11,6 +11,11 @@ use Tk\Db\Data;
  */
 class User extends \Bs\Db\User implements UserIface
 {
+    const ROLE_PUBLIC = 'public';
+    const ROLE_ADMIN = 'admin';
+    const ROLE_CLIENT= 'client';
+    const ROLE_STAFF = 'staff';
+    const ROLE_STUDENT = 'student';
 
     /**
      * @var int
