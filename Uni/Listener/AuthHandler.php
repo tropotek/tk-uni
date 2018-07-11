@@ -235,9 +235,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         }
 
         /* @var \Uni\Db\User|\Uni\Db\UserIface $user */
-        //$user = $config->findUser($result->getIdentity());
-        $user = $config->getuser();
-
+        $user = $config->findUser($result->getIdentity());
 
         if (!$user) {
             throw new \Tk\Auth\Exception('Invalid user login credentials');
