@@ -11,7 +11,7 @@
  *     array('GET', 'POST', 'HEAD')     // methods
  * );
  */
-$config = \App\Config::getInstance();
+$config = \Uni\Config::getInstance();
 $routes = $config->getRouteCollection();
 if (!$routes) return;
 
