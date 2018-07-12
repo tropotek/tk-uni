@@ -18,6 +18,15 @@ $config['site.title'] = 'Uni Base Template';
 $config['site.email'] = 'user@example.com';
 
 /*
+ * Setup what paths to check when migrating SQL
+ */
+$config['sql.migrate.list'] = array(
+    'Lib Sql' => $config->getVendorPath() . '/ttek/tk-uni',
+    'Plugin Sql' => $config->getPluginPath(),
+    'App Sql' => $config->getSrcPath() . '/config'
+);
+
+/*
  * Template folders for pages
  */
 $config['system.template.path'] = '/html';
@@ -36,12 +45,6 @@ $config['template.public']    = $config['system.template.path'] . '/admin/public
  */
 $config['system.auth.salted'] = true;
 
-/*
- * The hash function to use for passwords and general hashing
- * Warning if you change this after user account creation
- * users will have to reset/recover their passwords
- */
-//$config['hash.function'] = 'md5';
 
 /*
  * Config for the \Tk\Auth\Adapter\DbTable
