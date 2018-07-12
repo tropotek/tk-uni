@@ -71,6 +71,17 @@ class User extends \Bs\Db\User implements UserIface
     }
 
     /**
+     * Get the path for all file associated to this object
+     *
+     * @return string
+     * @throws \Tk\Db\Exception
+     */
+    public function getDataPath()
+    {
+        return sprintf('%s/user/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
+    }
+
+    /**
      * Helper method to generate user hash
      *
      * @param bool $isTemp
