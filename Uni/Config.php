@@ -17,9 +17,9 @@ class Config extends \Bs\Config
      * @param string $sitePath
      * @param string $siteUrl
      */
-    protected function init($sitePath = '', $siteUrl = '')
+    protected function init()
     {
-        parent::init($sitePath, $siteUrl);
+        parent::init();
         $this->set('system.lib.uni.path', $this['system.vendor.path'] . '/ttek/tk-uni');
     }
 
@@ -30,7 +30,7 @@ class Config extends \Bs\Config
     {
         include($this->getLibBasePath() . '/config/application.php');
         include($this->getLibUniPath() . '/config/application.php');
-        \Tk\Config::loadConfig();
+        $this->loadAppConfig();
     }
 
     /**
@@ -40,7 +40,7 @@ class Config extends \Bs\Config
     {
         include($this->getLibBasePath() . '/config/routes.php');
         include($this->getLibUniPath() . '/config/routes.php');
-        \Tk\Config::loadRoutes();
+        $this->loadAppRoutes();
     }
 
 
