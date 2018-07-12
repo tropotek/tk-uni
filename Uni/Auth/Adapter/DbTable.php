@@ -60,7 +60,7 @@ class DbTable extends \Tk\Auth\Adapter\DbTable
                 throw new \Tk\Exception('Please validate your account first.');
                 //  It may not get to this point yet...
             }
-            vd($this->hashPassword($password, $user), $user->{$this->passwordColumn});
+
             if ($user && $this->hashPassword($password, $user) == $user->{$this->passwordColumn}) {
                 return new Result(Result::SUCCESS, $user->id);
             }

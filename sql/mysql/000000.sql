@@ -10,7 +10,7 @@
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `user` (
   `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `institution_id` INT(10) UNSIGNED DEFAULT NULL,
+  `institution_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `uid` VARCHAR(128) NOT NULL DEFAULT '',
   `username` VARCHAR(64) NOT NULL DEFAULT '',
   `password` VARCHAR(128) NOT NULL DEFAULT '',
@@ -102,8 +102,8 @@ CREATE TABLE IF NOT EXISTS `subject_pre_enrollment` (
 -- ----------------------------
 # INSERT INTO `user` (`institution_id`, `username`, `password` ,`role` ,`name`, `email`, `active`, `hash`, `modified`, `created`)
 # VALUES
-#   (NULL, 'admin', MD5(CONCAT('password', MD5('10adminadmin'))), 'admin', 'Administrator', 'admin@example.com', 1, MD5('10adminadmin'), NOW(), NOW()),
-#   (NULL, 'unimelb', MD5(CONCAT('password', MD5('20unimelbclient'))), 'client', 'Unimelb Client', 'fvas@unimelb.edu.au', 1, MD5('20unimelbclient'), NOW(), NOW()),
+#   (0, 'admin', MD5(CONCAT('password', MD5('10adminadmin'))), 'admin', 'Administrator', 'admin@example.com', 1, MD5('10adminadmin'), NOW(), NOW()),
+#   (0, 'unimelb', MD5(CONCAT('password', MD5('20unimelbclient'))), 'client', 'Unimelb Client', 'fvas@unimelb.edu.au', 1, MD5('20unimelbclient'), NOW(), NOW()),
 #   (1, 'staff', MD5(CONCAT('password', MD5('31staffstaff'))), 'staff', 'Unimelb Staff', 'staff@unimelb.edu.au', 1, MD5('31staffstaff'), NOW(), NOW()),
 #   (1, 'student', MD5(CONCAT('password', MD5('41studentstudent'))), 'student', 'Unimelb Student', 'student@unimelb.edu.au', 1, MD5('41studentstudent'), NOW(), NOW())
 # ;
