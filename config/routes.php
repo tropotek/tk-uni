@@ -78,7 +78,6 @@ $routes->add('staff-student-manager', new \Tk\Routing\Route('/staff/studentManag
 $routes->add('staff-student-edit', new \Tk\Routing\Route('/staff/studentEdit.html', 'Uni\Controller\User\StudentEdit::doDefault', $params));
 $routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault', $params));
 
-
 //$routes->add('staff-user-manager', new \Tk\Routing\Route('/staff/userManager.html', 'Uni\Controller\User\Manager::doDefault', $params));
 //$routes->add('staff-user-edit', new \Tk\Routing\Route('/staff/userEdit.html', 'Uni\Controller\User\Edit::doDefault', $params));
 //$routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault', $params));
@@ -89,7 +88,6 @@ $routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 
 $params = array('role' => \Uni\Db\User::ROLE_STUDENT);
 //$routes->add('student-dashboard', new \Tk\Routing\Route('/student/index.html', 'Uni\Controller\Student\Dashboard::doDefault', $params));
 //$routes->add('student-dashboard-base', new \Tk\Routing\Route('/student/', 'Uni\Controller\Student\Dashboard::doDefault', $params));
-
 $routes->add('student-user-profile', new \Tk\Routing\Route('/student/profile.html', 'Uni\Controller\User\Profile::doDefault', $params));
 
 

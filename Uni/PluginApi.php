@@ -51,7 +51,7 @@ class PluginApi
 
     /**
      * @param $subjectId
-     * @return null|\Tk\Db\Map\Model|\app\Db\Subject
+     * @return null|\Tk\Db\Map\Model|\Uni\Db\Subject
      * @throws \Tk\Db\Exception
      */
     public function findSubject($subjectId)
@@ -96,7 +96,7 @@ class PluginApi
 
     /**
      * @param \Uni\Db\Subject $subject
-     * @param \app\Db\User $user
+     * @param \Uni\Db\User $user
      */
 //    public function addUserToSubject($subject, $user)
 //    {
