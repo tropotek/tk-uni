@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * NOTE: Be sure to add routes in correct order as the first match will win
  * 
@@ -11,6 +10,7 @@
  *     array('GET', 'POST', 'HEAD')     // methods
  * );
  */
+
 $config = \Uni\Config::getInstance();
 $routes = $config->getRouteCollection();
 if (!$routes) return;
