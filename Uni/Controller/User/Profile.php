@@ -13,7 +13,7 @@ use Tk\Form\Event;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Profile extends \Bs\Controller\AdminIface
+class Profile extends \Uni\Controller\AdminIface
 {
 
     /**

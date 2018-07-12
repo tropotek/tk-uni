@@ -12,7 +12,7 @@ use Tk\Request;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Manager extends \Bs\Controller\AdminIface
+class Manager extends \Uni\Controller\AdminIface
 {
 
     /**

@@ -12,7 +12,7 @@ use Tk\Request;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Edit extends \Bs\Controller\AdminIface
+class Edit extends \Uni\Controller\AdminIface
 {
 
     /**
@@ -28,7 +28,7 @@ class Edit extends \Bs\Controller\AdminIface
     /**
      * @var \Uni\Db\user
      */
-    private $owner = null;
+    private $user = null;
 
     /**
      * @var \Tk\Table
@@ -48,16 +48,23 @@ class Edit extends \Bs\Controller\AdminIface
         $this->setPageTitle('Institution Edit');
 
         $this->institution = new \Uni\Db\Institution();
-        $this->owner = new \Uni\Db\User();
+        $this->user = new \Uni\Db\User();
 
         if ($request->get('institutionId')) {
             $this->institution = \Uni\Db\InstitutionMap::create()->find($request->get('institutionId'));
-            $this->owner = $this->institution->getUser();
+            $this->user = $this->institution->getUser();
         }
         if ($this->getUser()->isClient()) {
             $this->institution = \Uni\Db\InstitutionMap::create()->findByUserId($this->getuser()->getId());
-            $this->owner = $this->institution->getUser();
+            $this->user = $this->institution->getUser();
         }
+
+        if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs($this->getUser(), $this->institution->getUser())) {
+            $this->getActionPanel()->add(\Tk\Ui\Button::create('Masquerade',
+                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->institution->getUser()->hash), 'fa fa-user-secret'))->addCss('tk-masquerade');
+        }
+        $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins',
+            \Uni\Uri::createHomeUrl('/institution/'.$this->institution->getId().'/plugins.html'), 'fa fa-plug'));
 
         $this->form = \Uni\Config::getInstance()->createForm('institutionEdit');
         $this->form->setRenderer(\Uni\Config::getInstance()->createFormRenderer($this->form));
@@ -78,10 +85,10 @@ class Edit extends \Bs\Controller\AdminIface
 
         $this->form->setAttr('autocomplete', 'off');
         $f = $this->form->addField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")->setTabGroup('Password');
-        if (!$this->owner->getId())
+        if (!$this->user->getId())
             $f->setRequired(true);
         $f = $this->form->addField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")->setNotes('Change this users password.')->setTabGroup('Password');
-        if (!$this->owner->getId())
+        if (!$this->user->getId())
             $f->setRequired(true);
 
         $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
@@ -89,11 +96,19 @@ class Edit extends \Bs\Controller\AdminIface
         $this->form->addField(new Event\Link('cancel', \Tk\Uri::create('/admin/institutionManager.html')));
 
         $this->form->load(\Uni\Db\InstitutionMap::create()->unmapForm($this->institution));
-        $this->form->load(\Uni\Db\UserMap::create()->unmapForm($this->owner));
+        $this->form->load(\Uni\Db\UserMap::create()->unmapForm($this->user));
         $this->form->load($this->institution->getData()->all());
 
         $this->form->execute();
 
+    }
+
+    /**
+     * @return \Uni\Db\Institution
+     */
+    public function getInstitution()
+    {
+        return $this->institution;
     }
 
     /**
@@ -107,12 +122,12 @@ class Edit extends \Bs\Controller\AdminIface
     {
         // Load the object with data from the form using a helper object
         \Uni\Db\InstitutionMap::create()->mapForm($form->getValues(), $this->institution);
-        \Uni\Db\UserMap::create()->mapForm($form->getValues(), $this->owner);
+        \Uni\Db\UserMap::create()->mapForm($form->getValues(), $this->user);
         $data = $this->institution->getData();
         $data->replace($form->getValues('/^(inst)/'));
 
         $form->addFieldErrors($this->institution->validate());
-        $form->addFieldErrors($this->owner->validate());
+        $form->addFieldErrors($this->user->validate());
 
         /** @var \Tk\Form\Field\File $logo */
         $logo = $form->getField('logo');
@@ -127,7 +142,7 @@ class Edit extends \Bs\Controller\AdminIface
                 $form->addFieldError('confPassword');
             }
         }
-        if (!$this->owner->id && !$this->form->getFieldValue('newPassword')) {
+        if (!$this->user->id && !$this->form->getFieldValue('newPassword')) {
             $form->addFieldError('newPassword', 'Please enter a new password.');
         }
 
@@ -145,11 +160,11 @@ class Edit extends \Bs\Controller\AdminIface
         // Hash the password correctly
         if ($this->form->getFieldValue('newPassword')) {
             $pwd = $this->getConfig()->generatePassword(10);
-            $this->owner->setNewPassword($pwd);
+            $this->user->setNewPassword($pwd);
         }
 
-        $this->owner->save();
-        $this->institution->userId = $this->owner->getId();
+        $this->user->save();
+        $this->institution->userId = $this->user->getId();
         $this->institution->save();
 
         \Tk\Alert::addSuccess('Record saved!');
@@ -187,13 +202,6 @@ class Edit extends \Bs\Controller\AdminIface
                 $template->addCss('editPanel', 'col-md-12');
             }
             $template->setChoice('update');
-
-            if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs($this->getUser(), $this->institution->getUser())) {
-                $this->getActionPanel()->add(\Tk\Ui\Button::create('Masquerade',
-                    \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->institution->getUser()->hash), 'fa fa-user-secret'))->addCss('tk-masquerade');
-            }
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins',
-                \Uni\Uri::createHomeUrl('/institution/'.$this->institution->getId().'/plugins.html'), 'fa fa-plug'));
 
             
 

@@ -7,13 +7,11 @@ use Tk\Request;
 
 
 /**
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Manager extends \Bs\Controller\AdminIface
+class Manager extends \Uni\Controller\AdminIface
 {
 
     /**
@@ -40,11 +38,6 @@ class Manager extends \Bs\Controller\AdminIface
      *
      * @param Request $request
      * @throws \Exception
-     * @throws \Tk\Exception
-     * @throws \Tk\Exception
-     * @throws \Tk\Form\Exception
-     * @throws \Tk\Form\Exception
-     * @throws \Tk\Exception
      */
     public function doDefault(Request $request)
     {
