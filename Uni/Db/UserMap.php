@@ -29,6 +29,7 @@ class UserMap extends Mapper
             $this->dbMap->addPropertyMap(new Db\Text('username'));
             $this->dbMap->addPropertyMap(new Db\Text('password'));
             $this->dbMap->addPropertyMap(new Db\Text('name'));
+            $this->dbMap->addPropertyMap(new Db\Text('displayName', 'display_name'));
             $this->dbMap->addPropertyMap(new Db\Text('role'));
             $this->dbMap->addPropertyMap(new Db\Text('email'));
             $this->dbMap->addPropertyMap(new Db\Text('image'));
@@ -57,6 +58,7 @@ class UserMap extends Mapper
             $this->formMap->addPropertyMap(new Form\Text('username'));
             $this->formMap->addPropertyMap(new Form\Text('password'));
             $this->formMap->addPropertyMap(new Form\Text('name'));
+            $this->formMap->addPropertyMap(new Form\Text('displayName'));
             $this->formMap->addPropertyMap(new Form\Text('role'));
             $this->formMap->addPropertyMap(new Form\Text('email'));
             $this->formMap->addPropertyMap(new Form\Text('image'));
