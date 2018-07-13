@@ -7,7 +7,7 @@ namespace Uni\Controller;
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class AdminEditIface extends \Bs\Controller\AdminIface
+class AdminEditIface extends \Bs\Controller\AdminEditIface
 {
 
 

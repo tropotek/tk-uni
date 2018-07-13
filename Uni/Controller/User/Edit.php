@@ -13,23 +13,18 @@ use Tk\Form\Event;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Edit extends \Uni\Controller\AdminIface
+class Edit extends \Uni\Controller\AdminEditIface
 {
-
-    /**
-     * @var Form
-     */
-    protected $form = null;
 
     /**
      * @var \Uni\Db\User
      */
-    private $user = null;
+    protected $user = null;
 
     /**
      * @var \Uni\Db\Institution
      */
-    private $institution = null;
+    protected $institution = null;
 
     /**
      * @var null|\Tk\Uri
@@ -94,6 +89,22 @@ class Edit extends \Uni\Controller\AdminIface
         if (!$this->url)
             $this->url = \Uni\Uri::createHomeUrl('/userManager.html');
 
+        $this->buildForm();
+        
+        $this->form->load(\Uni\Db\UserMap::create()->unmapForm($this->user));
+        
+        $this->form->execute();
+        
+    }
+
+    /**
+     * @throws Exception
+     * @throws Form\Exception
+     * @throws \Tk\Exception
+     */
+    public function buildForm()
+    {
+
         $this->form = \Uni\Config::getInstance()->createForm('userEdit');
         $this->form->setRenderer(\Uni\Config::getInstance()->createFormRenderer($this->form));
 
@@ -148,22 +159,18 @@ class Edit extends \Uni\Controller\AdminIface
         $tabGroup = 'Subjects';
         if ($this->user->id && ($this->user->isStaff() || $this->user->isClient()) ) {
             $list = \Tk\Form\Field\Option\ArrayObjectIterator::create(\Uni\Db\SubjectMap::create()->findActive($this->institution->id));
-            $this->form->addField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
-                ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
-                ->setTabGroup($tabGroup)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
-            $arr = \Uni\Db\SubjectMap::create()->findByUserId($this->user->id)->toArray('id');
-            $this->form->setFieldValue('selSubject', $arr);
+            if ($list->count()) {
+                $this->form->addField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
+                    ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
+                    ->setTabGroup($tabGroup)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
+                $arr = \Uni\Db\SubjectMap::create()->findByUserId($this->user->id)->toArray('id');
+                $this->form->setFieldValue('selSubject', $arr);
+            }
         }
 
         $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-
-        $this->form->addField(new Event\Link('cancel', $this->url));
-        
-        $this->form->load(\Uni\Db\UserMap::create()->unmapForm($this->user));
-        
-        $this->form->execute();
-        
+        $this->form->addField(new Event\Link('cancel', $this->getBackUrl()));
     }
 
     /**
@@ -254,7 +261,7 @@ class Edit extends \Uni\Controller\AdminIface
         }
 
         if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs($this->getUser(), $this->user)) {
-            $this->getActionPanel()->addButton(\Tk\Ui\Button::create('Masquerade',
+            $this->getActionPanel()->add(\Tk\Ui\Button::create('Masquerade',
                 \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->hash), 'fa fa-user-secret'))->addCss('tk-masquerade');
         }
         return $template;
