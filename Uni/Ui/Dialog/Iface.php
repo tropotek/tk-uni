@@ -15,6 +15,10 @@ use Dom\Template;
 class Iface extends \Dom\Renderer\Renderer
 {
 
+    use \Tk\Dom\AttributesTrait;
+    use \Tk\Dom\CssTrait;
+
+
     /**
      * @var array
      */
@@ -40,6 +44,9 @@ class Iface extends \Dom\Renderer\Renderer
     {
         $this->setTitle($title);
         $this->setBody($body);
+
+        $this->setAttr('id', $this->getId());
+        $this->setAttr('aria-labelledby', $this->getId().'-Label');
     }
 
     /**
@@ -95,7 +102,6 @@ class Iface extends \Dom\Renderer\Renderer
     /**
      * @return \Dom\Template
      * @throws \Dom\Exception
-     * @throws \Dom\Exception
      */
     public function show()
     {
@@ -108,7 +114,7 @@ class Iface extends \Dom\Renderer\Renderer
         } else {
             $template->insertHtml('body', $this->body);
         }
-        
+
 
         foreach ($this->buttonList as $btn) {
             $row = $template->getRepeat('btn');
@@ -123,9 +129,11 @@ class Iface extends \Dom\Renderer\Renderer
             $row->appendRepeat();
         }
 
-        $template->setAttr('dialog', 'id', $this->getId());
-        $template->setAttr('dialog', 'aria-labelledby', $this->getId().'Label');
-        $template->setAttr('title', 'id', $this->getId().'Label');
+        $template->setAttr('title', 'id', $this->getId().'-Label');
+
+        // Add attributes
+        $template->setAttr('dialog', $this->getAttrList());
+        $template->addCss('dialog', $this->getCssList());
 
         return $template;
     }
