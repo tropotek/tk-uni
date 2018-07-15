@@ -73,7 +73,8 @@ class Config extends \Bs\Config
             if ($this->getUser()) {
                 $obj = $this->getUser()->getInstitution();
             } else if ($this->getRequest()->has('subjectId')) {
-                $subject = $this->findSubject($this->getRequest()->has('subjectId'));
+                /** @var Db\Subject $subject */
+                $subject = $this->getSubjectMapper()->find($this->getRequest()->has('subjectId'));
                 if ($subject) $obj = $subject->getInstitution();
             }
             $this->set('institution', $obj);
@@ -109,17 +110,17 @@ class Config extends \Bs\Config
                 $subjectCode = strip_tags(trim($this->getRequest()->getAttribute('subjectCode')));
                 $subject = $this->getInstitution()->findSubjectByCode($subjectCode);
             } else if ($this->getRequest()->has('subjectId')) {
-                /** @var Db\SubjectIface $c */
-                $c = $this->findSubject($this->getRequest()->get('subjectId'));
+                /** @var Db\Subject $c */
+                $c = $this->getSubjectMapper()->find($this->getRequest()->get('subjectId'));
                 if ($c && $this->getInstitution() && $c->getInstitutionId() == $this->getInstitution()->getId()) {
                     $subject = $c;
                 }
             }
             if (!$subject && $this->getSession()->has('lti.subjectId')) { // Check for an LTI default subject selection
-                $subject = $this->findSubject(self::getSession()->get('lti.subjectId'));
+                $subject = $this->getSubjectMapper()->find(self::getSession()->get('lti.subjectId'));
             }
             if (!$subject && $this->getSession()->has(self::SID_SUBJECT)) {
-                $subject = $this->findSubject(self::getSession()->get(self::SID_SUBJECT));
+                $subject = $this->getSubjectMapper()->find(self::getSession()->get(self::SID_SUBJECT));
             }
             $this->set('subject', $subject);
             if ($subject) {
@@ -310,7 +311,7 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return \Bs\Db\UserMap
+     * @return Db\UserMap
      */
     public function getUserMapper()
     {
@@ -321,7 +322,7 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return Db\User
+     * @return Db\User|Db\UserIface
      */
     public function createUser()
     {

@@ -30,7 +30,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $auth = $config->getAuth();
 
         /** @var \Uni\Db\User $user */
-        $user = $config->findUser($auth->getIdentity());
+        $user = $config->getUserMapper()->find($auth->getIdentity());
         //if (!$user) $user = new \Uni\Db\User();     // public user
         $config->setUser($user);
 
@@ -80,7 +80,6 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      */
     public function onLoginProcess(\Tk\Event\AuthEvent $event)
     {
-        vd('------11111');
         if ($event->getAdapter() instanceof \Tk\Auth\Adapter\Ldap) {
             /** @var \Tk\Auth\Adapter\Ldap $adapter */
             $adapter = $event->getAdapter();
@@ -96,7 +95,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 
                     // Use this info to create an LDAP user for their first login or to update their details
                     /* @var \Uni\Db\User $user */
-                    $user = \Uni\Db\UserMap::create()->findByUsername($adapter->get('username'), $config->getInstitutionId());
+                    $user = $config->getUserMapper()->findByUsername($adapter->get('username'), $config->getInstitutionId());
 //                    if (!$user && false) { // Create a user record if none exists
 //                        $role = 'student';
 //                        if (preg_match('/(staff|student)/', strtolower($ldapData[0]['auedupersontype'][0]), $reg)) {
@@ -183,10 +182,11 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             /** @var \Lti\Auth\LtiAdapter $adapter */
             $adapter = $event->getAdapter();
             $userData = $adapter->get('userData');
+            $config = \Uni\Config::getInstance();
 
-            $user = \Uni\Db\UserMap::create()->findByEmail($userData['email'], $adapter->getInstitution()->getId());
+            $user = $config->getUserMapper()->findByEmail($userData['email'], $adapter->getInstitution()->getId());
 //            if (!$user) {   // Find user by username (this is the start pat of the email address, not reliable
-//                $user = \Uni\Db\UserMap::create()->findByUsername($userData['username'], $adapter->getInstitution()->getId());
+//                $user = $config->getUserMapper()->findByUsername($userData['username'], $adapter->getInstitution()->getId());
 //            }
 
 //            if (!$user) {   // Create the new user account
@@ -195,8 +195,8 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                if (!$isPreEnrolled) {  // Only create users accounts for enrolled students
 //                    return;
 //                }
-//                $user = new \Uni\Db\User();
-//                \Uni\Db\UserMap::create()->mapForm($userData, $user);
+//                $user = $config->createUser();
+//                $config->getUserMapper()->mapForm($userData, $user);
 //                $user->save();
 //                $adapter->setUser($user);
 //            }
