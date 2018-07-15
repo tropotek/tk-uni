@@ -80,6 +80,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      */
     public function onLoginProcess(\Tk\Event\AuthEvent $event)
     {
+        vd('------11111');
         if ($event->getAdapter() instanceof \Tk\Auth\Adapter\Ldap) {
             /** @var \Tk\Auth\Adapter\Ldap $adapter */
             $adapter = $event->getAdapter();
@@ -287,6 +288,34 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         //$config->getSession()->destroy();
     }
 
+
+    /**
+     * Returns an array of event names this subscriber wants to listen to.
+     *
+     * The array keys are event names and the value can be:
+     *
+     *  * The method name to call (priority defaults to 0)
+     *  * An array composed of the method name to call and the priority
+     *  * An array of arrays composed of the method names to call and respective
+     *    priorities, or 0 if unset
+     *
+     * For instance:
+     *
+     *  * array('eventName' => 'methodName')
+     *  * array('eventName' => array('methodName', $priority))
+     *  * array('eventName' => array(array('methodName1', $priority), array('methodName2'))
+     *
+     * @return array The event names to listen to
+     *
+     * @api
+     */
+    public static function getSubscribedEvents()
+    {
+        return array_merge(
+            array(AuthEvents::LOGIN_PROCESS => 'onLoginProcess'),
+            parent::getSubscribedEvents()
+        );
+    }
 
 
 }

@@ -240,6 +240,7 @@ class Config extends \Bs\Config
      * @param int $id
      * @return \Uni\Db\InstitutionIface|\Tk\Db\ModelInterface|\Uni\Db\Institution
      * @throws \Tk\Db\Exception
+     * @deprecated Use the getInstitutionMapper() method
      */
     public function findInstitution($id)
     {
@@ -250,6 +251,7 @@ class Config extends \Bs\Config
      * @param int $id
      * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\Subject
      * @throws \Tk\Db\Exception
+     * @deprecated Use the getSubjectMapper() method
      */
     public function findSubject($id)
     {
@@ -260,6 +262,7 @@ class Config extends \Bs\Config
      * @param int $id
      * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\User
      * @throws \Tk\Db\Exception
+     * @deprecated Use the getUserMapper() method
      */
     public function findUser($id)
     {
@@ -267,6 +270,63 @@ class Config extends \Bs\Config
     }
 
 
+
+    /**
+     * @return Db\InstitutionMap
+     */
+    public function getInstitutionMapper()
+    {
+        if (!$this->get('obj.mapper.institution')) {
+            $this->set('obj.mapper.institution', Db\InstitutionMap::create());
+        }
+        return $this->get('obj.mapper.institution');
+    }
+
+    /**
+     * @return Db\Institution
+     */
+    public function createInstitution()
+    {
+        return new Db\Institution();
+    }
+
+    /**
+     * @return Db\SubjectMap
+     */
+    public function getSubjectMapper()
+    {
+        if (!$this->get('obj.mapper.subject')) {
+            $this->set('obj.mapper.subject', Db\SubjectMap::create());
+        }
+        return $this->get('obj.mapper.subject');
+    }
+
+    /**
+     * @return Db\Subject
+     */
+    public function createSubject()
+    {
+        return new Db\Subject();
+    }
+
+    /**
+     * @return \Bs\Db\UserMap
+     */
+    public function getUserMapper()
+    {
+        if (!$this->get('obj.mapper.user')) {
+            $this->set('obj.mapper.user', Db\UserMap::create());
+        }
+        return $this->get('obj.mapper.user');
+    }
+
+    /**
+     * @return Db\User
+     */
+    public function createUser()
+    {
+        return new Db\User();
+    }
 
     /**
      * Get the current logged in user

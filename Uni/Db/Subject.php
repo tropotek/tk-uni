@@ -81,7 +81,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function save()
     {
