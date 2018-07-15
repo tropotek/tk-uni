@@ -89,7 +89,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     }
 
     /**
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function save()
     {

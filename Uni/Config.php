@@ -63,7 +63,7 @@ class Config extends \Bs\Config
     /**
      * Get the Institution object for the logged in user
      *
-     * @return Db\InstitutionIface
+     * @return null|Db\Institution|Db\InstitutionIface
      * @throws \Tk\Db\Exception
      */
     public function getInstitution()
@@ -99,7 +99,7 @@ class Config extends \Bs\Config
      * If the the current page is a subject page this wi;ll return the subject object
      * based on the subject code in the URI: /staff/VETS50001_2014_SM1/index.html
      *
-     * @return \Uni\Db\Subject|null
+     * @return null|Db\Subject|Db\SubjectIface
      * @throws \Tk\Exception
      */
     public function getSubject()
@@ -261,7 +261,7 @@ class Config extends \Bs\Config
 
     /**
      * @param int $id
-     * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\User
+     * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|Db\User|Db\UserIface
      * @throws \Tk\Db\Exception
      * @deprecated Use the getUserMapper() method
      */
@@ -284,7 +284,7 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return Db\Institution
+     * @return Db\Institution|Db\InstitutionIface
      */
     public function createInstitution()
     {
@@ -303,7 +303,7 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return Db\Subject
+     * @return Db\Subject|Db\SubjectIface
      */
     public function createSubject()
     {
