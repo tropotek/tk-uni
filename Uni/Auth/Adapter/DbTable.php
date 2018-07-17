@@ -50,7 +50,6 @@ class DbTable extends \Tk\Auth\Adapter\DbTable
             
             /* @var \Uni\Db\User $user */
             $user = \Uni\Db\UserMap::create()->findByUsername($username, $iid);
-            //$user = $this->getUser($username);
 
             if ($user && !$user->password) {
                 // Then the user has reset the password or it is their first login?
@@ -60,9 +59,8 @@ class DbTable extends \Tk\Auth\Adapter\DbTable
                 throw new \Tk\Exception('Please validate your account first.');
                 //  It may not get to this point yet...
             }
-
             if ($user && $this->hashPassword($password, $user) == $user->{$this->passwordColumn}) {
-                return new Result(Result::SUCCESS, $user->id);
+                return new Result(Result::SUCCESS, $user->getId());
             }
         } catch (\Exception $e) {
             \Tk\Log::warning('The supplied parameters failed to produce a valid sql statement, please check table and column names for validity.');

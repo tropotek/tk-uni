@@ -168,7 +168,7 @@ class Config extends \Bs\Config
             $this['system.auth.dbtable.passwordColumn'],
             $this['system.auth.dbtable.activeColumn']);
         if (isset($submittedData['instHash'])) {
-            $institution = \Uni\Db\InstitutionMap::create()->findByHash($submittedData['instHash']);
+            $institution = $this->getInstitutionMapper()->findByHash($submittedData['instHash']);
             $adapter->setInstitution($institution);
         }
         $adapter->setHashCallback(array(\Tk\Config::getInstance(), 'hashPassword'));
@@ -236,7 +236,6 @@ class Config extends \Bs\Config
     // ------------------------------- Commonly Overridden ---------------------------------------
 
 
-    // TODO: for the find functions maybe we should return the mappers instead, more scalable
     /**
      * @param int $id
      * @return \Uni\Db\InstitutionIface|\Tk\Db\ModelInterface|\Uni\Db\Institution
@@ -328,6 +327,8 @@ class Config extends \Bs\Config
     {
         return new Db\User();
     }
+
+
 
     /**
      * Get the current logged in user
