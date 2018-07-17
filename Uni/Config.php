@@ -245,7 +245,7 @@ class Config extends \Bs\Config
      */
     public function findInstitution($id)
     {
-        return \Uni\Db\InstitutionMap::create()->find($id);
+        return $this->getInstitutionMapper()->find($id);
     }
 
     /**
@@ -256,7 +256,7 @@ class Config extends \Bs\Config
      */
     public function findSubject($id)
     {
-        return \Uni\Db\SubjectMap::create()->find($id);
+        return $this->getSubjectMapper()->find($id);
     }
 
     /**
@@ -267,7 +267,7 @@ class Config extends \Bs\Config
      */
     public function findUser($id)
     {
-        return \Uni\Db\UserMap::create()->find($id);
+        return $this->getUserMapper()->find($id);
     }
 
 
