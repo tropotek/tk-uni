@@ -31,11 +31,11 @@ class InstitutionHandler implements Subscriber
         /** @var \Uni\Db\User $user */
         $user = $config->getUser();
         if ($user && $user->getInstitution()) {
-            $config->setInstitution($user->getInstitution());
+            $config->set('institution', $user->getInstitution());
         }
         if ($event->getRequest()->getAttribute('instHash')) {
             $institution = $config->getInstitutionMapper()->findByHash($event->getRequest()->getAttribute('instHash'));
-            $config->setInstitution($institution);
+            $config->set('institution', $institution);
         }
     }
 
