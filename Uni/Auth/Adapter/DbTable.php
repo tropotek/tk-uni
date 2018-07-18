@@ -49,7 +49,7 @@ class DbTable extends \Tk\Auth\Adapter\DbTable
                 $iid = $this->institution->getId();
             
             /* @var \Uni\Db\User $user */
-            $user = \Uni\Db\UserMap::create()->findByUsername($username, $iid);
+            $user = \Uni\Config::getInstance()->getUserMapper()->findByUsername($username, $iid);
 
             if ($user && !$user->password) {
                 // Then the user has reset the password or it is their first login?
