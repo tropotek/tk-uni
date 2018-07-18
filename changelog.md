@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.0.42 [2018-07-18]:
+-------------------------------
+
+
 Ver 2.0.40 [2018-07-18]:
 -------------------------------
 Upgraded date fields to use datetimepicker plugin
