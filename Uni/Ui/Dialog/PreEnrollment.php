@@ -63,8 +63,10 @@ class PreEnrollment extends Iface
         if (!$request->has('enroll')) {
             return;
         }
+        $config = \Uni\Config::getInstance();
+
         //$this->subject = \Uni\Config::getInstance()->getSubject();
-        $this->subject = \Uni\Db\SubjectMap::create()->find($request->get('subjectId'));
+        $this->subject = $config->getSubjectMapper()->find($request->get('subjectId'));
         if (!$this->subject)
             throw new \Tk\Exception('Invalid subject details');
 
@@ -99,11 +101,11 @@ class PreEnrollment extends Iface
             }
 
             // Add users if found
-            if (!\Uni\Db\SubjectMap::create()->hasPreEnrollment($this->subject->getId(), $email)) {
-                \Uni\Db\SubjectMap::create()->addPreEnrollment($this->subject->getId(), $email, $uid);
-                $user = \Uni\Db\UserMap::create()->findByEmail($email, $this->subject->institutionId);
+            if (!$config->getSubjectMapper()->hasPreEnrollment($this->subject->getId(), $email)) {
+                $config->getSubjectMapper()->addPreEnrollment($this->subject->getId(), $email, $uid);
+                $user = $config->getUserMapper()->findByEmail($email, $this->subject->institutionId);
                 if ($user) {
-                    \Uni\Db\SubjectMap::create()->addUser($this->subject->getId(), $user->getId());
+                    $config->getSubjectMapper()->addUser($this->subject->getId(), $user->getId());
                 }
 
                 $success[] = $i . ' - Added ' . $email . ' to the subject enrollment list';

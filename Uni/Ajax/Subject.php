@@ -18,6 +18,7 @@ class Subject
      */
     public function doFindFiltered(Request $request)
     {
+        $config = \Uni\Config::getInstance();
         $status = 200;  // change this on error
         $filter = $request->all();
         if (!empty($filter['subjectId'])) {
@@ -31,7 +32,7 @@ class Subject
             unset($filter['userId']);
         }
 
-        $list = \Uni\Db\SubjectMap::create()->findFiltered($filter);
+        $list = $config->getSubjectMapper()->findFiltered($filter);
         $data = array();
         
         foreach ($list as $subject) {

@@ -45,7 +45,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
             if (!$iid)
                 $iid = (int)$request->get('institutionId');
             /** @var User $msqUser */
-            $msqUser = \Uni\Db\UserMap::create()->findByhash($request->get(self::MSQ), $iid);
+            $msqUser = $config->getUserMapper()->findByhash($request->get(self::MSQ), $iid);
 
             if (!$msqUser) throw new \Tk\Exception('Invalid User');
             self::masqueradeLogin($user, $msqUser);
@@ -65,13 +65,15 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      * @param User|\Uni\Db\UserIface $user
      * @param User|\Uni\Db\UserIface $msqUser
      * @return bool
+     * @throws \Tk\Db\Exception
      */
     public static function canMasqueradeAs($user, $msqUser)
     {
+        $config = \Uni\Config::getInstance();
         if (!$msqUser || !$user) return false;
         if ($user->id == $msqUser->id) return false;
 
-        $msqArr = \Uni\Config::getInstance()->getSession()->get(self::SID);
+        $msqArr = $config->getSession()->get(self::SID);
         if (is_array($msqArr)) {    // Check if we are allready masquerading as this user in the queue
             foreach ($msqArr as $data) {
                 if ($data['userId'] == $msqUser->id) return false;
@@ -102,12 +104,12 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      *
      * @return int
      * @throws \Tk\Exception
-     * @throws \Tk\Exception
      */
     public static function isMasquerading()
     {
-        if (!\Uni\Config::getInstance()->getSession()->has(self::SID)) return 0;
-        $msqArr = \Uni\Config::getInstance()->getSession()->get(self::SID);
+        $config = \Uni\Config::getInstance();
+        if (!$config->getSession()->has(self::SID)) return 0;
+        $msqArr = $config->getSession()->get(self::SID);
         return count($msqArr);
     }
 
@@ -115,17 +117,16 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      * Get the user who is masquerading, ignoring any nested masqueraded users
      *
      * @return \Uni\Db\User|null
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public static function getMasqueradingUser()
     {
+        $config = \Uni\Config::getInstance();
         $user = null;
-        if (\Uni\Config::getInstance()->getSession()->has(self::SID)) {
-            $msqArr = current(\Uni\Config::getInstance()->getSession()->get(self::SID));
+        if ($config->getSession()->has(self::SID)) {
+            $msqArr = current($config->getSession()->get(self::SID));
             /** @var \Uni\Db\User $user */
-            $user = \Uni\Db\UserMap::create()->find($msqArr['userId']);
+            $user = $config->getUserMapper()->find($msqArr['userId']);
         }
         return $user;
     }
@@ -141,11 +142,12 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      */
     public static function masqueradeLogin($user, $msqUser)
     {
+        $config = \Uni\Config::getInstance();
         if (!$msqUser || !$user) return;
         if ($user->id == $msqUser->id) return;
 
         // Get the masquerade queue from the session
-        $msqArr = \Uni\Config::getInstance()->getSession()->get(self::SID);
+        $msqArr = $config->getSession()->get(self::SID);
         if (!is_array($msqArr)) $msqArr = array();
 
         if (!self::canMasqueradeAs($user, $msqUser)) {
@@ -159,11 +161,11 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
         );
         array_push($msqArr, $userData);
         // Save the updated masquerade queue
-        \Uni\Config::getInstance()->getSession()->set(self::SID, $msqArr);
+        $config->getSession()->set(self::SID, $msqArr);
 
         // Login as the selected user
-        \Uni\Config::getInstance()->getAuth()->getStorage()->write($msqUser->id);
-        \Tk\Uri::create($msqUser->getHomeUrl())->redirect();
+        $config->getAuth()->getStorage()->write($msqUser->id);
+        $config->getUserHomeUrl()->redirect();
     }
 
     /**
@@ -173,9 +175,10 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      */
     public static function masqueradeLogout()
     {
+        $config = \Uni\Config::getInstance();
         if (!self::isMasquerading()) return;
-        if (!\Uni\Config::getInstance()->getAuth()->hasIdentity()) return;
-        $msqArr = \Uni\Config::getInstance()->getSession()->get(self::SID);
+        if (!$config->getAuth()->hasIdentity()) return;
+        $msqArr = $config->getSession()->get(self::SID);
         if (!is_array($msqArr) || !count($msqArr)) return;
 
         $userData = array_pop($msqArr);
@@ -186,9 +189,9 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
         $url = \Tk\Uri::create($userData['url']);
 
         // Save the updated masquerade queue
-        \Uni\Config::getInstance()->getSession()->set(self::SID, $msqArr);
+        $config->getSession()->set(self::SID, $msqArr);
 
-        \Uni\Config::getInstance()->getAuth()->getStorage()->write($userId);
+        $config->getAuth()->getStorage()->write($userId);
         $url->redirect();
     }
 
@@ -199,7 +202,8 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      */
     public static function masqueradeClear()
     {
-        \Uni\Config::getInstance()->getSession()->remove(self::SID);
+        $config = \Uni\Config::getInstance();
+        $config->getSession()->remove(self::SID);
     }
 
     /**

@@ -47,15 +47,15 @@ class Edit extends \Uni\Controller\AdminIface
     {
         $this->setPageTitle('Institution Edit');
 
-        $this->institution = new \Uni\Db\Institution();
-        $this->user = new \Uni\Db\User();
+        $this->institution = $this->getConfig()->createInstitution();
+        $this->user = $this->getConfig()->createUser();
 
         if ($request->get('institutionId')) {
-            $this->institution = \Uni\Db\InstitutionMap::create()->find($request->get('institutionId'));
+            $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->get('institutionId'));
             $this->user = $this->institution->getUser();
         }
         if ($this->getUser()->isClient()) {
-            $this->institution = \Uni\Db\InstitutionMap::create()->findByUserId($this->getuser()->getId());
+            $this->institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getuser()->getId());
             $this->user = $this->institution->getUser();
         }
 
@@ -95,8 +95,8 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
         $this->form->addField(new Event\Link('cancel', \Tk\Uri::create('/admin/institutionManager.html')));
 
-        $this->form->load(\Uni\Db\InstitutionMap::create()->unmapForm($this->institution));
-        $this->form->load(\Uni\Db\UserMap::create()->unmapForm($this->user));
+        $this->form->load($this->getConfig()->getInstitutionMapper()->unmapForm($this->institution));
+        $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
         $this->form->load($this->institution->getData()->all());
 
         $this->form->execute();
@@ -113,16 +113,14 @@ class Edit extends \Uni\Controller\AdminIface
 
     /**
      * @param \Tk\Form $form
-     * @throws Form\Exception
-     * @throws \ReflectionException
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @param \Tk\Form\Event\Iface $event
+     * @throws \Exception
      */
-    public function doSubmit($form)
+    public function doSubmit($form, $event)
     {
         // Load the object with data from the form using a helper object
-        \Uni\Db\InstitutionMap::create()->mapForm($form->getValues(), $this->institution);
-        \Uni\Db\UserMap::create()->mapForm($form->getValues(), $this->user);
+        $this->getConfig()->getInstitutionMapper()->mapForm($form->getValues(), $this->institution);
+        $this->getConfig()->getUserMapper()->mapForm($form->getValues(), $this->user);
         $data = $this->institution->getData();
         $data->replace($form->getValues('/^(inst)/'));
 
@@ -168,9 +166,9 @@ class Edit extends \Uni\Controller\AdminIface
         $this->institution->save();
 
         \Tk\Alert::addSuccess('Record saved!');
-        if ($form->getTriggeredEvent()->getName() == 'update')
-            \Tk\Uri::create('admin/institutionManager.html')->redirect();
-        \Tk\Uri::create()->set('institutionId', $this->institution->id)->redirect();
+        $event->setRedirect($this->getConfig()->getBackUrl());
+        if ($form->getTriggeredEvent()->getName() == 'save')
+            $event->setRedirect(\Tk\Uri::create()->set('institutionId', $this->institution->id));
     }
 
     /**

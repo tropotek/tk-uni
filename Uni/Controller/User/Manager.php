@@ -58,9 +58,7 @@ class Manager extends \Uni\Controller\AdminIface
 
     /**
      * @param Request $request
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
-     * @throws \Tk\Form\Exception
+     * @throws \Exception
      */
     public function doDefault(Request $request)
     {
@@ -69,7 +67,7 @@ class Manager extends \Uni\Controller\AdminIface
             $this->editUrl = \Uni\Uri::createHomeUrl('/userEdit.html');
 
         if ($request->has('subjectId'))
-            $this->subject = \Uni\Db\SubjectMap::create()->find($request->get('subjectId'));
+            $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
 
         $this->actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade',
             \Tk\Uri::create(), 'fa  fa-user-secret', 'tk-masquerade'))
@@ -111,7 +109,7 @@ class Manager extends \Uni\Controller\AdminIface
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function initTable()
     {
@@ -123,10 +121,7 @@ class Manager extends \Uni\Controller\AdminIface
             }
         }
 
-        try {
-            $filter = $this->table->getFilterValues();
-        } catch (\Exception $e) {
-        }
+        $filter = $this->table->getFilterValues();
         if ($this->getUser()->getInstitution())
             $filter['institutionId'] = $this->getUser()->getInstitution()->id;
 
@@ -137,10 +132,8 @@ class Manager extends \Uni\Controller\AdminIface
             }
         }
 
-        try {
-            $users = \Uni\Db\UserMap::create()->findFiltered($filter, $this->table->getTool('a.name'));
-        } catch (Exception $e) {
-        }
+
+        $users = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->table->getTool('a.name'));
         $this->table->setList($users);
     }
 

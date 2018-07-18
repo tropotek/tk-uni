@@ -21,9 +21,9 @@ class PluginApi
         \Tk\Log::notice('PluginApi::findUser() called!');
         $user = null;
         if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-            $user = \Uni\Db\UserMap::create()->findByEmail($username, $institutionId);
+            $user = $this->getConfig()->getUserMapper()->findByEmail($username, $institutionId);
         } else {
-            $user = \Uni\Db\UserMap::create()->findByUsername($username, $institutionId);
+            $user = $this->getConfig()->getUserMapper()->findByUsername($username, $institutionId);
         }
         return $user;
     }
@@ -57,7 +57,7 @@ class PluginApi
     public function findSubject($subjectId)
     {
         \Tk\Log::notice('PluginApi::findSubject() called!');
-        return \Uni\Db\SubjectMap::create()->find($subjectId);
+        return $this->getConfig()->getSubjectMapper()->find($subjectId);
     }
 
     /**
@@ -69,7 +69,7 @@ class PluginApi
     public function findSubjectByCode($subjectCode, $institutionId)
     {
         \Tk\Log::notice('PluginApi::findSubjectByCode() called!');
-        return \Uni\Db\SubjectMap::create()->findByCode($subjectCode, $institutionId);
+        return $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $institutionId);
     }
 
     /**
@@ -86,7 +86,7 @@ class PluginApi
 //            case 'ldap':
 //                $subject = new \Uni\Db\Subject();
 //                try {
-//                    \Uni\Db\SubjectMap::create()->mapForm($params, $subject);
+//                    $this->getConfig()->getSubjectMapper()->mapForm($params, $subject);
 //                } catch (\Exception $e) {}
 //                $subject->save();
 //                $this->addUserToSubject($subject, $params['UserIface']);
@@ -101,7 +101,7 @@ class PluginApi
 //    public function addUserToSubject($subject, $user)
 //    {
 //        \Tk\Log::notice('PluginApi::addUserToSubject() called!');
-//        \Uni\Db\SubjectMap::create()->addUser($subject->getId(), $user->getId());
+//        $this->getConfig()->getSubjectMapper()->addUser($subject->getId(), $user->getId());
 //    }
 
     /**

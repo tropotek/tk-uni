@@ -56,27 +56,22 @@ class Profile extends \Uni\Controller\AdminIface
 
         $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-        $url = \Tk\Uri::create($this->getUser()->getHomeUrl());
-        $this->form->addField(new Event\Link('cancel', $url));
+        $this->form->addField(new Event\Link('cancel', $this->getBackUrl()));
 
-        $this->form->load(\Uni\Db\UserMap::create()->unmapForm($this->user));
+        $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
         $this->form->execute();
 
     }
 
     /**
      * @param \Tk\Form $form
-     * @throws \Tk\Exception
-     * @throws \ReflectionException
+     * @param \Tk\Form\Event\Iface $event
+     * @throws \Exception
      */
-    public function doSubmit($form)
+    public function doSubmit($form, $event)
     {
         // Load the object with data from the form using a helper object
-        try {
-            \Uni\Db\UserMap::create()->mapForm($form->getValues(), $this->user);
-        } catch (\ReflectionException $e) {
-        } catch (Exception $e) {
-        }
+        $this->getConfig()->getUserMapper()->mapForm($form->getValues(), $this->user);
 
         $form->addFieldErrors($this->user->validate());
 
@@ -87,10 +82,10 @@ class Profile extends \Uni\Controller\AdminIface
         $this->user->save();
 
         \Tk\Alert::addSuccess('User record saved!');
-        if ($form->getTriggeredEvent()->getName() == 'update') {
-            \Uni\Uri::createHomeUrl('/index.html')->redirect();
+        $event->setRedirect($this->getBackUrl());
+        if ($form->getTriggeredEvent()->getName() == 'save') {
+            $event->setRedirect(\Tk\Uri::create());
         }
-        \Tk\Uri::create()->redirect();
     }
 
     /**

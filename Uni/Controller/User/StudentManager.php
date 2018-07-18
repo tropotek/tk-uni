@@ -33,7 +33,7 @@ class StudentManager extends Manager
         $filter['institutionId'] = $this->getUser()->getInstitution()->id;
         $filter['role'] = \Uni\Db\User::ROLE_STUDENT;
 
-        $users = \Uni\Db\UserMap::create()->findFiltered($filter, $this->table->getTool('a.name'));
+        $users = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->table->getTool('a.name'));
         $this->table->setList($users);
     }
 

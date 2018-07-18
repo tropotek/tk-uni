@@ -73,7 +73,7 @@ class Subject extends \Dom\Renderer\Renderer
         $filter = $this->table->getFilterValues();
         if ($this->institutionId)
             $filter['institutionId'] = $this->institutionId;
-        $users = \Uni\Db\SubjectMap::create()->findFiltered($filter, $this->table->getTool('a.id'));
+        $users = \Uni\Config::getInstance()->getSubjectMapper()->findFiltered($filter, $this->table->getTool('a.id'));
         $this->table->setList($users);
 
     }

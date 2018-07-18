@@ -26,10 +26,6 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     protected $institution = null;
 
-    /**
-     * @var null|\Tk\Uri
-     */
-    protected $url = null;
 
 
     /**
@@ -70,14 +66,14 @@ class Edit extends \Uni\Controller\AdminEditIface
     {
         $this->institution = $this->getUser()->getInstitution();
 
-        $this->user = new \Uni\Db\User();
+        $this->user = $this->getConfig()->createUser();
         $this->user->role = $this->getUser()->role;
         if ($this->user->isClient()) {
             $this->user->role = \Uni\Db\User::ROLE_STAFF;
         }
 
         if ($request->has('userId')) {
-            $this->user = \Uni\Db\UserMap::create()->find($request->get('userId'));
+            $this->user = $this->getConfig()->getUserMapper()->find($request->get('userId'));
             if (!$this->user) {
                 throw new \Tk\Exception('Invalid user account.');
             }
@@ -86,12 +82,9 @@ class Edit extends \Uni\Controller\AdminEditIface
             }
         }
 
-        if (!$this->url)
-            $this->url = \Uni\Uri::createHomeUrl('/userManager.html');
-
         $this->buildForm();
         
-        $this->form->load(\Uni\Db\UserMap::create()->unmapForm($this->user));
+        $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
         
         $this->form->execute();
         
@@ -105,9 +98,8 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function buildForm()
     {
 
-        $this->form = \Uni\Config::getInstance()->createForm('userEdit');
-        $this->form->setRenderer(\Uni\Config::getInstance()->createFormRenderer($this->form));
-
+        $this->form = $this->getConfig()->createForm('userEdit');
+        $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
 
         $tabGroup = 'Details';
 
@@ -158,12 +150,12 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         $tabGroup = 'Subjects';
         if ($this->user->id && ($this->user->isStaff() || $this->user->isClient()) ) {
-            $list = \Tk\Form\Field\Option\ArrayObjectIterator::create(\Uni\Db\SubjectMap::create()->findActive($this->institution->id));
+            $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findActive($this->institution->id));
             if ($list->count()) {
                 $this->form->addField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
                     ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
                     ->setTabGroup($tabGroup)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
-                $arr = \Uni\Db\SubjectMap::create()->findByUserId($this->user->id)->toArray('id');
+                $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->user->id)->toArray('id');
                 $this->form->setFieldValue('selSubject', $arr);
             }
         }
@@ -175,18 +167,13 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     /**
      * @param \Tk\Form $form
-     * @throws \Tk\Exception
-     * @throws \Tk\Exception
-     * @throws \ReflectionException
+     * @param \Tk\Form\Event\Iface $event
+     * @throws \Exception
      */
-    public function doSubmit($form)
+    public function doSubmit($form, $event)
     {
         // Load the object with data from the form using a helper object
-        try {
-            \Uni\Db\UserMap::create()->mapForm($form->getValues(), $this->user);
-        } catch (\ReflectionException $e) {
-        } catch (Exception $e) {
-        }
+        $this->getConfig()->getUserMapper()->mapForm($form->getValues(), $this->user);
 
         // TODO: We have a unique issue here where if a user is to be created
         // TODO:  and the record has been marked deleted, then it will throw an error
@@ -211,7 +198,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         }
         // Hash the password correctly
         if ($this->form->getFieldValue('newPassword')) {
-            $this->user->password = \Uni\Config::getInstance()->hashPassword($this->form->getFieldValue('newPassword'), $this->user);
+            $this->user->password = $this->getConfig()->hashPassword($this->form->getFieldValue('newPassword'), $this->user);
         }
 
         // Add user to institution
@@ -221,13 +208,13 @@ class Edit extends \Uni\Controller\AdminEditIface
             // TODO: Add the ability to assign a staff member to subjects.
             $selected = $form->getFieldValue('selSubject');
             if ($this->user->id && is_array($selected)) {
-                $list = \Uni\Db\SubjectMap::create()->findActive($this->institution->id);
+                $list = $this->getConfig()->getSubjectMapper()->findActive($this->institution->id);
                 /** @var \Uni\Db\Subject $subject */
                 foreach ($list as $subject) {
                     if (in_array($subject->id, $selected)) {
-                        \Uni\Db\SubjectMap::create()->addUser($subject->id, $this->user->id);
+                        $this->getConfig()->getSubjectMapper()->addUser($subject->id, $this->user->id);
                     } else {
-                        \Uni\Db\SubjectMap::create()->removeUser($subject->id, $this->user->id);
+                        $this->getConfig()->getSubjectMapper()->removeUser($subject->id, $this->user->id);
                     }
                 }
             }
@@ -235,15 +222,13 @@ class Edit extends \Uni\Controller\AdminEditIface
         $this->user->save();
 
         \Tk\Alert::addSuccess('User record saved!');
-        if ($form->getTriggeredEvent()->getName() == 'update') {
-            $this->url->redirect();
-        }
-        \Tk\Uri::create()->set('userId', $this->user->id)->redirect();
+        $event->setRedirect($this->getBackUrl());
+        if ($form->getTriggeredEvent()->getName() == 'save')
+            $event->setRedirect(\Tk\Uri::create()->set('userId', $this->user->id));
     }
 
     /**
      * @return \Dom\Template
-     * @throws \Tk\Exception
      */
     public function show()
     {

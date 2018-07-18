@@ -48,8 +48,9 @@ class Enrolled extends \Dom\Renderer\Renderer
      */
     public function doDefault()
     {
-        $this->table = \Uni\Config::getInstance()->createTable('enrolledUsers');
-        $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
+
+        $this->table = $this->getConfig()->createTable('enrolledUsers');
+        $this->table->setRenderer($this->getConfig()->createTableRenderer($this->table));
         $this->table->addCss('tk-enrolled-users');
 
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
@@ -70,7 +71,7 @@ class Enrolled extends \Dom\Renderer\Renderer
         $filter['subjectId'] = $this->subject->getId();
         $filter['role'] = array(\Uni\Db\User::ROLE_STAFF, \Uni\Db\User::ROLE_STUDENT);
 
-        $users = \Uni\Db\UserMap::create()->findFiltered($filter, $this->table->getTool('a.name'));
+        $users = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->table->getTool('a.name'));
         $this->table->setList($users);
 
     }
@@ -90,6 +91,13 @@ class Enrolled extends \Dom\Renderer\Renderer
         return $template;
     }
 
+    /**
+     * @return \Uni\Config
+     */
+    public function getConfig()
+    {
+        return \Uni\Config::getInstance();
+    }
 }
 
 class ActionsCell extends \Tk\Table\Cell\Text
@@ -137,30 +145,33 @@ class ActionsCell extends \Tk\Table\Cell\Text
         return parent::setTable($table);
     }
 
+    /**
+     * @param $data
+     * @throws \Exception
+     */
     public function onSelect($data)
     {
-        $dispatcher = \Uni\Config::getInstance()->getEventDispatcher();
+        $config = \Uni\Config::getInstance();
+
+        $dispatcher = $config->getEventDispatcher();
         // Migrate the user to the new subject
         $event = new \Tk\Event\Event();
         $event->set('subjectFromId', $this->subject->getId());
         $event->set('subjectToId', $data['selectedId']);
         $event->set('userId', $data['userId']);
-        $dispatcher->dispatch(\Uni\AppEvents::SUBJECT_MIGRATE_USER, $event);
+        $dispatcher->dispatch(\Uni\UniEvents::SUBJECT_MIGRATE_USER, $event);
         
         if (!$event->isPropagationStopped()) {
             /** @var \Uni\Db\User $user */
-            try {
-                $user = \Uni\Db\UserMap::create()->find($event->get('userId'));
-            } catch (Exception $e) {
-            }
+            $user = $config->getUserMapper()->find($event->get('userId'));
             if ($user) {
-                if (\Uni\Db\SubjectMap::create()->hasUser($event->get('subjectFromId'), $user->getId())) {
-                    \Uni\Db\SubjectMap::create()->removeUser($event->get('subjectFromId'), $user->getId());
+                if ($config->getSubjectMapper()->hasUser($event->get('subjectFromId'), $user->getId())) {
+                    $config->getSubjectMapper()->removeUser($event->get('subjectFromId'), $user->getId());
                     // delete user from the pre-enrolment list if exists
-                    \Uni\Db\SubjectMap::create()->removePreEnrollment($event->get('subjectFromId'), $user->email);
+                    $config->getSubjectMapper()->removePreEnrollment($event->get('subjectFromId'), $user->email);
                 }
-                if (!\Uni\Db\SubjectMap::create()->hasUser($event->get('subjectToId'), $user->getId())) {
-                    \Uni\Db\SubjectMap::create()->addUser($event->get('subjectToId'), $user->getId());
+                if (!$config->getSubjectMapper()->hasUser($event->get('subjectToId'), $user->getId())) {
+                    $config->getSubjectMapper()->addUser($event->get('subjectToId'), $user->getId());
                 }
             }
         }
@@ -177,15 +188,16 @@ class ActionsCell extends \Tk\Table\Cell\Text
      */
     public function getCellHtml($obj, $rowIdx = null)
     {
+        $config = \Uni\Config::getInstance();
         $template = $this->__makeTemplate();
 
         // exclude any subjects already enrolled in
-        $enrolledList  = \Uni\Db\SubjectMap::create()->findFiltered(array('userId' => $obj->getId()));
+        $enrolledList  = $config->getSubjectMapper()->findFiltered(array('userId' => $obj->getId()));
         $exclude = array($this->subject->getId());
         foreach ($enrolledList as $subject) {
             $exclude[] = $subject->getId();
         }
-        $list = \Uni\Db\SubjectMap::create()->findFiltered(array(
+        $list = $config->getSubjectMapper()->findFiltered(array(
             'exclude' => $exclude
         ));
 
@@ -242,6 +254,7 @@ class DeleteUser extends \Tk\Table\Action\Delete
     
     public function execute()
     {
+        $config = \Uni\Config::getInstance();
         $request = $this->getTable()->getRequest();
         if (empty($request[$this->checkboxName])) {
             return;
@@ -254,7 +267,7 @@ class DeleteUser extends \Tk\Table\Action\Delete
         /* @var \app\Db\User $obj */
         foreach($this->getTable()->getList() as $obj) {
             if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->excludeIdList)) {
-                $subjectMap = \Uni\Db\SubjectMap::create();
+                $subjectMap = $config->getSubjectMapper();
                 $subjectMap->removePreEnrollment($subjectId, $obj->email);
                 $subjectMap->removeUser($subjectId, $obj->getId());
                 $i++;

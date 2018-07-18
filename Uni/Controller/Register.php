@@ -57,7 +57,7 @@ class Register extends Iface
             $this->doConfirmation($request);
         }
 
-        $this->user = new \Uni\Db\User();
+        $this->user = $this->getConfig()->createUser();
         $this->user->role = \Uni\Db\User::ROLE_CLIENT;
 
         $this->form = $this->getConfig()->createForm('register-account');
@@ -72,7 +72,7 @@ class Register extends Iface
         $this->form->addField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
             ->removeCss('btn btn-sm btn-default btn-once');
 
-        $this->form->load(\Uni\Db\UserMap::create()->unmapForm($this->user));
+        $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
         $this->form->execute();
     }
 
@@ -82,13 +82,12 @@ class Register extends Iface
      *
      * @param \Tk\Form $form
      * @param \Tk\Form\Event\Iface $event
-     * @throws \Tk\Exception
-     * @throws \ReflectionException
+     * @throws \Exception
      */
     public function doRegister($form, $event)
     {
-        \Uni\Db\UserMap::create()->mapForm($form->getValues(), $this->user);
-        \Uni\Db\InstitutionMap::create()->mapForm($form->getValues(), $this->institution);
+        $this->getConfig()->getUserMapper()->mapForm($form->getValues(), $this->user);
+        $this->getConfig()->getInstitutionMapper()->mapForm($form->getValues(), $this->institution);
 
         if (!$this->form->getFieldValue('password')) {
             $form->addFieldError('password', 'Please enter a password');
@@ -158,7 +157,7 @@ class Register extends Iface
             throw new \InvalidArgumentException('Cannot locate user. Please contact administrator.');
         }
         /** @var \Uni\Db\User $user */
-        $user = \Uni\Db\UserMap::create()->findByHash($hash);
+        $user = $this->getConfig()->getUserMapper()->findByHash($hash);
         if (!$user || $user->role != \Uni\Db\User::ROLE_CLIENT) {
             throw new \InvalidArgumentException('Cannot locate user. Please contact administrator.');
         }
@@ -167,7 +166,7 @@ class Register extends Iface
             \Tk\Uri::create('/login.html')->redirect();
         }
 
-        $institution = \Uni\Db\InstitutionMap::create()->findByUserId($user->id);
+        $institution = $this->getConfig()->getInstitutionMapper()->findByUserId($user->id);
 
         $user->active = true;
         $user->save();

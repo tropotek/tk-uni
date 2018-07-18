@@ -108,7 +108,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
             foreach ($emailList as $email) {
                 if ($found) break;
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) continue;
-                $subjectList = \Uni\Db\SubjectMap::create()->findPendingPreEnrollments($institutionId, $email);
+                $subjectList = \Uni\Config::getInstance()->getSubjectMapper()->findPendingPreEnrollments($institutionId, $email);
                 $found = (count($subjectList) > 0);
             }
         }
@@ -117,12 +117,12 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
     /**
      * Get the institution related to this user
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getInstitution()
     {
         if (!$this->institution) {
-            $this->institution = \Uni\Db\InstitutionMap::create()->find($this->institutionId);
+            $this->institution = $this->getConfig()->getInstitutionMapper()->find($this->institutionId);
         }
         return $this->institution;
     }
@@ -144,7 +144,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      * Get the path for all file associated to this object
      *
      * @return string
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getDataPath()
     {
@@ -225,7 +225,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
     /**
      * @return array
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function validate()
     {
@@ -241,7 +241,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
             $errors['code'] = 'Please enter a valid code';
         } else {
             // Look for existing subjects with same code
-            $c = \Uni\Db\SubjectMap::create()->findByCode($this->code, $this->institutionId);
+            $c = $this->getConfig()->getSubjectMapper()->findByCode($this->code, $this->institutionId);
             if ($c && $c->id != $this->id) {
                 $errors['code'] = 'Subject code already exists';
             }

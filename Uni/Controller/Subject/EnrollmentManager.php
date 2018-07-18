@@ -45,7 +45,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
      */
     public function doDefault(Request $request)
     {
-        $this->subject = \Uni\Db\SubjectMap::create()->find($request->get('subjectId'));
+        $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
         if (!$this->subject)
             throw new \Tk\Exception('Invalid subject details');
         
@@ -63,13 +63,13 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $subject = $this->subject;
         $this->userDialog->setOnSelect(function ($dialog, $data) use ($subject) {
             /** @var \Uni\Db\User $user */
-            $user = \Uni\Db\UserMap::create()->findByHash($data['userHash'], $subject->institutionId);
+            $user = $this->getConfig()->getUserMapper()->findByHash($data['userHash'], $subject->institutionId);
             if (!$user || !$user->hasRole(array(\Uni\Db\User::ROLE_STUDENT))) {
                 \Tk\Alert::addWarning('Invalid user.');
             } else {
                 if (!$user->isEnrolled($subject->getId())) {
                     // TODO: test for any preconditions, maybe fire an enrollment event?
-                    \Uni\Db\SubjectMap::create()->addUser($subject->getId(), $user->getId());
+                    $this->getConfig()->getSubjectMapper()->addUser($subject->getId(), $user->getId());
                     \Tk\Alert::addSuccess($user->getName() . ' added to the subject ' . $subject->name);
                 } else {
                     \Tk\Alert::addWarning($user->getName() . ' already enrolled in the subject ' . $subject->name);

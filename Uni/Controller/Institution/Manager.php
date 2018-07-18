@@ -91,7 +91,7 @@ class Manager extends \Uni\Controller\AdminIface
         $this->table->addAction(\Tk\Table\Action\Delete::create());
         $this->table->addAction(\Tk\Table\Action\Csv::create());
 
-        $users = \Uni\Db\InstitutionMap::create()->findFiltered($this->table->getFilterValues(), $this->table->getTool('a.id'));
+        $users = $this->getConfig()->getInstitutionMapper()->findFiltered($this->table->getFilterValues(), $this->table->getTool('a.id'));
         $this->table->setList($users);
 
     }

@@ -162,12 +162,12 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      * Find this institutions owner user
      *
      * @return User
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getUser()
     {
         if (!$this->user)
-            $this->user = \Uni\Db\UserMap::create()->find($this->userId);
+            $this->user = $this->getConfig()->getUserMapper()->find($this->userId);
         return $this->user;
     }
 
@@ -243,7 +243,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      */
     public function findSubjectByCode($subjectCode)
     {
-        return \Uni\Db\SubjectMap::create()->findByCode($subjectCode, $this->getId());
+        return \Uni\Config::getInstance()->getSubjectMapper()->findByCode($subjectCode, $this->getId());
     }
 
     /**
@@ -253,6 +253,6 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      */
     public function findSubject($subjectId)
     {
-        return \Uni\Db\SubjectMap::create()->find($subjectId);
+        return \Uni\Config::getInstance()->getSubjectMapper()->find($subjectId);
     }
 }

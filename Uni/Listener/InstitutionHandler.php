@@ -34,7 +34,7 @@ class InstitutionHandler implements Subscriber
             $config->setInstitution($user->getInstitution());
         }
         if ($event->getRequest()->getAttribute('instHash')) {
-            $institution = \Uni\Db\InstitutionMap::create()->findByHash($event->getRequest()->getAttribute('instHash'));
+            $institution = $config->getInstitutionMapper()->findByHash($event->getRequest()->getAttribute('instHash'));
             $config->setInstitution($institution);
         }
     }

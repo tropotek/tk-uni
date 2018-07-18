@@ -60,7 +60,7 @@ class Login extends Iface
      */
     public function doDefault(Request $request)
     {
-        $this->institution = \Uni\Db\InstitutionMap::create()->findByDomain($request->getUri()->getHost());
+        $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getUri()->getHost());
         if ($this->institution) {
             $this->doInsLogin($request, $this->institution->getHash());
         }
@@ -77,7 +77,7 @@ class Login extends Iface
     public function doInsLogin(Request $request, $instHash)
     {
         if (!$this->institution)
-            $this->institution = \Uni\Db\InstitutionMap::create()->findByHash($instHash);
+            $this->institution = $this->getConfig()->getInstitutionMapper()->findByHash($instHash);
         if (!$this->institution || !$this->institution->active ) {
             \Tk\Alert::addWarning('Invalid or inactive Institution.');
             \Uni\Uri::create('/index.html');

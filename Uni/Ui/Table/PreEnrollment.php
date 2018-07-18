@@ -80,7 +80,7 @@ class PreEnrollment extends \Dom\Renderer\Renderer
         $filter['institutionId'] = $this->getUser()->getInstitution()->getId();
         $filter['subjectId'] = $this->subject->getId();
 
-        $list = \Uni\Db\SubjectMap::create()->findPreEnrollments($this->subject->getId(), $this->table->makeDbTool('enrolled'));
+        $list = \Uni\Config::getInstance()->getSubjectMapper()->findPreEnrollments($this->subject->getId(), $this->table->makeDbTool('enrolled'));
 
         $this->table->setList($list);
 
@@ -162,6 +162,7 @@ class ActionUnEnroll extends \Tk\Table\Action\Delete
      */
     public function execute()
     {
+        $config = \Uni\Config::getInstance();
         $request = $this->getTable()->getRequest();
         if (empty($request[$this->checkboxName])) {
             return;
@@ -173,7 +174,7 @@ class ActionUnEnroll extends \Tk\Table\Action\Delete
         /* @var \stdClass $obj */
         foreach($this->getTable()->getList() as $obj) {
             if (in_array($obj->email, $selected) && !in_array($obj->email, $this->excludeIdList)) {
-                $subjectMap = \Uni\Db\SubjectMap::create();
+                $subjectMap = $config->getSubjectMapper();
                 $subjectMap->removePreEnrollment($obj->subject_id, $obj->email);
                 /** @var \Uni\Db\Subject $subject */
                 try {
@@ -181,7 +182,7 @@ class ActionUnEnroll extends \Tk\Table\Action\Delete
                 } catch (Exception $e) {
                 }
                 if ($subject) {  // Delete user from subject enrolment
-                    $user = \Uni\Db\UserMap::create()->findByEmail($obj->email, $subject->institutionId);
+                    $user = $config->getUserMapper()->findByEmail($obj->email, $subject->institutionId);
                     if ($user) {
                         $subjectMap->removeUser($subject->getId(), $user->getId());
                     }

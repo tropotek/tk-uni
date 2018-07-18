@@ -86,7 +86,7 @@ class User extends \Dom\Renderer\Renderer
         if ($this->institutionId) {
             $this->table->addCell(new \Tk\Table\Cell\Text('subject'))
                 ->setOnPropertyValue(function ($csll, $obj, $value) {
-                    $list = \Uni\Db\SubjectMap::create()->findByUserId($obj->id, $this->institutionId, \Tk\Db\Tool::create('a.name'));
+                    $list = \Uni\Config::getInstance()->getSubjectMapper()->findByUserId($obj->id, $this->institutionId, \Tk\Db\Tool::create('a.name'));
                     $val = '';
                     /** @var \Uni\Db\Subject $subject */
                     foreach ($list as $subject) {
@@ -117,7 +117,7 @@ class User extends \Dom\Renderer\Renderer
         $filter['subjectId'] = $this->subjectId;
         $filter['role'] = $this->role;
 
-        $users = \Uni\Db\UserMap::create()->findFiltered($filter, $this->table->getTool('a.name'));
+        $users = \Uni\Config::getInstance()->getUserMapper()->findFiltered($filter, $this->table->getTool('a.name'));
         $this->table->setList($users);
 
     }

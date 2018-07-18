@@ -53,10 +53,10 @@ class Edit extends \Uni\Controller\AdminIface
 
         $this->institution = $this->getUser()->getInstitution();
 
-        $this->subject = new \Uni\Db\Subject();
+        $this->subject = $this->getConfig()->createSubject();
         $this->subject->institutionId = $this->institution->id;
         if ($request->get('subjectId')) {
-            $this->subject = \Uni\Db\SubjectMap::create()->find($request->get('subjectId'));
+            $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
             if ($this->institution->id != $this->subject->institutionId) {
                 throw new \Tk\Exception('You do not have permission to edit this subject.');
             }
@@ -79,23 +79,20 @@ class Edit extends \Uni\Controller\AdminIface
         $url = \Uni\Uri::createHomeUrl('/subjectManager.html');
         $this->form->addField(new Event\Link('cancel', $url));
 
-        $this->form->load(\Uni\Db\SubjectMap::create()->unmapForm($this->subject));
+        $this->form->load($this->getConfig()->getSubjectMapper()->unmapForm($this->subject));
         $this->form->execute();
 
     }
 
     /**
      * @param \Tk\Form $form
-     * @throws \Tk\Db\Exception
+     * @param \Tk\Form\Event\Iface $event
+     * @throws \Exception
      */
-    public function doSubmit($form)
+    public function doSubmit($form, $event)
     {
         // Load the object with data from the form using a helper object
-        try {
-            \Uni\Db\SubjectMap::create()->mapForm($form->getValues(), $this->subject);
-        } catch (\ReflectionException $e) {
-        } catch (Exception $e) {
-        }
+        $this->getConfig()->getSubjectMapper()->mapForm($form->getValues(), $this->subject);
 
         $form->addFieldErrors($this->subject->validate());
 
@@ -107,16 +104,14 @@ class Edit extends \Uni\Controller\AdminIface
 
         // If this is a staff member add them to the subject
         if ($this->getUser()->hasRole(\Uni\Db\User::ROLE_STAFF)) {
-            \Uni\Db\SubjectMap::create()->addUser($this->subject->id, $this->getUser()->id);
+            $this->getConfig()->getSubjectMapper()->addUser($this->subject->id, $this->getUser()->id);
         }
 
         \Tk\Alert::addSuccess('Record saved!');
-
-        if ($form->getTriggeredEvent()->getName() == 'update') {
-            \Uni\Uri::createHomeUrl('/subjectManager.html')->redirect();
+        $event->setRedirect($this->getConfig()->getBackUrl());
+        if ($form->getTriggeredEvent()->getName() == 'save') {
+            $event->setRedirect(\Tk\Uri::create()->set('subjectId', $this->subject->id));
         }
-
-        \Tk\Uri::create()->set('subjectId', $this->subject->id)->redirect();
     }
 
     /**

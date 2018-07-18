@@ -31,7 +31,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 
         /** @var \Uni\Db\User $user */
         $user = $config->getUserMapper()->find($auth->getIdentity());
-        //if (!$user) $user = new \Uni\Db\User();     // public user
+        //if (!$user) $user = $config->createUser();     // public user
         $config->setUser($user);
 
         $role = $event->getRequest()->getAttribute('role');
@@ -126,7 +126,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                                'uid' => $ldapData[0]['auedupersonid'][0],
 //                                'ldapData' => $ldapData
 //                            );
-//                            $user = new \Uni\Db\User();
+//                            $user = $config->createUser();
 //                            \Uni\Db\UserMap::create()->mapForm($userData, $user);
 //                            $error = $user->validate();
 //                            if (count($error)) {
@@ -204,9 +204,9 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                 return;
             }
             $subjectData = $adapter->get('subjectData');
-            $subject = \Uni\Db\SubjectMap::create()->find($subjectData['id']);
+            $subject = $config->getSubjectMapper()->find($subjectData['id']);
             if (!$subject) {
-                $subject = \Uni\Db\SubjectMap::create()->findByCode($subjectData['code'], $adapter->getInstitution()->getId());
+                $subject = $config->getSubjectMapper()->findByCode($subjectData['code'], $adapter->getInstitution()->getId());
             }
             if (!$subject) {
                 throw new \Tk\Exception('Subject not available, Please contact subject coordinator.');
