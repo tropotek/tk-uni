@@ -197,7 +197,7 @@ class Config extends \Bs\Config
      * @param string|null $action
      * @return \Tk\Form
      */
-    public static function createForm($formId, $method = \Tk\Form::METHOD_POST, $action = null)
+    public function createForm($formId, $method = \Tk\Form::METHOD_POST, $action = null)
     {
         $form = \Tk\Form::create($formId, $method, $action);
         $form->setDispatcher(self::getInstance()->getEventDispatcher());
@@ -209,11 +209,19 @@ class Config extends \Bs\Config
      * @param $form
      * @return \Tk\Form\Renderer\Dom
      */
-    public static function createFormRenderer($form)
+    public function createFormRenderer($form)
     {
         $obj = new \Tk\Form\Renderer\Dom($form);
-        $obj->setFieldGroupClass('\Uni\Form\Renderer\HorizontalFieldGroup');
+        $obj->setFieldGroupClass($this->getFormFieldGroupClass());
         return $obj;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormFieldGroupClass()
+    {
+        return '\Uni\Form\Renderer\HorizontalFieldGroup';
     }
 
     /**
@@ -222,7 +230,7 @@ class Config extends \Bs\Config
      * @param bool $withBack
      * @return \Tk\Ui\Admin\ActionPanel
      */
-    public static function createActionPanel($title = 'Actions', $icon = 'fa fa-cogs', $withBack = true)
+    public function createActionPanel($title = 'Actions', $icon = 'fa fa-cogs', $withBack = true)
     {
         $ap = \Tk\Ui\Admin\ActionPanel::create($title, $icon);
         if ($withBack) {
