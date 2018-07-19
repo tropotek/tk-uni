@@ -83,7 +83,7 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return int|mixed
+     * @return int
      * @throws \Tk\Db\Exception
      */
     public function getInstitutionId()
@@ -92,7 +92,7 @@ class Config extends \Bs\Config
         if ($this->getInstitution()) {
             $institutionId = $this->getInstitution()->getId();
         }
-        return $institutionId;
+        return (int)$institutionId;
     }
 
     /**
@@ -132,14 +132,15 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return int|mixed
+     * @return int
      * @throws \Tk\Exception
      */
     public function getSubjectId()
     {
+        $sid = 0;
         if ($this->getSubject())
-            return $this->getSubject()->getId();
-        return 0;
+            $sid = $this->getSubject()->getId();
+        return (int)$sid;
     }
 
     /**
