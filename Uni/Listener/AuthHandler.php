@@ -28,11 +28,19 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         // Only the identity details should be in the auth session not the full user object, to save space and be secure.
         $config = \Uni\Config::getInstance();
         $auth = $config->getAuth();
+        $user = null;                       // public user
+        if ($auth->getIdentity()) {         // Check if user is logged in
+            /** @var \Uni\Db\User $user */
+            $user = $config->getUserMapper()->find($auth->getIdentity());
+            $config->setUser($user);
+            if ($user && $user->sessionId != $config->getSession()->getId()) {
+                $user->sessionId = $config->getSession()->getId();
+                $user->save();
+            }
+        }
 
-        /** @var \Uni\Db\User $user */
-        $user = $config->getUserMapper()->find($auth->getIdentity());
-        //if (!$user) $user = $config->createUser();     // public user
-        $config->setUser($user);
+        // ---------------- deprecated  ---------------------
+        // The following is deprecated in preference of the validatePageAccess() method
 
         $role = $event->getRequest()->getAttribute('role');
         if (!$role || empty($role)) return;
@@ -49,11 +57,9 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                 \Tk\Alert::addWarning('You do not have access to the requested page.');
                 $config->getUserHomeUrl($user)->redirect();
             }
-            if ($user->sessionId != $config->getSession()->getId()) {
-                $user->sessionId = $config->getSession()->getId();
-                $user->save();
-            }
         }
+        //-----------------------------------------------------
+
     }
 
     /**

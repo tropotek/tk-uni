@@ -10,18 +10,6 @@ class AdminIface extends \Bs\Controller\AdminIface
 {
 
     /**
-     * @param \Uni\Db\User $user
-     * @return bool
-     */
-    public function hasAccess($user = null)
-    {
-        if ($user && $user->isAdmin() || $user->isClient() || $user->isStaff() || $user->isStudent()) {
-            return true;
-        }
-        return true;
-    }
-
-    /**
      * Get the currently logged in user
      *
      * @return \Uni\Db\User
