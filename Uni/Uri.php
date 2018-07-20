@@ -9,7 +9,7 @@ namespace Uni;
  */
 class Uri extends \Bs\Uri
 {
-    
+
     /**
      * Create a URL in the form of '/{subjectCode}/index.html'
      *
