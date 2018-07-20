@@ -7,8 +7,9 @@ namespace Uni\Controller;
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class AdminManagerIface extends \Bs\Controller\AdminIface
+class AdminManagerIface extends AdminIface
 {
+    use \Bs\Controller\ManagerTrait;
 
     /**
      * Get the currently logged in user
