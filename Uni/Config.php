@@ -64,7 +64,6 @@ class Config extends \Bs\Config
      * Get the Institution object for the logged in user
      *
      * @return null|Db\Institution|Db\InstitutionIface
-     * @throws \Tk\Db\Exception
      */
     public function getInstitution()
     {
@@ -84,7 +83,6 @@ class Config extends \Bs\Config
 
     /**
      * @return int
-     * @throws \Tk\Db\Exception
      */
     public function getInstitutionId()
     {

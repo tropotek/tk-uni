@@ -7,40 +7,9 @@ namespace Uni;
  * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Uri extends \Tk\Uri
+class Uri extends \Bs\Uri
 {
-
-    /**
-     * A static factory method to facilitate inline calls
-     *
-     * <code>
-     *   \Tk\Uri::create('http://example.com/test');
-     * </code>
-     *
-     * @param null|string|\Tk\Uri $spec
-     * @param null|\Uni\Db\UserIface $user
-     * @return string|\Tk\Uri|static
-     */
-    public static function createHomeUrl($spec = null, $user = null)
-    {
-        if ($spec instanceof \Tk\Uri)
-            return clone $spec;
-        $home = '';
-        if (!$user) {
-            $user = Config::getInstance()->getUser();
-        }
-        if ($user && is_string($user)) {
-            $home = $user;
-        } else if ($user instanceof \Uni\Db\UserIface) {
-            $home = Config::getInstance()->getUserHomeUrl($user);
-            if($home instanceof \Tk\Uri) {
-                $home = $home->getRelativePath();
-            }
-            $home = dirname($home);
-        }
-        return new static($home . '/' . trim($spec,'/'));
-    }
-
+    
     /**
      * Create a URL in the form of '/{subjectCode}/index.html'
      *
@@ -93,35 +62,5 @@ class Uri extends \Tk\Uri
         return $url;
     }
 
-    /**
-     * Call this to ensure the breadcrumb system ignores this URL
-     *
-     * @param bool $b
-     * @return static
-     */
-    public function ignoreCrumb($b = true)
-    {
-        if ($b)
-            $this->set(\Uni\Ui\Crumbs::CRUMB_IGNORE);
-        else
-            $this->remove(\Uni\Ui\Crumbs::CRUMB_IGNORE);
-        return $this;
-    }
-
-    /**
-     * Debug Only
-     * Call this to enable/disable log entries for this url
-     *
-     * @param bool $b
-     * @return static
-     */
-    public function noLog($b = true)
-    {
-        if ($b)
-            $this->set('nolog');
-        else
-            $this->remove('nolog');
-        return $this;
-    }
 
 }

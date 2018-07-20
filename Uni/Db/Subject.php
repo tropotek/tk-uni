@@ -117,7 +117,6 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
     /**
      * Get the institution related to this user
-     * @throws \Exception
      */
     public function getInstitution()
     {
