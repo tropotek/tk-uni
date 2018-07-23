@@ -37,7 +37,7 @@ class Login extends Iface
     }
 
     /**
-     * @throws Form\Exception
+     * @throws \Exception
      */
     private function init()
     {
@@ -55,7 +55,6 @@ class Login extends Iface
 
     /**
      * @param Request $request
-     * @throws Form\Exception
      * @throws \Exception
      */
     public function doDefault(Request $request)
@@ -70,8 +69,7 @@ class Login extends Iface
 
     /**
      * @param Request $request
-     * @param $instHash
-     * @throws Form\Exception
+     * @param string $instHash
      * @throws \Exception
      */
     public function doInsLogin(Request $request, $instHash)
@@ -93,7 +91,6 @@ class Login extends Iface
      *
      * @param \Tk\Form $form
      * @param \Tk\Form\Event\Iface $event
-     * @throws \Tk\Exception
      */
     public function doLogin($form, $event)
     {
@@ -141,7 +138,7 @@ class Login extends Iface
      * show()
      *
      * @return \Dom\Template
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     public function show()
     {
@@ -164,6 +161,20 @@ class Login extends Iface
         if ($this->getConfig()->get('site.client.registration') && !$this->institution) {
             $template->setChoice('register');
         }
+
+
+        $js = <<<JS
+jQuery(function ($) {
+  
+  $('#login-form').on("keypress", function (e) {
+    if (e.which === 13) {
+      $(this).find('#login-form_login').trigger('click');
+    }
+  });
+  
+});
+JS;
+        $template->appendJs($js);
 
         return $template;
     }

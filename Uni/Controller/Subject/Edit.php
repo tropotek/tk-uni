@@ -31,6 +31,8 @@ class Edit extends \Uni\Controller\AdminIface
      */
     private $institution = null;
 
+    protected $isSubjectPage = false;
+
 
     /**
      * Edit constructor.
@@ -41,13 +43,13 @@ class Edit extends \Uni\Controller\AdminIface
     }
 
     /**
-     *
      * @param Request $request
+     * @param string $subjectCode
      * @throws \Exception
      */
     public function doSubject(Request $request, $subjectCode)
     {
-
+        $this->isSubjectPage = true;
         $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
         if ($this->subject)
             $this->institution = $this->subject->getInstitution();
@@ -55,7 +57,6 @@ class Edit extends \Uni\Controller\AdminIface
     }
 
     /**
-     *
      * @param Request $request
      * @throws \Exception
      */
@@ -93,8 +94,6 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form->execute();
 
     }
-
-
 
 
     /**
@@ -139,7 +138,7 @@ class Edit extends \Uni\Controller\AdminIface
         $template->insertTemplate('form', $this->form->getRenderer()->show());
 
         if ($this->subject->id && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
-            if($this->getRequest()->has('subjectId')) {
+            if(!$this->isSubjectPage) {
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
                     \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->id), 'fa fa-list'));
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
@@ -147,7 +146,6 @@ class Edit extends \Uni\Controller\AdminIface
             } else {
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
                     \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
-
             }
             $template->setChoice('update');
         }

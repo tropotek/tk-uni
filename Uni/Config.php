@@ -168,11 +168,12 @@ class Config extends \Bs\Config
             $this['system.auth.dbtable.usernameColumn'],
             $this['system.auth.dbtable.passwordColumn'],
             $this['system.auth.dbtable.activeColumn']);
+
         if (isset($submittedData['instHash'])) {
             $institution = $this->getInstitutionMapper()->findByHash($submittedData['instHash']);
             $adapter->setInstitution($institution);
         }
-        $adapter->setHashCallback(array(\Tk\Config::getInstance(), 'hashPassword'));
+        $adapter->setHashCallback(array($this, 'hashPassword'));
         $adapter->replace($submittedData);
         return $adapter;
     }
