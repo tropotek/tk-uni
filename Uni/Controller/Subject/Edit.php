@@ -141,7 +141,7 @@ class Edit extends \Uni\Controller\AdminIface
         $template->insertTemplate('form', $this->form->getRenderer()->show());
 
         if ($this->subject->id && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
-            if(!$this->isSubjectPage) {
+            if(!$this->getConfig()->isSubjectUrl()) {
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
                     \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->id), 'fa fa-list'));
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
