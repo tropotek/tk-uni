@@ -19,8 +19,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * do any auth init setup
      *
      * @param GetResponseEvent $event
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function onRequest(GetResponseEvent $event)
     {
@@ -32,12 +31,12 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         if ($auth->getIdentity()) {         // Check if user is logged in
             /** @var \Uni\Db\User $user */
             $user = $config->getUserMapper()->find($auth->getIdentity());
-            $config->setUser($user);
             if ($user && $user->sessionId != $config->getSession()->getId()) {
                 $user->sessionId = $config->getSession()->getId();
                 $user->save();
             }
         }
+        $config->setUser($user);
 
         // ---------------- deprecated  ---------------------
         // The following is deprecated in preference of the validatePageAccess() method
@@ -81,8 +80,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
     /**
      * @param \Tk\Event\AuthEvent $event
      * @return null|void
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function onLoginProcess(\Tk\Event\AuthEvent $event)
     {
@@ -242,7 +240,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         }
 
         /* @var \Uni\Db\User|\Uni\Db\UserIface $user */
-        $user = $config->findUser($result->getIdentity());
+        $user = $config->getUserMapper()->find($result->getIdentity());
 
         if (!$user) {
             throw new \Tk\Auth\Exception('Invalid user login credentials');
@@ -282,7 +280,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             $event->setRedirect($url);
         }
 
-        if ($user && $user->getRole() != \Uni\Db\User::ROLE_PUBLIC && property_exists($user, 'sessionId')) {
+        if ($user && $user->getId() && property_exists($user, 'sessionId')) {
             $user->sessionId = '';
             $user->save();
         }

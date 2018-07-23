@@ -64,6 +64,7 @@ class Config extends \Bs\Config
      * Get the Institution object for the logged in user
      *
      * @return null|Db\Institution|Db\InstitutionIface
+     * @throws \Exception
      */
     public function getInstitution()
     {
@@ -98,7 +99,7 @@ class Config extends \Bs\Config
      * based on the subject code in the URI: /staff/VETS50001_2014_SM1/index.html
      *
      * @return null|Db\Subject|Db\SubjectIface
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function getSubject()
     {
@@ -131,7 +132,7 @@ class Config extends \Bs\Config
 
     /**
      * @return int
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function getSubjectId()
     {
@@ -246,7 +247,7 @@ class Config extends \Bs\Config
     /**
      * @param int $id
      * @return \Uni\Db\InstitutionIface|\Tk\Db\ModelInterface|\Uni\Db\Institution
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      * @deprecated Use the getInstitutionMapper() method
      */
     public function findInstitution($id)
@@ -257,7 +258,7 @@ class Config extends \Bs\Config
     /**
      * @param int $id
      * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\Subject
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      * @deprecated Use the getSubjectMapper() method
      */
     public function findSubject($id)
@@ -268,7 +269,7 @@ class Config extends \Bs\Config
     /**
      * @param int $id
      * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|Db\User|Db\UserIface
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      * @deprecated Use the getUserMapper() method
      */
     public function findUser($id)
@@ -380,6 +381,14 @@ class Config extends \Bs\Config
     }
 
     /**
+     * @return array
+     */
+    public function getAvailableUserRoles()
+    {
+        return \Tk\ObjectUtil::getClassConstants('Uni\Db\User', 'ROLE');
+    }
+
+    /**
      * @param \Tk\Event\Dispatcher $dispatcher
      * @throws \Tk\Db\Exception
      * @throws \Tk\Exception
@@ -412,19 +421,22 @@ class Config extends \Bs\Config
     }
 
     /**
-     * Create a page for the request
-     *
-     * @param \Tk\Controller\Iface $controller
+     * @return \Bs\Listener\PageTemplateHandler
+     */
+    public function getPageTemplateHandler()
+    {
+        if (!$this->get('page.template.handler')) {
+            $this->set('page.template.handler', new \Uni\Listener\PageTemplateHandler());
+        }
+        return $this->get('page.template.handler');
+    }
+
+    /**
      * @return Page
      */
-    public function createPage($controller)
+    public function createPage()
     {
-        $page = new Page();
-        $page->setController($controller);
-        if (!$controller->getPageTitle()) {     // Set a default page Title for the crumbs
-            $controller->setPageTitle($controller->getDefaultTitle());
-        }
-        return $page;
+        return new Page();
     }
 
     /**

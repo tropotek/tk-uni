@@ -22,7 +22,6 @@ class Dispatch extends \Bs\Dispatch
         $dispatcher = $this->getDispatcher();
 
         $dispatcher->addSubscriber(new \Uni\Listener\InstitutionHandler());
-        $dispatcher->addSubscriber(new \Uni\Listener\PageTemplateHandler());
 
     }
 
