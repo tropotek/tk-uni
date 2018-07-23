@@ -45,7 +45,7 @@ class Manager extends \Uni\Controller\AdminIface
     {
         $this->setPageHeading();
         $this->actionsCell = new \Tk\Table\Cell\Actions();
-        $this->getCrumbs()->reset();
+        //$this->getCrumbs()->reset();
     }
 
     /**

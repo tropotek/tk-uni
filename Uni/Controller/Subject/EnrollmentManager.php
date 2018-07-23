@@ -39,9 +39,8 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
     
 
     /**
-     *
      * @param Request $request
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function doDefault(Request $request)
     {
@@ -54,17 +53,16 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $this->enrolledTable = new \Uni\Ui\Table\Enrolled($this->subject);
         $this->pendingTable = new \Uni\Ui\Table\PreEnrollment($this->subject);
 
-
         $filter = array();
         $filter['institutionId'] = $this->subject->institutionId;
         $filter['active'] = '1';
-        $filter['role'] = \Uni\Db\User::ROLE_STUDENT;
+        $filter['role'] = array(\Uni\Db\User::ROLE_STUDENT, \Uni\Db\User::ROLE_STAFF);
         $this->userDialog = new \Uni\Ui\Dialog\FindUser('Enrol Student', $filter);
         $subject = $this->subject;
         $this->userDialog->setOnSelect(function ($dialog, $data) use ($subject) {
             /** @var \Uni\Db\User $user */
             $user = $this->getConfig()->getUserMapper()->findByHash($data['userHash'], $subject->institutionId);
-            if (!$user || !$user->hasRole(array(\Uni\Db\User::ROLE_STUDENT))) {
+            if (!$user || (!$user->isStaff() && !$user->isStudent())) {
                 \Tk\Alert::addWarning('Invalid user.');
             } else {
                 if (!$user->isEnrolled($subject->getId())) {
@@ -92,7 +90,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         // Enrolment Dialog
         $template->appendTemplate('enrollment', $this->userDialog->show());
         //$template->setAttr('addUser', 'data-target', '#'.$this->userDialog->getId());
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('Enroll Student','#', 'fa fa-user-plus'))
+        $this->getActionPanel()->add(\Tk\Ui\Button::create('Enroll','#', 'fa fa-user-plus'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->userDialog->getId())
             ->setAttr('title', 'Add an existing student to this subject');
 
@@ -102,7 +100,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         // Pending Table
         $template->replaceTemplate('pendingTable', $this->pendingTable->show());
         //$template->setAttr('modelBtn', 'data-target', '#'.$this->pendingTable->getDialog()->getId());
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('Pre-Enroll Student','#', 'fa fa-user-plus'))
+        $this->getActionPanel()->add(\Tk\Ui\Button::create('Pre-Enroll','#', 'fa fa-user-plus'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->pendingTable->getDialog()->getId())
             ->setAttr('title', 'Pre-Enroll a non-existing student, they will automatically be enrolled on login');
         
@@ -131,10 +129,6 @@ JS;
 }
 CSS;
         $template->appendCss($css);
-
-
-
-
 
         return $template;
     }

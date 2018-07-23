@@ -38,10 +38,7 @@ class Edit extends \Uni\Controller\AdminIface
 
     /**
      * @param Request $request
-     * @throws Form\Exception
-     * @throws \ReflectionException
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function doDefault(Request $request)
     {
@@ -78,8 +75,9 @@ class Edit extends \Uni\Controller\AdminIface
         $insUrl = \Tk\Uri::create('/inst/'.$this->institution->getHash().'/login.html');
         if ($this->institution->domain)
             $insUrl = \Tk\Uri::create('/login.html')->setHost($this->institution->domain);
-        $insUrl = $insUrl->setScheme('https')->toString();
-        $this->form->addField(new Field\Input('domain'))->setTabGroup('Details')->setNotes('Your Institution login URL is: <a href="'.$insUrl.'">'.$insUrl.'</a>' );
+        $insUrlStr = $insUrl->setScheme('https')->toString();
+        $this->form->addField(new Field\Input('domain'))->setTabGroup('Details')->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>' )
+            ->setAttr('placeholder', $insUrl->getHost());
         $this->form->addField(new Field\Textarea('description'))->setTabGroup('Details');
         $this->form->addField(new Field\Checkbox('active'))->setTabGroup('Details');
 
