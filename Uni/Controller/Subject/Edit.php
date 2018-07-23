@@ -66,6 +66,7 @@ class Edit extends \Uni\Controller\AdminIface
             $this->institution = $this->getUser()->getInstitution();
             $this->subject = $this->getConfig()->createSubject();
             $this->subject->institutionId = $this->institution->id;
+            $this->subject->email = $this->institution->email;
             if ($request->get('subjectId')) {
                 $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
                 if ($this->institution->id != $this->subject->institutionId) {
@@ -86,7 +87,9 @@ class Edit extends \Uni\Controller\AdminIface
 //        $this->form->addField(new Field\Input('dateEnd'))->addCss('date')->setRequired(true);
         $this->form->addField(new Field\Textarea('description'));
 
-        $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
+        if ($this->subject->getId()) {
+            $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
+        }
         $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
         $this->form->addField(new Event\Link('cancel', $this->getBackUrl()));
 
