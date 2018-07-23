@@ -45,14 +45,23 @@ class Edit extends \Uni\Controller\AdminIface
      * @param Request $request
      * @throws \Exception
      */
-    public function doDefault(Request $request, $subjectCode)
+    public function doSubject(Request $request, $subjectCode)
     {
 
-        if ($subjectCode) {
-            $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
-            if ($this->subject)
-                $this->institution = $this->subject->getInstitution();
-        } else {
+        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
+        if ($this->subject)
+            $this->institution = $this->subject->getInstitution();
+        $this->doDefault($request);
+    }
+
+    /**
+     *
+     * @param Request $request
+     * @throws \Exception
+     */
+    public function doDefault(Request $request)
+    {
+        if (!$this->subject) {
             $this->institution = $this->getUser()->getInstitution();
             $this->subject = $this->getConfig()->createSubject();
             $this->subject->institutionId = $this->institution->id;
@@ -63,7 +72,6 @@ class Edit extends \Uni\Controller\AdminIface
                 }
             }
         }
-
 
         $this->form = $this->getConfig()->createForm('subjectEdit');
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
@@ -85,6 +93,9 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form->execute();
 
     }
+
+
+
 
     /**
      * @param \Tk\Form $form

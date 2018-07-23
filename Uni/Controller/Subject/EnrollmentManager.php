@@ -36,20 +36,27 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
      * @var \Uni\Ui\Dialog\FindUser
      */
     protected $userDialog = null;
-    
+
 
     /**
      * @param Request $request
      * @throws \Exception
      */
-    public function doDefault(Request $request, $subjectCode)
+    public function doSubject(Request $request, $subjectCode)
     {
-        if ($subjectCode) {
-            $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
-        } else {
+        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
+        $this->doDefault($request);
+    }
+
+    /**
+     * @param Request $request
+     * @throws \Exception
+     */
+    public function doDefault(Request $request)
+    {
+        if (!$this->subject) {
             $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
         }
-
         if (!$this->subject)
             throw new \Tk\Exception('Invalid subject details');
         
@@ -86,7 +93,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
 
     /**
      * @return \Dom\Template
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     public function show()
     {

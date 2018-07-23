@@ -91,9 +91,7 @@ class Edit extends \Uni\Controller\AdminEditIface
     }
 
     /**
-     * @throws Exception
-     * @throws Form\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function buildForm()
     {
@@ -229,6 +227,7 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     /**
      * @return \Dom\Template
+     * @throws \Exception
      */
     public function show()
     {

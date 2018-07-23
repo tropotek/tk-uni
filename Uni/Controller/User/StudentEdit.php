@@ -15,7 +15,6 @@ class StudentEdit extends Edit
     public function __construct()
     {
         parent::__construct();
-        $this->url = \Uni\Uri::createHomeUrl('/studentManager.html');
     }
 
     public function setPageHeading()

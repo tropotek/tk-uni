@@ -63,11 +63,10 @@ class Manager extends \Uni\Controller\AdminIface
     public function doDefault(Request $request)
     {
 
+        if (!$this->subject && $request->has('subjectId'))
+            $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
         if (!$this->editUrl)
             $this->editUrl = \Uni\Uri::createHomeUrl('/userEdit.html');
-
-        if ($request->has('subjectId'))
-            $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
 
         $this->actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade',
             \Tk\Uri::create(), 'fa  fa-user-secret', 'tk-masquerade'))
