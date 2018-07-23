@@ -187,6 +187,19 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
+     * If false, the student should be denied access to creating new submissions of any type for that subject.
+     * If false, the UI should display historic grades and placement data.
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        if (!$this->dateStart || !$this->dateEnd) return true;
+        $now = \Tk\Date::create();
+        return (\Tk\Date::greaterThan($now, $this->dateStart) && \Tk\Date::lessThan($now, $this->dateEnd));
+    }
+
+    /**
      * @return string
      */
     public function getName()

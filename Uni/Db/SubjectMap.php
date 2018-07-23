@@ -152,6 +152,11 @@ class SubjectMap extends Mapper
             $where .= sprintf('a.id = b.subject_id AND b.user_id = %s AND ', (int)$filter['userId']);
         }
 
+        if (isset($filter['active']) && $filter['active'] !== null && $filter['active'] !== '') {
+            $now = \Tk\Date::create()->format(\Tk\Date::FORMAT_ISO_DATETIME);
+            $where .= sprintf('a.date_start <= %s AND a.date_end >= %s AND ', $this->quote($now), $this->quote($now));
+        }
+
         if (!empty($filter['exclude'])) {
             $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
             if ($w) {
