@@ -147,7 +147,7 @@ class Iface extends \Dom\Renderer\Renderer
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" var="dialog">
+<div class="modal fade in" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" var="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

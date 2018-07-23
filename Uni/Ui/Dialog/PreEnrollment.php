@@ -204,8 +204,21 @@ JS;
     <label for="fid-csvList" class="control-label">* CSV List:</label>
     <textarea class="form-control" id="fid-csvList" name="csvList" style="height: 90px;"></textarea>
   </div>
-
-  <p>NOTE: The CSV List should contain one email address per line</p>
+  
+  <p>Valid CSV formats are:</p>
+  <p>Preferred Method:</p>
+  <p><pre>
+uid,email
+123456,student1@uni.edu.au
+123457,staff2@uni.edu.au
+</pre></p>
+  <p>Optional Method:</p>
+  <p><pre>
+email
+student1@uni.edu.au
+staff2@uni.edu.au
+</pre></p>
+  <p><small>NOTE: Entering single Student ID's on their own is no longer permitted.</small></p>
     
 </form>
 HTML;

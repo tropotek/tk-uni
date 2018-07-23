@@ -165,7 +165,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
 
         // Login as the selected user
         $config->getAuth()->getStorage()->write($msqUser->id);
-        $config->getUserHomeUrl()->redirect();
+        $config->getUserHomeUrl($msqUser)->redirect();
     }
 
     /**

@@ -115,8 +115,7 @@ class ActionsCell extends \Tk\Table\Cell\Text
 
     /**
      * @param \Uni\Db\Subject $subject
-     * @throws \Tk\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function __construct($subject)
     {
@@ -164,6 +163,7 @@ class ActionsCell extends \Tk\Table\Cell\Text
         if (!$event->isPropagationStopped()) {
             /** @var \Uni\Db\User $user */
             $user = $config->getUserMapper()->find($event->get('userId'));
+            vd($event->all());
             if ($user) {
                 if ($config->getSubjectMapper()->hasUser($event->get('subjectFromId'), $user->getId())) {
                     $config->getSubjectMapper()->removeUser($event->get('subjectFromId'), $user->getId());
@@ -264,7 +264,7 @@ class DeleteUser extends \Tk\Table\Action\Delete
         $i = 0;
 
         $subjectId = $this->subject->getId();
-        /* @var \app\Db\User $obj */
+        /* @var \Uni\Db\User $obj */
         foreach($this->getTable()->getList() as $obj) {
             if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->excludeIdList)) {
                 $subjectMap = $config->getSubjectMapper();

@@ -33,7 +33,7 @@ class Edit extends \Uni\Controller\AdminIface
 
 
     /**
-     *
+     * Edit constructor.
      */
     public function __construct()
     {
@@ -43,10 +43,7 @@ class Edit extends \Uni\Controller\AdminIface
     /**
      *
      * @param Request $request
-     * @throws \Tk\Exception
      * @throws \Exception
-     * @throws \ReflectionException
-     * @throws Form\Exception
      */
     public function doDefault(Request $request)
     {
@@ -124,7 +121,7 @@ class Edit extends \Uni\Controller\AdminIface
         // Render the form
         $template->insertTemplate('form', $this->form->getRenderer()->show());
 
-        if ($this->subject->id && $this->getUser()->isStaff()) {
+        if ($this->subject->id && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
             $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollment List',
                 \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->id), 'fa fa-list'));
             $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
