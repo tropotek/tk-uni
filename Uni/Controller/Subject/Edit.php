@@ -41,7 +41,6 @@ class Edit extends \Uni\Controller\AdminIface
     }
 
     /**
-     *
      * @param Request $request
      * @throws \Exception
      */
@@ -55,7 +54,6 @@ class Edit extends \Uni\Controller\AdminIface
     }
 
     /**
-     *
      * @param Request $request
      * @throws \Exception
      */
@@ -93,8 +91,6 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form->execute();
 
     }
-
-
 
 
     /**
@@ -147,7 +143,6 @@ class Edit extends \Uni\Controller\AdminIface
             } else {
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
                     \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
-
             }
             $template->setChoice('update');
         }
