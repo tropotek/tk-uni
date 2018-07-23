@@ -101,7 +101,7 @@ class Iface extends \Dom\Renderer\Renderer
 
     /**
      * @return \Dom\Template
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     public function show()
     {

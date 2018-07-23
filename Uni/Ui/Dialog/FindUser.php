@@ -97,7 +97,7 @@ class FindUser extends Iface
 
     /**
      * @return \Dom\Template
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     public function show()
     {
@@ -187,8 +187,6 @@ JS;
 
     /**
      * DomTemplate magic method
-     *
-     * @return \Dom\Template
      */
     public function makeBodyTemplate()
     {

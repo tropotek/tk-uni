@@ -22,6 +22,18 @@ class StudentManager extends Manager
     }
 
     /**
+     * @param \Tk\Request $request
+     * @param string $subjectCode
+     * @throws \Exception
+     */
+    public function doSubject(\Tk\Request $request, $subjectCode)
+    {
+        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
+        $this->editUrl = \Uni\Uri::createSubjectUrl('/studentEdit.html');
+        $this->doDefault($request);
+    }
+
+    /**
      *
      * @throws \Tk\Db\Exception
      * @throws \Exception
@@ -32,6 +44,9 @@ class StudentManager extends Manager
         $filter = $this->table->getFilterValues();
         $filter['institutionId'] = $this->getUser()->getInstitution()->id;
         $filter['role'] = \Uni\Db\User::ROLE_STUDENT;
+        if ($this->subject) {
+            $filter['subjectId'] = $this->subject->getId();
+        }
 
         $users = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->table->getTool('a.name'));
         $this->table->setList($users);

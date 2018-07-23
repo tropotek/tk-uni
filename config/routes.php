@@ -23,6 +23,7 @@ $routes->add('institution-login', new \Tk\Routing\Route('/inst/{instHash}/login.
 $routes->add('logout', new \Tk\Routing\Route('/logout.html', 'Uni\Controller\Logout::doDefault'));
 $routes->add('recover', new \Tk\Routing\Route('/recover.html', 'Uni\Controller\Recover::doDefault'));
 $routes->add('register', new \Tk\Routing\Route('/register.html', 'Uni\Controller\Register::doDefault'));
+$routes->add('institution-list', new \Tk\Routing\Route('/institutions.html', 'Uni\Controller\Institution\Listing::doDefault'));
 
 
 // Admin Pages
@@ -60,23 +61,18 @@ $routes->add('client-subject-enrollment', new \Tk\Routing\Route('/client/subject
 
 
 
-
 // Staff Pages
 //$routes->add('staff-dashboard', new \Tk\Routing\Route('/staff/index.html', 'Uni\Controller\Staff\Dashboard::doDefault'));
 //$routes->add('staff-dashboard-base', new \Tk\Routing\Route('/staff/', 'Uni\Controller\Staff\Dashboard::doDefault'));
+//$routes->add('staff-subject-dashboard', new \Tk\Routing\Route('/staff/{subjectCode}/index.html', 'Uni\Controller\Staff\SubjectDashboard::doDefault'));
 
-$routes->add('staff-subject-manager', new \Tk\Routing\Route('/staff/subjectManager.html', 'Uni\Controller\Subject\Manager::doDefault'));
-$routes->add('staff-subject-edit', new \Tk\Routing\Route('/staff/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
-$routes->add('staff-subject-enrollment', new \Tk\Routing\Route('/staff/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
-
-
-$routes->add('staff-student-manager', new \Tk\Routing\Route('/staff/studentManager.html', 'Uni\Controller\User\StudentManager::doDefault'));
-$routes->add('staff-student-edit', new \Tk\Routing\Route('/staff/studentEdit.html', 'Uni\Controller\User\StudentEdit::doDefault'));
 $routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
-//$routes->add('staff-user-manager', new \Tk\Routing\Route('/staff/userManager.html', 'Uni\Controller\User\Manager::doDefault'));
-//$routes->add('staff-user-edit', new \Tk\Routing\Route('/staff/userEdit.html', 'Uni\Controller\User\Edit::doDefault'));
-//$routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault'));
+$routes->add('staff-subject-edit', new \Tk\Routing\Route('/staff/{subjectCode}/subjectEdit.html', 'Uni\Controller\Subject\Edit::doSubject'));
+$routes->add('staff-subject-enrollment', new \Tk\Routing\Route('/staff/{subjectCode}/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doSubject'));
+
+$routes->add('staff-student-manager', new \Tk\Routing\Route('/staff/{subjectCode}/studentManager.html', 'Uni\Controller\User\StudentManager::doSubject'));
+$routes->add('staff-student-edit', new \Tk\Routing\Route('/staff/{subjectCode}/studentEdit.html', 'Uni\Controller\User\StudentEdit::doSubject'));
 
 
 
@@ -84,8 +80,10 @@ $routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 
 //$routes->add('student-dashboard', new \Tk\Routing\Route('/student/index.html', 'Uni\Controller\Student\Dashboard::doDefault'));
 //$routes->add('student-dashboard-base', new \Tk\Routing\Route('/student/', 'Uni\Controller\Student\Dashboard::doDefault'));
 //$routes->add('student-subject-dashboard', new \Tk\Routing\Route('/student/{subjectCode}/index.html', 'Uni\Controller\Student\SubjectDashboard::doDefault'));
+
 $routes->add('student-user-profile', new \Tk\Routing\Route('/student/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 $routes->add('student-subject-manager', new \Tk\Routing\Route('/student/subjectManager.html', 'Uni\Controller\Subject\StudentManager::doDefault'));
+
 
 
 // Ajax Urls
