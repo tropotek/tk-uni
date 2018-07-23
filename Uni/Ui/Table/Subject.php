@@ -26,18 +26,25 @@ class Subject extends \Dom\Renderer\Renderer
      */
     protected $editUrl = null;
 
+    /**
+     * @var null|\Uni\Db\User
+     */
+    protected $user = null;
+
 
     /**
      *  constructor.
      *
      * @param int $institutionId
      * @param \Tk\Uri|callable|null $editUrl
+     * @param null|\Uni\Db\User $user
      * @throws \Exception
      */
-    public function __construct($institutionId = 0, $editUrl = null)
+    public function __construct($institutionId = 0, $editUrl = null, $user = null)
     {
         $this->institutionId = $institutionId;
         $this->editUrl = $editUrl;
+        $this->user = $user;
         $this->doDefault();
     }
 
@@ -68,15 +75,17 @@ class Subject extends \Dom\Renderer\Renderer
         $this->table->addCell(new \Tk\Table\Cell\Date('created'));
 
         // Filters
-        //$this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
+        $this->table->addFilter(new \Tk\Form\Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
 
         // Actions
-        //$this->table->addAction(\Tk\Table\Action\Csv::getInstance(\Uni\Config::getInstance()->getDb()));
+        $this->table->addAction(\Tk\Table\Action\Csv::create());
 
         // Set list
         $filter = $this->table->getFilterValues();
         if ($this->institutionId)
             $filter['institutionId'] = $this->institutionId;
+        if ($this->user)
+            $filter['userId'] = $this->user->getId();
         $users = \Uni\Config::getInstance()->getSubjectMapper()->findFiltered($filter, $this->table->getTool('a.id'));
         $this->table->setList($users);
 

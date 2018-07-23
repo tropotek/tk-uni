@@ -45,19 +45,25 @@ class Edit extends \Uni\Controller\AdminIface
      * @param Request $request
      * @throws \Exception
      */
-    public function doDefault(Request $request)
+    public function doDefault(Request $request, $subjectCode)
     {
 
-        $this->institution = $this->getUser()->getInstitution();
-
-        $this->subject = $this->getConfig()->createSubject();
-        $this->subject->institutionId = $this->institution->id;
-        if ($request->get('subjectId')) {
-            $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
-            if ($this->institution->id != $this->subject->institutionId) {
-                throw new \Tk\Exception('You do not have permission to edit this subject.');
+        if ($subjectCode) {
+            $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
+            if ($this->subject)
+                $this->institution = $this->subject->getInstitution();
+        } else {
+            $this->institution = $this->getUser()->getInstitution();
+            $this->subject = $this->getConfig()->createSubject();
+            $this->subject->institutionId = $this->institution->id;
+            if ($request->get('subjectId')) {
+                $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
+                if ($this->institution->id != $this->subject->institutionId) {
+                    throw new \Tk\Exception('You do not have permission to edit this subject.');
+                }
             }
         }
+
 
         $this->form = $this->getConfig()->createForm('subjectEdit');
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
@@ -73,8 +79,7 @@ class Edit extends \Uni\Controller\AdminIface
 
         $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-        $url = \Uni\Uri::createHomeUrl('/subjectManager.html');
-        $this->form->addField(new Event\Link('cancel', $url));
+        $this->form->addField(new Event\Link('cancel', $this->getBackUrl()));
 
         $this->form->load($this->getConfig()->getSubjectMapper()->unmapForm($this->subject));
         $this->form->execute();
@@ -113,6 +118,7 @@ class Edit extends \Uni\Controller\AdminIface
 
     /**
      * @return \Dom\Template
+     * @throws \Exception
      */
     public function show()
     {
@@ -122,11 +128,16 @@ class Edit extends \Uni\Controller\AdminIface
         $template->insertTemplate('form', $this->form->getRenderer()->show());
 
         if ($this->subject->id && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollment List',
-                \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->id), 'fa fa-list'));
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
-                \Uni\Uri::createHomeUrl('/studentManager.html')->set('subjectId', $this->subject->id), 'fa fa-group'));
+            if($this->getRequest()->has('subjectId')) {
+                $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
+                    \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->id), 'fa fa-list'));
+                $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
+                    \Uni\Uri::createHomeUrl('/studentManager.html')->set('subjectId', $this->subject->id), 'fa fa-group'));
+            } else {
+                $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
+                    \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
 
+            }
             $template->setChoice('update');
         }
 

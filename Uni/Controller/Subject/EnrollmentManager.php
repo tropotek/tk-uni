@@ -42,9 +42,14 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
      * @param Request $request
      * @throws \Exception
      */
-    public function doDefault(Request $request)
+    public function doDefault(Request $request, $subjectCode)
     {
-        $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
+        if ($subjectCode) {
+            $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
+        } else {
+            $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
+        }
+
         if (!$this->subject)
             throw new \Tk\Exception('Invalid subject details');
         

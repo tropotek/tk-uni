@@ -26,22 +26,23 @@ class Profile extends \Uni\Controller\AdminIface
      */
     private $user = null;
 
+    /**
+     * Profile constructor.
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        $this->setPageTitle('My Profile');
+        $this->getConfig()->getCrumbs()->reset();
+    }
 
     /**
      *
      * @param Request $request
      * @throws \Exception
-     * @throws \ReflectionException
-     * @throws Form\Exception
-     * @throws Form\Exception
-     * @throws Form\Exception
-     * @throws Form\Exception
-     * @throws Form\Exception
-     * @throws Form\Exception
      */
     public function doDefault(Request $request)
     {
-        $this->setPageTitle('My Profile');
         
         $this->user = $this->getUser();
 
