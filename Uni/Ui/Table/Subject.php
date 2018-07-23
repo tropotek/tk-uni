@@ -22,7 +22,7 @@ class Subject extends \Dom\Renderer\Renderer
     protected $institutionId = 0;
 
     /**
-     * @var \Tk\Uri
+     * @var \Tk\Uri|callable
      */
     protected $editUrl = null;
 
@@ -31,7 +31,7 @@ class Subject extends \Dom\Renderer\Renderer
      *  constructor.
      *
      * @param int $institutionId
-     * @param \Tk\Uri|null $editUrl
+     * @param \Tk\Uri|callable|null $editUrl
      * @throws \Exception
      */
     public function __construct($institutionId = 0, $editUrl = null)
@@ -43,7 +43,6 @@ class Subject extends \Dom\Renderer\Renderer
 
 
     /**
-     *
      * @return \Dom\Template|Template|string
      * @throws \Exception
      */
@@ -53,7 +52,12 @@ class Subject extends \Dom\Renderer\Renderer
         $this->table->setRenderer(\Tk\Table\Renderer\Dom\Table::create($this->table));
 
         //$this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl($this->editUrl);
+        $c = $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
+        if (is_callable($this->editUrl)) {
+            $c->setOnPropertyValue($this->editUrl);
+        } else {
+            $c->setUrl($this->editUrl);
+        }
         $this->table->addCell(new \Tk\Table\Cell\Text('code'));
         //$this->table->addCell(new \Tk\Table\Cell\Text('email'));
         //$this->table->addCell(new \Tk\Table\Cell\Date('dateStart'));
