@@ -84,6 +84,7 @@ class Config extends \Bs\Config
 
     /**
      * @return int
+     * @throws \Exception
      */
     public function getInstitutionId()
     {
@@ -144,7 +145,7 @@ class Config extends \Bs\Config
 
     /**
      * unset the subject from the session
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function unsetSubject()
     {
@@ -157,7 +158,7 @@ class Config extends \Bs\Config
      *
      * @param array $submittedData
      * @return \Tk\Auth\Adapter\Iface
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getAuthDbTableAdapter($submittedData = array())
     {
@@ -222,22 +223,6 @@ class Config extends \Bs\Config
     public function getFormFieldGroupClass()
     {
         return '\Uni\Form\Renderer\HorizontalFieldGroup';
-    }
-
-    /**
-     * @param string $title
-     * @param string $icon
-     * @param bool $withBack
-     * @return \Tk\Ui\Admin\ActionPanel
-     */
-    public function createActionPanel($title = 'Actions', $icon = 'fa fa-cogs', $withBack = true)
-    {
-        $ap = \Tk\Ui\Admin\ActionPanel::create($title, $icon);
-        if ($withBack) {
-            $ap->add(\Tk\Ui\Button::create('Back', 'javascript: window.history.back();', 'fa fa-arrow-left'))
-                ->addCss('btn-default btn-once back');
-        }
-        return $ap;
     }
 
 
@@ -368,14 +353,14 @@ class Config extends \Bs\Config
     {
         if (!$user) $user = $this->getUser();
         if ($user) {
-            if ($user->isAdmin())
-                return \Tk\Uri::create('/admin/index.html');
-            if ($user->isClient())
-                return \Tk\Uri::create('/client/index.html');
-            if ($user->isStaff())
-                return \Tk\Uri::create('/staff/index.html');
             if ($user->isStudent())
                 return \Tk\Uri::create('/student/index.html');
+            if ($user->isStaff())
+                return \Tk\Uri::create('/staff/index.html');
+            if ($user->isClient())
+                return \Tk\Uri::create('/client/index.html');
+            if ($user->isAdmin())
+                return \Tk\Uri::create('/admin/index.html');
         }
         return \Tk\Uri::create('/index.html');   // Should not get here unless their is no roles
     }

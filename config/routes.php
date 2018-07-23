@@ -83,7 +83,9 @@ $routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 
 // Student Pages
 //$routes->add('student-dashboard', new \Tk\Routing\Route('/student/index.html', 'Uni\Controller\Student\Dashboard::doDefault'));
 //$routes->add('student-dashboard-base', new \Tk\Routing\Route('/student/', 'Uni\Controller\Student\Dashboard::doDefault'));
+//$routes->add('student-subject-dashboard', new \Tk\Routing\Route('/student/{subjectCode}/index.html', 'Uni\Controller\Student\SubjectDashboard::doDefault'));
 $routes->add('student-user-profile', new \Tk\Routing\Route('/student/profile.html', 'Uni\Controller\User\Profile::doDefault'));
+$routes->add('student-subject-manager', new \Tk\Routing\Route('/student/subjectManager.html', 'Uni\Controller\Subject\StudentManager::doDefault'));
 
 
 // Ajax Urls

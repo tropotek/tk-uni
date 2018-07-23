@@ -112,7 +112,7 @@ class SubjectMap extends Mapper
      * @param array $filter
      * @param Tool $tool
      * @return ArrayObject|Subject[]
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findFiltered($filter = array(), $tool = null)
     {
