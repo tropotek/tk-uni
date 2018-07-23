@@ -4,3 +4,4 @@
 *.swp
 *.iml
 composer.lock
+!/Uni/Listener/PageTemplateHandler.php
