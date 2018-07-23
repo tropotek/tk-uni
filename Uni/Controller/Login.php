@@ -165,12 +165,9 @@ class Login extends Iface
 
         $js = <<<JS
 jQuery(function ($) {
-      console.log('-----');
   
   $('#login-form').on("keypress", function (e) {
-      console.log(e.which );
     if (e.which === 13) {
-      console.log('-----');
       $(this).find('#login-form_login').trigger('click');
     }
   });
