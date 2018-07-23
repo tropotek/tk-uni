@@ -78,6 +78,9 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     {
         $this->modified = \Tk\Date::create();
         $this->created = \Tk\Date::create();
+
+        $this->dateStart = \Tk\Date::floor($this->created->setDate($this->created->format('Y'), 1, 1));
+        $this->dateEnd = \Tk\Date::ceil($this->created->setDate($this->created->format('Y'), 12, 31));
     }
 
     /**
@@ -95,7 +98,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      * @param array $emailList
      * @param string $uid
      * @return bool
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public static function isPreEnrolled($institutionId, $emailList = array(), $uid = '')
     {
@@ -117,6 +120,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
     /**
      * Get the institution related to this user
+     * @throws \Exception
      */
     public function getInstitution()
     {
@@ -130,7 +134,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      * Get the data object
      *
      * @return \Tk\Db\Data
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getData()
     {
@@ -180,6 +184,19 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function getInstitutionId()
     {
         return $this->institutionId;
+    }
+
+    /**
+     * If false, the student should be denied access to creating new submissions of any type for that subject.
+     * If false, the UI should display historic grades and placement data.
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        if (!$this->dateStart || !$this->dateEnd) return true;
+        $now = \Tk\Date::create();
+        return (\Tk\Date::greaterThan($now, $this->dateStart) && \Tk\Date::lessThan($now, $this->dateEnd));
     }
 
     /**

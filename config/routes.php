@@ -68,6 +68,8 @@ $routes->add('client-subject-enrollment', new \Tk\Routing\Route('/client/subject
 
 $routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
+$routes->add('staff-subject-add', new \Tk\Routing\Route('/staff/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
+$routes->add('staff-subject-add-enrollment', new \Tk\Routing\Route('/staff/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
 $routes->add('staff-subject-edit', new \Tk\Routing\Route('/staff/{subjectCode}/subjectEdit.html', 'Uni\Controller\Subject\Edit::doSubject'));
 $routes->add('staff-subject-enrollment', new \Tk\Routing\Route('/staff/{subjectCode}/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doSubject'));
 
