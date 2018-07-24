@@ -58,7 +58,7 @@ class User extends \Bs\Db\User implements UserIface
     }
 
     /**
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function save()
     {
@@ -74,7 +74,7 @@ class User extends \Bs\Db\User implements UserIface
      * Get the path for all file associated to this object
      *
      * @return string
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getDataPath()
     {
@@ -86,8 +86,7 @@ class User extends \Bs\Db\User implements UserIface
      *
      * @param bool $isTemp
      * @return string
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function generateHash($isTemp = false)
     {
@@ -105,7 +104,7 @@ class User extends \Bs\Db\User implements UserIface
      * Get the data object
      *
      * @return \Tk\Db\Data
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getData()
     {
@@ -116,7 +115,7 @@ class User extends \Bs\Db\User implements UserIface
 
     /**
      * Get the institution related to this user
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getInstitution()
     {
@@ -197,7 +196,7 @@ class User extends \Bs\Db\User implements UserIface
      *
      * @param $subjectId
      * @return bool
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function isEnrolled($subjectId)
     {
@@ -210,8 +209,7 @@ class User extends \Bs\Db\User implements UserIface
      * objects for use within forms.
      *
      * @return array
-     * @throws \ReflectionException
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function validate()
     {

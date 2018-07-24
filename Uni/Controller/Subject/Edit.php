@@ -1,12 +1,8 @@
 <?php
 namespace Uni\Controller\Subject;
 
-use Dom\Template;
-use Tk\Db\Exception;
-use Tk\Form;
 use Tk\Form\Event;
 use Tk\Form\Field;
-use Tk\Request;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -17,7 +13,7 @@ class Edit extends \Uni\Controller\AdminIface
 {
 
     /**
-     * @var Form
+     * @var \Tk\Form
      */
     protected $form = null;
 
@@ -31,8 +27,6 @@ class Edit extends \Uni\Controller\AdminIface
      */
     private $institution = null;
 
-    protected $isSubjectPage = false;
-
 
     /**
      * Edit constructor.
@@ -43,13 +37,12 @@ class Edit extends \Uni\Controller\AdminIface
     }
 
     /**
-     * @param Request $request
+     * @param \Tk\Request $request
      * @param string $subjectCode
      * @throws \Exception
      */
-    public function doSubject(Request $request, $subjectCode)
+    public function doSubject(\Tk\Request $request, $subjectCode)
     {
-        $this->isSubjectPage = true;
         $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
         if ($this->subject)
             $this->institution = $this->subject->getInstitution();
@@ -57,10 +50,10 @@ class Edit extends \Uni\Controller\AdminIface
     }
 
     /**
-     * @param Request $request
+     * @param \Tk\Request $request
      * @throws \Exception
      */
-    public function doDefault(Request $request)
+    public function doDefault(\Tk\Request $request)
     {
         if (!$this->subject) {
             $this->institution = $this->getUser()->getInstitution();
@@ -159,7 +152,7 @@ class Edit extends \Uni\Controller\AdminIface
     /**
      * DomTemplate magic method
      *
-     * @return Template
+     * @return \Dom\Template
      */
     public function __makeTemplate()
     {
