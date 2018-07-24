@@ -154,6 +154,26 @@ class Config extends \Bs\Config
     }
 
     /**
+     * This function returns true if the url is one that uses the {subjectCode}
+     *
+     * @return bool
+     */
+    public function isSubjectUrl()
+    {
+        if (!$this->get('is.subject.url')) {
+            $b = false;
+            /** @var \Tk\Routing\Route $route */
+            $route = $this->getRouteCollection()->get($this->getRequest()->getAttribute('_route'));
+            if ($route) {
+                $vars = $route->compile()->getPathVariables();
+                $b = in_array('subjectCode', $vars);
+            }
+            $this->set('is.subject.url', $b);
+        }
+        return $this->get('is.subject.url');
+    }
+
+    /**
      * A helper method to create an instance of an Auth adapter
      *
      * @param array $submittedData
