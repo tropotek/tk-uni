@@ -74,7 +74,7 @@ class UserMap extends Mapper
      * @param int $institutionId
      * @param string|array $role
      * @return Institution|null|Model
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findByHash($hash, $institutionId = 0, $role = null)
     {
@@ -103,7 +103,7 @@ class UserMap extends Mapper
      * @param int $institutionId
      * @param string|array $role
      * @return Model
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findByUsername($username, $institutionId = 0, $role = null)
     {
@@ -135,7 +135,7 @@ class UserMap extends Mapper
      * @param int $institutionId
      * @param string|array $role
      * @return Model
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findByEmail($email, $institutionId = null, $role = null)
     {
@@ -167,7 +167,7 @@ class UserMap extends Mapper
      * @param string|array $role
      * @param \Tk\Db\Tool|null $tool
      * @return ArrayObject
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findByInstitutionId($institutionId, $role = null, $tool = null)
     {
@@ -191,7 +191,7 @@ class UserMap extends Mapper
      * @param array $filter
      * @param Tool $tool
      * @return ArrayObject
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findFiltered($filter = array(), $tool = null)
     {
