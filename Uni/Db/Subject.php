@@ -79,8 +79,8 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
         $this->modified = \Tk\Date::create();
         $this->created = \Tk\Date::create();
 
-        $this->dateStart = \Tk\Date::floor($this->created->setDate($this->created->format('Y'), 1, 1));
-        $this->dateEnd = \Tk\Date::ceil($this->created->setDate($this->created->format('Y'), 12, 31));
+        $this->dateStart = \Tk\Date::floor()->setDate($this->created->format('Y'), 1, 1);
+        $this->dateEnd = \Tk\Date::ceil()->setDate($this->created->format('Y'), 12, 31);
     }
 
     /**
