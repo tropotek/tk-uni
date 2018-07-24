@@ -20,10 +20,7 @@ class InstitutionHandler implements Subscriber
      * If no institution is set then we know we are either an admin or public user...
      *
      * @param GetResponseEvent $event
-     * @throws \Tk\Exception
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function onRequest(GetResponseEvent $event)
     {
@@ -37,6 +34,10 @@ class InstitutionHandler implements Subscriber
             $institution = $config->getInstitutionMapper()->findByHash($event->getRequest()->getAttribute('instHash'));
             $config->set('institution', $institution);
         }
+
+        // TODO: check if institution has a domain name and redirect if appropriate
+        
+
     }
 
     /**
