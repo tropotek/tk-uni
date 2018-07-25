@@ -102,14 +102,14 @@ class Edit extends \Uni\Controller\AdminEditIface
         $tabGroup = 'Details';
 
         if (!$this->getuser()->isStudent()) {
-            $this->form->addField(new Field\Input('name'))->setTabGroup($tabGroup)->setRequired(true);
+            $this->form->addField(new Field\Input('username'))->setTabGroup($tabGroup)->setNotes('This is the only required field for LDAP accounts, the other fields will be automatically set on first login.')->setRequired(true);
+            $this->form->addField(new Field\Input('name'))->setTabGroup($tabGroup);
         } else {
-            $this->form->addField(new Field\Html('name'))->setTabGroup($tabGroup)->setRequired(true);
+            $this->form->addField(new Field\Html('name'))->setTabGroup($tabGroup);
         }
-        $this->form->addField(new Field\Input('displayName'))->setTabGroup($tabGroup)->setRequired(true);
-        if ($this->getUser()->isAdmin() || $this->getUser()->isClient()) {
-            $this->form->addField(new Field\Input('username'))->setTabGroup($tabGroup)->setRequired(true);
-            $this->form->addField(new Field\Input('email'))->setTabGroup($tabGroup)->setRequired(true);
+        //$this->form->addField(new Field\Input('displayName'))->setTabGroup($tabGroup);
+        if (!$this->getUser()->isStudent()) {
+            $this->form->addField(new Field\Input('email'))->setTabGroup($tabGroup);
         } else {
             $this->form->addField(new Field\Html('username'))->setTabGroup($tabGroup);
             $this->form->addField(new Field\Html('email'))->setTabGroup($tabGroup);
@@ -125,7 +125,7 @@ class Edit extends \Uni\Controller\AdminEditIface
                     ->setRequired(true)->setTabGroup($tabGroup);
             }
         }
-        if (!$this->getuser()->isStudent()) {
+        if (!$this->getuser()->isStudent() && !$this->getUser()->isStaff() && $this->getUser()->getId() != $this->user->getId()) {
             $this->form->addField(new Field\Checkbox('active'))->setTabGroup($tabGroup);
         }
 

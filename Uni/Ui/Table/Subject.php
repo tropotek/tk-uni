@@ -78,6 +78,7 @@ class Subject extends \Dom\Renderer\Renderer
         $this->table->addFilter(new \Tk\Form\Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
 
         // Actions
+        $this->table->addAction(\Tk\Table\Action\Link::create('New Subject', 'fa fa-plus', \Uni\Uri::createHomeUrl('/subjectEdit.html')));
         $this->table->addAction(\Tk\Table\Action\Csv::create());
 
         // Set list
