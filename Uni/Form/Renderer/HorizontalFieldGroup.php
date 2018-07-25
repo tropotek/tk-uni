@@ -20,7 +20,6 @@ class HorizontalFieldGroup extends \Tk\Form\Renderer\FieldGroup
     public function show()
     {
         $t = parent::show();
-        vd();
         return $t;
     }
 
