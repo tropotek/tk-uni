@@ -14,18 +14,6 @@ class HorizontalFieldGroup extends \Tk\Form\Renderer\FieldGroup
 
 
     /**
-     * __construct
-     *
-     *
-     * @param Field\Iface $field
-     */
-    public function __construct($field)
-    {
-        parent::__construct($field);
-    }
-
-
-    /**
      * @return \Dom\Renderer\Renderer|\Dom\Template|null
      * @throws \Exception
      */
