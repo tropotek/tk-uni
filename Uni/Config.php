@@ -4,8 +4,8 @@ namespace Uni;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
- * @see http://www.tropotek.com/
- * @license Copyright 2017 Michael Mifsud
+ * @link http://www.tropotek.com/
+ * @license Copyright 2018 Michael Mifsud
  */
 class Config extends \Bs\Config
 {
