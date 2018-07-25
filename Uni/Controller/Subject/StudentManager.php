@@ -70,7 +70,7 @@ class StudentManager extends \Uni\Controller\AdminIface
             $filter['userId'] = $this->getUser()->id;
         }
         
-        $users = $this->getConfig()->getSubjectMapper()->findFiltered($filter, $this->table->getTool('a.id'));
+        $users = $this->getConfig()->getSubjectMapper()->findFiltered($filter, $this->table->getTool());
         $this->table->setList($users);
 
     }

@@ -71,7 +71,7 @@ class Enrolled extends \Dom\Renderer\Renderer
         $filter['subjectId'] = $this->subject->getId();
         $filter['role'] = array(\Uni\Db\User::ROLE_STAFF, \Uni\Db\User::ROLE_STUDENT);
 
-        $users = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->table->getTool('a.name'));
+        $users = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->table->getTool('role, name'));
         $this->table->setList($users);
 
     }
