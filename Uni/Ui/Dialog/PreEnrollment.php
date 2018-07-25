@@ -56,7 +56,7 @@ class PreEnrollment extends Iface
      * Process the enrolments as submitted from the dialog
      *
      * @param Request $request
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function execute(Request $request)
     {
@@ -65,8 +65,10 @@ class PreEnrollment extends Iface
         }
         $config = \Uni\Config::getInstance();
 
-        //$this->subject = \Uni\Config::getInstance()->getSubject();
-        $this->subject = $config->getSubjectMapper()->find($request->get('subjectId'));
+        $this->subject = \Uni\Config::getInstance()->getSubject();
+        if ($request->get('subjectId'))
+            $this->subject = $config->getSubjectMapper()->find($request->get('subjectId'));
+
         if (!$this->subject)
             throw new \Tk\Exception('Invalid subject details');
 
@@ -91,14 +93,17 @@ class PreEnrollment extends Iface
         $success = array();
         $info = array();
         foreach ($list as $i => $arr) {
-            $email = trim(strip_tags($arr['email']));
-            $uid = '';
+
+            $uid = '';          // TODO: Make this the primary search param
+            $username = '';     // TODO: Make this the secondary search param
+            $email = '';        // TODO: We need to keep this for LTI integrations
+
+            if (isset($arr['username']))
+                $username = trim(strip_tags($arr['username']));
             if (isset($arr['uid']))
                 $uid = trim(strip_tags($arr['uid']));
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $error[$email] = $i . ' - Cannot locate student enrollment email';
-                $request->getUri()->redirect();
-            }
+            if (isset($arr['email']))
+                $email = trim(strip_tags($arr['email']));
 
             // Add users if found
             if (!$config->getSubjectMapper()->hasPreEnrollment($this->subject->getId(), $email)) {
@@ -113,6 +118,7 @@ class PreEnrollment extends Iface
                 $info[] = $i . ' - User ' . $email . ' already enrolled, nothing done.';
             }
         }
+
         if (count($info)) {
             \Tk\Alert::addInfo(count($info) . ' records already enrolled and ignored.');
         }
@@ -140,13 +146,11 @@ class PreEnrollment extends Iface
             $num = count($data);
             $list[$row] = array();
             for ($c=0; $c < $num; $c++) {
-                switch($c) {
-                    case 0:
-                        $list[$row]['email'] = $data[$c];
-                        break;
-                    case 1:
-                        $list[$row]['uid'] = $data[$c];
-                        break;
+                if (filter_var($data[$c], FILTER_VALIDATE_EMAIL)) {
+                    $list[$row]['email'] = $data[$c];
+                }
+                if (preg_match('/[0-9]+/', $data[$c])) {
+                    $list[$row]['uid'] = $data[$c];
                 }
             }
             $row++;
@@ -158,7 +162,7 @@ class PreEnrollment extends Iface
 
     /**
      * @return \Dom\Template
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     public function show()
     {

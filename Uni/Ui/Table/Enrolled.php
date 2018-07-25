@@ -1,10 +1,8 @@
 <?php
 namespace Uni\Ui\Table;
-use Tk\Db\Exception;
 
 
 /**
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
@@ -131,7 +129,7 @@ class ActionsCell extends \Tk\Table\Cell\Text
     /**
      * @param \Tk\Table $table
      * @return ActionsCell|\Tk\Table\Cell\Text
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     public function setTable($table)
     {
@@ -163,7 +161,6 @@ class ActionsCell extends \Tk\Table\Cell\Text
         if (!$event->isPropagationStopped()) {
             /** @var \Uni\Db\User $user */
             $user = $config->getUserMapper()->find($event->get('userId'));
-            vd($event->all());
             if ($user) {
                 if ($config->getSubjectMapper()->hasUser($event->get('subjectFromId'), $user->getId())) {
                     $config->getSubjectMapper()->removeUser($event->get('subjectFromId'), $user->getId());
@@ -183,8 +180,7 @@ class ActionsCell extends \Tk\Table\Cell\Text
      * @param \Uni\Db\User $obj
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string|\Dom\Template
-     * @throws Exception
-     * @throws Exception
+     * @throws \Exception
      */
     public function getCellHtml($obj, $rowIdx = null)
     {

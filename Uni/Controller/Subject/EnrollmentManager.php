@@ -54,6 +54,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
      */
     public function doDefault(Request $request)
     {
+        $this->subject = $this->getConfig()->getSubject();
         if (!$this->subject) {
             $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
         }

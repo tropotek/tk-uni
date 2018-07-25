@@ -31,13 +31,12 @@ class PreEnrollment extends \Dom\Renderer\Renderer
     /**
      * constructor.
      * @param \Uni\Db\Subject $subject
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function __construct($subject)
     {
         $this->subject = $subject;
-
-        if (!$this->subject)
+        if (!$subject)
             throw new \Tk\Exception('Invalid subject details');
 
         $this->doDefault();
@@ -46,12 +45,7 @@ class PreEnrollment extends \Dom\Renderer\Renderer
     /**
      *
      * @return \Dom\Template|Template|string
-     * @throws \Tk\Db\Exception
      * @throws \Exception
-     * @throws \Tk\Exception
-     * @throws \Tk\Exception
-     * @throws \Tk\Exception
-     * @throws \Tk\Exception
      */
     public function doDefault()
     {
@@ -59,7 +53,6 @@ class PreEnrollment extends \Dom\Renderer\Renderer
 
         $this->dialog = new \Uni\Ui\Dialog\PreEnrollment('Pre-Enroll User');
         $this->dialog->execute($request);
-
 
         $this->table = \Uni\Config::getInstance()->createTable('pendingUsers');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
@@ -88,7 +81,7 @@ class PreEnrollment extends \Dom\Renderer\Renderer
 
     /**
      * @return \Dom\Template
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     public function show()
     {
@@ -158,7 +151,7 @@ class ActionUnEnroll extends \Tk\Table\Action\Delete
 {
     /**
      * @return mixed|void
-     * @throws Exception
+     * @throws \Exception
      */
     public function execute()
     {
