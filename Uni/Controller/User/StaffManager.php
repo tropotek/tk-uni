@@ -55,7 +55,7 @@ class StaffManager extends Manager
      */
     protected function initActionPanel($actionPanel)
     {
-        //$actionPanel->add(\Tk\Ui\Button::create('New Student', clone $this->editUrl, 'fa fa-user-plus'));
+        $actionPanel->add(\Tk\Ui\Button::create('New Staff', clone $this->editUrl, 'fa fa-user-plus'));
     }
 
 

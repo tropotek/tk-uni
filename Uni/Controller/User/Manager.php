@@ -45,7 +45,6 @@ class Manager extends \Uni\Controller\AdminIface
     {
         $this->setPageHeading();
         $this->actionsCell = new \Tk\Table\Cell\Actions();
-        //$this->getCrumbs()->reset();
     }
 
     /**
@@ -68,17 +67,20 @@ class Manager extends \Uni\Controller\AdminIface
         if (!$this->editUrl)
             $this->editUrl = \Uni\Uri::createHomeUrl('/userEdit.html');
 
-        $this->actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade',
-            \Tk\Uri::create(), 'fa  fa-user-secret', 'tk-masquerade'))
-            ->setOnShow(function($cell, $obj, $button) {
-                /* @var $obj \Uni\Db\User */
-                /* @var $button \Tk\Table\Cell\ActionButton */
-                if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs(\Uni\Config::getInstance()->getUser(), $obj)) {
-                    $button->setUrl(\Uni\Uri::create()->set(\Uni\Listener\MasqueradeHandler::MSQ, $obj->getHash()));
-                } else {
-                    $button->setAttr('disabled', 'disabled')->addCss('disabled');
-                }
-            });
+        if (!$this->getUser()->isStudent()) {
+            $this->actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade',
+                \Tk\Uri::create(), 'fa  fa-user-secret', 'tk-masquerade'))
+                ->setOnShow(function ($cell, $obj, $button) {
+                    /* @var $obj \Uni\Db\User */
+                    /* @var $button \Tk\Table\Cell\ActionButton */
+                    if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs(\Uni\Config::getInstance()->getUser(), $obj)) {
+                        $button->setUrl(\Uni\Uri::create()->set(\Uni\Listener\MasqueradeHandler::MSQ, $obj->getHash()));
+                    } else {
+                        //$button->setAttr('disabled', 'disabled')->addCss('disabled');
+                        $button->setVisible(false);
+                    }
+                });
+        }
 
         $this->table = \Uni\Config::getInstance()->createTable('UserList');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
