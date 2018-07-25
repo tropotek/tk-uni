@@ -39,9 +39,7 @@ class Settings extends \Uni\Controller\AdminIface
      *
      * @param Request $request
      * @return void
-     * @throws Form\Exception
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function doDefault(Request $request)
     {
@@ -50,8 +48,8 @@ class Settings extends \Uni\Controller\AdminIface
 
         $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins', \Tk\Uri::create('/admin/plugins.html'), 'fa fa-plug'));
 
-        $this->form = Form::create('formEdit');
-        $this->form->setRenderer(new \Tk\Form\Renderer\Dom($this->form));
+        $this->form = $this->getConfig()->createForm('formEdit');
+        $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
 
         $this->form->addField(new Field\Input('site.title'))->setLabel('Site Title')->setRequired(true);
         $this->form->addField(new Field\Input('site.email'))->setLabel('Site Email')->setRequired(true);

@@ -233,17 +233,18 @@ class Config extends \Bs\Config
      */
     public function createFormRenderer($form)
     {
-        $obj = new \Tk\Form\Renderer\Dom($form);
-        $obj->setFieldGroupRenderer($this->getFormFieldGroupRenderer());
+        $obj = \Tk\Form\Renderer\Dom::create($form);
+        $obj->setFieldGroupRenderer($this->getFormFieldGroupRenderer($form));
         return $obj;
     }
 
     /**
+     * @param \Tk\Form $form
      * @return \Tk\Form\Renderer\FieldGroup
      */
-    public function getFormFieldGroupRenderer()
+    public function getFormFieldGroupRenderer($form)
     {
-        return \Uni\Form\Renderer\HorizontalFieldGroup::create();
+        return \Uni\Form\Renderer\HorizontalFieldGroup::create($form);
     }
 
 
