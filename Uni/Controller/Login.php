@@ -29,11 +29,52 @@ class Login extends Iface
     protected $institution = null;
 
     /**
+     * @var string
+     */
+    protected $isInstLogin = true;
+
+
+    /**
      * Login constructor.
      */
     public function __construct()
     {
         $this->setPageTitle('Login');
+    }
+
+    /**
+     * @param Request $request
+     * @throws \Exception
+     */
+    public function doDefault(Request $request)
+    {
+        $this->isInstLogin = false;
+        $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getUri()->getHost());
+        if ($this->institution) {
+            $this->doInsLogin($request, $this->institution->getHash());
+        } else {
+            $this->init();
+            $this->form->execute();
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param string $instHash
+     * @throws \Exception
+     */
+    public function doInsLogin(Request $request, $instHash)
+    {
+        if (!$this->institution) {
+            $this->institution = $this->getConfig()->getInstitutionMapper()->findByHash($instHash);
+        }
+        if (!$this->institution || !$this->institution->active ) {
+            \Tk\Alert::addWarning('Invalid or inactive Institution.');
+            \Uni\Uri::create('/index.html');
+        }
+        $this->init();
+        $this->form->addField(new Field\Hidden('instHash', $instHash));
+        $this->form->execute();
     }
 
     /**
@@ -49,42 +90,12 @@ class Login extends Iface
         $this->form->addField(new Field\Input('username'));
         $this->form->addField(new Field\Password('password'));
         $this->form->addField(new Event\Submit('login', array($this, 'doLogin')))->addCss('btn btn-lg btn-primary btn-ss');
-        $this->form->addField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
-            ->removeCss('btn btn-sm btn-default btn-once');
+        if (!$this->isInstLogin) {
+            $this->form->addField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
+                ->removeCss('btn btn-sm btn-default btn-once');
+        }
     }
 
-    /**
-     * @param Request $request
-     * @throws \Exception
-     */
-    public function doDefault(Request $request)
-    {
-        $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getUri()->getHost());
-        if ($this->institution) {
-            $this->doInsLogin($request, $this->institution->getHash());
-        }
-        $this->init();
-        $this->form->execute();
-    }
-
-    /**
-     * @param Request $request
-     * @param string $instHash
-     * @throws \Exception
-     */
-    public function doInsLogin(Request $request, $instHash)
-    {
-        if (!$this->institution)
-            $this->institution = $this->getConfig()->getInstitutionMapper()->findByHash($instHash);
-        if (!$this->institution || !$this->institution->active ) {
-            \Tk\Alert::addWarning('Invalid or inactive Institution.');
-            \Uni\Uri::create('/index.html');
-        }
-        $this->init();
-        $this->form->addField(new Field\Hidden('instHash', $instHash));
-        $this->form->addField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html')));
-        $this->form->execute();
-    }
 
     /**
      * doLogin()
@@ -145,7 +156,7 @@ class Login extends Iface
         $template = parent::show();
 
         // Render the form
-        $template->insertTemplate('form', $this->form->getRenderer()->show());
+        $template->appendTemplate('form', $this->form->getRenderer()->show());
 
         if ($this->institution) {
             if ($this->institution->getLogoUrl()) {
