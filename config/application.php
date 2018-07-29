@@ -46,6 +46,13 @@ $config['template.public']    = $config['system.template.path'] . '/admin/public
 $config['system.auth.salted'] = true;
 
 
+/**
+ * This is to be set to the sites default domain name so we can use it for links from the
+ * institution pages back to the site
+ */
+$config['site.public.domain'] = '';
+
+
 /*
  * Config for the \Tk\Auth\Adapter\DbTable
  */

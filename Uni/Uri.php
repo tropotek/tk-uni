@@ -63,5 +63,24 @@ class Uri extends \Bs\Uri
         return $url;
     }
 
+    /**
+     * Create a URL using the default site domain in
+     *
+     * @param null|string|\Tk\Uri $spec
+     * @return null|\Tk\Uri|static
+     */
+    public static function createDefaultUrl($spec = null)
+    {
+        if ($spec instanceof \Tk\Uri) {
+            $url = clone $spec;
+        } else {
+            $url = self::create($spec);
+        }
+        $host = Config::getInstance()->get('site.public.domain');
+        if ($host) {
+            $url->setHost($host);
+        }
+        return $url;
+    }
 
 }
