@@ -39,6 +39,12 @@ JS;
                 $template->appendJs($js, array('data-jsl-priority' => -1000));
             }
 
+            /* @var \DOMElement[] $nodes */
+            $nodes = $template->getVarList('default-url');
+            foreach ($nodes as $node) {
+                $node->setAttribute('href', \Uni\Uri::createDefaultUrl($node->getAttribute('href')));
+            }
+
         }
     }
 
