@@ -26,6 +26,11 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     protected $institution = null;
 
+    /**
+     * @var \Uni\Db\Subject
+     */
+    protected $subject = null;
+
 
 
     /**
@@ -56,10 +61,16 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     /**
      * @param Request $request
-     * @throws Form\Exception
-     * @throws \ReflectionException
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
+     */
+    public function doSubject(Request $request, $subjectCode)
+    {
+        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
+        $this->doDefault($request);
+    }
+
+    /**
+     * @param Request $request
      * @throws \Exception
      */
     public function doDefault(Request $request)
@@ -234,7 +245,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         $template = parent::show();
 
         // Render the form
-        $template->insertTemplate('form', $this->form->getRenderer()->show());
+        $template->appendTemplate('form', $this->form->getRenderer()->show());
         
         if ($this->user->id) {
             $template->insertText('username', $this->user->name . ' - [UID ' . $this->user->id . ']');
