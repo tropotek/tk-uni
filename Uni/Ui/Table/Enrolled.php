@@ -53,8 +53,10 @@ class Enrolled extends \Dom\Renderer\Renderer
 
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
         $this->table->addCell(new ActionsCell($this->subject));
+        $this->table->addCell(new \Tk\Table\Cell\Text('uid'));
         $this->table->addCell(new NameCell('name'))->addCss('key')->setUrl($this->editUrl);
-        $this->table->addCell(new \Tk\Table\Cell\Text('email'));
+        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
+        $this->table->addCell(new \Tk\Table\Cell\Text('username'));
         $this->table->addCell(new \Tk\Table\Cell\Text('role'));
         $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
         $this->table->addCell(new \Tk\Table\Cell\Date('created'));

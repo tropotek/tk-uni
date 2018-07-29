@@ -148,9 +148,10 @@ class PreEnrollment extends Iface
             for ($c=0; $c < $num; $c++) {
                 if (filter_var($data[$c], FILTER_VALIDATE_EMAIL)) {
                     $list[$row]['email'] = $data[$c];
-                }
-                if (preg_match('/[0-9]+/', $data[$c])) {
+                } else if (preg_match('/^[0-9]+$/', $data[$c])) {
                     $list[$row]['uid'] = $data[$c];
+                } else if (!preg_match('/.+@.+/', $data[$c])) {
+                    $list[$row]['username'] = $data[$c];
                 }
             }
             $row++;
