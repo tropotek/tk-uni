@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.66 [2018-07-30]:
+-------------------------------
+  - Added Matomo stats tracing
+  - Fixed pre-enrollment dialog not importing students correctly
+
+
 Ver 2.0.64 [2018-07-30]:
 -------------------------------
 
