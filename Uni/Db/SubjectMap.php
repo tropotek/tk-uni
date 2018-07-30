@@ -343,4 +343,29 @@ WHERE a.subject_id = ? ' . $toolStr);
         }
     }
 
+
+    /**
+     * @param $institutionId
+     * @param array $emailList
+     * @param string $uid
+     * @return bool
+     * @throws \Exception
+     */
+    public function isPreEnrolled($institutionId, $emailList = array(), $uid = '')
+    {
+        $found = false;
+        if ($uid) {
+            $subjectList = $this->findPendingPreEnrollmentsByUid($institutionId, $uid);
+            $found = (count($subjectList) > 0);
+        }
+        if (!$found) {
+            foreach ($emailList as $email) {
+                if ($found) break;
+                if (!filter_var($email, \FILTER_VALIDATE_EMAIL)) continue;
+                $subjectList = $this->findPendingPreEnrollments($institutionId, $email);
+                $found = (count($subjectList) > 0);
+            }
+        }
+        return $found;
+    }
 }

@@ -92,32 +92,32 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             // Find user data from ldap connection
             $filter = substr($adapter->getBaseDn(), 0, strpos($adapter->getBaseDn(), ','));
             if ($filter) {
-                $sr = @ldap_search($adapter->getLdap(), $adapter->getBaseDn(), $filter);
-                $ldapData = @ldap_get_entries($adapter->getLdap(), $sr);
+                $ldapData = $adapter->ldapSearch($filter);
                 if ($ldapData) {
-                    $email = $ldapData[0]['mail'][0];   // Email format = firstname.lastname@unimelb
+                    $email = trim($ldapData[0]['mail'][0]);   // Email format = firstname.lastname@unimelb
+                    $uid = trim($ldapData[0]['auedupersonid'][0]);
 
-                    // Use this info to create an LDAP user for their first login or to update their details
                     /* @var \Uni\Db\User $user */
                     $user = $config->getUserMapper()->findByUsername($adapter->get('username'), $config->getInstitutionId());
-//                    if (!$user && false) { // Create a user record if none exists
+//                    if (!$user) { // Create a user record if none exists
 //                        $role = 'student';
 //                        if (preg_match('/(staff|student)/', strtolower($ldapData[0]['auedupersontype'][0]), $reg)) {
 //                            if ($reg[1] == 'staff') $role = 'staff';
 //                        }
+//
 //                        if ($role == 'student') {
 //                            // To check if a user is pre-enrolled get an array of uid and emails for a user
-//                            $isPreEnrolled = \Uni\Db\Subject::isPreEnrolled($config->getInstitutionId(),
+//                            $isPreEnrolled = $config->getSubjectMapper()->isPreEnrolled($config->getInstitutionId(),
 //                                array_merge($ldapData[0]['mail'], $ldapData[0]['mailalternateaddress']),
 //                                $ldapData[0]['auedupersonid'][0]
 //                            );
 //
-////                            if (!$isPreEnrolled) {      // Only create users accounts for enrolled students
-////                                $msg = sprintf('We cannot find any enrolled subjects. Please contact your coordinator.' .
-////                                    "\ninstitutionId: %s\nusername: %s\nUID: %s\nEmail: %s", $config->getInstitutionId(), $adapter->get('username'), $uid, $email);
-////                                $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID, $adapter->get('username'), nl2br($msg)));
-////                                return;
-////                            }
+//                            if (!$isPreEnrolled) {      // Only create users accounts for enrolled students
+//                                $msg = sprintf('We cannot find any enrolled subjects. Please contact your coordinator.' .
+//                                    "\ninstitutionId: %s\nusername: %s\nUID: %s\nEmail: %s", $config->getInstitutionId(), $adapter->get('username'), $uid, $email);
+//                                $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID, $adapter->get('username'), nl2br($msg)));
+//                                return;
+//                            }
 //
 //                            $userData = array(
 //                                'type' => 'ldap',
@@ -131,7 +131,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                                'ldapData' => $ldapData
 //                            );
 //                            $user = $config->createUser();
-//                            \Uni\Db\UserMap::create()->mapForm($userData, $user);
+//                            $config->getUserMapper()->mapForm($userData, $user);
 //                            $error = $user->validate();
 //                            if (count($error)) {
 //                                try {
@@ -152,15 +152,18 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                            return;
 //                        }
 //                    }
+
                     if ($user && $user->active) {
                         if (!$user->uid && !empty($ldapData[0]['auedupersonid'][0]))
                             $user->uid = $ldapData[0]['auedupersonid'][0];
-                        if (!$user->email && !empty($ldapData[0]['mail'][0]))
-                            $user->email = $ldapData[0]['mail'][0];
                         if (!$user->name && !empty($ldapData[0]['displayname'][0]))
                             $user->name = $ldapData[0]['displayname'][0];
+                        // TODO: update this to if !$user->email later once all emails are changed over
+                        if ($email)
+                            $user->email = $email;
                         $user->setNewPassword($adapter->get('password'));
                         $user->save();
+
                         if (method_exists($user, 'getData')) {
                             $data = $user->getData();
                             $data->set('ldap.last.login', json_encode($ldapData));
@@ -168,6 +171,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                                 $data->set('faculty', $ldapData[0]['ou'][0]);
                             $data->save();
                         }
+
                         $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $user->getId()));
                     }
                 }
@@ -192,7 +196,6 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //            if (!$user) {   // Find user by username (this is the start pat of the email address, not reliable
 //                $user = $config->getUserMapper()->findByUsername($userData['username'], $adapter->getInstitution()->getId());
 //            }
-
 //            if (!$user) {   // Create the new user account
 //                // optional to check the pre-enrollment list before creation
 //                $isPreEnrolled = \Uni\Db\Subject::isPreEnrolled($adapter->getInstitution()->getId(), array($userData['email']) );
@@ -204,9 +207,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                $user->save();
 //                $adapter->setUser($user);
 //            }
-            if (!$user) {
-                return;
-            }
+            if (!$user) return;
             $subjectData = $adapter->get('subjectData');
             $subject = $config->getSubjectMapper()->find($subjectData['id']);
             if (!$subject) {
@@ -214,7 +215,13 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             }
             if (!$subject) {
                 throw new \Tk\Exception('Subject not available, Please contact subject coordinator.');
-                // Create a new subject here if needed ????
+
+                // Create a new subject here if needed
+//                $subject = $config->createSubject();
+//                $config->getSubjectMapper()->mapForm($subjectData, $subject);
+//                $subject->save();
+//                $adapter->setSubject($subject);
+//                $config->getSubjectMapper()->addUser($subject->getId(), $user->getId());
             }
             $config->getSession()->set('lti.subjectId', $subject->getId());   // Limit the dashboard to one subject for LTI logins
             $config->getSession()->set('auth.password.access', false);

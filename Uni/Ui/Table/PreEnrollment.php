@@ -73,7 +73,7 @@ class PreEnrollment extends \Dom\Renderer\Renderer
         $filter['institutionId'] = $this->getUser()->getInstitution()->getId();
         $filter['subjectId'] = $this->subject->getId();
 
-        $list = \Uni\Config::getInstance()->getSubjectMapper()->findPreEnrollments($this->subject->getId(), $this->table->makeDbTool('enrolled DESC'));
+        $list = \Uni\Config::getInstance()->getSubjectMapper()->findPreEnrollments($this->subject->getId(), $this->table->getTool('enrolled DESC'));
 
         $this->table->setList($list);
 

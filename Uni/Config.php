@@ -225,7 +225,7 @@ class Config extends \Bs\Config
     public function createForm($formId, $method = \Tk\Form::METHOD_POST, $action = null)
     {
         $form = \Tk\Form::create($formId, $method, $action);
-        $form->setDispatcher(self::getInstance()->getEventDispatcher());
+        $form->setDispatcher($this->getEventDispatcher());
         $form->addCss('form-horizontal');
         return $form;
     }
@@ -443,6 +443,7 @@ class Config extends \Bs\Config
 
     /**
      * @return Page
+     * @throws \Exception
      */
     public function createPage()
     {
