@@ -136,7 +136,7 @@ class Edit extends \Uni\Controller\AdminEditIface
                     ->setRequired(true)->setTabGroup($tabGroup);
             }
         }
-        if (!$this->getuser()->isStudent() && !$this->getUser()->isStaff() && $this->getUser()->getId() != $this->user->getId()) {
+        if (!$this->getuser()->isStudent() && $this->getUser()->getId() != $this->user->getId()) {
             $this->form->addField(new Field\Checkbox('active'))->setTabGroup($tabGroup);
         }
 
