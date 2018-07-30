@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.70 [2018-07-31]:
+-------------------------------
+  - Fixed the LDAP and LTI implementations.
+  - Merge branch 'master' of https://github.com/tropotek/tk-uni
+
+
 Ver 2.0.68 [2018-07-30]:
 -------------------------------
 
