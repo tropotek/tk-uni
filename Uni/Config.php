@@ -71,8 +71,11 @@ class Config extends \Bs\Config
         if (!$this->get('institution')) {
             $obj = null;
             if ($this->getUser()) {
-                $obj = $this->getUser()->getInstitution();
+                $obj = $this->getUser()->getInstitution();          // TODO: This should be all we need???
+                                                                    // TODO: In cases of public pages there should be an institution url that
+                                                                    // TODO: uses the domain or the has path of that institution.....
             } else if ($this->getRequest()->has('subjectId')) {
+                \TK\Log::warning('This code should not be reached ever???');
                 /** @var Db\Subject $subject */
                 $subject = $this->getSubjectMapper()->find($this->getRequest()->has('subjectId'));
                 if ($subject) $obj = $subject->getInstitution();
