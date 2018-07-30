@@ -178,7 +178,7 @@ class Edit extends \Uni\Controller\AdminIface
         $template = parent::show();
 
         // Render the form
-        $template->insertTemplate('form', $this->form->getRenderer()->show());
+        $template->appendTemplate('form', $this->form->getRenderer()->show());
 
         if ($this->institution->id) {
 
@@ -187,7 +187,7 @@ class Edit extends \Uni\Controller\AdminIface
 //                $template->insertTemplate('courseTable', $courseTable->show());
 
                 $staffTable = new \Uni\Ui\Table\User($this->institution->id, \Uni\Db\User::ROLE_STAFF, 0);
-                $template->insertTemplate('staffTable', $staffTable->show());
+                $template->appendTemplate('staffTable', $staffTable->show());
 
 //                $studentTable = new \Uni\Ui\Table\User($this->institution->id, \Uni\Db\User::ROLE_STUDENT, 0);
 //                $template->insertTemplate('studentTable', $studentTable->show());
@@ -234,7 +234,7 @@ class Edit extends \Uni\Controller\AdminIface
       <div class="panel panel-default">
         <div class="panel-heading"><i class="fa fa-users fa-fw"></i> Staff</div>
         <div class="panel-body">
-          <div var="staffTable">Staff ...</div>
+          <div var="staffTable"></div>
 
           <!-- Nav tabs -->
           <!--<ul class="nav nav-tabs" role="tablist">-->

@@ -91,7 +91,7 @@ class PluginZoneManager extends Iface
         $template = parent::show();
 
         // render Table
-        $template->replaceTemplate('PluginList', $this->table->getRenderer()->show());
+        $template->appendTemplate('PluginList', $this->table->getRenderer()->show());
 
         $template->insertText('zone', $this->makeTitleFromZone($this->zoneName));
 

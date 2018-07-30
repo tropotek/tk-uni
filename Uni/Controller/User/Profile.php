@@ -99,7 +99,7 @@ class Profile extends \Uni\Controller\AdminIface
         $template->insertText('username', $this->user->name . ' - [UID ' . $this->user->id . ']');
 
         // Render the form
-        $template->insertTemplate('form', $this->form->getRenderer()->show());
+        $template->appendTemplate('form', $this->form->getRenderer()->show());
 
         return $template;
     }

@@ -102,7 +102,8 @@ class Manager extends \Uni\Controller\AdminIface
     public function show()
     {
         $template = parent::show();
-        $template->replaceTemplate('table', $this->table->getRenderer()->show());
+
+        $template->appendTemplate('table', $this->table->getRenderer()->show());
 
         $this->getActionPanel()->add(\Tk\Ui\Button::create('New Institution',
             \Uni\Uri::createHomeUrl('/institutionEdit.html'), 'fa fa-university'));

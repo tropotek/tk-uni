@@ -102,16 +102,18 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
 
         // Enrolment Dialog
         $template->appendTemplate('enrollment', $this->userDialog->show());
+
         //$template->setAttr('addUser', 'data-target', '#'.$this->userDialog->getId());
         $this->getActionPanel()->add(\Tk\Ui\Button::create('Enroll','#', 'fa fa-user-plus'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->userDialog->getId())
             ->setAttr('title', 'Add an existing student to this subject');
 
         // Enrolled Table
-        $template->replaceTemplate('enrolledTable', $this->enrolledTable->show());
+        $template->appendTemplate('enrolledTable', $this->enrolledTable->show());
         
         // Pending Table
-        $template->replaceTemplate('pendingTable', $this->pendingTable->show());
+        $template->appendTemplate('pendingTable', $this->pendingTable->show());
+
         //$template->setAttr('modelBtn', 'data-target', '#'.$this->pendingTable->getDialog()->getId());
         $this->getActionPanel()->add(\Tk\Ui\Button::create('Pre-Enroll','#', 'fa fa-user-plus'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->pendingTable->getDialog()->getId())
