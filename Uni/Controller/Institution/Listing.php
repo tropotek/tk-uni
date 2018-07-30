@@ -34,8 +34,7 @@ class Listing extends \Uni\Controller\AdminIface
      * show()
      *
      * @return \Dom\Template
-     * @throws \Dom\Exception
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function show()
     {
@@ -58,7 +57,7 @@ class Listing extends \Uni\Controller\AdminIface
             $row->setAttr('title', 'href', $loginUrl);
             $row->setAttr('login-url', 'href', $loginUrl);
 
-            $row->insertHtml('description', \Tk\Str::wordcat(strip_tags($institution->description), 200));
+            $row->appendHtml('description', \Tk\Str::wordcat(strip_tags($institution->description), 200));
 
             if ($institution->getLogoUrl()) {
                 $row->setAttr('image', 'src', $institution->getLogoUrl());
@@ -89,7 +88,7 @@ class Listing extends \Uni\Controller\AdminIface
       <div class="col-md-4" repeat="ins-row" var="ins-row">
         <div class="institution-cell">
           <h3><a href="#" var="title"></a></h3>
-          <p var="description"></p>
+          <div var="description"></div>
           <div class="team-member-social clearfix">
             <a href="#" class="btn btn-primary" var="login-url"><i class="fa fa-sign-in"></i> Login</a>
           </div>

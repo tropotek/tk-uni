@@ -102,7 +102,7 @@ class Recover extends Iface
         $template = parent::show();
 
         // Render the form
-        $template->insertTemplate('form', $this->form->getRenderer()->show());
+        $template->appendTemplate('form', $this->form->getRenderer()->show());
 
         if ($this->getConfig()->get('site.client.registration')) {
             $template->setChoice('register');

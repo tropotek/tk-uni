@@ -42,10 +42,7 @@ class Register extends Iface
 
     /**
      * @param Request $request
-     * @throws \Tk\Exception
      * @throws \Exception
-     * @throws \ReflectionException
-     * @throws Form\Exception
      */
     public function doDefault(Request $request)
     {
@@ -146,8 +143,7 @@ class Register extends Iface
      * Activate the user account if not activated already, then trash the request hash....
      *
      * @param Request $request
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function doConfirmation($request)
     {
@@ -201,7 +197,7 @@ class Register extends Iface
         } else {
             $template->setChoice('form');
             // Render the form
-            $template->insertTemplate('form', $this->form->getRenderer()->show());
+            $template->appendTemplate('form', $this->form->getRenderer()->show());
         }
 
         return $template;

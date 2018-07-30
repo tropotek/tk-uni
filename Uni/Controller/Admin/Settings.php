@@ -112,7 +112,7 @@ class Settings extends \Uni\Controller\AdminIface
         //$this->getActionPanel()->add(\Tk\Ui\Button::create('Users', \Tk\Uri::create('/admin/userManager.html'), 'fa fa-users'));
 
         // Render the form
-        $template->insertTemplate('form', $this->form->getRenderer()->show());
+        $template->appendTemplate('form', $this->form->getRenderer()->show());
 
         return $template;
     }

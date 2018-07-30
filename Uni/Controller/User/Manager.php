@@ -169,7 +169,7 @@ class Manager extends \Uni\Controller\AdminIface
     {
         $template = parent::show();
 
-        $template->replaceTemplate('table', $this->table->getRenderer()->show());
+        $template->appendTemplate('table', $this->table->getRenderer()->show());
 
         return $template;
     }

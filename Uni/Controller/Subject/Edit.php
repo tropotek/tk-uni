@@ -131,7 +131,7 @@ class Edit extends \Uni\Controller\AdminIface
         $template = parent::show();
 
         // Render the form
-        $template->insertTemplate('form', $this->form->getRenderer()->show());
+        $template->appendTemplate('form', $this->form->getRenderer()->show());
 
         if ($this->subject->id && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
             if(!$this->getConfig()->isSubjectUrl()) {
