@@ -52,17 +52,6 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function doDefaultRole(\Tk\Request $request, $targetRole)
     {
         $this->targetRole = $targetRole;
-        switch($targetRole) {
-            case \Uni\Db\Role::TYPE_ADMIN:
-                $this->setPageTitle('Admin Edit');
-                break;
-            case \Uni\Db\Role::TYPE_STAFF:
-                $this->setPageTitle('Staff Edit');
-                break;
-            case \Uni\Db\Role::TYPE_STUDENT:
-                $this->setPageTitle('Student Edit');
-                break;
-        }
         $this->doDefault($request);
     }
 
@@ -85,6 +74,18 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function doDefault(\Tk\Request $request)
     {
+        switch($this->targetRole) {
+            case \Uni\Db\Role::TYPE_ADMIN:
+                $this->setPageTitle('Admin Edit');
+                break;
+            case \Uni\Db\Role::TYPE_STAFF:
+                $this->setPageTitle('Staff Edit');
+                break;
+            case \Uni\Db\Role::TYPE_STUDENT:
+                $this->setPageTitle('Student Edit');
+                break;
+        }
+
         $this->institution = $this->getUser()->getInstitution();
 
         $this->user = $this->getConfig()->createUser();

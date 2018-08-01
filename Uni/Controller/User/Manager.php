@@ -57,17 +57,6 @@ class Manager extends \Uni\Controller\AdminIface
     public function doDefaultRole(\Tk\Request $request, $targetRole)
     {
         $this->targetRole = $targetRole;
-        switch($targetRole) {
-            case \Uni\Db\Role::TYPE_ADMIN:
-                $this->setPageTitle('Admin Users');
-                break;
-            case \Uni\Db\Role::TYPE_STAFF:
-                $this->setPageTitle('Staff Manager');
-                break;
-            case \Uni\Db\Role::TYPE_STUDENT:
-                $this->setPageTitle('Student Manager');
-                break;
-        }
         $this->doDefault($request);
     }
 
@@ -90,6 +79,17 @@ class Manager extends \Uni\Controller\AdminIface
      */
     public function doDefault(\Tk\Request $request)
     {
+        switch($this->targetRole) {
+            case \Uni\Db\Role::TYPE_ADMIN:
+                $this->setPageTitle('Admin Users');
+                break;
+            case \Uni\Db\Role::TYPE_STAFF:
+                $this->setPageTitle('Staff Manager');
+                break;
+            case \Uni\Db\Role::TYPE_STUDENT:
+                $this->setPageTitle('Student Manager');
+                break;
+        }
         if (!$this->subject && $request->has('subjectId'))
             $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
         if (!$this->editUrl) {
