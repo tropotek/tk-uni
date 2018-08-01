@@ -41,8 +41,8 @@ CREATE TABLE IF NOT EXISTS `user_role_institution` (
 INSERT INTO `user_role` (name, type, description, static, modified, created) VALUES
   ('Administrator', 'admin', 'System administrator role', 1, NOW(), NOW()),
   ('Client', 'client', 'Institution user account role', 1, NOW(), NOW()),
-  ('Staff', 'staff', 'Institutions Default staff role', 1, NOW(), NOW()),
-  ('Student', 'student', 'Institutions Default student role', 1, NOW(), NOW())
+  ('Staff', 'staff', 'Institutions default staff role', 1, NOW(), NOW()),
+  ('Student', 'student', 'Institutions default student role', 1, NOW(), NOW())
 ;
 
 
@@ -62,6 +62,26 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
   `name` varchar(128) NOT NULL DEFAULT '',
   PRIMARY KEY `role_id_key` (`role_id`, `name`)
 ) ENGINE=InnoDB;
+
+
+
+
+INSERT INTO `user_role` (name, type, description, static, modified, created) VALUES
+  ('Coordinator', 'staff', 'Staff Coordinator role', 1, NOW(), NOW()),
+  ('Lecturer', 'staff', 'Staff Lecturer role', 1, NOW(), NOW())
+;
+
+INSERT INTO `user_permission` (`role_id`, `name`)
+  VALUES
+    (5, 'perm.manage.staff'),
+    (5, 'perm.manage.student'),
+    (5, 'perm.manage.subject')
+;
+
+
+
+
+
 
 
 
@@ -89,10 +109,6 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
 #   );
 # alter table user drop column username;
 # alter table user drop column password;
-
-
-
-
 
 
 

@@ -110,11 +110,6 @@ class Edit extends \Uni\Controller\AdminIface
      */
     public function doSubmit($form, $event)
     {
-        if (!$this->getUser()->getRole()->hasPermission(\Uni\Db\Permission::MANAGE_STAFF)) {
-            \Tk\Alert::addError('You do not have permission to edit this record.');
-            $this->getBackUrl()->redirect();
-        }
-
         // Load the object with data from the form using a helper object
         $this->getConfig()->getInstitutionMapper()->mapForm($form->getValues(), $this->institution);
         $this->getConfig()->getUserMapper()->mapForm($form->getValues(), $this->user);
