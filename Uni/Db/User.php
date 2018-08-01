@@ -11,16 +11,32 @@ use Tk\Db\Data;
  */
 class User extends \Bs\Db\User implements UserIface
 {
+    /**
+     * @deprecated Use Role::TYPE_PUBLIC
+     */
     const ROLE_PUBLIC = 'public';
+    /**
+     * @deprecated Use Role::TYPE_ADMIN
+     */
     const ROLE_ADMIN = 'admin';
-    const ROLE_CLIENT= 'client';
+    /**
+     * @deprecated Use Role::TYPE_CLIENT
+     */
+    const ROLE_CLIENT = 'client';
+    /**
+     * @deprecated Use Role::TYPE_STAFF
+     */
     const ROLE_STAFF = 'staff';
+    /**
+     * @deprecated Use Role::TYPE_STUDENT
+     */
     const ROLE_STUDENT = 'student';
+
 
     /**
      * @var int
      */
-    public $institutionId = null;
+    public $institutionId = 0;
 
     /**
      * @var string
@@ -90,8 +106,8 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function generateHash($isTemp = false)
     {
-        if (!$this->institutionId || !$this->username) {
-            throw new \Tk\Exception('The username and institutionId must be set before generating a valid hash');
+        if (!$this->username) {
+            throw new \Tk\Exception('The object must be saved and have a valid username before generating a hash.');
         }
         $key = sprintf('%s%s%s', $this->getVolatileId(), $this->institutionId, $this->username);
         if ($isTemp) {
@@ -121,7 +137,7 @@ class User extends \Bs\Db\User implements UserIface
     {
         if (!$this->institution) {
             $this->institution = InstitutionMap::create()->find($this->institutionId);
-            if (!$this->institution && $this->hasRole(\Uni\Db\User::ROLE_CLIENT)) {
+            if (!$this->institution && $this->isClient()) {
                 $this->institution = InstitutionMap::create()->findByUserId($this->id);
             }
         }
@@ -148,6 +164,27 @@ class User extends \Bs\Db\User implements UserIface
     }
 
     /**
+     * This is the institution assigned staff/student number
+     * @return int
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @return null|\Tk\Uri
+     * @throws \Exception
+     */
+    public function getImageUrl()
+    {
+        if ($this->image) {
+            return \Tk\Uri::create($this->getConfig()->getDataUrl() . $this->getDataPath() . $this->image);
+        }
+        return null;
+    }
+
+    /**
      * Return the users home|dashboard relative url
      *
      * @return \Tk\Uri
@@ -158,21 +195,14 @@ class User extends \Bs\Db\User implements UserIface
         return \Uni\Config::getInstance()->getUserHomeUrl($this);
     }
 
-    /**
-     * @return string
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
+
 
     /**
-     *
      * @return boolean
      */
     public function isClient()
     {
-        return $this->hasRole(self::ROLE_CLIENT);
+        return $this->getRole()->hasType(Role::TYPE_CLIENT);
     }
 
     /**
@@ -180,7 +210,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isStaff()
     {
-        return $this->hasRole(self::ROLE_STAFF);
+        return $this->getRole()->hasType(Role::TYPE_STAFF);
     }
 
     /**
@@ -188,8 +218,9 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isStudent()
     {
-        return $this->hasRole(self::ROLE_STUDENT);
+        return $this->getRole()->hasType(Role::TYPE_STUDENT);
     }
+
 
     /**
      * Returns true if the user is enrolled fully into the subject
@@ -215,8 +246,8 @@ class User extends \Bs\Db\User implements UserIface
     {
         $errors = array();
 
-        if (!$this->role || !in_array($this->role, \Tk\ObjectUtil::getClassConstants($this, 'ROLE_'))) {
-            $errors['role'] = 'Invalid field role value';
+        if (!$this->roleId) {
+            $errors['roleId'] = 'Invalid field roleId value';
         }
 
         if (!$this->username) {

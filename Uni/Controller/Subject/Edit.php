@@ -111,7 +111,7 @@ class Edit extends \Uni\Controller\AdminIface
         $this->subject->save();
 
         // If this is a staff member add them to the subject
-        if ($this->getUser()->hasRole(\Uni\Db\User::ROLE_STAFF)) {
+        if ($this->getUser()->isStaff()) {
             $this->getConfig()->getSubjectMapper()->addUser($this->subject->id, $this->getUser()->id);
         }
 
@@ -133,7 +133,7 @@ class Edit extends \Uni\Controller\AdminIface
         // Render the form
         $template->appendTemplate('form', $this->form->getRenderer()->show());
 
-        if ($this->subject->id && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
+        if ($this->subject->getId() && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
             if(!$this->getConfig()->isSubjectUrl()) {
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
                     \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->id), 'fa fa-list'));
@@ -142,6 +142,8 @@ class Edit extends \Uni\Controller\AdminIface
             } else {
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
                     \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
+                $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
+                    \Uni\Uri::createSubjectUrl('/studentManager.html'), 'fa fa-group'));
             }
             $template->setChoice('update');
         }

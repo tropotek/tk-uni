@@ -51,14 +51,18 @@ class Manager extends \Uni\Controller\AdminIface
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
         $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createHomeUrl('/subjectEdit.html'));
         $this->table->addCell(new \Tk\Table\Cell\Text('code'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('email'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('dateStart'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('dateEnd'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('created'));
+        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
+        $this->table->addCell(new \Tk\Table\Cell\Boolean('active'))->setOrderProperty()->setOnPropertyValue(function ($cell, $obj, $value) {
+            /** @var \Uni\Db\Subject $obj */
+            return $obj->isActive();
+        });
+        $this->table->addCell(\Tk\Table\Cell\Date::create('dateStart')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->table->addCell(\Tk\Table\Cell\Date::create('dateEnd')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->table->addCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
         $this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
-        if ($this->getUser()->hasRole(\Uni\Db\User::ROLE_STAFF)) {
+        if ($this->getUser()->isStaff()) {
             $list = array('-- Show All --' => '', 'My Subjects' => '1');
             $this->table->addFilter(new Field\Select('userId', $list))->setLabel('')->setValue('1');
         }

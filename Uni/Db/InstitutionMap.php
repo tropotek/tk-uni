@@ -16,7 +16,6 @@ class InstitutionMap extends Mapper
 {
 
     /**
-     *
      * @return \Tk\DataMap\DataMap
      */
     public function getDbMap()
@@ -39,7 +38,6 @@ class InstitutionMap extends Mapper
     }
 
     /**
-     *
      * @return \Tk\DataMap\DataMap
      */
     public function getFormMap()
@@ -63,7 +61,7 @@ class InstitutionMap extends Mapper
      *
      * @param null|\Tk\Db\Tool $tool
      * @return ArrayObject|Institution[]
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findActive($tool = null)
     {
@@ -72,11 +70,10 @@ class InstitutionMap extends Mapper
     }
 
     /**
-     *
      * @param $hash
      * @param int $active
      * @return \Tk\Db\Map\Model|Institution
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findByhash($hash, $active = 1)
     {
@@ -85,10 +82,9 @@ class InstitutionMap extends Mapper
     }
 
     /**
-     *
      * @param $domain
      * @return \Tk\Db\Map\Model|Institution
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findByDomain($domain)
     {
@@ -97,10 +93,9 @@ class InstitutionMap extends Mapper
     }
 
     /**
-     *
      * @param int $userId
      * @return \Tk\Db\Map\Model|Institution
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findByUserId($userId)
     {
@@ -109,12 +104,10 @@ class InstitutionMap extends Mapper
     }
 
     /**
-     * Find filtered records
-     *
      * @param array $filter
      * @param Tool $tool
      * @return ArrayObject|Institution[]
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findFiltered($filter = array(), $tool = null)
     {

@@ -29,7 +29,6 @@ class PageTemplateHandler extends \Bs\Listener\PageTemplateHandler
 
             // Add anything to the page template here ...
             if ($user) {
-                $template->setAttr('dashUrl', 'href', \Uni\Uri::createHomeUrl('/index.html'));
                 $institutionId = $this->getConfig()->getInstitutionId();
                 $subjectId = $this->getConfig()->getSubjectId();
                 $js = <<<JS

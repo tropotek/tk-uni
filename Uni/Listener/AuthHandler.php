@@ -31,6 +31,10 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         if ($auth->getIdentity()) {         // Check if user is logged in
             /** @var \Uni\Db\User $user */
             $user = $config->getUserMapper()->find($auth->getIdentity());
+            if (!$user->isActive()) {
+                $config->setUser(null);
+                $user = null;
+            }
             if ($user && $user->sessionId != $config->getSession()->getId()) {
                 $user->sessionId = $config->getSession()->getId();
                 $user->save();
@@ -44,7 +48,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $role = $event->getRequest()->getAttribute('role');
         if (!$role || empty($role)) return;
 
-        if (!$user || $user->hasRole(\Uni\Db\User::ROLE_PUBLIC)) {
+        if (!$user || $user->isPublic()) {
             if ($event->getRequest()->getUri()->getRelativePath() != '/login.html') {
                 \Tk\Uri::create('/login.html')->redirect();
             } else {
@@ -52,7 +56,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                 $config->getUserHomeUrl($user)->redirect();
             }
         } else {
-            if (!$user->hasRole($role)) {
+            if (!$user->getRole()->hasType($role)) {
                 \Tk\Alert::addWarning('You do not have access to the requested page.');
                 $config->getUserHomeUrl($user)->redirect();
             }
@@ -280,7 +284,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $user = $config->getUser();
 
         if (!$event->getRedirect()) {
-            $url = \Tk\Uri::create('/index.html');
+            $url = \Tk\Uri::create('/');
             if ($user && !$user->isClient() && !$user->isAdmin() && $user->getInstitution()) {
                 $url = \Uni\Uri::createInstitutionUrl('/login.html', $user->getInstitution());
             }

@@ -55,7 +55,7 @@ class Register extends Iface
         }
 
         $this->user = $this->getConfig()->createUser();
-        $this->user->role = \Uni\Db\User::ROLE_CLIENT;
+        $this->user->roleId = \Uni\Db\Role::DEFAULT_TYPE_STAFF;
 
         $this->form = $this->getConfig()->createForm('register-account');
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
@@ -116,7 +116,7 @@ class Register extends Iface
         }
 
         // Create a user and make a temp hash until the user activates the account
-        $this->user->role = \Uni\Db\User::ROLE_CLIENT;
+        $this->user->roleId = \Uni\Db\ROLE::DEFAULT_TYPE_CLIENT;
         $this->user->active = false;
         $this->user->setNewPassword($pass);
         $this->user->save();
@@ -154,7 +154,7 @@ class Register extends Iface
         }
         /** @var \Uni\Db\User $user */
         $user = $this->getConfig()->getUserMapper()->findByHash($hash);
-        if (!$user || $user->role != \Uni\Db\User::ROLE_CLIENT) {
+        if (!$user || $user->getRoleType() != \Uni\Db\User::ROLE_CLIENT) {
             throw new \InvalidArgumentException('Cannot locate user. Please contact administrator.');
         }
         if ($user->active == true) {

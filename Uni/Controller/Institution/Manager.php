@@ -79,7 +79,7 @@ class Manager extends \Uni\Controller\AdminIface
             }
             return $value;
         });
-        $this->table->addCell(new \Tk\Table\Cell\Text('email'));
+        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
         $this->table->addCell(new \Tk\Table\Cell\Text('description'))->setCharacterLimit(64);
         $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
         $this->table->addCell(new \Tk\Table\Cell\Date('created'));

@@ -27,38 +27,53 @@ $routes->add('institution-list', new \Tk\Routing\Route('/institutions.html', 'Un
 
 
 // Admin Pages
-$routes->add('admin-dashboard', new \Tk\Routing\Route('/admin/index.html', 'Uni\Controller\Admin\Dashboard::doDefault'));
-$routes->add('admin-dashboard-base', new \Tk\Routing\Route('/admin/', 'Uni\Controller\Admin\Dashboard::doDefault'));
+//$routes->add('admin-dashboard', new \Tk\Routing\Route('/admin/index.html', 'Uni\Controller\Admin\Dashboard::doDefault'));
+//$routes->add('admin-dashboard-base', new \Tk\Routing\Route('/admin/', 'Uni\Controller\Admin\Dashboard::doDefault'));
 
-$routes->add('admin-settings', new \Tk\Routing\Route('/admin/settings.html', 'Uni\Controller\Admin\Settings::doDefault'));
-$routes->add('admin-institution-manager', new \Tk\Routing\Route('/admin/institutionManager.html', 'Uni\Controller\Institution\Manager::doDefault'));
-$routes->add('admin-institution-edit', new \Tk\Routing\Route('/admin/institutionEdit.html', 'Uni\Controller\Institution\Edit::doDefault'));
 $routes->add('admin-institution-plugin-manager', new \Tk\Routing\Route('/admin/{zoneName}/{zoneId}/plugins.html', 'Uni\Controller\PluginZoneManager::doDefault',
     array('zoneName' => 'institution', 'zoneId' => '0') ));
-$routes->add('admin-user-manager', new \Tk\Routing\Route('/admin/userManager.html', 'Uni\Controller\User\Manager::doDefault'));
-$routes->add('admin-user-edit', new \Tk\Routing\Route('/admin/userEdit.html', 'Uni\Controller\User\Edit::doDefault'));
+
+$routes->add('admin-settings', new \Tk\Routing\Route('/admin/settings.html', 'Uni\Controller\Admin\Settings::doDefault'));
+
+$routes->add('admin-institution-manager', new \Tk\Routing\Route('/admin/institutionManager.html', 'Uni\Controller\Institution\Manager::doDefault'));
+$routes->add('admin-institution-edit', new \Tk\Routing\Route('/admin/institutionEdit.html', 'Uni\Controller\Institution\Edit::doDefault'));
+
+$routes->add('admin-adminUser-manager', new \Tk\Routing\Route('/admin/adminManager.html', 'Uni\Controller\User\Manager::doDefaultRole',
+    array('targetRole' => \Uni\Db\Role::TYPE_ADMIN)));
+$routes->add('admin-adminUser-edit', new \Tk\Routing\Route('/admin/adminEdit.html', 'Uni\Controller\User\Edit::doDefaultRole',
+    array('targetRole' => \Uni\Db\Role::TYPE_ADMIN)));
+
 $routes->add('admin-user-profile', new \Tk\Routing\Route('/admin/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
+$routes->add('admin-dev-events', new \Tk\Routing\Route('/admin/dev/events.html', 'Bs\Controller\Admin\Dev\Events::doDefault'));
 
 
 // Client Pages
 //$routes->add('client-dashboard', new \Tk\Routing\Route('/client/index.html', 'Uni\Controller\Client\Dashboard::doDefault'));
 //$routes->add('client-dashboard-base', new \Tk\Routing\Route('/client/', 'Uni\Controller\Client\Dashboard::doDefault'));
 
-$routes->add('client-user-profile', new \Tk\Routing\Route('/client/profile.html', 'Uni\Controller\User\Profile::doDefault'));
-$routes->add('client-staff-manager', new \Tk\Routing\Route('/client/staffManager.html', 'Uni\Controller\User\StaffManager::doDefault'));
-$routes->add('client-staff-edit', new \Tk\Routing\Route('/client/staffEdit.html', 'Uni\Controller\User\StaffEdit::doDefault'));
-$routes->add('client-student-manager', new \Tk\Routing\Route('/client/studentManager.html', 'Uni\Controller\User\StudentManager::doDefault'));
-$routes->add('client-student-edit', new \Tk\Routing\Route('/client/studentEdit.html', 'Uni\Controller\User\StudentEdit::doDefault'));
-
-$routes->add('client-institution-edit', new \Tk\Routing\Route('/client/institutionEdit.html', 'Uni\Controller\Institution\Edit::doDefault'));
 $routes->add('client-institution-plugin-manager', new \Tk\Routing\Route('/client/{zoneName}/{zoneId}/plugins.html', 'Uni\Controller\PluginZoneManager::doDefault',
     array('zoneName' => 'institution', 'zoneId' => '0') ));
+
+$routes->add('client-institution-edit', new \Tk\Routing\Route('/client/settings.html', 'Uni\Controller\Institution\Edit::doDefault'));
+$routes->add('client-user-profile', new \Tk\Routing\Route('/client/profile.html', 'Uni\Controller\User\Profile::doDefault'));
+
+$routes->add('client-role-manager', new \Tk\Routing\Route('/client/roleManager.html', 'Uni\Controller\Role\Manager::doDefault'));
+$routes->add('client-role-edit', new \Tk\Routing\Route('/client/roleEdit.html', 'Uni\Controller\Role\Edit::doDefault'));
+
+$routes->add('client-staff-manager', new \Tk\Routing\Route('/client/staffManager.html', 'Uni\Controller\User\Manager::doDefaultRole',
+    array('targetRole' => \Uni\Db\Role::TYPE_STAFF)));
+$routes->add('client-staff-edit', new \Tk\Routing\Route('/client/staffEdit.html', 'Uni\Controller\User\Edit::doDefaultRole',
+    array('targetRole' => \Uni\Db\Role::TYPE_STAFF)));
+
+$routes->add('client-student-manager', new \Tk\Routing\Route('/client/studentManager.html', 'Uni\Controller\User\Manager::doDefaultRole',
+    array('targetRole' => \Uni\Db\Role::TYPE_STUDENT)));
+$routes->add('client-student-edit', new \Tk\Routing\Route('/client/studentEdit.html', 'Uni\Controller\User\Edit::doDefaultRole',
+    array('targetRole' => \Uni\Db\Role::TYPE_STUDENT)));
 
 $routes->add('client-subject-manager', new \Tk\Routing\Route('/client/subjectManager.html', 'Uni\Controller\Subject\Manager::doDefault'));
 $routes->add('client-subject-edit', new \Tk\Routing\Route('/client/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('client-subject-enrollment', new \Tk\Routing\Route('/client/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
-
 
 
 // Staff Pages
@@ -73,9 +88,18 @@ $routes->add('staff-subject-add-enrollment', new \Tk\Routing\Route('/staff/subje
 $routes->add('staff-subject-edit', new \Tk\Routing\Route('/staff/{subjectCode}/subjectEdit.html', 'Uni\Controller\Subject\Edit::doSubject'));
 $routes->add('staff-subject-enrollment', new \Tk\Routing\Route('/staff/{subjectCode}/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doSubject'));
 
-$routes->add('staff-student-manager', new \Tk\Routing\Route('/staff/{subjectCode}/studentManager.html', 'Uni\Controller\User\StudentManager::doSubject'));
-$routes->add('staff-student-edit', new \Tk\Routing\Route('/staff/{subjectCode}/studentEdit.html', 'Uni\Controller\User\StudentEdit::doSubject'));
+$routes->add('staff-role-manager', new \Tk\Routing\Route('/staff/roleManager.html', 'Uni\Controller\Role\Manager::doDefault'));
+$routes->add('staff-role-edit', new \Tk\Routing\Route('/staff/roleEdit.html', 'Uni\Controller\Role\Edit::doDefault'));
 
+$routes->add('staff-staff-manager', new \Tk\Routing\Route('/staff/staffManager.html', 'Uni\Controller\User\Manager::doDefaultRole',
+    array('targetRole' => \Uni\Db\Role::TYPE_STAFF)));
+$routes->add('staff-staff-edit', new \Tk\Routing\Route('/staff/staffEdit.html', 'Uni\Controller\User\Edit::doDefaultRole',
+    array('targetRole' => \Uni\Db\Role::TYPE_STAFF)));
+
+$routes->add('staff-student-manager', new \Tk\Routing\Route('/staff/{subjectCode}/studentManager.html', 'Uni\Controller\User\Manager::doSubject',
+    array('targetRole' => \Uni\Db\Role::TYPE_STUDENT)));
+$routes->add('staff-student-edit', new \Tk\Routing\Route('/staff/{subjectCode}/studentEdit.html', 'Uni\Controller\User\Edit::doSubject',
+    array('targetRole' => \Uni\Db\Role::TYPE_STUDENT)));
 
 
 // Student Pages
@@ -85,6 +109,8 @@ $routes->add('staff-student-edit', new \Tk\Routing\Route('/staff/{subjectCode}/s
 
 $routes->add('student-user-profile', new \Tk\Routing\Route('/student/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 $routes->add('student-subject-manager', new \Tk\Routing\Route('/student/subjectManager.html', 'Uni\Controller\Subject\StudentManager::doDefault'));
+
+
 
 
 

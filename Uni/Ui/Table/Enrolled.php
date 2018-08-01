@@ -57,21 +57,26 @@ class Enrolled extends \Dom\Renderer\Renderer
         $this->table->addCell(new NameCell('name'))->addCss('key')->setUrl($this->editUrl);
         $this->table->addCell(new \Tk\Table\Cell\Email('email'));
         $this->table->addCell(new \Tk\Table\Cell\Text('username'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('role'));
+        $this->table->addCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+            /** @var \Uni\Db\User $obj */
+            if ($obj->getRole())
+                $value = $obj->getRole()->getName();
+            return $value;
+        });
         $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
         $this->table->addCell(new \Tk\Table\Cell\Date('created'));
 
         // Actions
-        $this->table->addAction(new DeleteUser())->setSubject($this->subject);
+        $this->table->addAction(DeleteUser::create()->setSubject($this->subject));
         $this->table->addAction(\Tk\Table\Action\Csv::create());
 
         // Set list
         $filter = $this->table->getFilterValues();
         $filter['institutionId'] = $this->subject->institutionId;
         $filter['subjectId'] = $this->subject->getId();
-        $filter['role'] = array(\Uni\Db\User::ROLE_STAFF, \Uni\Db\User::ROLE_STUDENT);
+        $filter['type'] = array(\Uni\Db\Role::TYPE_STAFF, \Uni\Db\Role::TYPE_STUDENT);
 
-        $users = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->table->getTool('role, name'));
+        $users = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->table->getTool('name'));
         $this->table->setList($users);
 
     }

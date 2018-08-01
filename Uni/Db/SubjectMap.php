@@ -17,7 +17,6 @@ class SubjectMap extends Mapper
 {
 
     /**
-     *
      * @return \Tk\DataMap\DataMap
      */
     public function getDbMap()
@@ -39,7 +38,6 @@ class SubjectMap extends Mapper
     }
 
     /**
-     *
      * @return \Tk\DataMap\DataMap
      */
     public function getFormMap()

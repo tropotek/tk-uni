@@ -1,14 +1,10 @@
 <?php
 namespace Uni\Controller\User;
 
-use Tk\Db\Exception;
-use Tk\Request;
 use Dom\Template;
 use Tk\Form\Field;
 
 /**
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -36,6 +32,12 @@ class Manager extends \Uni\Controller\AdminIface
      */
     protected $actionsCell = null;
 
+    /**
+     * Setup the controller to work with users of this role
+     * @var string
+     */
+    protected $targetRole = 'user';
+
 
     /**
      * Manager constructor.
@@ -43,29 +45,60 @@ class Manager extends \Uni\Controller\AdminIface
      */
     public function __construct()
     {
-        $this->setPageHeading();
+        $this->setPageTitle('User Manager');
         $this->actionsCell = new \Tk\Table\Cell\Actions();
     }
 
     /**
-     * @return \Tk\Table\Cell\Actions
+     * @param \Tk\Request $request
+     * @param string $targetRole
+     * @throws \Exception
      */
-    public function getActionsCell()
+    public function doDefaultRole(\Tk\Request $request, $targetRole)
     {
-        return $this->actionsCell;
+        $this->targetRole = $targetRole;
+        switch($targetRole) {
+            case \Uni\Db\Role::TYPE_ADMIN:
+                $this->setPageTitle('Admin Users');
+                break;
+            case \Uni\Db\Role::TYPE_STAFF:
+                $this->setPageTitle('Staff Manager');
+                break;
+            case \Uni\Db\Role::TYPE_STUDENT:
+                $this->setPageTitle('Student Manager');
+                break;
+        }
+        $this->doDefault($request);
     }
 
     /**
-     * @param Request $request
+     * @param \Tk\Request $request
+     * @param string $subjectCode
+     * @param string $targetRole
      * @throws \Exception
      */
-    public function doDefault(Request $request)
+    public function doSubject(\Tk\Request $request, $subjectCode, $targetRole)
     {
+        $this->targetRole = $targetRole;
+        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
+        $this->doDefault($request);
+    }
 
+    /**
+     * @param \Tk\Request $request
+     * @throws \Exception
+     */
+    public function doDefault(\Tk\Request $request)
+    {
         if (!$this->subject && $request->has('subjectId'))
             $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
-        if (!$this->editUrl)
-            $this->editUrl = \Uni\Uri::createHomeUrl('/userEdit.html');
+        if (!$this->editUrl) {
+            $this->editUrl = \Uni\Uri::createHomeUrl('/'.$this->targetRole.'Edit.html');
+            if ($this->getConfig()->isSubjectUrl()) {
+                $this->editUrl = \Uni\Uri::createSubjectUrl('/'.$this->targetRole.'Edit.html');
+            }
+        }
+
 
         if (!$this->getUser()->isStudent()) {
             $this->actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade',
@@ -76,32 +109,36 @@ class Manager extends \Uni\Controller\AdminIface
                     if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs(\Uni\Config::getInstance()->getUser(), $obj)) {
                         $button->setUrl(\Uni\Uri::create()->set(\Uni\Listener\MasqueradeHandler::MSQ, $obj->getHash()));
                     } else {
-                        //$button->setAttr('disabled', 'disabled')->addCss('disabled');
-                        $button->setVisible(false);
+                        $button->setAttr('disabled', 'disabled')->addCss('disabled');
+                        //$button->setVisible(false);
                     }
                 });
         }
 
-        $this->table = \Uni\Config::getInstance()->createTable('UserList');
+        $this->table = \Uni\Config::getInstance()->createTable($this->targetRole . '-user-list');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
 
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
         $this->table->addCell($this->actionsCell);
         $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(clone $this->editUrl);
         $this->table->addCell(new \Tk\Table\Cell\Text('username'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('email'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('role'));
+        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
+        $this->table->addCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+            /** @var \Uni\Db\User $obj */
+            if ($obj->getRole())
+                $value = $obj->getRole()->getName();
+            return $value;
+        });
         $this->table->addCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
         $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
         $this->table->addCell(new \Tk\Table\Cell\Date('lastLogin'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('created'));
+        $this->table->addCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
         $this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
 
         // Actions
-        //$this->table->addAction(\Tk\Table\Action\Button::getInstance('New User', 'fa fa-plus', \Uni\Uri::createHomeUrl('/userEdit.html'));
-        //$this->table->addAction(\Tk\Table\Action\Delete::create());
+        $this->table->addAction(\Tk\Table\Action\Delete::create()->setExcludeIdList(array(1)));
         $this->table->addAction(\Tk\Table\Action\Csv::create());
 
         $this->initTable();
@@ -114,26 +151,13 @@ class Manager extends \Uni\Controller\AdminIface
      */
     public function initTable()
     {
-        if ($this->getUser()->hasRole(array(\Uni\Db\User::ROLE_CLIENT, \Uni\Db\User::ROLE_STAFF))) {
-            $list = array('-- Role --' => '', 'Staff' => \Uni\Db\User::ROLE_STAFF, 'Student' => \Uni\Db\User::ROLE_STUDENT);
-            try {
-                $this->table->addFilter(new Field\Select('role', $list))->setLabel('');
-            } catch (\Tk\Form\Exception $e) {
-            }
-        }
-
         $filter = $this->table->getFilterValues();
         if ($this->getUser()->getInstitution())
             $filter['institutionId'] = $this->getUser()->getInstitution()->id;
 
-        if (empty($filter['role'])) {
-            $filter['role'] = $this->getUser()->role;
-            if ($this->getUser()->hasRole(array(\Uni\Db\User::ROLE_CLIENT, \Uni\Db\User::ROLE_STAFF))) {
-                $filter['role'] = array(\Uni\Db\User::ROLE_STAFF, \Uni\Db\User::ROLE_STUDENT);
-            }
+        if (empty($filter['type'])) {
+            $filter['type'] = $this->targetRole;
         }
-
-
         $users = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->table->getTool('a.name'));
         $this->table->setList($users);
     }
@@ -143,23 +167,19 @@ class Manager extends \Uni\Controller\AdminIface
      */
     protected function initActionPanel($actionPanel)
     {
-        $actionPanel->add(\Tk\Ui\Button::create('New User', clone $this->editUrl, 'fa fa-user-plus'));
+        $actionPanel->add(\Tk\Ui\Button::create('New ' . ucfirst($this->targetRole), clone $this->editUrl, 'fa fa-user-plus'));
+
+        
+
+
     }
 
     /**
-     *
+     * @return \Tk\Table\Cell\Actions
      */
-    protected function setPageHeading()
+    public function getActionsCell()
     {
-        switch($this->getUser()->role) {
-            case \Uni\Db\User::ROLE_ADMIN:
-                $this->setPageTitle('Administration Manager');
-                break;
-            case \Uni\Db\User::ROLE_CLIENT:
-            case \Uni\Db\User::ROLE_STAFF:
-                $this->setPageTitle('Staff/Student Manager');
-                break;
-        }
+        return $this->actionsCell;
     }
 
     /**
@@ -185,7 +205,7 @@ class Manager extends \Uni\Controller\AdminIface
 <div>
 
   <div class="panel panel-default">
-    <div class="panel-heading"><i class="fa fa-users fa-fw"></i> <span var="panelTitle">Users</span></div>
+    <div class="panel-heading"><i class="fa fa-users fa-fw"></i> <span var="panelTitle"></span></div>
     <div class="panel-body">
       <div var="table"></div>
     </div>

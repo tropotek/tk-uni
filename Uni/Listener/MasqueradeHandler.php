@@ -5,6 +5,7 @@ use Tk\Kernel\KernelEvents;
 use Tk\Event\GetResponseEvent;
 use Tk\Event\AuthEvent;
 use Tk\Auth\AuthEvents;
+use Uni\Db\Role;
 use Uni\Db\User;
 
 /**
@@ -21,10 +22,10 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      * @var array
      */
     public static $roleOrder = array(
-        User::ROLE_ADMIN,           // Highest
-        User::ROLE_CLIENT,
-        User::ROLE_STAFF,
-        User::ROLE_STUDENT          // Lowest
+        Role::TYPE_ADMIN,           // Highest
+        Role::TYPE_CLIENT,
+        Role::TYPE_STAFF,
+        Role::TYPE_STUDENT          // Lowest
     );
 
     /**
@@ -40,14 +41,18 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
             $config = \Uni\Config::getInstance();
             /** @var User $user */
             $user = $config->getUser();
-            if (!$user) throw new \Tk\Exception('Unknown User');
+            if (!$user) {
+                throw new \Tk\Exception('Unknown User');
+            }
             $iid = $config->getInstitutionId();
             if (!$iid)
                 $iid = (int)$request->get('institutionId');
             /** @var User $msqUser */
             $msqUser = $config->getUserMapper()->findByhash($request->get(self::MSQ), $iid);
 
-            if (!$msqUser) throw new \Tk\Exception('Invalid User');
+            if (!$msqUser) {
+                throw new \Tk\Exception('Invalid User');
+            }
             self::masqueradeLogin($user, $msqUser);
         } catch (\Exception $e) {
             \Tk\Alert::addWarning($e->getMessage());
@@ -71,6 +76,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
     {
         $config = \Uni\Config::getInstance();
         if (!$msqUser || !$user) return false;
+
         if ($user->id == $msqUser->id) return false;
 
         $msqArr = $config->getSession()->get(self::SID);
@@ -81,16 +87,16 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
         }
 
         // Get the users role precedence order index
-        $userRoleIdx = array_search($user->role, self::$roleOrder);
-        $msqRoleIdx = array_search($msqUser->role, self::$roleOrder);
+        $userRoleIdx = array_search($user->getRoleType(), self::$roleOrder);
+        $msqRoleIdx = array_search($msqUser->getRoleType(), self::$roleOrder);
 
         // If not admin their role must be higher in precedence see \Uni\Db\User::$roleOrder
-        if (!$user->hasRole(\Uni\Db\User::ROLE_ADMIN) && $userRoleIdx >= $msqRoleIdx) {
+        if (!$user->isAdmin() && $userRoleIdx >= $msqRoleIdx) {
             return false;
         }
 
         // If not admins they must be of the same institution
-        if (!$user->hasRole(\Uni\Db\User::ROLE_ADMIN) && $user->getInstitution()->id != $msqUser->institutionId) {
+        if (!$user->isAdmin() && $user->getInstitution()->id != $msqUser->institutionId) {
             return false;
         }
         return true;

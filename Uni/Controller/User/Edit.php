@@ -1,10 +1,8 @@
 <?php
 namespace Uni\Controller\User;
 
-use Tk\Db\Exception;
 use Tk\Request;
 use Dom\Template;
-use Tk\Form;
 use Tk\Form\Field;
 use Tk\Form\Event;
 
@@ -15,6 +13,11 @@ use Tk\Form\Event;
  */
 class Edit extends \Uni\Controller\AdminEditIface
 {
+    /**
+     * Setup the controller to work with users of this role
+     * @var string
+     */
+    protected $targetRole = '';
 
     /**
      * @var \Uni\Db\User
@@ -38,59 +41,66 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function __construct()
     {
-        $this->setPageHeading();
+        $this->setPageTitle('User Edit');
     }
 
     /**
-     * setPageHeading
-     */
-    public function setPageHeading()
-    {
-        switch($this->getUser()->role) {
-            case \Uni\Db\User::ROLE_ADMIN:
-                $this->setPageTitle('Administration User Edit');
-                break;
-            case \Uni\Db\User::ROLE_CLIENT:
-                $this->setPageTitle('Staff/Student Edit');
-                break;
-            case \Uni\Db\User::ROLE_STAFF:
-                $this->setPageTitle('Staff/Student Edit');
-                break;
-        }
-    }
-
-    /**
-     * @param Request $request
+     * @param \Tk\Request $request
+     * @param string $targetRole
      * @throws \Exception
      */
-    public function doSubject(Request $request, $subjectCode)
+    public function doDefaultRole(\Tk\Request $request, $targetRole)
     {
+        $this->targetRole = $targetRole;
+        switch($targetRole) {
+            case \Uni\Db\Role::TYPE_ADMIN:
+                $this->setPageTitle('Admin Edit');
+                break;
+            case \Uni\Db\Role::TYPE_STAFF:
+                $this->setPageTitle('Staff Edit');
+                break;
+            case \Uni\Db\Role::TYPE_STUDENT:
+                $this->setPageTitle('Student Edit');
+                break;
+        }
+        $this->doDefault($request);
+    }
+
+    /**
+     * @param \Tk\Request $request
+     * @param string $subjectCode
+     * @param string $targetRole
+     * @throws \Exception
+     */
+    public function doSubject(\Tk\Request $request, $subjectCode, $targetRole)
+    {
+        $this->targetRole = $targetRole;
         $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
         $this->doDefault($request);
     }
 
     /**
-     * @param Request $request
+     * @param \Tk\Request $request
      * @throws \Exception
      */
-    public function doDefault(Request $request)
+    public function doDefault(\Tk\Request $request)
     {
         $this->institution = $this->getUser()->getInstitution();
 
         $this->user = $this->getConfig()->createUser();
-        $this->user->role = $this->getUser()->role;
-        if ($this->user->isClient()) {
-            $this->user->role = \Uni\Db\User::ROLE_STAFF;
+        if ($this->targetRole == \Uni\Db\Role::TYPE_STUDENT || $this->targetRole == \Uni\Db\Role::TYPE_STAFF) {
+            if(!$this->institution)
+                throw new \Tk\Exception('Invalid institution');
+            $this->user->institutionId = $this->institution->getId();
         }
+        $this->user->roleId = \Uni\Db\Role::getDefaultRoleId($this->targetRole);
 
         if ($request->has('userId')) {
             $this->user = $this->getConfig()->getUserMapper()->find($request->get('userId'));
-            if (!$this->user) {
+            if (!$this->user)
                 throw new \Tk\Exception('Invalid user account.');
-            }
-            if ($this->institution && $this->institution->id != $this->user->getInstitution()->id) {
-                throw new \Tk\Exception('Invalid user account.');
-            }
+            if ($this->getUser()->isStaff() && $this->getUser()->institutionId != $this->user->institutionId)
+                throw new \Tk\Exception('Invalid system details');
         }
 
         $this->buildForm();
@@ -112,36 +122,44 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         $tabGroup = 'Details';
 
-        if (!$this->getuser()->isStudent()) {
-            $this->form->addField(new Field\Input('username'))->setTabGroup($tabGroup)->setNotes('This is the only required field for LDAP accounts, the other fields will be automatically set on first login.')->setRequired(true);
-            $this->form->addField(new Field\Input('name'))->setTabGroup($tabGroup);
-        } else {
-            $this->form->addField(new Field\Html('name'))->setTabGroup($tabGroup);
+        if ($this->targetRole == \Uni\Db\Role::TYPE_STAFF) {
+            $list = \Uni\Db\RoleMap::create()->findFiltered(array('type' => \Uni\Db\Role::TYPE_STAFF, 'institutionId' => $this->getConfig()->getInstitutionId()));
+            $this->form->addField(Field\Select::createSelect('roleId', $list)->setTabGroup($tabGroup)->setRequired()->prependOption('-- Select --', ''));
         }
-        //$this->form->addField(new Field\Input('displayName'))->setTabGroup($tabGroup);
-        if (!$this->getUser()->isStudent()) {
-            $this->form->addField(new Field\Input('email'))->setTabGroup($tabGroup);
+
+        if (!$this->user->getId() || ($this->getConfig()->canChangePassword() && $this->user->getId() != 1)) {
+            $this->form->addField(new Field\Input('username'))->setTabGroup($tabGroup)->setRequired(true);
         } else {
             $this->form->addField(new Field\Html('username'))->setTabGroup($tabGroup);
-            $this->form->addField(new Field\Html('email'))->setTabGroup($tabGroup);
         }
-        if ($this->user->hasRole(array(\Uni\Db\User::ROLE_STAFF, \Uni\Db\User::ROLE_STUDENT))) {
+
+        $this->form->addField(new Field\Input('email'))->setTabGroup($tabGroup)->setRequired();
+        $this->form->addField(new Field\Input('name'))->setTabGroup($tabGroup);
+        //$this->form->addField(new Field\Input('displayName'))->setTabGroup($tabGroup);
+
+        if ($this->targetRole != \Uni\Db\Role::TYPE_STAFF || $this->targetRole != \Uni\Db\Role::TYPE_STUDENT) {
             $this->form->addField(new Field\Input('uid'))->setLabel('UID')->setTabGroup($tabGroup)
-                ->setNotes('The student or staff number assigned by the institution.');
+                ->setNotes('The student or staff number assigned by the institution (if Applicable).');
         }
-        if ($this->getUser()->isAdmin()) {
-            if ($this->getUser()->hasRole(array(\Uni\Db\User::ROLE_STAFF, \Uni\Db\User::ROLE_CLIENT))) {
-                $list = array('-- Select --' => '', 'Staff' => \Uni\Db\User::ROLE_STAFF, 'Student' => \Uni\Db\User::ROLE_STUDENT);
-                $this->form->addField(new Field\Select('role', $list))->setNotes('Select the access level for this user')
-                    ->setRequired(true)->setTabGroup($tabGroup);
-            }
-        }
-        if (!$this->getuser()->isStudent() && $this->getUser()->getId() != $this->user->getId()) {
+        if($this->getUser()->getId() != $this->user->getId()){
             $this->form->addField(new Field\Checkbox('active'))->setTabGroup($tabGroup);
         }
 
+        $tabGroup = 'Subjects';
+        // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
+        if ($this->user->id && ($this->user->isStaff() || $this->user->isStudent()) ) {
+            $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findActive($this->institution->id));
+            if ($list->count()) {
+                $this->form->addField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
+                    ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
+                    ->setTabGroup($tabGroup)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
+                $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->user->id)->toArray('id');
+                $this->form->setFieldValue('selSubject', $arr);
+            }
+        }
+
         $tabGroup = 'Password';
-        if ($this->user->isAdmin() || $this->user->isClient()) {
+        if ($this->getConfig()->canChangePassword()) {
             $this->form->setAttr('autocomplete', 'off');
             $f = $this->form->addField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
                 ->setAttr('readonly', 'true')->setTabGroup($tabGroup)
@@ -150,22 +168,10 @@ class Edit extends \Uni\Controller\AdminEditIface
                 $f->setRequired(true);
             }
             $f = $this->form->addField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
-                ->setNotes('Change this users password.')->setTabGroup($tabGroup)
-                ->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
+                ->setNotes('Change this users password.')->setTabGroup($tabGroup)->setAttr('readonly', 'true')
+                ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
             if (!$this->user->getId()) {
                 $f->setRequired(true);
-            }
-        }
-
-        $tabGroup = 'Subjects';
-        if ($this->user->id && ($this->user->isStaff() || $this->user->isClient()) ) {
-            $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findActive($this->institution->id));
-            if ($list->count()) {
-                $this->form->addField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
-                    ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
-                    ->setTabGroup($tabGroup)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
-                $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->user->id)->toArray('id');
-                $this->form->setFieldValue('selSubject', $arr);
             }
         }
 
@@ -184,11 +190,6 @@ class Edit extends \Uni\Controller\AdminEditIface
         // Load the object with data from the form using a helper object
         $this->getConfig()->getUserMapper()->mapForm($form->getValues(), $this->user);
 
-        // TODO: We have a unique issue here where if a user is to be created
-        // TODO:  and the record has been marked deleted, then it will throw an error
-        // TODO:  that the email/username, already exists. Should we locate that record
-        // TODO:  and update/undelete it?
-
         // Password validation needs to be here
         if ($this->form->getFieldValue('newPassword')) {
             if ($this->form->getFieldValue('newPassword') != $this->form->getFieldValue('confPassword')) {
@@ -205,16 +206,14 @@ class Edit extends \Uni\Controller\AdminEditIface
         if ($form->hasErrors()) {
             return;
         }
-        // Hash the password correctly
+
         if ($this->form->getFieldValue('newPassword')) {
-            $this->user->password = $this->getConfig()->hashPassword($this->form->getFieldValue('newPassword'), $this->user);
+            $this->user->setNewPassword($this->form->getFieldValue('newPassword'));
         }
 
         // Add user to institution
         if ($this->institution) {
             $this->user->institutionId = $this->institution->id;
-
-            // TODO: Add the ability to assign a staff member to subjects.
             $selected = $form->getFieldValue('selSubject');
             if ($this->user->id && is_array($selected)) {
                 $list = $this->getConfig()->getSubjectMapper()->findActive($this->institution->id);
@@ -255,7 +254,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             $template->setChoice('new');
         }
 
-        if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs($this->getUser(), $this->user)) {
+        if ($this->user->getId() && \Uni\Listener\MasqueradeHandler::canMasqueradeAs($this->getUser(), $this->user)) {
             $this->getActionPanel()->add(\Tk\Ui\Button::create('Masquerade',
                 \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->hash), 'fa fa-user-secret'))->addCss('tk-masquerade');
         }

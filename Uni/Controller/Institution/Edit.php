@@ -46,6 +46,7 @@ class Edit extends \Uni\Controller\AdminIface
 
         $this->institution = $this->getConfig()->createInstitution();
         $this->user = $this->getConfig()->createUser();
+        $this->user->roleId = \Uni\Db\Role::getDefaultRoleId(\Uni\Db\Role::TYPE_CLIENT);
 
         if ($request->get('institutionId')) {
             $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->get('institutionId'));
@@ -55,13 +56,6 @@ class Edit extends \Uni\Controller\AdminIface
             $this->institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getuser()->getId());
             $this->user = $this->institution->getUser();
         }
-
-        if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs($this->getUser(), $this->institution->getUser())) {
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Masquerade',
-                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->institution->getUser()->hash), 'fa fa-user-secret'))->addCss('tk-masquerade');
-        }
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins',
-            \Uni\Uri::createHomeUrl('/institution/'.$this->institution->getId().'/plugins.html'), 'fa fa-plug'));
 
         $this->form = \Uni\Config::getInstance()->createForm('institutionEdit');
         $this->form->setRenderer(\Uni\Config::getInstance()->createFormRenderer($this->form));
@@ -116,6 +110,11 @@ class Edit extends \Uni\Controller\AdminIface
      */
     public function doSubmit($form, $event)
     {
+        if (!$this->getUser()->getRole()->hasPermission(\Uni\Db\Permission::MANAGE_STAFF)) {
+            \Tk\Alert::addError('You do not have permission to edit this record.');
+            $this->getBackUrl()->redirect();
+        }
+
         // Load the object with data from the form using a helper object
         $this->getConfig()->getInstitutionMapper()->mapForm($form->getValues(), $this->institution);
         $this->getConfig()->getUserMapper()->mapForm($form->getValues(), $this->user);
@@ -153,13 +152,13 @@ class Edit extends \Uni\Controller\AdminIface
             \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
         }
 
+        $this->user->save();
         // Hash the password correctly
         if ($this->form->getFieldValue('newPassword')) {
             $pwd = $this->getConfig()->generatePassword(10);
             $this->user->setNewPassword($pwd);
+            $this->user->save();
         }
-
-        $this->user->save();
         $this->institution->userId = $this->user->getId();
         $this->institution->save();
 
@@ -171,41 +170,35 @@ class Edit extends \Uni\Controller\AdminIface
 
     /**
      * @return \Dom\Template
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function show()
     {
+        if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs($this->getUser(), $this->user)) {
+            $this->getActionPanel()->add(\Tk\Ui\Button::create('Masquerade',
+                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->hash),
+                'fa fa-user-secret'))->addCss('tk-masquerade');
+        }
+
+        if ($this->getUser()->isClient() || $this->getUser()->isStaff()) {
+            $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins',
+                \Uni\Uri::createHomeUrl('/institution/'.$this->institution->getId().'/plugins.html'), 'fa fa-plug'));
+
+            $this->getActionPanel()->add(\Tk\Ui\Button::create('Roles',
+                \Uni\Uri::createHomeUrl('/roleManager.html'), 'fa fa-id-badge'));
+
+            $this->getActionPanel()->add(\Tk\Ui\Button::create('Staff',
+                \Uni\Uri::createHomeUrl('/staffManager.html'), 'fa fa-users'));
+
+            $this->getActionPanel()->add(\Tk\Ui\Button::create('Subjects',
+                \Uni\Uri::createHomeUrl('/subjectManager.html'), 'fa fa-graduation-cap'));
+
+        }
+
         $template = parent::show();
 
         // Render the form
         $template->appendTemplate('form', $this->form->getRenderer()->show());
-
-        if ($this->institution->id) {
-
-            if (!$this->getUser()->isClient()) {
-//                $courseTable = new \Uni\Ui\Table\Course($this->institution->id);
-//                $template->insertTemplate('courseTable', $courseTable->show());
-
-                $staffTable = new \Uni\Ui\Table\User($this->institution->id, \Uni\Db\User::ROLE_STAFF, 0);
-                $template->appendTemplate('staffTable', $staffTable->show());
-
-//                $studentTable = new \Uni\Ui\Table\User($this->institution->id, \Uni\Db\User::ROLE_STUDENT, 0);
-//                $template->insertTemplate('studentTable', $studentTable->show());
-
-                $template->addCss('editPanel', 'col-md-5');
-                $template->setChoice('showInfo');
-            } else {
-                $template->addCss('editPanel', 'col-md-12');
-            }
-            $template->setChoice('update');
-
-            
-
-        } else {
-            $template->addCss('editPanel', 'col-md-12');
-        }
-
-
 
         return $template;
     }
@@ -220,42 +213,10 @@ class Edit extends \Uni\Controller\AdminIface
         $xhtml = <<<HTML
 <div>
 
-  <div class="row">
-    <div class="" var="editPanel">
-      <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-university fa-fw"></i> Institution</div>
-        <div class="panel-body">
-          <div var="form"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-7" choice="showInfo">
-      <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-users fa-fw"></i> Staff</div>
-        <div class="panel-body">
-          <div var="staffTable"></div>
-
-          <!-- Nav tabs -->
-          <!--<ul class="nav nav-tabs" role="tablist">-->
-            <!--<li role="presentation" class="active"><a href="#staff" aria-controls="staff" role="tab" data-toggle="tab">Staff</a></li>-->
-            <!--<li role="presentation" class=""><a href="#students" aria-controls="students" role="tab" data-toggle="tab">Students</a></li>-->
-            <!--<li role="presentation" class=""><a href="#subjects" aria-controls="subjects" role="tab" data-toggle="tab">Subjects</a></li>-->
-          <!--</ul>-->
-          <!--<div class="tab-content">-->
-            <!--<div role="tabpanel" class="tab-pane active" id="staff">-->
-              <!--<div var="staffTable">Staff ...</div>-->
-            <!--</div>-->
-            <!--<div role="tabpanel" class="tab-pane " id="students">-->
-              <!--<div var="studentTable">Students ...</div>-->
-            <!--</div>-->
-            <!--<div role="tabpanel" class="tab-pane " id="subjects">-->
-              <!--<div var="subjectTable">Subjects ...</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
-        </div>
-      </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"><i class="fa fa-university fa-fw"></i> Institution</div>
+    <div class="panel-body">
+      <div var="form"></div>
     </div>
   </div>
   

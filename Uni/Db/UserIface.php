@@ -7,44 +7,23 @@ namespace Uni\Db;
  * @see http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
  */
-interface UserIface
+interface UserIface extends \Bs\Db\UserIface
 {
 
     /**
+     * This is the institution assigned staff/student number
      * @return int
      */
-    public function getId();
-
-    /**
-     * @return string
-     */
-    public function getName();
-
-    /**
-     * @return string
-     */
-    public function getEmail();
+    public function getUid();
 
     /**
      * @return null|\Tk\Uri
      */
-    public function getHomeUrl();
+    public function getImageUrl();
 
     /**
-     * @return InstitutionIface
+     * @return null|InstitutionIface
      */
     public function getInstitution();
-
-    /**
-     * @return string
-     */
-    public function getRole();
-
-    /**
-     * @return bool
-     */
-    public function isActive();
-
-
 
 }

@@ -69,7 +69,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $filter = array();
         $filter['institutionId'] = $this->subject->institutionId;
         $filter['active'] = '1';
-        $filter['role'] = array(\Uni\Db\User::ROLE_STUDENT, \Uni\Db\User::ROLE_STAFF);
+        $filter['type'] = array(\Uni\Db\Role::TYPE_STUDENT, \Uni\Db\Role::TYPE_STAFF);
         $this->userDialog = new \Uni\Ui\Dialog\FindUser('Enrol Student', $filter);
         $subject = $this->subject;
         $this->userDialog->setOnSelect(function ($dialog, $data) use ($subject) {

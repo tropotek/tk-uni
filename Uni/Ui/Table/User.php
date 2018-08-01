@@ -29,7 +29,7 @@ class User extends \Dom\Renderer\Renderer
     /**
      * @var null|array|string
      */
-    protected $role = null;
+    protected $roleType = null;
 
     /**
      * @var null|\Tk\Uri
@@ -44,15 +44,15 @@ class User extends \Dom\Renderer\Renderer
 
     /**
      * @param int $institutionId
-     * @param null|array|string $role
+     * @param null|array|string $roleType
      * @param int $subjectId
      * @param null|\Tk\Uri $editUrl
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
-    public function __construct($institutionId = 0, $role = null, $subjectId = 0, $editUrl = null)
+    public function __construct($institutionId = 0, $roleType = null, $subjectId = 0, $editUrl = null)
     {
         $this->institutionId = $institutionId;
-        $this->role = $role;
+        //$this->roleType = $roleType;
         $this->subjectId = $subjectId;
         $this->editUrl = $editUrl;
         $this->doDefault();
@@ -61,12 +61,11 @@ class User extends \Dom\Renderer\Renderer
 
     /**
      * @return \Dom\Template|Template|string
-     * @throws \Tk\Db\Exception
      * @throws \Exception
      */
     public function doDefault()
     {
-        $this->table = new \Tk\Table('StaffList');
+        $this->table = new \Tk\Table('subject-user-list');
         $this->table->setRenderer(\Tk\Table\Renderer\Dom\Table::create($this->table));
 
         $this->actionsCell = new \Tk\Table\Cell\Actions();
@@ -76,34 +75,41 @@ class User extends \Dom\Renderer\Renderer
                 /* @var $button \Tk\Table\Cell\ActionButton */
                 if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs(\Uni\Config::getInstance()->getUser(), $obj)) {
                     $button->setUrl(\Uni\Uri::create()->set(\Uni\Listener\MasqueradeHandler::MSQ, $obj->getHash()));
+                } else {
+                    $button->setAttr('disabled', 'disabled')->addCss('disabled');
+                    //$button->setVisible(false);
                 }
             });
         $this->table->addCell($this->actionsCell);
         $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl($this->editUrl);
 
+//        if ($this->institutionId) {
+//            $this->table->addCell(new \Tk\Table\Cell\Text('subject'))
+//                ->setOnPropertyValue(function ($csll, $obj, $value) {
+//                    $list = \Uni\Config::getInstance()->getSubjectMapper()->findByUserId($obj->id, $this->institutionId, \Tk\Db\Tool::create('a.name'));
+//                    $val = '';
+//                    /** @var \Uni\Db\Subject $subject */
+//                    foreach ($list as $subject) {
+//                        $val .= $subject->code . ', ';
+//                    }
+//                    if ($val)
+//                        $val = rtrim($val, ', ');
+//                    return $val;
+//                });
+//        }
+        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
 
-        //    $this->table->addCell(new \Uni\Table\Cell\UserSubjects('subject', $this->institutionId));
-        if ($this->institutionId) {
-            $this->table->addCell(new \Tk\Table\Cell\Text('subject'))
-                ->setOnPropertyValue(function ($csll, $obj, $value) {
-                    $list = \Uni\Config::getInstance()->getSubjectMapper()->findByUserId($obj->id, $this->institutionId, \Tk\Db\Tool::create('a.name'));
-                    $val = '';
-                    /** @var \Uni\Db\Subject $subject */
-                    foreach ($list as $subject) {
-                        $val .= $subject->code . ', ';
-                    }
-                    if ($val)
-                        $val = rtrim($val, ', ');
-                    return $val;
-                });
+        if (!$this->roleType) {
+            $this->table->addCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+                /** @var \Uni\Db\User $obj */
+                if ($obj->getRole())
+                    $value = $obj->getRole()->getName();
+                return $value;
+            });
         }
-        $this->table->addCell(new \Tk\Table\Cell\Text('email'));
-
-        if (!$this->role)
-            $this->table->addCell(new \Tk\Table\Cell\Text('role'));
 
         $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('created'));
+        $this->table->addCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
         //$this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
@@ -115,7 +121,7 @@ class User extends \Dom\Renderer\Renderer
         $filter = $this->table->getFilterValues();
         $filter['institutionId'] = $this->institutionId;
         $filter['subjectId'] = $this->subjectId;
-        $filter['role'] = $this->role;
+        $filter['type'] = $this->roleType;
 
         $users = \Uni\Config::getInstance()->getUserMapper()->findFiltered($filter, $this->table->getTool('a.name'));
         $this->table->setList($users);

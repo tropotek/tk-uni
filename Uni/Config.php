@@ -14,8 +14,7 @@ class Config extends \Bs\Config
 
 
     /**
-     * @param string $sitePath
-     * @param string $siteUrl
+     *
      */
     protected function init()
     {
@@ -64,21 +63,26 @@ class Config extends \Bs\Config
      * Get the Institution object for the logged in user
      *
      * @return null|Db\Institution|Db\InstitutionIface
-     * @throws \Exception
      */
     public function getInstitution()
     {
+        // TODO: this needs to be refactored and made simpler and as getSubject()
         if (!$this->get('institution')) {
             $obj = null;
             if ($this->getUser()) {
                 $obj = $this->getUser()->getInstitution();          // TODO: This should be all we need???
                                                                     // TODO: In cases of public pages there should be an institution url that
-                                                                    // TODO: uses the domain or the has path of that institution.....
+                                                                    // TODO: uses the domain or the has path of that institution....
+                                                                    // OH! What about Client with institution_id = 0
             } else if ($this->getRequest()->has('subjectId')) {
                 \TK\Log::warning('This code should not be reached ever???');
                 /** @var Db\Subject $subject */
-                $subject = $this->getSubjectMapper()->find($this->getRequest()->has('subjectId'));
-                if ($subject) $obj = $subject->getInstitution();
+                try {
+                    $subject = $this->getSubjectMapper()->find($this->getRequest()->has('subjectId'));
+                    if ($subject) $obj = $subject->getInstitution();
+                } catch (\Exception $e) {
+                    \Tk\Log::error($e->__toString());
+                }
             }
             $this->set('institution', $obj);
         }
@@ -87,7 +91,6 @@ class Config extends \Bs\Config
 
     /**
      * @return int
-     * @throws \Exception
      */
     public function getInstitutionId()
     {
@@ -103,31 +106,35 @@ class Config extends \Bs\Config
      * based on the subject code in the URI: /staff/VETS50001_2014_SM1/index.html
      *
      * @return null|Db\Subject|Db\SubjectIface
-     * @throws \Exception
      */
     public function getSubject()
     {
+        // TODO: this needs to be refactored and made simpler same as getInstitution()
         if (!$this->get('subject') && $this->getUser()) {
-            $subject = null;
-            if ($this->getInstitution() && $this->getRequest()->getAttribute('subjectCode')) {
-                $subjectCode = strip_tags(trim($this->getRequest()->getAttribute('subjectCode')));
-                $subject = $this->getInstitution()->findSubjectByCode($subjectCode);
-            } else if ($this->getRequest()->has('subjectId')) {
-                /** @var Db\Subject $c */
-                $c = $this->getSubjectMapper()->find($this->getRequest()->get('subjectId'));
-                if ($c && $this->getInstitution() && $c->getInstitutionId() == $this->getInstitution()->getId()) {
-                    $subject = $c;
+            try {
+                $subject = null;
+                if ($this->getInstitution() && $this->getRequest()->getAttribute('subjectCode')) {
+                    $subjectCode = strip_tags(trim($this->getRequest()->getAttribute('subjectCode')));
+                    $subject = $this->getInstitution()->findSubjectByCode($subjectCode);
+                } else if ($this->getRequest()->has('subjectId')) {
+                    /** @var Db\Subject $c */
+                    $c = $this->getSubjectMapper()->find($this->getRequest()->get('subjectId'));
+                    if ($c && $this->getInstitution() && $c->getInstitutionId() == $this->getInstitution()->getId()) {
+                        $subject = $c;
+                    }
                 }
-            }
-            if (!$subject && $this->getSession()->has('lti.subjectId')) { // Check for an LTI default subject selection
-                $subject = $this->getSubjectMapper()->find(self::getSession()->get('lti.subjectId'));
-            }
-            if (!$subject && $this->getSession()->has(self::SID_SUBJECT)) {
-                $subject = $this->getSubjectMapper()->find(self::getSession()->get(self::SID_SUBJECT));
-            }
-            $this->set('subject', $subject);
-            if ($subject) {
-                $this->getSession()->set(self::SID_SUBJECT, $subject->getId());
+                if (!$subject && $this->getSession()->has('lti.subjectId')) { // Check for an LTI default subject selection
+                    $subject = $this->getSubjectMapper()->find(self::getSession()->get('lti.subjectId'));
+                }
+                if (!$subject && $this->getSession()->has(self::SID_SUBJECT)) {
+                    $subject = $this->getSubjectMapper()->find(self::getSession()->get(self::SID_SUBJECT));
+                }
+                $this->set('subject', $subject);
+                if ($subject) {
+                    $this->getSession()->set(self::SID_SUBJECT, $subject->getId());
+                }
+            } catch (\Exception $e) {
+                \Tk\Log::error($e->__toString());
             }
         }
 
@@ -136,7 +143,6 @@ class Config extends \Bs\Config
 
     /**
      * @return int
-     * @throws \Exception
      */
     public function getSubjectId()
     {
@@ -148,7 +154,6 @@ class Config extends \Bs\Config
 
     /**
      * unset the subject from the session
-     * @throws \Exception
      */
     public function unsetSubject()
     {
@@ -189,8 +194,7 @@ class Config extends \Bs\Config
             $this->getDb(),
             \Tk\Db\Map\Mapper::$DB_PREFIX . str_replace(\Tk\Db\Map\Mapper::$DB_PREFIX, '', $this['system.auth.dbtable.tableName']),
             $this['system.auth.dbtable.usernameColumn'],
-            $this['system.auth.dbtable.passwordColumn'],
-            $this['system.auth.dbtable.activeColumn']);
+            $this['system.auth.dbtable.passwordColumn']);
 
         if (isset($submittedData['instHash'])) {
             $institution = $this->getInstitutionMapper()->findByHash($submittedData['instHash']);
@@ -290,6 +294,25 @@ class Config extends \Bs\Config
 
 
     /**
+     * @return Db\RoleMap
+     */
+    public function getRoleMapper()
+    {
+        if (!$this->get('obj.mapper.role')) {
+            $this->set('obj.mapper.role', Db\RoleMap::create());
+        }
+        return $this->get('obj.mapper.role');
+    }
+
+    /**
+     * @return Db\Role
+     */
+    public function createRole()
+    {
+        return new Db\Role();
+    }
+
+    /**
      * @return Db\InstitutionMap
      */
     public function getInstitutionMapper()
@@ -346,7 +369,45 @@ class Config extends \Bs\Config
         return new Db\User();
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function canChangePassword()
+    {
+        return (!$this->getSession()->has('auth.password.access') || $this->getSession()->get('auth.password.access'));
+    }
 
+    /**
+     * Return the users home|dashboard relative url
+     *
+     * @param \Uni\Db\UserIface|\Uni\Db\User|null $user
+     * @return \Tk\Uri
+     */
+    public function getUserHomeUrl($user = null)
+    {
+        if (!$user) $user = $this->getUser();
+        $url = \Tk\Uri::create('/');
+        if ($user) {
+            if ($user->isStudent())
+                $url = \Tk\Uri::create('/student/index.html');
+            if ($user->isStaff())
+                $url = \Tk\Uri::create('/staff/index.html');
+            if ($user->isClient())
+                $url = \Tk\Uri::create('/client/index.html');
+            if ($user->isAdmin())
+                $url = \Tk\Uri::create('/admin/index.html');
+        }
+        return $url;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAvailableUserRoleTypes()
+    {
+        return \Tk\ObjectUtil::getClassConstants('Uni\Db\Role', 'TYPE');
+    }
 
     /**
      * Get the current logged in user
@@ -366,36 +427,6 @@ class Config extends \Bs\Config
     {
         $this->set('user', $user);
         return $this;
-    }
-
-    /**
-     * Return the users home|dashboard relative url
-     *
-     * @param \Uni\Db\UserIface|\Uni\Db\User|null $user
-     * @return \Tk\Uri
-     */
-    public function getUserHomeUrl($user = null)
-    {
-        if (!$user) $user = $this->getUser();
-        if ($user) {
-            if ($user->isStudent())
-                return \Tk\Uri::create('/student/index.html');
-            if ($user->isStaff())
-                return \Tk\Uri::create('/staff/index.html');
-            if ($user->isClient())
-                return \Tk\Uri::create('/client/index.html');
-            if ($user->isAdmin())
-                return \Tk\Uri::create('/admin/index.html');
-        }
-        return \Tk\Uri::create('/index.html');   // Should not get here unless their is no roles
-    }
-
-    /**
-     * @return array
-     */
-    public function getAvailableUserRoles()
-    {
-        return \Tk\ObjectUtil::getClassConstants('Uni\Db\User', 'ROLE');
     }
 
     /**
