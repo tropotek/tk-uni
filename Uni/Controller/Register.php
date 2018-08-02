@@ -154,7 +154,7 @@ class Register extends Iface
         }
         /** @var \Uni\Db\User $user */
         $user = $this->getConfig()->getUserMapper()->findByHash($hash);
-        if (!$user || $user->getRoleType() != \Uni\Db\User::ROLE_CLIENT) {
+        if (!$user || !$user->isClient()) {
             throw new \InvalidArgumentException('Cannot locate user. Please contact administrator.');
         }
         if ($user->active == true) {

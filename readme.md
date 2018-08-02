@@ -33,20 +33,6 @@ to load the classes.
 
 ## Introduction
 
-### Subject Routes
-
-An example of staff subject routes setup in the `subject/routes.php`: 
-
-```php
-$params = array('role' => \Uni\Db\User::ROLE_STAFF, 'subjectCode' = '');
-
-$routes->add('staff-subject-dashboard',       new \Tk\Routing\Route('/staff/{subjectCode}/index.html', 'App\Controller\Staff\SubjectDashboard::doDefault', $params));
-$routes->add('staff-subject-settings',        new \Tk\Routing\Route('/staff/{subjectCode}/settings.html', 'App\Controller\Subject\Edit::doDefault', $params));
-$routes->add('staff-subject-edit',            new \Tk\Routing\Route('/staff/{subjectCode}/edit.html', 'App\Controller\Subject\Edit::doDefault', $params));
-$routes->add('staff-subject-student-manager', new \Tk\Routing\Route('/staff/{subjectCode}/studentManager.html', 'App\Controller\User\StudentManager::doDefault', $params));
-$routes->add('staff-subject-student-edit',    new \Tk\Routing\Route('/staff/{subjectCode}/studentEdit.html', 'App\Controller\User\StudentEdit::doDefault', $params));
-
-```
 
 
 
