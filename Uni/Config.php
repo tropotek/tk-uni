@@ -473,12 +473,16 @@ class Config extends \Bs\Config
     }
 
     /**
+     * @param string $templatePath (optional)
      * @return Page
-     * @throws \Exception
      */
-    public function createPage()
+    public function createPage($templatePath = '')
     {
-        return new Page();
+        try {
+            return new Page($templatePath);
+        } catch (\Exception $e) {
+            \Tk\Log::error($e->__toString());
+        }
     }
 
     /**
