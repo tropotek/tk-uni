@@ -17,7 +17,6 @@ class Uri extends \Bs\Uri
      * @param null|Db\SubjectIface $subject
      * @param null|\Uni\Db\UserIface $user
      * @return string|\Tk\Uri|static
-     * @throws \Exception
      */
     public static function createSubjectUrl($spec = null, $subject = null, $user = null)
     {
@@ -40,7 +39,6 @@ class Uri extends \Bs\Uri
      * @param null|Db\InstitutionIface $institution
      * @param bool $useDomain If set to false then the institution path is prepended (todo: see if this is needed)
      * @return string|\Tk\Uri|static
-     * @throws \Exception
      */
     public static function createInstitutionUrl($spec = null, $institution = null, $useDomain = true)
     {
