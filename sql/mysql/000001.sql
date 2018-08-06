@@ -66,16 +66,16 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
 
 
 
-INSERT INTO `user_role` (name, type, description, static, modified, created) VALUES
-  ('Coordinator', 'staff', 'Staff Coordinator role', 1, NOW(), NOW()),
-  ('Lecturer', 'staff', 'Staff Lecturer role', 1, NOW(), NOW())
-;
+# INSERT INTO `user_role` (name, type, description, static, modified, created) VALUES
+#   ('Coordinator', 'staff', 'Staff Coordinator role', 1, NOW(), NOW()),
+#   ('Lecturer', 'staff', 'Staff Lecturer role', 1, NOW(), NOW())
+# ;
 
 INSERT INTO `user_permission` (`role_id`, `name`)
   VALUES
-    (5, 'perm.manage.staff'),
-    (5, 'perm.manage.student'),
-    (5, 'perm.manage.subject')
+    (3, 'perm.manage.staff'),
+    (3, 'perm.manage.student'),
+    (3, 'perm.manage.subject')
 ;
 
 
