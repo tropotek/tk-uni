@@ -116,7 +116,7 @@ class Register extends Iface
         }
 
         // Create a user and make a temp hash until the user activates the account
-        $this->user->roleId = \Uni\Db\ROLE::DEFAULT_TYPE_CLIENT;
+        $this->user->roleId = \Uni\Db\Role::DEFAULT_TYPE_CLIENT;
         $this->user->active = false;
         $this->user->setNewPassword($pass);
         $this->user->save();
