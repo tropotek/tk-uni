@@ -123,8 +123,8 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         $tabGroup = 'Details';
 
-        if ($this->targetRole == \Uni\Db\Role::TYPE_STAFF) {
-            $list = \Uni\Db\RoleMap::create()->findFiltered(array('type' => \Uni\Db\Role::TYPE_STAFF, 'institutionId' => $this->getConfig()->getInstitutionId()));
+        $list = \Uni\Db\RoleMap::create()->findFiltered(array('type' => \Uni\Db\Role::TYPE_STAFF, 'institutionId' => $this->getConfig()->getInstitutionId()));
+        if ($this->targetRole == \Uni\Db\Role::TYPE_STAFF && $list->count() > 1) {
             $this->form->addField(Field\Select::createSelect('roleId', $list)->setTabGroup($tabGroup)->setRequired()->prependOption('-- Select --', ''));
         }
 
