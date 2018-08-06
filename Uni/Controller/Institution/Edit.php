@@ -179,8 +179,8 @@ class Edit extends \Uni\Controller\AdminIface
             $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins',
                 \Uni\Uri::createHomeUrl('/institution/'.$this->institution->getId().'/plugins.html'), 'fa fa-plug'));
 
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Roles',
-                \Uni\Uri::createHomeUrl('/roleManager.html'), 'fa fa-id-badge'));
+//            $this->getActionPanel()->add(\Tk\Ui\Button::create('Roles',
+//                \Uni\Uri::createHomeUrl('/roleManager.html'), 'fa fa-id-badge'));
 
             $this->getActionPanel()->add(\Tk\Ui\Button::create('Staff',
                 \Uni\Uri::createHomeUrl('/staffManager.html'), 'fa fa-users'));
