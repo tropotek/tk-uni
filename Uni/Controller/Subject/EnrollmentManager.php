@@ -13,29 +13,20 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
 {
 
     /**
-     * @var \Tk\Table
+     * @var \Uni\Ui\Dialog\FindUser
      */
-    protected $table = null;
+    protected $userDialog = null;
 
     /**
-     * @var \Uni\Db\Subject
+     * @var \Uni\Table\PreEnrollment
      */
-    protected $subject = null;
-
-    /**
-     * @var \Uni\Ui\Table\PreEnrollment
-     */
-    protected $pendingTable = null;
+    protected $preEnrollmentTable = null;
 
     /**
      * @var \Uni\Ui\Table\Enrolled
      */
     protected $enrolledTable = null;
 
-    /**
-     * @var \Uni\Ui\Dialog\FindUser
-     */
-    protected $userDialog = null;
 
 
     /**
@@ -64,7 +55,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $this->setPageTitle("`" . $this->subject->name . '` Enrolments');
 
         $this->enrolledTable = new \Uni\Ui\Table\Enrolled($this->subject);
-        $this->pendingTable = new \Uni\Ui\Table\PreEnrollment($this->subject);
+        $this->preEnrollmentTable = new \Uni\Ui\Table\PreEnrollment($this->subject);
 
         $filter = array();
         $filter['institutionId'] = $this->subject->institutionId;
@@ -112,11 +103,11 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $template->appendTemplate('enrolledTable', $this->enrolledTable->show());
         
         // Pending Table
-        $template->appendTemplate('pendingTable', $this->pendingTable->show());
+        $template->appendTemplate('pendingTable', $this->preEnrollmentTable->show());
 
         //$template->setAttr('modelBtn', 'data-target', '#'.$this->pendingTable->getDialog()->getId());
         $this->getActionPanel()->add(\Tk\Ui\Button::create('Pre-Enroll','#', 'fa fa-user-plus'))
-            ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->pendingTable->getDialog()->getId())
+            ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->preEnrollmentTable->getDialog()->getId())
             ->setAttr('title', 'Pre-Enroll a non-existing student, they will automatically be enrolled on login');
         
         $js = <<<JS
