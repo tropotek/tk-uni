@@ -7,6 +7,7 @@ use Dom\Template;
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
+ * @deprecated Use \Uni\Table\User
  */
 class User extends \Dom\Renderer\Renderer
 {
@@ -112,10 +113,10 @@ class User extends \Dom\Renderer\Renderer
         $this->table->addCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
-        //$this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
+        //$this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
 
         // Actions
-        //$this->table->addAction(\Tk\Table\Action\Csv::getInstance(\Uni\Config::getInstance()->getDb()));
+        //$this->table->addAction(\Tk\Table\Action\Csv::create());
 
         // Set list
         $filter = $this->table->getFilterValues();

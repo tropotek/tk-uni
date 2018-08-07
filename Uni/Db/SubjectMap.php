@@ -105,8 +105,6 @@ class SubjectMap extends Mapper
 
 
     /**
-     * Find filtered records
-     *
      * @param array $filter
      * @param Tool $tool
      * @return ArrayObject|Subject[]

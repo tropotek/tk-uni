@@ -147,9 +147,12 @@ class Edit extends \Uni\Controller\AdminEditIface
         }
 
         $tabGroup = 'Subjects';
-        // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
+
         if ($this->user->id && ($this->user->isStaff() || $this->user->isStudent()) ) {
-            $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findActive($this->institution->id));
+            // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
+            // TODO: This needs to be replaced with a dialog box and search feature so it works for a large number of subjects
+            // TODO: done it twice so it is becomming something that needs to be looked at soon..... ;-)
+            $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findFiltered(array('institutionId' => $this->institution->id)));
             if ($list->count()) {
                 $this->form->addField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
                     ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')

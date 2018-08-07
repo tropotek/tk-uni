@@ -213,6 +213,7 @@ class UserMap extends Mapper
         }
 
         $res = $this->selectFrom($from, $where, $tool);
+        //vd($this->getDb()->getLastQuery());
         return $res;
     }
 
