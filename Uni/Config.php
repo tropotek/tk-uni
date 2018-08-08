@@ -230,7 +230,6 @@ class Config extends \Bs\Config
     {
         $form = \Tk\Form::create($formId, $method, $action);
         $form->setDispatcher($this->getEventDispatcher());
-        $form->addCss('form-horizontal');
         return $form;
     }
 
@@ -251,6 +250,7 @@ class Config extends \Bs\Config
      */
     public function getFormFieldGroupRenderer($form)
     {
+        $form->addCss('form-horizontal');
         return \Uni\Form\Renderer\HorizontalFieldGroup::create($form);
     }
 
