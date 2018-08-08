@@ -102,6 +102,8 @@ $routes->add('staff-student-manager', new \Tk\Routing\Route('/staff/{subjectCode
 $routes->add('staff-student-edit', new \Tk\Routing\Route('/staff/{subjectCode}/studentEdit.html', 'Uni\Controller\User\Edit::doSubject',
     array('targetRole' => \Uni\Db\Role::TYPE_STUDENT)));
 
+$routes->add('staff-subject-plugin-manager', new \Tk\Routing\Route('/staff/{zoneName}/{zoneId}/plugins.html', 'Uni\Controller\PluginZoneManager::doDefault',
+    array('zoneName' => 'subject', 'zoneId' => '0') ));
 
 
 // Student Pages

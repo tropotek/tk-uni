@@ -127,11 +127,13 @@ class Edit extends \Uni\Controller\AdminIface
         $template->appendTemplate('form', $this->form->getRenderer()->show());
 
         if ($this->subject->getId() && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
+            $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins',
+                \Uni\Uri::createHomeUrl('/subject/'.$this->subject->getId().'/plugins.html'), 'fa fa-plug'));
             if(!$this->getConfig()->isSubjectUrl()) {
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
-                    \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->id), 'fa fa-list'));
+                    \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->getId()), 'fa fa-list'));
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
-                    \Uni\Uri::createHomeUrl('/studentManager.html')->set('subjectId', $this->subject->id), 'fa fa-group'));
+                    \Uni\Uri::createHomeUrl('/studentManager.html')->set('subjectId', $this->subject->getId()), 'fa fa-group'));
             } else {
                 $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
                     \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
