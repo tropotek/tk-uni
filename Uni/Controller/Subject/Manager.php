@@ -19,11 +19,6 @@ class Manager extends \Uni\Controller\AdminIface
      */
     protected $table = null;
 
-    /**
-     * @var \Uni\Db\Institution
-     */
-    private $institution = null;
-
 
     /**
      *
@@ -31,7 +26,6 @@ class Manager extends \Uni\Controller\AdminIface
     public function __construct()
     {
         $this->setPageTitle('Subject Manager');
-
     }
 
     /**
@@ -41,11 +35,8 @@ class Manager extends \Uni\Controller\AdminIface
      */
     public function doDefault(Request $request)
     {
-        $this->institution = $this->getUser()->getInstitution();
-        if (!$this->institution)
-            throw new \Tk\Exception('Institution Not Found.');
 
-        $this->table = \Uni\Config::getInstance()->createTable('SubjectList');
+        $this->table = \Uni\Config::getInstance()->createTable('subject-manager');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
 
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
@@ -73,7 +64,7 @@ class Manager extends \Uni\Controller\AdminIface
         $this->table->addAction(\Tk\Table\Action\Csv::create());
 
         $filter = $this->table->getFilterValues();
-        $filter['institutionId'] = $this->institution->id;       // <------- ??????? For new institution still shows other subjects????
+        $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         if (!empty($filter['userId'])) {
             $filter['userId'] = $this->getUser()->id;
         }

@@ -19,11 +19,6 @@ class StudentManager extends \Uni\Controller\AdminIface
      */
     protected $table = null;
 
-    /**
-     * @var \Uni\Db\Institution
-     */
-    private $institution = null;
-
 
     /**
      * StudentManager constructor.
@@ -41,15 +36,13 @@ class StudentManager extends \Uni\Controller\AdminIface
      */
     public function doDefault(Request $request)
     {
-        $this->institution = $this->getUser()->getInstitution();
-        if (!$this->institution)
-            throw new \Tk\Exception('Institution Not Found.');
 
-        $this->table = \Uni\Config::getInstance()->createTable('SubjectList');
+        $this->table = \Uni\Config::getInstance()->createTable('student-manager');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
 
         $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createSubjectUrl('/index.html'))
             ->setOnPropertyValue(function ($cell, $obj, $value) {
+                /** @var \Tk\Table\Cell\Text $cell */
                 $cell->setUrl(\Uni\Uri::createSubjectUrl('/index.html', $obj));
                 return $value;
             });
@@ -65,7 +58,7 @@ class StudentManager extends \Uni\Controller\AdminIface
         $this->table->addAction(\Tk\Table\Action\Csv::create());
 
         $filter = $this->table->getFilterValues();
-        $filter['institutionId'] = $this->institution->id;       // <------- ??????? For new institution still shows other subjects????
+        $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         if (!empty($filter['userId'])) {
             $filter['userId'] = $this->getUser()->id;
         }

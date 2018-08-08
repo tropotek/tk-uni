@@ -89,15 +89,15 @@ class Manager extends \Uni\Controller\AdminIface
      */
     public function show()
     {
-        $template = parent::show();
-
-        $template->appendTemplate('table', $this->table->getRenderer()->show());
-
         $btn = \Tk\Ui\ButtonDropdown::createButtonDropdown('Add Role', 'fa fa-id-badge', array(
             \Tk\Ui\Link::create('Staff Role', \Uni\Uri::createHomeUrl('/roleEdit.html')->set('type', \Uni\Db\Role::TYPE_STAFF))
             //,\Tk\Ui\Link::create('Student Role', \Uni\Uri::createHomeUrl('/roleEdit.html')->set('type', \Uni\Db\Role::TYPE_STUDENT))
         ));
         $this->getActionPanel()->add($btn);
+
+        $template = parent::show();
+
+        $template->appendTemplate('table', $this->table->getRenderer()->show());
 
         return $template;
     }

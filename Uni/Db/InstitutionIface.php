@@ -28,6 +28,11 @@ interface InstitutionIface
     /**
      * @return string
      */
+    public function getEmail();
+
+    /**
+     * @return string
+     */
     public function getName();
 
     /**

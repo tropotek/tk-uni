@@ -12,30 +12,46 @@ use Dom\Template;
 class EnrollmentManager extends \Uni\Controller\AdminIface
 {
 
+
+    /**
+     * @var \Uni\Table\Enrolled
+     */
+    protected $enrolledTable = null;
+
     /**
      * @var \Uni\Ui\Dialog\FindUser
      */
-    protected $userDialog = null;
+    protected $enrolledDialog = null;
+
+
 
     /**
      * @var \Uni\Table\PreEnrollment
      */
-    protected $preEnrollmentTable = null;
+    protected $preTable = null;
 
     /**
-     * @var \Uni\Ui\Table\Enrolled
+     * @var \Uni\Ui\Dialog\PreEnrollment
      */
-    protected $enrolledTable = null;
+    protected $preDialog = null;
 
 
 
     /**
-     * @param Request $request
+     * EnrollmentManager constructor.
+     */
+    public function __construct()
+    {
+        $this->setPageTitle('Subject Enrolments');
+    }
+
+    /**
+     * @param \Tk\Request $request
+     * @param string $subjectCode
      * @throws \Exception
      */
-    public function doSubject(Request $request, $subjectCode)
+    public function doSubject(\Tk\Request $request, $subjectCode)
     {
-        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
         $this->doDefault($request);
     }
 
@@ -45,25 +61,35 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
      */
     public function doDefault(Request $request)
     {
-        $this->subject = $this->getConfig()->getSubject();
-        if (!$this->subject) {
-            $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
-        }
-        if (!$this->subject)
+        if (!$this->getSubject()) {
             throw new \Tk\Exception('Invalid subject details');
-        
-        $this->setPageTitle("`" . $this->subject->name . '` Enrolments');
+        }
+        $this->setPageTitle("`" . $this->getSubject()->name . '` Enrolments');
 
-        $this->enrolledTable = new \Uni\Ui\Table\Enrolled($this->subject);
-        $this->preEnrollmentTable = new \Uni\Ui\Table\PreEnrollment($this->subject);
+
+        $this->preDialog = new \Uni\Ui\Dialog\PreEnrollment('Pre-Enroll User');
+        $this->preDialog->execute($request);
+
+        $this->preTable = \Uni\Table\PreEnrollment::create()->init();
+        $this->preTable->addAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')
+            ->setAttr('data-target', '#'.$this->preDialog->getId()));
+        $list = $this->preTable->findList(array('subjectId' => $this->getSubject()->getId()));
+        $this->preTable->setList($list);
+
+
+        $this->enrolledTable = \Uni\Table\Enrolled::create()->init();
+        $filter = array('subjectId' => $this->getSubject()->getId());
+        $filter['type'] = array(\Uni\Db\Role::TYPE_STAFF, \Uni\Db\Role::TYPE_STUDENT);
+        $this->enrolledTable->setList($this->enrolledTable->findList($filter));
+
 
         $filter = array();
-        $filter['institutionId'] = $this->subject->institutionId;
+        $filter['institutionId'] = $this->getSubject()->institutionId;
         $filter['active'] = '1';
         $filter['type'] = array(\Uni\Db\Role::TYPE_STUDENT, \Uni\Db\Role::TYPE_STAFF);
-        $this->userDialog = new \Uni\Ui\Dialog\FindUser('Enrol Student', $filter);
-        $subject = $this->subject;
-        $this->userDialog->setOnSelect(function ($dialog, $data) use ($subject) {
+        $this->enrolledDialog = new \Uni\Ui\Dialog\FindUser('Enrol Student', $filter);
+        $subject = $this->getSubject();
+        $this->enrolledDialog->setOnSelect(function ($dialog, $data) use ($subject) {
             /** @var \Uni\Db\User $user */
             $user = $this->getConfig()->getUserMapper()->findByHash($data['userHash'], $subject->institutionId);
             if (!$user || (!$user->isStaff() && !$user->isStudent())) {
@@ -78,8 +104,16 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
                 }
             }
         });
-        $this->userDialog->execute($request);
+        $this->enrolledDialog->execute($request);
 
+    }
+
+    /**
+     * @return null|\Uni\Db\Subject|\Uni\Db\SubjectIface
+     */
+    public function getSubject()
+    {
+        return $this->getConfig()->getSubject();
     }
 
 
@@ -89,26 +123,30 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
      */
     public function show()
     {
-        $template = parent::show();
-
-        // Enrolment Dialog
-        $template->appendTemplate('enrollment', $this->userDialog->show());
-
-        //$template->setAttr('addUser', 'data-target', '#'.$this->userDialog->getId());
         $this->getActionPanel()->add(\Tk\Ui\Button::create('Enroll','#', 'fa fa-user-plus'))
-            ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->userDialog->getId())
+            ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->enrolledDialog->getId())
             ->setAttr('title', 'Add an existing student to this subject');
 
-        // Enrolled Table
-        $template->appendTemplate('enrolledTable', $this->enrolledTable->show());
-        
-        // Pending Table
-        $template->appendTemplate('pendingTable', $this->preEnrollmentTable->show());
-
-        //$template->setAttr('modelBtn', 'data-target', '#'.$this->pendingTable->getDialog()->getId());
         $this->getActionPanel()->add(\Tk\Ui\Button::create('Pre-Enroll','#', 'fa fa-user-plus'))
-            ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->preEnrollmentTable->getDialog()->getId())
+            ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->preDialog->getId())
             ->setAttr('title', 'Pre-Enroll a non-existing student, they will automatically be enrolled on login');
+
+        $template = parent::show();
+
+
+
+        // Enrolled Table
+        $template->appendTemplate('enrolledTable', $this->enrolledTable->getRenderer()->show());
+        // Enrolled Dialog
+        $template->appendTemplate('enrollment', $this->enrolledDialog->show());
+
+
+        // Pre Enrollment Table
+        $template->appendTemplate('pendingTable', $this->preTable->getRenderer()->show());
+        // Pre Enrolment Dialog
+        $template->appendTemplate('enrollment', $this->preDialog->show());
+
+
         
         $js = <<<JS
 jQuery(function($) {
@@ -129,6 +167,9 @@ JS;
         $template->appendJs($js);
 
         $css = <<<CSS
+.tk-table .tk-pending-users tr.enrolled td {
+  color: #999;
+}
 .tk-table tr.tk-hover td {
   background-color: #7796b4;
   color: #efefef !important;

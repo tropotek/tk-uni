@@ -47,9 +47,7 @@ class Manager extends \Uni\Controller\AdminIface
     /**
      *
      * @param Request $request
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
-     * @throws \Tk\Form\Exception
+     * @throws \Exception
      */
     public function doDefault(Request $request)
     {
@@ -101,12 +99,12 @@ class Manager extends \Uni\Controller\AdminIface
      */
     public function show()
     {
+        $this->getActionPanel()->add(\Tk\Ui\Button::create('New Institution',
+            \Uni\Uri::createHomeUrl('/institutionEdit.html'), 'fa fa-university'));
+
         $template = parent::show();
 
         $template->appendTemplate('table', $this->table->getRenderer()->show());
-
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('New Institution',
-            \Uni\Uri::createHomeUrl('/institutionEdit.html'), 'fa fa-university'));
 
         return $template;
     }

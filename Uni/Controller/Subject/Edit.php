@@ -22,10 +22,6 @@ class Edit extends \Uni\Controller\AdminIface
      */
     private $subject = null;
 
-    /**
-     * @var \Uni\Db\Institution
-     */
-    private $institution = null;
 
 
     /**
@@ -44,8 +40,6 @@ class Edit extends \Uni\Controller\AdminIface
     public function doSubject(\Tk\Request $request, $subjectCode)
     {
         $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
-        if ($this->subject)
-            $this->institution = $this->subject->getInstitution();
         $this->doDefault($request);
     }
 
@@ -56,19 +50,18 @@ class Edit extends \Uni\Controller\AdminIface
     public function doDefault(\Tk\Request $request)
     {
         if (!$this->subject) {
-            $this->institution = $this->getUser()->getInstitution();
             $this->subject = $this->getConfig()->createSubject();
-            $this->subject->institutionId = $this->institution->id;
-            $this->subject->email = $this->institution->email;
+            $this->subject->institutionId = $this->getConfig()->getInstitutionId();
+            $this->subject->email = $this->getConfig()->getInstitution()->getEmail();
             if ($request->get('subjectId')) {
                 $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
-                if ($this->institution->id != $this->subject->institutionId) {
+                if ($this->getConfig()->getInstitutionId() != $this->subject->institutionId) {
                     throw new \Tk\Exception('You do not have permission to edit this subject.');
                 }
             }
         }
 
-        $this->form = $this->getConfig()->createForm('subjectEdit');
+        $this->form = $this->getConfig()->createForm('subject-edit');
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
 
         $this->form->addField(new Field\Input('name'))->setRequired(true);

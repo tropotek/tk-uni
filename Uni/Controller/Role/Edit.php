@@ -106,8 +106,6 @@ class Edit extends \Uni\Controller\AdminIface
             ->setNotes('Add/Edit Student user accounts');
         $form->addField(new Field\Checkbox(\Uni\Db\Permission::MANAGE_SUBJECT))->setLabel('Manage Subjects')->setTabGroup($tab)
             ->setNotes('Add/Edit subject and student enrollments');
-
-
     }
 
 

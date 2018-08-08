@@ -18,11 +18,6 @@ class Manager extends \Uni\Controller\AdminIface
     protected $table = null;
 
     /**
-     * @var \Uni\Db\Subject
-     */
-    protected $subject = null;
-
-    /**
      * @var null|\Tk\Uri
      */
     protected $editUrl = null;
@@ -51,25 +46,23 @@ class Manager extends \Uni\Controller\AdminIface
 
     /**
      * @param \Tk\Request $request
-     * @param string $targetRole
-     * @throws \Exception
-     */
-    public function doDefaultRole(\Tk\Request $request, $targetRole)
-    {
-        $this->targetRole = $targetRole;
-        $this->doDefault($request);
-    }
-
-    /**
-     * @param \Tk\Request $request
      * @param string $subjectCode
      * @param string $targetRole
      * @throws \Exception
      */
     public function doSubject(\Tk\Request $request, $subjectCode, $targetRole)
     {
+        $this->doDefaultRole($request, $targetRole);
+    }
+
+    /**
+     * @param \Tk\Request $request
+     * @param string $targetRole
+     * @throws \Exception
+     */
+    public function doDefaultRole(\Tk\Request $request, $targetRole)
+    {
         $this->targetRole = $targetRole;
-        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
         $this->doDefault($request);
     }
 
@@ -90,8 +83,7 @@ class Manager extends \Uni\Controller\AdminIface
                 $this->setPageTitle('Student Manager');
                 break;
         }
-        if (!$this->subject && $request->has('subjectId'))
-            $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
+
         if (!$this->editUrl) {
             $this->editUrl = \Uni\Uri::createHomeUrl('/'.$this->targetRole.'Edit.html');
             if ($this->getConfig()->isSubjectUrl()) {
@@ -168,9 +160,6 @@ class Manager extends \Uni\Controller\AdminIface
     protected function initActionPanel($actionPanel)
     {
         $actionPanel->add(\Tk\Ui\Button::create('New ' . ucfirst($this->targetRole), clone $this->editUrl, 'fa fa-user-plus'));
-
-        
-
 
     }
 

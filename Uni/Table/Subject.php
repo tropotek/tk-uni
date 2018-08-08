@@ -30,7 +30,7 @@ class Subject extends \Uni\TableIface
     {
 
         $this->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createSubjectUrl('/subjectEdit.html'));
+        $this->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
         $this->addCell(new \Tk\Table\Cell\Text('code'));
         //$this->addCell(new \Tk\Table\Cell\Email('email'));
         //$this->addCell(new \Tk\Table\Cell\Date('dateStart'));

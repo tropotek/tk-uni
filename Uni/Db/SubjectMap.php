@@ -263,11 +263,11 @@ class SubjectMap extends Mapper
     /**
      * Find all pre enrolments for a subject and return with an `enrolled` boolean field
      *
-     * @param $subjectId
+     * @param array $filter    array('subjectId' => $subjectId)
      * @param \Tk\Db\Tool $tool
      * @return array
      */
-    public function findPreEnrollments($subjectId, $tool = null)
+    public function findPreEnrollments($filter = array(), $tool = null)
     {
         $toolStr = '';
         if ($tool) {
@@ -275,12 +275,12 @@ class SubjectMap extends Mapper
             $toolStr = ' '.$tool->toSql('', $this->getDb());
         }
 
-        $stm = $this->getDb()->prepare('SELECT a.subject_id, a.email, a.uid, b.id as \'user_id\', IF(c.subject_id IS NULL, 0, 1) as enrolled
+        $stm = $this->getDb()->prepare('SELECT a.subject_id, a.email, a.uid, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL, 0, 1) as enrolled
 FROM  subject_pre_enrollment a 
   LEFT JOIN  user b ON (b.email = a.email)  
   LEFT JOIN subject_has_user c ON (b.id = c.user_id AND c.subject_id = ?)
 WHERE a.subject_id = ? ' . $toolStr);
-        $stm->execute(array($subjectId, $subjectId));
+        $stm->execute(array($filter['subjectId'], $filter['subjectId']));
 
         $arr = $stm->fetchAll();
         return $arr;

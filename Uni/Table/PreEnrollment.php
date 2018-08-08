@@ -37,9 +37,11 @@ class PreEnrollment extends \Uni\TableIface
         $this->addCell(new \Tk\Table\Cell\Boolean('enrolled'))->setOnCellHtml(function ($cell, $obj, $html) {
             /** @var $cell \Tk\Table\Cell\Boolean */
             /** @var $obj \StdClass */
+            $config = \Uni\Config::getInstance();
+            $cell->getRow()->setAttr('data-user-id', $obj->hash);
+
             if (!empty($obj->enrolled)) {
                 $cell->getRow()->addCss('enrolled');
-                $cell->getRow()->setAttr('data-user-id', md5($obj->user_id));
                 $cell->setAttr('title', 'User Enrolled');
                 $cell->setAttr('data-toggle', 'tooltip');
                 $cell->setAttr('data-placement', 'left');
@@ -50,7 +52,7 @@ class PreEnrollment extends \Uni\TableIface
         });
 
         // Actions
-        $this->addAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->dialog->getId()));
+        //$this->addAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->dialog->getId()));
         $this->addAction(\Tk\Table\Action\Delete::create('delete', 'email')->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
             $config = \Uni\Config::getInstance();
             $subjectMap = $config->getSubjectMapper();
@@ -67,27 +69,18 @@ class PreEnrollment extends \Uni\TableIface
         }));
         $this->addAction(\Tk\Table\Action\Csv::create());
 
-        // todo: remove this one-day
-        $template = $this->getRenderer()->getTemplate();
-        $css = <<<CSS
-.tk-table .tk-pending-users tr.enrolled td {
-  color: #999;
-}
-CSS;
-        $template->appendCss($css);
-
         return $this;
     }
 
     /**
      * @param array $filter
-     * @return \Tk\Db\Map\ArrayObject|\App\Db\Mentor[]
+     * @return array
      * @throws \Exception
      */
     public function findList($filter = array())
     {
         $filter = array_merge($this->getFilterValues(), $filter);
-        $list = \Uni\Db\UserMap::create()->findFiltered($filter, $this->getTool());
+        $list = $this->getConfig()->getSubjectMapper()->findPreEnrollments($filter, $this->getTool('enrolled DESC'));
         return $list;
     }
 

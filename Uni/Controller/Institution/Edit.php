@@ -30,11 +30,6 @@ class Edit extends \Uni\Controller\AdminIface
      */
     private $user = null;
 
-    /**
-     * @var \Tk\Table
-     */
-    protected $table = null;
-
 
     /**
      * @param Request $request

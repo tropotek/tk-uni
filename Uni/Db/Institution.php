@@ -102,7 +102,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      * Get the user hash or generate one if needed
      *
      * @return string
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getHash()
     {
@@ -116,7 +116,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      * Helper method to generate user hash
      *
      * @return string
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function generateHash()
     {
@@ -127,7 +127,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      * Get the path for all file associated to this object
      *
      * @return string
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getDataPath()
     {
@@ -138,7 +138,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      * Get the institution data object
      *
      * @return Data
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getData()
     {
@@ -190,6 +190,14 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     /**
      * @return string
      */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return string
+     */
     public function getDomain()
     {
         return $this->domain;
@@ -207,7 +215,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     /**
      * Implement the validating rules to apply.
      *
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function validate()
     {
@@ -239,7 +247,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     /**
      * @param string $subjectCode
      * @return SubjectIface
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findSubjectByCode($subjectCode)
     {
@@ -249,7 +257,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     /**
      * @param int $subjectId
      * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|SubjectIface
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findSubject($subjectId)
     {

@@ -27,7 +27,7 @@ class Uri extends \Bs\Uri
             $subject = Config::getInstance()->getSubject();
         $subjectCode = '';
         if ($subject) {
-            $subjectCode = $subject->code . '/';
+            $subjectCode = $subject->getCode() . '/';
         }
         return self::createHomeUrl($subjectCode . trim($spec,'/'), $user);
     }

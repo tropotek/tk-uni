@@ -24,16 +24,6 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     protected $user = null;
 
-    /**
-     * @var \Uni\Db\Institution
-     */
-    protected $institution = null;
-
-    /**
-     * @var \Uni\Db\Subject
-     */
-    protected $subject = null;
-
 
 
     /**
@@ -46,25 +36,23 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     /**
      * @param \Tk\Request $request
-     * @param string $targetRole
-     * @throws \Exception
-     */
-    public function doDefaultRole(\Tk\Request $request, $targetRole)
-    {
-        $this->targetRole = $targetRole;
-        $this->doDefault($request);
-    }
-
-    /**
-     * @param \Tk\Request $request
      * @param string $subjectCode
      * @param string $targetRole
      * @throws \Exception
      */
     public function doSubject(\Tk\Request $request, $subjectCode, $targetRole)
     {
+        $this->doDefaultRole($request, $targetRole);
+    }
+
+    /**
+     * @param \Tk\Request $request
+     * @param string $targetRole
+     * @throws \Exception
+     */
+    public function doDefaultRole(\Tk\Request $request, $targetRole)
+    {
         $this->targetRole = $targetRole;
-        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
         $this->doDefault($request);
     }
 
@@ -86,13 +74,10 @@ class Edit extends \Uni\Controller\AdminEditIface
                 break;
         }
 
-        $this->institution = $this->getUser()->getInstitution();
 
         $this->user = $this->getConfig()->createUser();
         if ($this->targetRole == \Uni\Db\Role::TYPE_STUDENT || $this->targetRole == \Uni\Db\Role::TYPE_STAFF) {
-            if(!$this->institution)
-                throw new \Tk\Exception('Invalid institution');
-            $this->user->institutionId = $this->institution->getId();
+            $this->user->institutionId = $this->getConfig()->getInstitutionId();
         }
         $this->user->roleId = \Uni\Db\Role::getDefaultRoleId($this->targetRole);
 
@@ -152,7 +137,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
             // TODO: This needs to be replaced with a dialog box and search feature so it works for a large number of subjects
             // TODO: done it twice so it is becomming something that needs to be looked at soon..... ;-)
-            $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findFiltered(array('institutionId' => $this->institution->id)));
+            $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
             if ($list->count()) {
                 $this->form->addField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
                     ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
@@ -215,12 +200,11 @@ class Edit extends \Uni\Controller\AdminEditIface
             $this->user->setNewPassword($this->form->getFieldValue('newPassword'));
         }
 
-        // Add user to institution
-        if ($this->institution) {
-            $this->user->institutionId = $this->institution->id;
-            $selected = $form->getFieldValue('selSubject');
+        // Add user to subjects
+        $selected = $form->getFieldValue('selSubject');
+        if ($selected && count($selected)) {
             if ($this->user->id && is_array($selected)) {
-                $list = $this->getConfig()->getSubjectMapper()->findActive($this->institution->id);
+                $list = $this->getConfig()->getSubjectMapper()->findActive($this->user->institutionId);
                 /** @var \Uni\Db\Subject $subject */
                 foreach ($list as $subject) {
                     if (in_array($subject->id, $selected)) {
