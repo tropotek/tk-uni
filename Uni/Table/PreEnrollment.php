@@ -15,14 +15,6 @@ class PreEnrollment extends \Uni\TableIface
 
 
     /**
-     * @param string $tableId
-     */
-    public function __construct($tableId = 'pre-enrollment-table')
-    {
-        parent::__construct($tableId);
-    }
-
-    /**
      * @return \$this
      * @throws \Exception
      */

@@ -20,14 +20,6 @@ class Enrolled extends \Uni\TableIface
 
 
     /**
-     * @param string $tableId
-     */
-    public function __construct($tableId = 'enrolled-table')
-    {
-        parent::__construct($tableId);
-    }
-
-    /**
      * @return \$this
      * @throws \Exception
      */

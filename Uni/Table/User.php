@@ -15,13 +15,20 @@ class User extends \Uni\TableIface
 
     protected $roleType = '';
 
+
     /**
-     * @param string $tableId
+     * @return string
+     */
+    public function getRoleType()
+    {
+        return $this->roleType;
+    }
+
+    /**
      * @param string $roleType
      */
-    public function __construct($tableId = 'user-table', $roleType = '')
+    public function setRoleType(string $roleType = '')
     {
-        parent::__construct($tableId);
         $this->roleType = $roleType;
     }
 

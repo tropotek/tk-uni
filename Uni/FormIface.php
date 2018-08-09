@@ -9,20 +9,7 @@ namespace Uni;
  */
 abstract class FormIface extends \Bs\FormIface
 {
-    /**
-     * @var null|\Tk\Db\ModelInterface
-     */
-    protected $model = null;
 
-
-    /**
-     * @param string $formId
-     */
-    public function __construct($formId = '')
-    {
-        if (!$formId) $formId = 'uni-form';
-        parent::__construct($formId);
-    }
 
     /**
      * @return Config

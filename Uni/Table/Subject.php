@@ -15,14 +15,6 @@ class Subject extends \Uni\TableIface
 
 
     /**
-     * @param string $tableId
-     */
-    public function __construct($tableId = 'student-table')
-    {
-        parent::__construct($tableId);
-    }
-
-    /**
      * @return \$this
      * @throws \Exception
      */
