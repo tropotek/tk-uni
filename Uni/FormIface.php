@@ -7,7 +7,7 @@ namespace Uni;
  * @link http://www.tropotek.com/
  * @license Copyright 2018 Tropotek
  */
-class FormIface extends \Bs\FormIface
+abstract class FormIface extends \Bs\FormIface
 {
     /**
      * @var null|\Tk\Db\ModelInterface
@@ -15,17 +15,14 @@ class FormIface extends \Bs\FormIface
     protected $model = null;
 
 
-
     /**
      * @param string $formId
-     * @param string $method
-     * @param string|\Tk\Uri|null $action
      */
-    public function __construct($formId = 'uni-form', $method = self::METHOD_POST, $action = null)
+    public function __construct($formId = '')
     {
-        parent::__construct($formId, $method, $action);
+        if (!$formId) $formId = 'uni-form';
+        parent::__construct($formId);
     }
-
 
     /**
      * @return Config
@@ -42,6 +39,5 @@ class FormIface extends \Bs\FormIface
     {
         return $this->getConfig()->getUser();
     }
-
 
 }
