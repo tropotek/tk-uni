@@ -222,13 +222,11 @@ class Config extends \Bs\Config
 
     /**
      * @param string $formId
-     * @param string $method
-     * @param string|null $action
      * @return \Tk\Form
      */
-    public function createForm($formId, $method = \Tk\Form::METHOD_POST, $action = null)
+    public function createForm($formId)
     {
-        $form = \Tk\Form::create($formId, $method, $action);
+        $form = \Tk\Form::create($formId);
         $form->setDispatcher($this->getEventDispatcher());
         return $form;
     }
@@ -250,7 +248,7 @@ class Config extends \Bs\Config
      */
     public function getFormFieldGroupRenderer($form)
     {
-        $form->addCss('form-horizontal');
+        //$form->addCss('form-horizontal');
         return \Uni\Form\Renderer\HorizontalFieldGroup::create($form);
     }
 
