@@ -30,11 +30,19 @@ $config['sql.migrate.list'] = array(
  * Template folders for pages
  */
 $config['system.template.path'] = '/html';
-$config['template.admin']     = $config['system.template.path'] . '/admin/admin.html';
-$config['template.client']    = $config['system.template.path'] . '/admin/admin.html';
-$config['template.staff']     = $config['system.template.path'] . '/admin/admin.html';
-$config['template.student']   = $config['system.template.path'] . '/admin/admin.html';
-$config['template.public']    = $config['system.template.path'] . '/admin/public.html';
+
+$config['system.theme.admin']   = $config['system.template.path'] . '/admin';
+$config['system.theme.public']  = $config['system.template.path'] . '/admin';
+
+$config['template.admin']       = $config['system.theme.admin'] . '/admin.html';
+$config['template.client']      = $config['system.theme.admin'] . '/admin.html';
+$config['template.staff']       = $config['system.theme.admin'] . '/admin.html';
+$config['template.student']     = $config['system.theme.admin'] . '/admin.html';
+$config['template.public']      = $config['system.theme.admin'] . '/public.html';
+
+$config['template.error']       = dirname($config['template.admin']).'/error.html';
+
+
 
 /*
  * ---- AUTH CONFIG ----
