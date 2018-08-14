@@ -39,7 +39,7 @@ JS;
             }
 
             /* @var \DOMElement[] $nodes */
-            $nodes = $template->getVarList('default-url');
+            $nodes = $template->get('default-url');
             foreach ($nodes as $node) {
                 $node->setAttribute('href', \Uni\Uri::createDefaultUrl($node->getAttribute('href')));
             }
