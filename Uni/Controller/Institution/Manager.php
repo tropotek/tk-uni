@@ -20,27 +20,13 @@ class Manager extends \Uni\Controller\AdminIface
      */
     protected $table = null;
 
-    /**
-     * @var \Tk\Table\Cell\Actions
-     */
-    protected $actionsCell = null;
 
     /**
-     * Manager constructor.
      * @throws \Exception
      */
     public function __construct()
     {
-        $this->actionsCell = new \Tk\Table\Cell\Actions();
         $this->getConfig()->getCrumbs()->reset();
-    }
-
-    /**
-     * @return \Tk\Table\Cell\Actions
-     */
-    public function getActionsCell()
-    {
-        return $this->actionsCell;
     }
 
 
@@ -53,44 +39,8 @@ class Manager extends \Uni\Controller\AdminIface
     {
         $this->setPageTitle('Institution Manager');
 
-
-        $this->actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade', \Tk\Uri::create(), 'fa  fa-user-secret', 'tk-masquerade'))
-            ->setOnShow(function ($cell, $obj, $button) {
-                /* @var $obj \Uni\Db\Institution */
-                /* @var $button \Tk\Table\Cell\ActionButton */
-                if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs(\Uni\Config::getInstance()->getUser(), $obj->getUser())) {
-                    $button->setUrl(\Uni\Uri::create()->set(\Uni\Listener\MasqueradeHandler::MSQ, $obj->getUser()->getHash()));
-                }
-            });
-            
-        $this->table = \Uni\Config::getInstance()->createTable('InstitutionList');
-        $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
-
-        $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->addCell($this->actionsCell);
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Tk\Uri::create('admin/institutionEdit.html'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('userId'))->setOnPropertyValue(function ($cell, $obj, $value) {
-            /** @var \Uni\Db\Institution $obj */
-            $user = $obj->getUser();
-            if ($user) {
-                return $user->getName();
-            }
-            return $value;
-        });
-        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('description'))->setCharacterLimit(64);
-        $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('created'));
-
-        // Filters
-        $this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
-
-        // Actions
-        $this->table->addAction(\Tk\Table\Action\Delete::create());
-        $this->table->addAction(\Tk\Table\Action\Csv::create());
-
-        $users = $this->getConfig()->getInstitutionMapper()->findFiltered($this->table->getFilterValues(), $this->table->getTool('a.id'));
-        $this->table->setList($users);
+        $this->table = \Uni\Table\Institution::create()->init();
+        $this->table->setList($this->table->findList());
 
     }
 
