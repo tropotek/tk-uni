@@ -240,11 +240,9 @@ class Edit extends \Uni\Controller\AdminEditIface
         $template->appendTemplate('form', $this->form->getRenderer()->show());
         
         if ($this->user->id) {
-            $template->insertText('username', $this->user->name . ' - [UID ' . $this->user->id . ']');
-            $template->setChoice('update');
+            $template->setAttr('form', 'data-panel-title', $this->user->name . ' - [UID ' . $this->user->id . ']');
         } else {
-            $template->insertText('username', 'Create User');
-            $template->setChoice('new');
+            $template->setAttr('form', 'data-panel-title', 'Create User');
         }
         return $template;
     }
@@ -261,12 +259,13 @@ class Edit extends \Uni\Controller\AdminEditIface
         $xhtml = <<<HTML
 <div class="">
 
-  <div class="panel panel-default">
-    <div class="panel-heading"><i class="fa fa-user fa-fw"></i> <span var="username"></span></div>
-    <div class="panel-body">
-      <div var="form"></div>
-    </div>
-  </div>
+  <div class="tk-panel" data-panel-title="User Manager" data-panel-icon="fa fa-user" var="form"></div>
+  <!--<div class="panel panel-default">-->
+    <!--<div class="panel-heading"><i class="fa fa-user fa-fw"></i> <span var="username"></span></div>-->
+    <!--<div class="panel-body">-->
+      <!--<div var="form"></div>-->
+    <!--</div>-->
+  <!--</div>-->
 
 </div>
 HTML;

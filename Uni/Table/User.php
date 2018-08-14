@@ -27,7 +27,7 @@ class User extends \Uni\TableIface
     /**
      * @param string $roleType
      */
-    public function setRoleType(string $roleType = '')
+    public function setRoleType($roleType = '')
     {
         $this->roleType = $roleType;
     }

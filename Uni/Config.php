@@ -248,7 +248,7 @@ class Config extends \Bs\Config
      */
     public function getFormFieldGroupRenderer($form)
     {
-        //$form->addCss('form-horizontal');
+        //$form->addCss('form-horizontal'); // Required for bootstrap 3 sites, deprecated now
         return \Uni\Form\Renderer\HorizontalFieldGroup::create($form);
     }
 

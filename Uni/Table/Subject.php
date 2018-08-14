@@ -45,7 +45,7 @@ class Subject extends \Uni\TableIface
 
     /**
      * @param array $filter
-     * @return \Tk\Db\Map\ArrayObject|\App\Db\Mentor[]
+     * @return \Tk\Db\Map\ArrayObject|\Uni\Db\Subject[]
      * @throws \Exception
      */
     public function findList($filter = array())

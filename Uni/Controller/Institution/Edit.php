@@ -203,12 +203,13 @@ class Edit extends \Uni\Controller\AdminIface
         $xhtml = <<<HTML
 <div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading"><i class="fa fa-university fa-fw"></i> Institution</div>
-    <div class="panel-body">
-      <div var="form"></div>
-    </div>
-  </div>
+  <div class="tk-panel" data-panel-title="Institution" data-panel-icon="fa fa-university" var="form"></div>
+  <!--<div class="panel panel-default">-->
+    <!--<div class="panel-heading"><i class="fa fa-university fa-fw"></i> Institution</div>-->
+    <!--<div class="panel-body">-->
+      <!--<div var="form"></div>-->
+    <!--</div>-->
+  <!--</div>-->
   
 </div>
 HTML;

@@ -13,7 +13,7 @@ use Bs\Controller\Iface;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class PluginZoneManager extends Iface
+class PluginZoneManager extends AdminIface
 {
 
     /**
@@ -31,21 +31,27 @@ class PluginZoneManager extends Iface
      */
     protected $zoneId = 0;
 
-    
     /**
      *
+     */
+    public function __construct()
+    {
+        $this->setPageTitle('Plugin Manager');
+    }
+    
+    /**
      * @param Request $request
      * @throws \Tk\Exception
      */
     public function doDefault(Request $request, $zoneName, $zoneId)
     {
-        $this->setPageTitle('Plugin Manager');
 
         $this->zoneName = $zoneName;
         $this->zoneId = $zoneId;
         if (!$this->zoneName || !$this->zoneId) {
             throw new \Tk\Exception('Invalid zone plugin information?');
         }
+        $this->setPageTitle($this->makeTitleFromZone($this->zoneName) . ' Plugin Manager');
 
         $this->pluginFactory = \Uni\Config::getInstance()->getPluginFactory();
         // Plugin manager table
@@ -91,8 +97,9 @@ class PluginZoneManager extends Iface
         $template = parent::show();
 
         // render Table
-        $template->appendTemplate('PluginList', $this->table->getRenderer()->show());
+        $template->appendTemplate('table', $this->table->getRenderer()->show());
 
+        $template->setAttr('table', 'data-panel-title', $this->makeTitleFromZone($this->zoneName) . ' Plugins');
         $template->insertText('zone', $this->makeTitleFromZone($this->zoneName));
 
         return $template;
@@ -120,27 +127,20 @@ class PluginZoneManager extends Iface
         $xhtml = <<<HTML
 <div>
 
-  <div class="panel panel-default panel-shortcut">
-    <div class="panel-heading">
-      <h4 class="panel-title"><i class="fa fa-cogs"></i> Actions</h4>
-    </div>
-    <div class="panel-body">
-      <a href="javascript: window.history.back();" class="btn btn-default btn-once back" var="back"><i class="fa fa-arrow-left"></i> <span>Back</span></a>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title"><i class="glyphicon glyphicon-compressed"></i> Available <span var="zone"></span> Plugins</h4>
-        </div>
-        <div class="panel-body">
-          <div class="pluginList" var="PluginList"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="tk-panel" data-panel-title="Plugins" data-panel-icon="fa fa-compress" var="table"></div>
+  
+  <!--<div class="row">-->
+    <!--<div class="col-md-12">-->
+      <!--<div class="panel panel-default">-->
+        <!--<div class="panel-heading">-->
+          <!--<h4 class="panel-title"><i class="glyphicon glyphicon-compressed"></i> Available <span var="zone"></span> Plugins</h4>-->
+        <!--</div>-->
+        <!--<div class="panel-body">-->
+          <!--<div class="pluginList" var="PluginList"></div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
 
 </div>
 HTML;

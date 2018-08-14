@@ -173,12 +173,13 @@ class Edit extends \Uni\Controller\AdminIface
         $xhtml = <<<HTML
 <div class="">
 
-  <div class="panel panel-default">
-    <div class="panel-heading"><i class="fa fa-id-badge"></i> Role Edit</div>
-    <div class="panel-body">
-      <div var="form"></div>
-    </div>
-  </div>
+  <div class="tk-panel" data-panel-title="Role Edit" data-panel-icon="fa fa-id-badge" var="form"></div>
+  <!--<div class="panel panel-default">-->
+    <!--<div class="panel-heading"><i class="fa fa-id-badge"></i> Role Edit</div>-->
+    <!--<div class="panel-body">-->
+      <!--<div var="form"></div>-->
+    <!--</div>-->
+  <!--</div>-->
   
 </div>
 HTML;

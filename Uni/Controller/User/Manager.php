@@ -193,12 +193,13 @@ class Manager extends \Uni\Controller\AdminIface
         $xhtml = <<<HTML
 <div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading"><i class="fa fa-users fa-fw"></i> <span var="panelTitle"></span></div>
-    <div class="panel-body">
-      <div var="table"></div>
-    </div>
-  </div>
+  <div class="tk-panel" data-panel-title="Users" data-panel-icon="fa fa-users" var="table"></div>
+  <!--<div class="panel panel-default">-->
+    <!--<div class="panel-heading"><i class="fa fa-users fa-fw"></i> <span var="panelTitle"></span></div>-->
+    <!--<div class="panel-body">-->
+      <!--<div var="table"></div>-->
+    <!--</div>-->
+  <!--</div>-->
   
 </div>
 HTML;
