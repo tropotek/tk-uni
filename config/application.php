@@ -44,6 +44,7 @@ $config['template.error']       = dirname($config['template.admin']).'/error.htm
 
 
 
+
 /*
  * ---- AUTH CONFIG ----
  */
