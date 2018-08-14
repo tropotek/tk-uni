@@ -85,6 +85,7 @@ class Login extends Iface
         if (!$this->form) {
             $this->form = $this->getConfig()->createForm('login-form');
             $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
+            $this->form->addCss('form-horizontal');
         }
 
         $this->form->addField(new Field\Input('username'));

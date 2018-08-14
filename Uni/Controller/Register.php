@@ -59,6 +59,7 @@ class Register extends Iface
 
         $this->form = $this->getConfig()->createForm('register-account');
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
+        $this->form->addCss('form-horizontal');
 
         $this->form->addField(new Field\Input('name'));
         $this->form->addField(new Field\Input('email'));

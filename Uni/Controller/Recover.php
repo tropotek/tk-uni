@@ -43,6 +43,7 @@ class Recover extends Iface
     {
         $this->form = $this->getConfig()->createForm('recover-account');
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
+        $this->form->addCss('form-horizontal');
 
         $this->form->addField(new Field\Input('account'));
         $this->form->addField(new Event\Submit('recover', array($this, 'doRecover')))->addCss('btn btn-primary btn-ss');
