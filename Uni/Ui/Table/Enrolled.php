@@ -6,6 +6,7 @@ namespace Uni\Ui\Table;
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
+ * @deprecated Use \Uni\Table\Enrolled
  */
 class Enrolled extends \Dom\Renderer\Renderer
 {

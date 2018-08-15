@@ -21,24 +21,24 @@ class Subject extends \Uni\TableIface
     public function init()
     {
 
-        $this->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
-        $this->addCell(new \Tk\Table\Cell\Text('code'));
-        //$this->addCell(new \Tk\Table\Cell\Email('email'));
-        //$this->addCell(new \Tk\Table\Cell\Date('dateStart'));
-        $this->addCell(new \Tk\Table\Cell\Date('dateEnd'));
+        $this->appendCell(new \Tk\Table\Cell\Checkbox('id'));
+        $this->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
+        $this->appendCell(new \Tk\Table\Cell\Text('code'));
+        //$this->appendCell(new \Tk\Table\Cell\Email('email'));
+        //$this->appendCell(new \Tk\Table\Cell\Date('dateStart'));
+        $this->appendCell(new \Tk\Table\Cell\Date('dateEnd'));
 
-        $this->addCell(new \Tk\Table\Cell\Boolean('active'));
-        //$this->addCell(new \Tk\Table\Cell\Date('created'))->setFormat(\Tk\Table\Cell\Date::FORMAT_RELATIVE);
-        $this->addCell(new \Tk\Table\Cell\Date('created'));
+        $this->appendCell(new \Tk\Table\Cell\Boolean('active'));
+        //$this->appendCell(new \Tk\Table\Cell\Date('created'))->setFormat(\Tk\Table\Cell\Date::FORMAT_RELATIVE);
+        $this->appendCell(new \Tk\Table\Cell\Date('created'));
 
         // Filters
-        $this->addFilter(new \Tk\Form\Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
+        $this->appendFilter(new \Tk\Form\Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
 
         // Actions
-        //$this->addAction(\Tk\Table\Action\Link::create('New Subject', 'fa fa-plus', \Uni\Uri::createHomeUrl('/subjectEdit.html')));
-        $this->addAction(\Tk\Table\Action\Csv::create());
-        $this->addAction(\Tk\Table\Action\Delete::create());
+        //$this->appendAction(\Tk\Table\Action\Link::create('New Subject', 'fa fa-plus', \Uni\Uri::createHomeUrl('/subjectEdit.html')));
+        $this->appendAction(\Tk\Table\Action\Csv::create());
+        $this->appendAction(\Tk\Table\Action\Delete::create());
 
         return $this;
     }

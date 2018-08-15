@@ -50,11 +50,11 @@ class User extends \Uni\TableIface
                     //$button->setVisible(false);
                 }
             });
-        $this->addCell($actionsCell);
-        $this->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createSubjectUrl('/userEdit.html'));
-        $this->addCell(new \Tk\Table\Cell\Email('email'));
+        $this->appendCell($actionsCell);
+        $this->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createSubjectUrl('/userEdit.html'));
+        $this->appendCell(new \Tk\Table\Cell\Email('email'));
         if (!$this->roleType) {
-            $this->addCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+            $this->appendCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
                 /** @var \Uni\Db\User $obj */
                 if ($obj->getRole())
                     $value = $obj->getRole()->getName();
@@ -62,15 +62,15 @@ class User extends \Uni\TableIface
             });
         }
 
-        $this->addCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->addCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->appendCell(new \Tk\Table\Cell\Boolean('active'));
+        $this->appendCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
-        $this->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
+        $this->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
 
         // Actions
-        //$this->addAction(\Tk\Table\Action\Link::create('New Subject', 'fa fa-plus', \Uni\Uri::createHomeUrl('/subjectEdit.html')));
-        $this->addAction(\Tk\Table\Action\Csv::create());
+        //$this->appendAction(\Tk\Table\Action\Link::create('New Subject', 'fa fa-plus', \Uni\Uri::createHomeUrl('/subjectEdit.html')));
+        $this->appendAction(\Tk\Table\Action\Csv::create());
 
         return $this;
     }

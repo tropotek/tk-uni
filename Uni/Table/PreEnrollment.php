@@ -23,10 +23,10 @@ class PreEnrollment extends \Uni\TableIface
         //$actionsCell = new \Tk\Table\Cell\Actions();
         $this->addCss('tk-pending-users');
 
-        $this->addCell(new \Tk\Table\Cell\Checkbox('email'));
-        $this->addCell(new \Tk\Table\Cell\Text('email'))->addCss('key');
-        $this->addCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
-        $this->addCell(new \Tk\Table\Cell\Boolean('enrolled'))->setOnCellHtml(function ($cell, $obj, $html) {
+        $this->appendCell(new \Tk\Table\Cell\Checkbox('email'));
+        $this->appendCell(new \Tk\Table\Cell\Text('email'))->addCss('key');
+        $this->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
+        $this->appendCell(new \Tk\Table\Cell\Boolean('enrolled'))->setOnCellHtml(function ($cell, $obj, $html) {
             /** @var $cell \Tk\Table\Cell\Boolean */
             /** @var $obj \StdClass */
             $config = \Uni\Config::getInstance();
@@ -44,8 +44,8 @@ class PreEnrollment extends \Uni\TableIface
         });
 
         // Actions
-        //$this->addAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->dialog->getId()));
-        $this->addAction(\Tk\Table\Action\Delete::create('delete', 'email')->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+        //$this->appendAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->dialog->getId()));
+        $this->appendAction(\Tk\Table\Action\Delete::create('delete', 'email')->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
             $config = \Uni\Config::getInstance();
             $subjectMap = $config->getSubjectMapper();
             $subjectMap->removePreEnrollment($obj->subject_id, $obj->email);
@@ -59,7 +59,7 @@ class PreEnrollment extends \Uni\TableIface
             }
             return false;
         }));
-        $this->addAction(\Tk\Table\Action\Csv::create());
+        $this->appendAction(\Tk\Table\Action\Csv::create());
 
         return $this;
     }

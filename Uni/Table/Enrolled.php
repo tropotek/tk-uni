@@ -66,8 +66,8 @@ class Enrolled extends \Uni\TableIface
         $btn->setAttr('data-target','#' . $this->findSubjectDialog->getId());
         $btn->setAttr('data-toggle','modal');
 
-        $this->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->addCell($actionsCell)->setOnCellHtml(function ($cell, $obj) {
+        $this->appendCell(new \Tk\Table\Cell\Checkbox('id'));
+        $this->appendCell($actionsCell)->setOnCellHtml(function ($cell, $obj) {
             /** @var \Tk\Table\Cell\Actions $cell */
             /** @var \Uni\Db\User $obj */
             $config = \Uni\Config::getInstance();
@@ -88,21 +88,21 @@ class Enrolled extends \Uni\TableIface
             }
 
         });
-        $this->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
-        $this->addCell(new \Tk\Table\Cell\Text('username'));
-        $this->addCell(new \Tk\Table\Cell\Email('email'));
-        $this->addCell(new \Tk\Table\Cell\Text('uid'));
-        $this->addCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+        $this->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
+        $this->appendCell(new \Tk\Table\Cell\Text('username'));
+        $this->appendCell(new \Tk\Table\Cell\Email('email'));
+        $this->appendCell(new \Tk\Table\Cell\Text('uid'));
+        $this->appendCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
             /** @var \Uni\Db\User $obj */
             if ($obj->getRole())
                 $value = $obj->getRole()->getName();
             return $value;
         });
-        $this->addCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->addCell(new \Tk\Table\Cell\Date('created'));
+        $this->appendCell(new \Tk\Table\Cell\Boolean('active'));
+        $this->appendCell(new \Tk\Table\Cell\Date('created'));
 
         // Actions
-        $this->addAction(\Tk\Table\Action\Delete::create('delete')->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+        $this->appendAction(\Tk\Table\Action\Delete::create('delete')->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
             /** @var \Uni\Db\User $obj */
             $config = \Uni\Config::getInstance();
             $subject = $config->getSubject();
@@ -111,7 +111,7 @@ class Enrolled extends \Uni\TableIface
             $subjectMap->removeUser($subject->getId(), $obj->getId());
             return false;
         }));
-        $this->addAction(\Tk\Table\Action\Csv::create());
+        $this->appendAction(\Tk\Table\Action\Csv::create());
 
 
         return $this;

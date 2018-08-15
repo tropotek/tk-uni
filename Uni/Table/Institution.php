@@ -30,10 +30,10 @@ class Institution extends \Uni\TableIface
                 }
             });
 
-        $this->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->addCell($actionsCell);
-        $this->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Tk\Uri::create('admin/institutionEdit.html'));
-        $this->addCell(new \Tk\Table\Cell\Text('userId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+        $this->appendCell(new \Tk\Table\Cell\Checkbox('id'));
+        $this->appendCell($actionsCell);
+        $this->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Tk\Uri::create('admin/institutionEdit.html'));
+        $this->appendCell(new \Tk\Table\Cell\Text('userId'))->setOnPropertyValue(function ($cell, $obj, $value) {
             /** @var \Uni\Db\Institution $obj */
             $user = $obj->getUser();
             if ($user) {
@@ -41,17 +41,17 @@ class Institution extends \Uni\TableIface
             }
             return $value;
         });
-        $this->addCell(new \Tk\Table\Cell\Email('email'));
-        $this->addCell(new \Tk\Table\Cell\Text('description'))->setCharacterLimit(64);
-        $this->addCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->addCell(new \Tk\Table\Cell\Date('created'));
+        $this->appendCell(new \Tk\Table\Cell\Email('email'));
+        $this->appendCell(new \Tk\Table\Cell\Text('description'))->setCharacterLimit(64);
+        $this->appendCell(new \Tk\Table\Cell\Boolean('active'));
+        $this->appendCell(new \Tk\Table\Cell\Date('created'));
 
         // Filters
-        $this->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
+        $this->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
 
         // Actions
-        $this->addAction(\Tk\Table\Action\Delete::create());
-        $this->addAction(\Tk\Table\Action\Csv::create());
+        $this->appendAction(\Tk\Table\Action\Delete::create());
+        $this->appendAction(\Tk\Table\Action\Csv::create());
 
         return $this;
     }
