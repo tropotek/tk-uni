@@ -31,9 +31,10 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         if ($auth->getIdentity()) {         // Check if user is logged in
             /** @var \Uni\Db\User $user */
             $user = $config->getUserMapper()->find($auth->getIdentity());
-            if (!$user->isActive()) {
+            if (!$user || !$user->isActive()) {
                 $config->setUser(null);
                 $user = null;
+                $config->getSession()->destroy();
             }
             if ($user && $user->sessionId != $config->getSession()->getId()) {
                 $user->sessionId = $config->getSession()->getId();
