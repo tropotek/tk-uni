@@ -41,34 +41,34 @@ class Manager extends \Uni\Controller\AdminIface
         $this->table = \Uni\Config::getInstance()->createTable('role-manager');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
 
-        $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createHomeUrl('/roleEdit.html'));
-        //$this->table->addCell(new \Tk\Table\Cell\Text('type'));
-        $this->table->addCell(\Tk\Table\Cell\Text::create('description')->setCharacterLimit(100));
-        $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->table->addCell(new \Tk\Table\Cell\Boolean('static'));
-        $this->table->addCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->table->appendCell(new \Tk\Table\Cell\Checkbox('id'));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createHomeUrl('/roleEdit.html'));
+        //$this->table->appendCell(new \Tk\Table\Cell\Text('type'));
+        $this->table->appendCell(\Tk\Table\Cell\Text::create('description')->setCharacterLimit(100));
+        $this->table->appendCell(new \Tk\Table\Cell\Boolean('active'));
+        $this->table->appendCell(new \Tk\Table\Cell\Boolean('static'));
+        $this->table->appendCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
-        $this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
+        $this->table->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
 
         $list = array(
             '-- Type --' => '',
             'Staff' => \Uni\Db\Role::TYPE_STAFF
             //,'Student' => \Uni\Db\Role::TYPE_STUDENT
         );
-        //$this->table->addFilter(Field\Select::createSelect('type', $list));
+        //$this->table->appendFilter(Field\Select::createSelect('type', $list));
 
 
         // Actions
-        $this->table->addAction(\Tk\Table\Action\Delete::create()->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+        $this->table->appendAction(\Tk\Table\Action\Delete::create()->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
             /** @var \Uni\Db\Role $obj */
             if ($obj->isStatic()) {
                 \Tk\Alert::addWarning('Cannot delete system static roles.');
                 return false;
             }
         }));
-        $this->table->addAction(\Tk\Table\Action\Csv::create());
+        $this->table->appendAction(\Tk\Table\Action\Csv::create());
 
         $filter = $this->table->getFilterValues();
         if (empty($filter['type'])) {

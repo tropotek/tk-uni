@@ -110,25 +110,25 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         $list = \Uni\Db\RoleMap::create()->findFiltered(array('type' => \Uni\Db\Role::TYPE_STAFF, 'institutionId' => $this->getConfig()->getInstitutionId()));
         if ($this->targetRole == \Uni\Db\Role::TYPE_STAFF && $list->count() > 1) {
-            $this->form->addField(Field\Select::createSelect('roleId', $list)->setTabGroup($tabGroup)->setRequired()->prependOption('-- Select --', ''));
+            $this->form->appendField(Field\Select::createSelect('roleId', $list)->setTabGroup($tabGroup)->setRequired()->prependOption('-- Select --', ''));
         }
 
         if (!$this->user->getId() || ($this->getConfig()->canChangePassword() && $this->user->getId() != 1)) {
-            $this->form->addField(new Field\Input('username'))->setTabGroup($tabGroup)->setRequired(true);
+            $this->form->appendField(new Field\Input('username'))->setTabGroup($tabGroup)->setRequired(true);
         } else {
-            $this->form->addField(new Field\Html('username'))->setTabGroup($tabGroup);
+            $this->form->appendField(new Field\Html('username'))->setTabGroup($tabGroup);
         }
 
-        $this->form->addField(new Field\Input('email'))->setTabGroup($tabGroup)->setRequired();
-        $this->form->addField(new Field\Input('name'))->setTabGroup($tabGroup);
-        //$this->form->addField(new Field\Input('displayName'))->setTabGroup($tabGroup);
+        $this->form->appendField(new Field\Input('email'))->setTabGroup($tabGroup)->setRequired();
+        $this->form->appendField(new Field\Input('name'))->setTabGroup($tabGroup);
+        //$this->form->appendField(new Field\Input('displayName'))->setTabGroup($tabGroup);
 
         if ($this->targetRole != \Uni\Db\Role::TYPE_STAFF || $this->targetRole != \Uni\Db\Role::TYPE_STUDENT) {
-            $this->form->addField(new Field\Input('uid'))->setLabel('UID')->setTabGroup($tabGroup)
+            $this->form->appendField(new Field\Input('uid'))->setLabel('UID')->setTabGroup($tabGroup)
                 ->setNotes('The student or staff number assigned by the institution (if Applicable).');
         }
         if($this->getUser()->getId() != $this->user->getId()){
-            $this->form->addField(new Field\Checkbox('active'))->setTabGroup($tabGroup);
+            $this->form->appendField(new Field\Checkbox('active'))->setTabGroup($tabGroup);
         }
 
         $tabGroup = 'Subjects';
@@ -139,7 +139,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             // TODO: done it twice so it is becomming something that needs to be looked at soon..... ;-)
             $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
             if ($list->count()) {
-                $this->form->addField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
+                $this->form->appendField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
                     ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
                     ->setTabGroup($tabGroup)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
                 $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->user->id)->toArray('id');
@@ -150,13 +150,13 @@ class Edit extends \Uni\Controller\AdminEditIface
         $tabGroup = 'Password';
         if ($this->getConfig()->canChangePassword()) {
             $this->form->setAttr('autocomplete', 'off');
-            $f = $this->form->addField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
+            $f = $this->form->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
                 ->setAttr('readonly', 'true')->setTabGroup($tabGroup)
                 ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
             if (!$this->user->getId()) {
                 $f->setRequired(true);
             }
-            $f = $this->form->addField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
+            $f = $this->form->appendField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
                 ->setNotes('Change this users password.')->setTabGroup($tabGroup)->setAttr('readonly', 'true')
                 ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
             if (!$this->user->getId()) {
@@ -164,9 +164,9 @@ class Edit extends \Uni\Controller\AdminEditIface
             }
         }
 
-        $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Link('cancel', $this->getBackUrl()));
+        $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
+        $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
+        $this->form->appendField(new Event\Link('cancel', $this->getBackUrl()));
     }
 
     /**
@@ -182,12 +182,12 @@ class Edit extends \Uni\Controller\AdminEditIface
         // Password validation needs to be here
         if ($this->form->getFieldValue('newPassword')) {
             if ($this->form->getFieldValue('newPassword') != $this->form->getFieldValue('confPassword')) {
-                $form->addFieldError('newPassword', 'Passwords do not match.');
-                $form->addFieldError('confPassword');
+                $form->appendFieldError('newPassword', 'Passwords do not match.');
+                $form->appendFieldError('confPassword');
             }
         }
         if (!$this->user->id && !$this->form->getFieldValue('newPassword')) {
-            $form->addFieldError('newPassword', 'Please enter a new password.');
+            $form->appendFieldError('newPassword', 'Please enter a new password.');
         }
 
         $form->addFieldErrors($this->user->validate());

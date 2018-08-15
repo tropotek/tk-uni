@@ -58,11 +58,11 @@ class PluginZoneManager extends AdminIface
         $this->table = \Uni\Config::getInstance()->createTable('PluginList');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
 
-        $this->table->addCell(new IconCell('icon'))->setLabel('');
-        $this->table->addCell(new ActionsCell($this->zoneName, $this->zoneId));
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setOrderProperty('');
-        $this->table->addCell(new \Tk\Table\Cell\Text('version'))->setOrderProperty('');
-        $this->table->addCell(new \Tk\Table\Cell\Date('time'))->setLabel('Created')->setOrderProperty('');
+        $this->table->appendCell(new IconCell('icon'))->setLabel('');
+        $this->table->appendCell(new ActionsCell($this->zoneName, $this->zoneId));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setOrderProperty('');
+        $this->table->appendCell(new \Tk\Table\Cell\Text('version'))->setOrderProperty('');
+        $this->table->appendCell(new \Tk\Table\Cell\Date('time'))->setLabel('Created')->setOrderProperty('');
         
         $this->table->setList($this->getPluginList());
 

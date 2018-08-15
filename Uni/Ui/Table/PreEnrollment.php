@@ -59,15 +59,15 @@ class PreEnrollment extends \Dom\Renderer\Renderer
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
         $this->table->addCss('tk-pending-users');
 
-        $this->table->addCell(new \Tk\Table\Cell\Checkbox('email'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('email'))->addCss('key');
-        $this->table->addCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
-        $this->table->addCell(new EnrolledCell('enrolled'));
+        $this->table->appendCell(new \Tk\Table\Cell\Checkbox('email'));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('email'))->addCss('key');
+        $this->table->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
+        $this->table->appendCell(new EnrolledCell('enrolled'));
 
         // Actions
-        $this->table->addAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->dialog->getId()));
-        $this->table->addAction(new ActionUnEnroll('delete', 'email'));
-        $this->table->addAction(\Tk\Table\Action\Csv::create());
+        $this->table->appendAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->dialog->getId()));
+        $this->table->appendAction(new ActionUnEnroll('delete', 'email'));
+        $this->table->appendAction(\Tk\Table\Action\Csv::create());
 
         // Set Table List
         $filter = $this->table->getFilterValues();

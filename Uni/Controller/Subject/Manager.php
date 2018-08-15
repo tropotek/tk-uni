@@ -39,29 +39,29 @@ class Manager extends \Uni\Controller\AdminIface
         $this->table = \Uni\Config::getInstance()->createTable('subject-manager');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
 
-        $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createHomeUrl('/subjectEdit.html'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('code'));
-        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
-        $this->table->addCell(new \Tk\Table\Cell\Boolean('active'))->setOrderProperty()->setOnPropertyValue(function ($cell, $obj, $value) {
+        $this->table->appendCell(new \Tk\Table\Cell\Checkbox('id'));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createHomeUrl('/subjectEdit.html'));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('code'));
+        $this->table->appendCell(new \Tk\Table\Cell\Email('email'));
+        $this->table->appendCell(new \Tk\Table\Cell\Boolean('active'))->setOrderProperty()->setOnPropertyValue(function ($cell, $obj, $value) {
             /** @var \Uni\Db\Subject $obj */
             return $obj->isActive();
         });
-        $this->table->addCell(\Tk\Table\Cell\Date::create('dateStart')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
-        $this->table->addCell(\Tk\Table\Cell\Date::create('dateEnd')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
-        $this->table->addCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->table->appendCell(\Tk\Table\Cell\Date::create('dateStart')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->table->appendCell(\Tk\Table\Cell\Date::create('dateEnd')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->table->appendCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
-        $this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
+        $this->table->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
         if ($this->getUser()->isStaff()) {
             $list = array('-- Show All --' => '', 'My Subjects' => '1');
-            $this->table->addFilter(new Field\Select('userId', $list))->setLabel('')->setValue('1');
+            $this->table->appendFilter(new Field\Select('userId', $list))->setLabel('')->setValue('1');
         }
 
         // Actions
-        //$this->table->addAction(\Tk\Table\Action\Button::getInstance('New Subject', 'fa fa-plus', \Tk\Uri::create('/client/subjectEdit.html')));
-        $this->table->addAction(\Tk\Table\Action\Delete::create());
-        $this->table->addAction(\Tk\Table\Action\Csv::create());
+        //$this->table->appendAction(\Tk\Table\Action\Button::getInstance('New Subject', 'fa fa-plus', \Tk\Uri::create('/client/subjectEdit.html')));
+        $this->table->appendAction(\Tk\Table\Action\Delete::create());
+        $this->table->appendAction(\Tk\Table\Action\Csv::create());
 
         $filter = $this->table->getFilterValues();
         $filter['institutionId'] = $this->getConfig()->getInstitutionId();

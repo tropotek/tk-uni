@@ -52,24 +52,24 @@ class Enrolled extends \Dom\Renderer\Renderer
         $this->table->setRenderer($this->getConfig()->createTableRenderer($this->table));
         $this->table->addCss('tk-enrolled-users');
 
-        $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->addCell(new ActionsCell($this->subject));
-        $this->table->addCell(new \Tk\Table\Cell\Text('uid'));
-        $this->table->addCell(new NameCell('name'))->addCss('key')->setUrl($this->editUrl);
-        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('username'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+        $this->table->appendCell(new \Tk\Table\Cell\Checkbox('id'));
+        $this->table->appendCell(new ActionsCell($this->subject));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('uid'));
+        $this->table->appendCell(new NameCell('name'))->addCss('key')->setUrl($this->editUrl);
+        $this->table->appendCell(new \Tk\Table\Cell\Email('email'));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('username'));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
             /** @var \Uni\Db\User $obj */
             if ($obj->getRole())
                 $value = $obj->getRole()->getName();
             return $value;
         });
-        $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('created'));
+        $this->table->appendCell(new \Tk\Table\Cell\Boolean('active'));
+        $this->table->appendCell(new \Tk\Table\Cell\Date('created'));
 
         // Actions
-        $this->table->addAction(DeleteUser::create()->setSubject($this->subject));
-        $this->table->addAction(\Tk\Table\Action\Csv::create());
+        $this->table->appendAction(DeleteUser::create()->setSubject($this->subject));
+        $this->table->appendAction(\Tk\Table\Action\Csv::create());
 
         // Set list
         $filter = $this->table->getFilterValues();

@@ -55,32 +55,32 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form = \Uni\Config::getInstance()->createForm('institutionEdit');
         $this->form->setRenderer(\Uni\Config::getInstance()->createFormRenderer($this->form));
 
-        $this->form->addField(new Field\Input('name'))->setRequired(true)->setTabGroup('Details');
-        $this->form->addField(new Field\Input('username'))->setRequired(true)->setTabGroup('Details');
-        $this->form->addField(new Field\Input('email'))->setRequired(true)->setTabGroup('Details');
-        $this->form->addField(new Field\File('logo', $this->institution->getDataPath().'/logo/'))
+        $this->form->appendField(new Field\Input('name'))->setRequired(true)->setTabGroup('Details');
+        $this->form->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup('Details');
+        $this->form->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup('Details');
+        $this->form->appendField(new Field\File('logo', $this->institution->getDataPath().'/logo/'))
             ->setAttr('accept', '.png,.jpg,.jpeg,.gif')->setTabGroup('Details')->addCss('tk-imageinput');
 
         $insUrl = \Tk\Uri::create('/inst/'.$this->institution->getHash().'/login.html');
         if ($this->institution->domain)
             $insUrl = \Tk\Uri::create('/login.html')->setHost($this->institution->domain);
         $insUrlStr = $insUrl->setScheme('https')->toString();
-        $this->form->addField(new Field\Input('domain'))->setTabGroup('Details')->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>' )
+        $this->form->appendField(new Field\Input('domain'))->setTabGroup('Details')->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>' )
             ->setAttr('placeholder', $insUrl->getHost());
-        $this->form->addField(new Field\Textarea('description'))->setTabGroup('Details');
-        $this->form->addField(new Field\Checkbox('active'))->setTabGroup('Details');
+        $this->form->appendField(new Field\Textarea('description'))->setTabGroup('Details');
+        $this->form->appendField(new Field\Checkbox('active'))->setTabGroup('Details');
 
         $this->form->setAttr('autocomplete', 'off');
-        $f = $this->form->addField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")->setTabGroup('Password');
+        $f = $this->form->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")->setTabGroup('Password');
         if (!$this->user->getId())
             $f->setRequired(true);
-        $f = $this->form->addField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")->setNotes('Change this users password.')->setTabGroup('Password');
+        $f = $this->form->appendField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")->setNotes('Change this users password.')->setTabGroup('Password');
         if (!$this->user->getId())
             $f->setRequired(true);
 
-        $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Link('cancel', \Tk\Uri::create('/admin/institutionManager.html')));
+        $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
+        $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
+        $this->form->appendField(new Event\Link('cancel', \Tk\Uri::create('/admin/institutionManager.html')));
 
         $this->form->load($this->getConfig()->getInstitutionMapper()->unmapForm($this->institution));
         $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
@@ -117,18 +117,18 @@ class Edit extends \Uni\Controller\AdminIface
         /** @var \Tk\Form\Field\File $logo */
         $logo = $form->getField('logo');
         if ($logo->hasFile() && !preg_match('/\.(gif|jpe?g|png)$/i', $logo->getValue())) {
-            $form->addFieldError('logo', 'Please Select a valid image file. (jpg, png, gif only)');
+            $form->appendFieldError('logo', 'Please Select a valid image file. (jpg, png, gif only)');
         }
 
         // Password validation needs to be here
         if ($this->form->getFieldValue('newPassword')) {
             if ($this->form->getFieldValue('newPassword') != $this->form->getFieldValue('confPassword')) {
-                $form->addFieldError('newPassword', 'Passwords do not match.');
-                $form->addFieldError('confPassword');
+                $form->appendFieldError('newPassword', 'Passwords do not match.');
+                $form->appendFieldError('confPassword');
             }
         }
         if (!$this->user->id && !$this->form->getFieldValue('newPassword')) {
-            $form->addFieldError('newPassword', 'Please enter a new password.');
+            $form->appendFieldError('newPassword', 'Please enter a new password.');
         }
 
         if ($form->hasErrors()) {

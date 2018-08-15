@@ -71,7 +71,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $this->preDialog->execute($request);
 
         $this->preTable = \Uni\Table\PreEnrollment::create()->init();
-        $this->preTable->addAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')
+        $this->preTable->appendAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')
             ->setAttr('data-target', '#'.$this->preDialog->getId()));
         $list = $this->preTable->findList(array('subjectId' => $this->getSubject()->getId()));
         $this->preTable->setList($list);

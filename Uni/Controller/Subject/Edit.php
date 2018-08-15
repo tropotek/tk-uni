@@ -64,20 +64,20 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form = $this->getConfig()->createForm('subject-edit');
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
 
-        $this->form->addField(new Field\Input('name'))->setRequired(true);
-        $this->form->addField(new Field\Input('code'))->setRequired(true);
-        $this->form->addField(new Field\Input('email'))->setRequired(true);
-        $this->form->addField(new Field\DateRange('date'))->setRequired(true)->setLabel('Dates')
+        $this->form->appendField(new Field\Input('name'))->setRequired(true);
+        $this->form->appendField(new Field\Input('code'))->setRequired(true);
+        $this->form->appendField(new Field\Input('email'))->setRequired(true);
+        $this->form->appendField(new Field\DateRange('date'))->setRequired(true)->setLabel('Dates')
             ->setNotes('The start and end dates of the subject. Placements cannot be created outside these dates.');
-//        $this->form->addField(new Field\Input('dateStart'))->addCss('date')->setRequired(true);
-//        $this->form->addField(new Field\Input('dateEnd'))->addCss('date')->setRequired(true);
-        $this->form->addField(new Field\Textarea('description'));
+//        $this->form->appendField(new Field\Input('dateStart'))->addCss('date')->setRequired(true);
+//        $this->form->appendField(new Field\Input('dateEnd'))->addCss('date')->setRequired(true);
+        $this->form->appendField(new Field\Textarea('description'));
 
         if ($this->subject->getId()) {
-            $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
+            $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
         }
-        $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Link('cancel', $this->getBackUrl()));
+        $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
+        $this->form->appendField(new Event\Link('cancel', $this->getBackUrl()));
 
         $this->form->load($this->getConfig()->getSubjectMapper()->unmapForm($this->subject));
         $this->form->execute();

@@ -80,12 +80,11 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
         if ($user->id == $msqUser->id) return false;
 
         $msqArr = $config->getSession()->get(self::SID);
-        if (is_array($msqArr)) {    // Check if we are allready masquerading as this user in the queue
+        if (is_array($msqArr)) {    // Check if we are already masquerading as this user in the queue
             foreach ($msqArr as $data) {
                 if ($data['userId'] == $msqUser->id) return false;
             }
         }
-
         // Get the users role precedence order index
         $userRoleIdx = array_search($user->getRoleType(), self::$roleOrder);
         $msqRoleIdx = array_search($msqUser->getRoleType(), self::$roleOrder);
@@ -96,7 +95,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
         }
 
         // If not admins they must be of the same institution
-        if (!$user->isAdmin() && $user->getInstitution()->id != $msqUser->institutionId) {
+        if ($user->institutionId != 0 && $user->institutionId != $msqUser->institutionId) {
             return false;
         }
         return true;

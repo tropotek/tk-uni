@@ -61,24 +61,24 @@ class Edit extends \Uni\Controller\AdminIface
 
         $tab = 'Details';
         if ($this->role) {
-            $this->form->addField(new Field\Html('type'))->setTabGroup($tab);
+            $this->form->appendField(new Field\Html('type'))->setTabGroup($tab);
         } else {
             $list = array(
                 '-- Type --' => '',
                 'Staff' => \Uni\Db\Role::TYPE_STAFF
                 //,'Student' => \Uni\Db\Role::TYPE_STUDENT
             );
-            $this->form->addField(new Field\Select('type', $list))->setLabel('Role Type')->setTabGroup($tab)->setRequired();
+            $this->form->appendField(new Field\Select('type', $list))->setLabel('Role Type')->setTabGroup($tab)->setRequired();
         }
-        $this->form->addField(new Field\Input('name'))->setTabGroup($tab)->setRequired();
-        $this->form->addField(new Field\Input('description'))->setTabGroup($tab);
-        $this->form->addField(new Field\Checkbox('active'))->setTabGroup($tab)->setNotes('Making a role inactive will result in the user having no permissions, the same permissions as the default role of its type.');
+        $this->form->appendField(new Field\Input('name'))->setTabGroup($tab)->setRequired();
+        $this->form->appendField(new Field\Input('description'))->setTabGroup($tab);
+        $this->form->appendField(new Field\Checkbox('active'))->setTabGroup($tab)->setNotes('Making a role inactive will result in the user having no permissions, the same permissions as the default role of its type.');
 
         $this->setupPermissionFields($this->form);
 
-        $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Link('cancel', $this->getBackUrl()));
+        $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
+        $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
+        $this->form->appendField(new Event\Link('cancel', $this->getBackUrl()));
 
         $this->form->load(array_combine($this->role->getPermissions(), $this->role->getPermissions()));
         $this->form->load($this->getConfig()->getRoleMapper()->unmapForm($this->role));
@@ -100,11 +100,11 @@ class Edit extends \Uni\Controller\AdminIface
     {
         $tab = 'Permission';
 
-        $form->addField(new Field\Checkbox(\Uni\Db\Permission::MANAGE_STAFF))->setLabel('Manage Staff')->setTabGroup($tab)
+        $form->appendField(new Field\Checkbox(\Uni\Db\Permission::MANAGE_STAFF))->setLabel('Manage Staff')->setTabGroup($tab)
             ->setNotes('Add/Edit Staff user accounts');
-        $form->addField(new Field\Checkbox(\Uni\Db\Permission::MANAGE_STUDENT))->setLabel('Manage Students')->setTabGroup($tab)
+        $form->appendField(new Field\Checkbox(\Uni\Db\Permission::MANAGE_STUDENT))->setLabel('Manage Students')->setTabGroup($tab)
             ->setNotes('Add/Edit Student user accounts');
-        $form->addField(new Field\Checkbox(\Uni\Db\Permission::MANAGE_SUBJECT))->setLabel('Manage Subjects')->setTabGroup($tab)
+        $form->appendField(new Field\Checkbox(\Uni\Db\Permission::MANAGE_SUBJECT))->setLabel('Manage Subjects')->setTabGroup($tab)
             ->setNotes('Add/Edit subject and student enrollments');
     }
 

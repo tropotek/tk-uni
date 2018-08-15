@@ -51,24 +51,24 @@ class Profile extends \Uni\Controller\AdminIface
         $this->form->setAttr('autocomplete', 'off');
 
         $tabGroup = 'Details';
-        $this->form->addField(new Field\Html('username'))->setTabGroup($tabGroup);
-        $this->form->addField(new Field\Input('displayName'))->setTabGroup($tabGroup);
+        $this->form->appendField(new Field\Html('username'))->setTabGroup($tabGroup);
+        $this->form->appendField(new Field\Input('displayName'))->setTabGroup($tabGroup);
         if ($this->getConfig()->canChangePassword()) {
-            $this->form->addField(new Field\Input('email'))->setTabGroup($tabGroup);
+            $this->form->appendField(new Field\Input('email'))->setTabGroup($tabGroup);
         } else {
-            $this->form->addField(new Field\Html('email'))->setTabGroup($tabGroup);
+            $this->form->appendField(new Field\Html('email'))->setTabGroup($tabGroup);
         }
 
         $tabGroup = 'Password';
         if ($this->getConfig()->canChangePassword()) {
             $this->form->setAttr('autocomplete', 'off');
-            $f = $this->form->addField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
+            $f = $this->form->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
                 ->setAttr('readonly', 'true')->setTabGroup($tabGroup)
                 ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
             if (!$this->user->getId()) {
                 $f->setRequired(true);
             }
-            $f = $this->form->addField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
+            $f = $this->form->appendField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
                 ->setNotes('Change this users password.')->setTabGroup($tabGroup)->setAttr('readonly', 'true')
                 ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
             if (!$this->user->getId()) {
@@ -76,9 +76,9 @@ class Profile extends \Uni\Controller\AdminIface
             }
         }
 
-        $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Link('cancel', $this->getBackUrl()));
+        $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
+        $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
+        $this->form->appendField(new Event\Link('cancel', $this->getBackUrl()));
 
         $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
         $this->form->execute();

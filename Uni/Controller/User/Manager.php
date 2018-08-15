@@ -110,28 +110,28 @@ class Manager extends \Uni\Controller\AdminIface
         $this->table = \Uni\Config::getInstance()->createTable($this->targetRole . '-user-list');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
 
-        $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->addCell($this->actionsCell);
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(clone $this->editUrl);
-        $this->table->addCell(new \Tk\Table\Cell\Text('username'));
-        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+        $this->table->appendCell(new \Tk\Table\Cell\Checkbox('id'));
+        $this->table->appendCell($this->actionsCell);
+        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(clone $this->editUrl);
+        $this->table->appendCell(new \Tk\Table\Cell\Text('username'));
+        $this->table->appendCell(new \Tk\Table\Cell\Email('email'));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
             /** @var \Uni\Db\User $obj */
             if ($obj->getRole())
                 $value = $obj->getRole()->getName();
             return $value;
         });
-        $this->table->addCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
-        $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('lastLogin'));
-        $this->table->addCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
+        $this->table->appendCell(new \Tk\Table\Cell\Boolean('active'));
+        $this->table->appendCell(new \Tk\Table\Cell\Date('lastLogin'));
+        $this->table->appendCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
-        $this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
+        $this->table->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
 
         // Actions
-        $this->table->addAction(\Tk\Table\Action\Delete::create()->setExcludeIdList(array(1)));
-        $this->table->addAction(\Tk\Table\Action\Csv::create());
+        $this->table->appendAction(\Tk\Table\Action\Delete::create()->setExcludeIdList(array(1)));
+        $this->table->appendAction(\Tk\Table\Action\Csv::create());
 
         $this->initTable();
 

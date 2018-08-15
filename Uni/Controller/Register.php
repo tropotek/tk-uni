@@ -61,13 +61,13 @@ class Register extends Iface
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
         $this->form->addCss('form-horizontal');
 
-        $this->form->addField(new Field\Input('name'));
-        $this->form->addField(new Field\Input('email'));
-        $this->form->addField(new Field\Input('username'));
-        $this->form->addField(new Field\Password('password'));
-        $this->form->addField(new Field\Password('passwordConf'))->setLabel('Password Confirm');
-        $this->form->addField(new Event\Submit('register', array($this, 'doRegister')))->addCss('btn btn-primary btn-ss');
-        $this->form->addField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
+        $this->form->appendField(new Field\Input('name'));
+        $this->form->appendField(new Field\Input('email'));
+        $this->form->appendField(new Field\Input('username'));
+        $this->form->appendField(new Field\Password('password'));
+        $this->form->appendField(new Field\Password('passwordConf'))->setLabel('Password Confirm');
+        $this->form->appendField(new Event\Submit('register', array($this, 'doRegister')))->addCss('btn btn-primary btn-ss');
+        $this->form->appendField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
             ->removeCss('btn btn-sm btn-default btn-once');
 
         $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
@@ -88,18 +88,18 @@ class Register extends Iface
         $this->getConfig()->getInstitutionMapper()->mapForm($form->getValues(), $this->institution);
 
         if (!$this->form->getFieldValue('password')) {
-            $form->addFieldError('password', 'Please enter a password');
-            $form->addFieldError('passwordConf');
+            $form->appendFieldError('password', 'Please enter a password');
+            $form->appendFieldError('passwordConf');
         }
         // Check the password strength, etc....
         if (!preg_match('/.{6,32}/', $this->form->getFieldValue('password'))) {
-            $form->addFieldError('password', 'Please enter a valid password');
-            $form->addFieldError('passwordConf');
+            $form->appendFieldError('password', 'Please enter a valid password');
+            $form->appendFieldError('passwordConf');
         }
         // Password validation needs to be here
         if ($this->form->getFieldValue('password') != $this->form->getFieldValue('passwordConf')) {
-            $form->addFieldError('password', 'Passwords do not match.');
-            $form->addFieldError('passwordConf');
+            $form->appendFieldError('password', 'Passwords do not match.');
+            $form->appendFieldError('passwordConf');
         }
         
         $form->addFieldErrors($this->user->validate());

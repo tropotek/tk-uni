@@ -59,28 +59,28 @@ class Subject extends \Dom\Renderer\Renderer
         $this->table = new \Tk\Table('SubjectList');
         $this->table->setRenderer(\Tk\Table\Renderer\Dom\Table::create($this->table));
 
-        //$this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $c = $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
+        //$this->table->appendCell(new \Tk\Table\Cell\Checkbox('id'));
+        $c = $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
         if (is_callable($this->editUrl)) {
             $c->setOnPropertyValue($this->editUrl);
         } else {
             $c->setUrl($this->editUrl);
         }
-        $this->table->addCell(new \Tk\Table\Cell\Text('code'));
-        //$this->table->addCell(new \Tk\Table\Cell\Text('email'));
-        //$this->table->addCell(new \Tk\Table\Cell\Date('dateStart'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('dateEnd'));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('code'));
+        //$this->table->appendCell(new \Tk\Table\Cell\Text('email'));
+        //$this->table->appendCell(new \Tk\Table\Cell\Date('dateStart'));
+        $this->table->appendCell(new \Tk\Table\Cell\Date('dateEnd'));
 
-        $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
-        //$this->table->addCell(new \Tk\Table\Cell\Date('created'))->setFormat(\Tk\Table\Cell\Date::FORMAT_RELATIVE);
-        $this->table->addCell(new \Tk\Table\Cell\Date('created'));
+        $this->table->appendCell(new \Tk\Table\Cell\Boolean('active'));
+        //$this->table->appendCell(new \Tk\Table\Cell\Date('created'))->setFormat(\Tk\Table\Cell\Date::FORMAT_RELATIVE);
+        $this->table->appendCell(new \Tk\Table\Cell\Date('created'));
 
         // Filters
-        $this->table->addFilter(new \Tk\Form\Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
+        $this->table->appendFilter(new \Tk\Form\Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
 
         // Actions
-        $this->table->addAction(\Tk\Table\Action\Link::create('New Subject', 'fa fa-plus', \Uni\Uri::createHomeUrl('/subjectEdit.html')));
-        $this->table->addAction(\Tk\Table\Action\Csv::create());
+        $this->table->appendAction(\Tk\Table\Action\Link::create('New Subject', 'fa fa-plus', \Uni\Uri::createHomeUrl('/subjectEdit.html')));
+        $this->table->appendAction(\Tk\Table\Action\Csv::create());
 
         // Set list
         $filter = $this->table->getFilterValues();

@@ -81,11 +81,11 @@ class User extends \Dom\Renderer\Renderer
                     //$button->setVisible(false);
                 }
             });
-        $this->table->addCell($this->actionsCell);
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl($this->editUrl);
+        $this->table->appendCell($this->actionsCell);
+        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl($this->editUrl);
 
 //        if ($this->institutionId) {
-//            $this->table->addCell(new \Tk\Table\Cell\Text('subject'))
+//            $this->table->appendCell(new \Tk\Table\Cell\Text('subject'))
 //                ->setOnPropertyValue(function ($csll, $obj, $value) {
 //                    $list = \Uni\Config::getInstance()->getSubjectMapper()->findByUserId($obj->id, $this->institutionId, \Tk\Db\Tool::create('a.name'));
 //                    $val = '';
@@ -98,10 +98,10 @@ class User extends \Dom\Renderer\Renderer
 //                    return $val;
 //                });
 //        }
-        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
+        $this->table->appendCell(new \Tk\Table\Cell\Email('email'));
 
         if (!$this->roleType) {
-            $this->table->addCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+            $this->table->appendCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
                 /** @var \Uni\Db\User $obj */
                 if ($obj->getRole())
                     $value = $obj->getRole()->getName();
@@ -109,14 +109,14 @@ class User extends \Dom\Renderer\Renderer
             });
         }
 
-        $this->table->addCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->table->addCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->table->appendCell(new \Tk\Table\Cell\Boolean('active'));
+        $this->table->appendCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
-        //$this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
+        //$this->table->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
 
         // Actions
-        //$this->table->addAction(\Tk\Table\Action\Csv::create());
+        //$this->table->appendAction(\Tk\Table\Action\Csv::create());
 
         // Set list
         $filter = $this->table->getFilterValues();

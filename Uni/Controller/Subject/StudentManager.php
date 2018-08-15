@@ -40,22 +40,22 @@ class StudentManager extends \Uni\Controller\AdminIface
         $this->table = \Uni\Config::getInstance()->createTable('student-manager');
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
 
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createSubjectUrl('/index.html'))
+        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createSubjectUrl('/index.html'))
             ->setOnPropertyValue(function ($cell, $obj, $value) {
                 /** @var \Tk\Table\Cell\Text $cell */
                 $cell->setUrl(\Uni\Uri::createSubjectUrl('/index.html', $obj));
                 return $value;
             });
-        $this->table->addCell(new \Tk\Table\Cell\Text('code'));
-        $this->table->addCell(new \Tk\Table\Cell\Email('email'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('dateStart'));
-        $this->table->addCell(new \Tk\Table\Cell\Date('dateEnd'));
+        $this->table->appendCell(new \Tk\Table\Cell\Text('code'));
+        $this->table->appendCell(new \Tk\Table\Cell\Email('email'));
+        $this->table->appendCell(new \Tk\Table\Cell\Date('dateStart'));
+        $this->table->appendCell(new \Tk\Table\Cell\Date('dateEnd'));
 
         // Filters
-        $this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
+        $this->table->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
 
         // Actions
-        $this->table->addAction(\Tk\Table\Action\Csv::create());
+        $this->table->appendAction(\Tk\Table\Action\Csv::create());
 
         $filter = $this->table->getFilterValues();
         $filter['institutionId'] = $this->getConfig()->getInstitutionId();

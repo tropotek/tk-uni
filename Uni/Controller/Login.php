@@ -73,7 +73,7 @@ class Login extends Iface
             \Uni\Uri::create('/index.html');
         }
         $this->init();
-        $this->form->addField(new Field\Hidden('instHash', $instHash));
+        $this->form->appendField(new Field\Hidden('instHash', $instHash));
         $this->form->execute();
     }
 
@@ -88,11 +88,11 @@ class Login extends Iface
             $this->form->addCss('form-horizontal');
         }
 
-        $this->form->addField(new Field\Input('username'));
-        $this->form->addField(new Field\Password('password'));
-        $this->form->addField(new Event\Submit('login', array($this, 'doLogin')))->addCss('btn btn-lg btn-primary btn-ss');
+        $this->form->appendField(new Field\Input('username'));
+        $this->form->appendField(new Field\Password('password'));
+        $this->form->appendField(new Event\Submit('login', array($this, 'doLogin')))->addCss('btn btn-lg btn-primary btn-ss');
         if (!$this->isInstLogin) {
-            $this->form->addField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
+            $this->form->appendField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
                 ->removeCss('btn btn-sm btn-default btn-once');
         }
     }
@@ -107,10 +107,10 @@ class Login extends Iface
     public function doLogin($form, $event)
     {
         if (!$form->getFieldValue('username')) {
-            $form->addFieldError('username', 'Please enter a valid username');
+            $form->appendFieldError('username', 'Please enter a valid username');
         }
         if (!$form->getFieldValue('password')) {
-            $form->addFieldError('password', 'Please enter a valid password');
+            $form->appendFieldError('password', 'Please enter a valid password');
         }
         if ($form->hasErrors()) {
             return;

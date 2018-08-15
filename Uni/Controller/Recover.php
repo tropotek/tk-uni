@@ -45,9 +45,9 @@ class Recover extends Iface
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
         $this->form->addCss('form-horizontal');
 
-        $this->form->addField(new Field\Input('account'));
-        $this->form->addField(new Event\Submit('recover', array($this, 'doRecover')))->addCss('btn btn-primary btn-ss');
-        $this->form->addField(new Event\Link('login', \Tk\Uri::create('/login.html'), ''))
+        $this->form->appendField(new Field\Input('account'));
+        $this->form->appendField(new Event\Submit('recover', array($this, 'doRecover')))->addCss('btn btn-primary btn-ss');
+        $this->form->appendField(new Event\Link('login', \Tk\Uri::create('/login.html'), ''))
             ->removeCss('btn btn-sm btn-default btn-once');
 
         $this->form->execute();
@@ -61,7 +61,7 @@ class Recover extends Iface
     public function doRecover($form, $event)
     {
         if (!$form->getFieldValue('account')) {
-            $form->addFieldError('account', 'Please enter a valid username or email');
+            $form->appendFieldError('account', 'Please enter a valid username or email');
         }
 
         if ($form->hasErrors()) {
@@ -77,7 +77,7 @@ class Recover extends Iface
             $user = $this->getConfig()->getUserMapper()->findByUsername($account);
         }
         if (!$user) {
-            $form->addFieldError('account', 'Please enter a valid username or email');
+            $form->appendFieldError('account', 'Please enter a valid username or email');
             return;
         }
 
