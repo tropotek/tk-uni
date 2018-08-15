@@ -66,13 +66,15 @@ class PreEnrollment extends \Uni\TableIface
 
     /**
      * @param array $filter
+     * @param null|\Tk\Db\Tool $tool
      * @return array
      * @throws \Exception
      */
-    public function findList($filter = array())
+    public function findList($filter = array(), $tool = null)
     {
+        if (!$tool) $tool = $this->getTool('enrolled DESC');
         $filter = array_merge($this->getFilterValues(), $filter);
-        $list = $this->getConfig()->getSubjectMapper()->findPreEnrollments($filter, $this->getTool('enrolled DESC'));
+        $list = $this->getConfig()->getSubjectMapper()->findPreEnrollments($filter, $tool);
         return $list;
     }
 

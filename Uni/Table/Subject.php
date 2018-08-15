@@ -37,21 +37,23 @@ class Subject extends \Uni\TableIface
 
         // Actions
         //$this->appendAction(\Tk\Table\Action\Link::create('New Subject', 'fa fa-plus', \Uni\Uri::createHomeUrl('/subjectEdit.html')));
-        $this->appendAction(\Tk\Table\Action\Csv::create());
         $this->appendAction(\Tk\Table\Action\Delete::create());
+        $this->appendAction(\Tk\Table\Action\Csv::create());
 
         return $this;
     }
 
     /**
      * @param array $filter
+     * @param null|\Tk\Db\Tool $tool
      * @return \Tk\Db\Map\ArrayObject|\Uni\Db\Subject[]
      * @throws \Exception
      */
-    public function findList($filter = array())
+    public function findList($filter = array(), $tool = null)
     {
+        if (!$tool) $tool = $this->getTool();
         $filter = array_merge($this->getFilterValues(), $filter);
-        $list = \Uni\Db\SubjectMap::create()->findFiltered($filter, $this->getTool());
+        $list = \Uni\Db\SubjectMap::create()->findFiltered($filter, $tool);
         return $list;
     }
 

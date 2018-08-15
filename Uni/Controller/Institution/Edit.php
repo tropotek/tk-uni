@@ -117,18 +117,18 @@ class Edit extends \Uni\Controller\AdminIface
         /** @var \Tk\Form\Field\File $logo */
         $logo = $form->getField('logo');
         if ($logo->hasFile() && !preg_match('/\.(gif|jpe?g|png)$/i', $logo->getValue())) {
-            $form->appendFieldError('logo', 'Please Select a valid image file. (jpg, png, gif only)');
+            $form->addFieldError('logo', 'Please Select a valid image file. (jpg, png, gif only)');
         }
 
         // Password validation needs to be here
         if ($this->form->getFieldValue('newPassword')) {
             if ($this->form->getFieldValue('newPassword') != $this->form->getFieldValue('confPassword')) {
-                $form->appendFieldError('newPassword', 'Passwords do not match.');
-                $form->appendFieldError('confPassword');
+                $form->addFieldError('newPassword', 'Passwords do not match.');
+                $form->addFieldError('confPassword');
             }
         }
         if (!$this->user->id && !$this->form->getFieldValue('newPassword')) {
-            $form->appendFieldError('newPassword', 'Please enter a new password.');
+            $form->addFieldError('newPassword', 'Please enter a new password.');
         }
 
         if ($form->hasErrors()) {

@@ -77,13 +77,15 @@ class User extends \Uni\TableIface
 
     /**
      * @param array $filter
+     * @param null|\Tk\Db\Tool $tool
      * @return \Tk\Db\Map\ArrayObject|\App\Db\Mentor[]
      * @throws \Exception
      */
-    public function findList($filter = array())
+    public function findList($filter = array(), $tool = null)
     {
+        if (!$tool) $tool = $this->getTool();
         $filter = array_merge($this->getFilterValues(), $filter);
-        $list = \Uni\Db\UserMap::create()->findFiltered($filter, $this->getTool());
+        $list = \Uni\Db\UserMap::create()->findFiltered($filter, $tool);
         return $list;
     }
 

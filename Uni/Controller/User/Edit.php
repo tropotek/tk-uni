@@ -136,7 +136,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         if ($this->user->id && ($this->user->isStaff() || $this->user->isStudent()) ) {
             // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
             // TODO: This needs to be replaced with a dialog box and search feature so it works for a large number of subjects
-            // TODO: done it twice so it is becomming something that needs to be looked at soon..... ;-)
+            // TODO: done it twice so it is becoming something that needs to be looked at soon..... ;-)
             $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
             if ($list->count()) {
                 $this->form->appendField(new Field\Select('selSubject[]', $list))->setLabel('Subject Selection')
@@ -182,12 +182,12 @@ class Edit extends \Uni\Controller\AdminEditIface
         // Password validation needs to be here
         if ($this->form->getFieldValue('newPassword')) {
             if ($this->form->getFieldValue('newPassword') != $this->form->getFieldValue('confPassword')) {
-                $form->appendFieldError('newPassword', 'Passwords do not match.');
-                $form->appendFieldError('confPassword');
+                $form->addFieldError('newPassword', 'Passwords do not match.');
+                $form->addFieldError('confPassword');
             }
         }
         if (!$this->user->id && !$this->form->getFieldValue('newPassword')) {
-            $form->appendFieldError('newPassword', 'Please enter a new password.');
+            $form->addFieldError('newPassword', 'Please enter a new password.');
         }
 
         $form->addFieldErrors($this->user->validate());

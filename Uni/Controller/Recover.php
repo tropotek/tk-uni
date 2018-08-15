@@ -61,7 +61,7 @@ class Recover extends Iface
     public function doRecover($form, $event)
     {
         if (!$form->getFieldValue('account')) {
-            $form->appendFieldError('account', 'Please enter a valid username or email');
+            $form->addFieldError('account', 'Please enter a valid username or email');
         }
 
         if ($form->hasErrors()) {
@@ -77,7 +77,7 @@ class Recover extends Iface
             $user = $this->getConfig()->getUserMapper()->findByUsername($account);
         }
         if (!$user) {
-            $form->appendFieldError('account', 'Please enter a valid username or email');
+            $form->addFieldError('account', 'Please enter a valid username or email');
             return;
         }
 

@@ -119,13 +119,15 @@ class Enrolled extends \Uni\TableIface
 
     /**
      * @param array $filter
+     * @param null|\Tk\Db\Tool $tool
      * @return \Tk\Db\Map\ArrayObject|\Uni\Db\UserIface[]
      * @throws \Exception
      */
-    public function findList($filter = array())
+    public function findList($filter = array(), $tool = null)
     {
+        if (!$tool) $tool = $this->getTool('name');
         $filter = array_merge($this->getFilterValues(), $filter);
-        $list = $this->getConfig()->getUserMapper()->findFiltered($filter, $this->getTool('name'));
+        $list = $this->getConfig()->getUserMapper()->findFiltered($filter, $tool);
         return $list;
     }
 

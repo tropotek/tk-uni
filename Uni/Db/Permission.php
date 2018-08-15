@@ -27,7 +27,6 @@ class Permission extends \Bs\Db\Permission
     const MANAGE_SUBJECT          = 'perm.manage.subject';
 
 
-    // ...
 
 
 }

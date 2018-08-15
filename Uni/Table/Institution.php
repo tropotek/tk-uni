@@ -58,13 +58,15 @@ class Institution extends \Uni\TableIface
 
     /**
      * @param array $filter
+     * @param null|\Tk\Db\Tool $tool
      * @return \Tk\Db\Map\ArrayObject|\Uni\Db\Institution[]
      * @throws \Exception
      */
-    public function findList($filter = array())
+    public function findList($filter = array(), $tool = null)
     {
+        if (!$tool) $tool = $this->getTool();
         $filter = array_merge($this->getFilterValues(), $filter);
-        $list = $this->getConfig()->getInstitutionMapper()->findFiltered($filter, $this->getTool());
+        $list = $this->getConfig()->getInstitutionMapper()->findFiltered($filter, $tool);
         return $list;
     }
 
