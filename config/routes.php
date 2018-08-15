@@ -16,14 +16,15 @@ $routes = $config->getRouteCollection();
 if (!$routes) return;
 
 
-// Default Home catchall
 
+// Public Pages
 $routes->add('login', new \Tk\Routing\Route('/login.html', 'Uni\Controller\Login::doDefault'));
 $routes->add('institution-login', new \Tk\Routing\Route('/inst/{instHash}/login.html', 'Uni\Controller\Login::doInsLogin'));
 $routes->add('logout', new \Tk\Routing\Route('/logout.html', 'Uni\Controller\Logout::doDefault'));
 $routes->add('recover', new \Tk\Routing\Route('/recover.html', 'Uni\Controller\Recover::doDefault'));
 $routes->add('register', new \Tk\Routing\Route('/register.html', 'Uni\Controller\Register::doDefault'));
 $routes->add('institution-list', new \Tk\Routing\Route('/institutions.html', 'Uni\Controller\Institution\Listing::doDefault'));
+
 
 
 // Admin Pages
@@ -46,6 +47,7 @@ $routes->add('admin-adminUser-edit', new \Tk\Routing\Route('/admin/adminEdit.htm
 $routes->add('admin-user-profile', new \Tk\Routing\Route('/admin/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
 $routes->add('admin-dev-events', new \Tk\Routing\Route('/admin/dev/events.html', 'Bs\Controller\Admin\Dev\Events::doDefault'));
+
 
 
 // Client Pages
@@ -76,6 +78,7 @@ $routes->add('client-subject-edit', new \Tk\Routing\Route('/client/subjectEdit.h
 $routes->add('client-subject-enrollment', new \Tk\Routing\Route('/client/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
 
 
+
 // Staff Pages
 //$routes->add('staff-dashboard', new \Tk\Routing\Route('/staff/index.html', 'Uni\Controller\Staff\Dashboard::doDefault'));
 //$routes->add('staff-dashboard-base', new \Tk\Routing\Route('/staff/', 'Uni\Controller\Staff\Dashboard::doDefault'));
@@ -104,6 +107,7 @@ $routes->add('staff-student-edit', new \Tk\Routing\Route('/staff/{subjectCode}/s
 
 $routes->add('staff-subject-plugin-manager', new \Tk\Routing\Route('/staff/{zoneName}/{zoneId}/plugins.html', 'Uni\Controller\PluginZoneManager::doDefault',
     array('zoneName' => 'subject', 'zoneId' => '0') ));
+
 
 
 // Student Pages
