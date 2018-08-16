@@ -208,6 +208,10 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                    return;
 //                }
 //                $user = $config->createUser();
+//                $user->roleId = \Uni\Db\Role::DEFAULT_TYPE_STUDENT;
+//                if ($userData['role'] == 'staff') {
+//                    $user->roleId = \Uni\Db\Role::DEFAULT_TYPE_STAFF;
+//                }
 //                $config->getUserMapper()->mapForm($userData, $user);
 //                $user->save();
 //                $adapter->setUser($user);
