@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.88 [2018-08-16]:
+-------------------------------
+  - Updated form and table add cell, field, action method names to append and prepend type names
+
+
 Ver 2.0.86 [2018-08-15]:
 -------------------------------
 
