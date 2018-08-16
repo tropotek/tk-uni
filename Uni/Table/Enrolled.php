@@ -56,13 +56,14 @@ class Enrolled extends \Uni\TableIface
         $this->findSubjectDialog->setAjaxParams(array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId()));
         $this->findSubjectDialog->setNotes('Select the subject to migrate the student to...');
         $this->findSubjectDialog->execute(\Uni\Config::getInstance()->getRequest());
-
+        $template = $this->getRenderer()->getTemplate();
+        $template->appendBodyTemplate($this->findSubjectDialog->show());
 
 
         $this->addCss('tk-enrolled-users');
         $actionsCell = new \Tk\Table\Cell\Actions();
 
-        $btn = $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Migrate', '#', 'fa fa-exchange'));
+        $btn = $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Migrate', null, 'fa fa-exchange'));
         $btn->setAttr('data-target','#' . $this->findSubjectDialog->getId());
         $btn->setAttr('data-toggle','modal');
 

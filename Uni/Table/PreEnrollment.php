@@ -30,7 +30,8 @@ class PreEnrollment extends \Uni\TableIface
             /** @var $cell \Tk\Table\Cell\Boolean */
             /** @var $obj \StdClass */
             $config = \Uni\Config::getInstance();
-            $cell->getRow()->setAttr('data-user-id', $obj->hash);
+            if ($obj->hash)
+                $cell->getRow()->setAttr('data-user-id', $obj->hash);
 
             if (!empty($obj->enrolled)) {
                 $cell->getRow()->addCss('enrolled');
