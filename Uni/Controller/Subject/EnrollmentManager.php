@@ -92,13 +92,13 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $subject = $this->getSubject();
         $this->enrolledDialog->setOnSelect(function ($dialog, $data) use ($subject) {
             /** @var \Uni\Db\User $user */
-            $user = $this->getConfig()->getUserMapper()->findByHash($data['userHash'], $subject->institutionId);
+            $user = \Uni\Config::getInstance()->getUserMapper()->findByHash($data['userHash'], $subject->institutionId);
             if (!$user || (!$user->isStaff() && !$user->isStudent())) {
                 \Tk\Alert::addWarning('Invalid user.');
             } else {
                 if (!$user->isEnrolled($subject->getId())) {
                     // TODO: test for any preconditions, maybe fire an enrollment event?
-                    $this->getConfig()->getSubjectMapper()->addUser($subject->getId(), $user->getId());
+                    \Uni\Config::getInstance()->getSubjectMapper()->addUser($subject->getId(), $user->getId());
                     \Tk\Alert::addSuccess($user->getName() . ' added to the subject ' . $subject->name);
                 } else {
                     \Tk\Alert::addWarning($user->getName() . ' already enrolled in the subject ' . $subject->name);
