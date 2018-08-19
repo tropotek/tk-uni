@@ -1,7 +1,7 @@
-.htaccess
-.idea
-.directory
-*.swp
-*.iml
+[Tt]humbs.db
+*.DS_Store
+
+vendor/
 composer.lock
-!/Uni/Listener/PageTemplateHandler.php
+/.idea
+.directory
