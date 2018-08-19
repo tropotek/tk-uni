@@ -50,6 +50,16 @@ $config['template.error']       = dirname($config['template.admin']).'/error.htm
  */
 
 /*
+ * The email address of the system developer
+ */
+$config['system.email.developer'] = 'developer@example.com';
+
+/*
+ * The email address of the department maintaining this system
+ */
+$config['system.email.department'] = 'department@example.com';
+
+/*
  * Should the system use a salted password?
  */
 $config['system.auth.salted'] = true;
