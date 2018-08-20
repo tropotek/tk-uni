@@ -20,9 +20,9 @@ if (!$routes) return;
 // Public Pages
 $routes->add('login', new \Tk\Routing\Route('/login.html', 'Uni\Controller\Login::doDefault'));
 $routes->add('institution-login', new \Tk\Routing\Route('/inst/{instHash}/login.html', 'Uni\Controller\Login::doInsLogin'));
-$routes->add('logout', new \Tk\Routing\Route('/logout.html', 'Uni\Controller\Logout::doDefault'));
 $routes->add('recover', new \Tk\Routing\Route('/recover.html', 'Uni\Controller\Recover::doDefault'));
 $routes->add('register', new \Tk\Routing\Route('/register.html', 'Uni\Controller\Register::doDefault'));
+$routes->add('logout', new \Tk\Routing\Route('/logout.html', 'Uni\Controller\Logout::doDefault'));
 $routes->add('institution-list', new \Tk\Routing\Route('/institutions.html', 'Uni\Controller\Institution\Listing::doDefault'));
 
 

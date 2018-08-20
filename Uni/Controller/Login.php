@@ -80,7 +80,7 @@ class Login extends Iface
     /**
      * @throws \Exception
      */
-    private function init()
+    protected function init()
     {
         if (!$this->form) {
             $this->form = $this->getConfig()->createForm('login-form');
@@ -93,7 +93,7 @@ class Login extends Iface
         $this->form->appendField(new Event\Submit('login', array($this, 'doLogin')))->addCss('btn btn-lg btn-primary btn-ss');
         if (!$this->isInstLogin) {
             $this->form->appendField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
-                ->removeCss('btn btn-sm btn-default btn-once');
+                ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-recover-url');
         }
     }
 
@@ -157,7 +157,10 @@ class Login extends Iface
         $template = parent::show();
 
         // Render the form
-        $template->appendTemplate('form', $this->form->getRenderer()->show());
+        $ftpl = $this->form->getRenderer()->show();
+        if ($ftpl) {
+            $template->appendTemplate('form', $ftpl);
+        }
 
         if ($this->institution) {
             if ($this->institution->getLogoUrl()) {

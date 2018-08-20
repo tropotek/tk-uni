@@ -36,27 +36,37 @@ class Recover extends Iface
     /**
      * @param Request $request
      * @throws \Exception
-     * @throws Form\Exception
-     * @throws Form\Exception
      */
     public function doDefault(Request $request)
     {
-        $this->form = $this->getConfig()->createForm('recover-account');
-        $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
-        $this->form->addCss('form-horizontal');
-
-        $this->form->appendField(new Field\Input('account'));
-        $this->form->appendField(new Event\Submit('recover', array($this, 'doRecover')))->addCss('btn btn-primary btn-ss');
-        $this->form->appendField(new Event\Link('login', \Tk\Uri::create('/login.html'), ''))
-            ->removeCss('btn btn-sm btn-default btn-once');
+        $this->init();
 
         $this->form->execute();
     }
 
     /**
-     * @param Form $form
+     *
+     */
+    protected function init()
+    {
+        if (!$this->form) {
+            $this->form = $this->getConfig()->createForm('recover-account');
+            $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
+            $this->form->addCss('form-horizontal');
+        }
+
+        $this->form->appendField(new Field\Input('account'));
+        $this->form->appendField(new Event\Submit('recover', array($this, 'doRecover')))->addCss('btn btn-primary btn-ss');
+        $this->form->appendField(new Event\Link('login', \Tk\Uri::create('/login.html'), ''))
+            ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-login-url');
+
+    }
+
+
+    /**
+     * @param \Tk\Form $form
      * @param \Tk\Form\Event\Iface $event
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function doRecover($form, $event)
     {
@@ -97,7 +107,9 @@ class Recover extends Iface
         
     }
 
-
+    /**
+     * @return \Dom\Template
+     */
     public function show()
     {
         $template = parent::show();
