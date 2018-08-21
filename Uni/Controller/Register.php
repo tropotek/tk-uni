@@ -41,6 +41,22 @@ class Register extends Iface
     }
 
     /**
+     * @return \Tk\Controller\Page
+     */
+    public function getPage()
+    {
+        if (!$this->page) {
+            $templatePath = '';
+            if ($this->getConfig()->get('template.login')) {
+                $templatePath = $this->getConfig()->getSitePath() . $this->getConfig()->get('template.login');
+            }
+            $this->page = $this->getConfig()->createPage($templatePath);
+            $this->page->setController($this);
+        }
+        return parent::getPage();
+    }
+
+    /**
      * @param Request $request
      * @throws \Exception
      */
