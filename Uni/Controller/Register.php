@@ -73,9 +73,22 @@ class Register extends Iface
         $this->user = $this->getConfig()->createUser();
         $this->user->roleId = \Uni\Db\Role::DEFAULT_TYPE_STAFF;
 
-        $this->form = $this->getConfig()->createForm('register-account');
-        $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
-        $this->form->addCss('form-horizontal');
+        $this->init();
+
+        $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
+        $this->form->execute();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function init()
+    {
+        if (!$this->form) {
+            $this->form = $this->getConfig()->createForm('register-account');
+            $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
+            $this->form->addCss('form-horizontal');
+        }
 
         $this->form->appendField(new Field\Input('name'));
         $this->form->appendField(new Field\Input('email'));
@@ -85,9 +98,6 @@ class Register extends Iface
         $this->form->appendField(new Event\Submit('register', array($this, 'doRegister')))->addCss('btn btn-primary btn-ss');
         $this->form->appendField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
             ->removeCss('btn btn-sm btn-default btn-once');
-
-        $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
-        $this->form->execute();
     }
 
 
