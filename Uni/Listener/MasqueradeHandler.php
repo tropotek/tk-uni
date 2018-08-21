@@ -75,7 +75,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
     public static function canMasqueradeAs($user, $msqUser)
     {
         $config = \Uni\Config::getInstance();
-        if (!$msqUser || !$user) return false;
+        if (!$msqUser || !$user || !$user->active) return false;
 
         if ($user->id == $msqUser->id) return false;
 
