@@ -121,10 +121,14 @@ class Profile extends \Uni\Controller\AdminIface
     {
         $template = parent::show();
 
-        $template->insertText('username', $this->user->name . ' - [UID ' . $this->user->id . ']');
-
         // Render the form
         $template->appendTemplate('form', $this->form->getRenderer()->show());
+
+        if ($this->user->id) {
+            $template->setAttr('form', 'data-panel-title', $this->user->name . ' - [UID ' . $this->user->id . ']');
+        } else {
+            $template->setAttr('form', 'data-panel-title', 'Create User');
+        }
 
         return $template;
     }
@@ -141,12 +145,7 @@ class Profile extends \Uni\Controller\AdminIface
         $html = <<<HTML
 <div class="">
 
-  <div class="panel panel-default">
-    <div class="panel-heading"><i class="fa fa-user fa-fw"></i> <span var="username"></span></div>
-    <div class="panel-body">
-      <div var="form"></div>
-    </div>
-  </div>
+  <div class="tk-panel" data-panel-title="User Edit" data-panel-icon="fa fa-user" var="form"></div>
 
 </div>
 HTML;

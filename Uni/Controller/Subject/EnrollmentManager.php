@@ -182,8 +182,6 @@ CSS;
     }
 
     /**
-     * DomTemplate magic method
-     *
      * @return Template
      */
     public function __makeTemplate()
@@ -194,27 +192,18 @@ CSS;
   <div class="row">
     <div class="col-md-8">
 
-      <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-users"></i> <span var="">Enrolled</span></div>
-        <div class="panel-body">
-          <div var="enrolledTable"></div>
-        </div>
-      </div>
+      <div class="tk-panel" data-panel-title="Enrolled" data-panel-icon="fa fa-users" var="enrolledTable"></div>
 
     </div>
     <div class="col-md-4">
 
-      <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-users"></i> <span>Pending</span></div>
-        <div class="panel-body">
-          <div var="pendingTable"></div>
+      <div class="tk-panel" data-panel-title="Enrolled" data-panel-icon="fa fa-users" var="pendingTable">
           <div class="small">
             <p>
               - Pre-enrolled users will automatically be enrolled into this subject on their next login.<br/>
               - Deleting an enrolled user from this list will also delete them from the pre-enrollment list.
             </p>
           </div>
-        </div>
       </div>
 
     </div>

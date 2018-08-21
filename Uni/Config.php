@@ -63,6 +63,7 @@ class Config extends \Bs\Config
      * Get the Institution object for the logged in user
      *
      * @return null|Db\Institution|Db\InstitutionIface
+     * @throws \Exception
      */
     public function getInstitution()
     {
@@ -91,6 +92,7 @@ class Config extends \Bs\Config
 
     /**
      * @return int
+     * @throws \Exception
      */
     public function getInstitutionId()
     {
@@ -468,6 +470,17 @@ class Config extends \Bs\Config
             $this->set('page.template.handler', new \Uni\Listener\PageTemplateHandler());
         }
         return $this->get('page.template.handler');
+    }
+
+    /**
+     * @return \Uni\Ui\MenuManager
+     */
+    public function getMenuManager()
+    {
+        if (!$this->get('system.menu.manager')) {
+            $this->set('system.menu.manager', \Uni\Ui\MenuManager::getInstance());
+        }
+        return $this->get('system.menu.manager');
     }
 
     /**

@@ -259,13 +259,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         $xhtml = <<<HTML
 <div class="">
 
-  <div class="tk-panel" data-panel-title="User Manager" data-panel-icon="fa fa-user" var="form"></div>
-  <!--<div class="panel panel-default">-->
-    <!--<div class="panel-heading"><i class="fa fa-user fa-fw"></i> <span var="username"></span></div>-->
-    <!--<div class="panel-body">-->
-      <!--<div var="form"></div>-->
-    <!--</div>-->
-  <!--</div>-->
+  <div class="tk-panel" data-panel-title="User Edit" data-panel-icon="fa fa-user" var="form"></div>
 
 </div>
 HTML;
