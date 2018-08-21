@@ -60,7 +60,7 @@ class Settings extends \Uni\Controller\AdminIface
         $this->form->appendField(new Field\Input('site.google.map.key'))->setTabGroup($tab)->setLabel('Google API Key')
             ->setNotes('<a href="https://cloud.google.com/maps-platform/" target="_blank">Get Google Maps Api Key</a> And be sure to enable `Maps Javascript API`, `Maps Embed API` and `Places API for Web` for this site.');
         $this->form->appendField(new Field\Checkbox('site.client.registration'))->setTabGroup($tab)->setLabel('Client Registration')
-            ->setNotes('Enable Client registrations to be submitted');
+            ->setCheckboxLabel('Enable Client registrations to be submitted');
 
         $tab = 'Global';
         $this->form->appendField(new Field\Textarea('site.global.css'))->setAttr('id', 'site-global-css')->setTabGroup($tab)->setLabel('Custom Styles')
