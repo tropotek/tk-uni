@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.0.98 [2018-08-23]:
+-------------------------------
+  - Added PageLoading to tk2uni project
+  - Created new dynamic menu system
+  - Added the cube template
+
+
 Ver 2.0.96 [2018-08-20]:
 -------------------------------
 
