@@ -82,8 +82,8 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
         $this->form->appendField(new Event\Link('cancel', \Tk\Uri::create('/admin/institutionManager.html')));
 
-        $this->form->load($this->getConfig()->getInstitutionMapper()->unmapForm($this->institution));
         $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
+        $this->form->load($this->getConfig()->getInstitutionMapper()->unmapForm($this->institution));
         $this->form->load($this->institution->getData()->all());
 
         $this->form->execute();

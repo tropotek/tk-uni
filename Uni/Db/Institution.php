@@ -172,6 +172,19 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     }
 
     /**
+     * @return \Tk\Uri
+     */
+    public function getLoginUrl()
+    {
+        $loginUrl = \Uni\Uri::createInstitutionUrl('/login.html', $this);
+        if ($this->getDomain()) {
+            $loginUrl = \Uni\Uri::create('/login.html');
+            $loginUrl->setHost($this->getDomain());
+        }
+        return $loginUrl;
+    }
+
+    /**
      * @return int
      */
     public function getUserId()

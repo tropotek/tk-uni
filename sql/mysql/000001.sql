@@ -118,7 +118,7 @@ INSERT INTO `user_permission` (`role_id`, `name`)
 # INSERT INTO `user` (`role_id`, `institution_id`, `username`, `password` ,`name`, `email`, `active`, `hash`, `modified`, `created`)
 # VALUES
 #   (1, 0, 'admin', MD5(CONCAT('password', MD5('10admin'))), 'Administrator', 'admin@example.com', 1, MD5('10admin'), NOW(), NOW()),
-#   (2, 0, 'unimelb', MD5(CONCAT('password', MD5('20unimelb'))), 'Unimelb Client', 'fvas@unimelb.edu.au', 1, MD5('20unimelb'), NOW(), NOW()),
+#   (2, 0, 'unimelb', MD5(CONCAT('password', MD5('20unimelb'))), 'The University Of Melbourne', 'fvas@unimelb.edu.au', 1, MD5('20unimelb'), NOW(), NOW()),
 #   (3, 1, 'staff', MD5(CONCAT('password', MD5('31staff'))), 'Unimelb Staff', 'staff@unimelb.edu.au', 1, MD5('31staff'), NOW(), NOW()),
 #   (4, 1, 'student', MD5(CONCAT('password', MD5('41student'))), 'Unimelb Student', 'student@unimelb.edu.au', 1, MD5('41student'), NOW(), NOW())
 # ;

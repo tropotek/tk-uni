@@ -10,6 +10,10 @@ use Tk\Request;
  */
 class Listing extends \Uni\Controller\AdminIface
 {
+    /**
+     * @var null|\Tk\Table
+     */
+    protected $table = null;
 
     /**
      * Iface constructor.
@@ -21,12 +25,36 @@ class Listing extends \Uni\Controller\AdminIface
     }
 
     /**
-     * doDefault
-     *
      * @param Request $request
+     * @throws \Exception
      */
     public function doDefault(Request $request)
     {
+        $this->table = $this->getConfig()->createTable('institution-list');
+        $this->table->setRenderer($this->getConfig()->createTableRenderer($this->table));
+
+        $actionsCell = new \Tk\Table\Cell\Actions();
+        $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Login', \Tk\Uri::create(), 'fa  fa-sign-in')->setAttr('title', 'Institution Login'))
+            ->setOnShow(function ($cell, $obj, $button) {
+                /* @var $obj \Uni\Db\Institution */
+                /* @var $button \Tk\Table\Cell\ActionButton */
+                $button->setUrl($obj->getLoginUrl());
+            });
+
+        $this->table->appendCell($actionsCell);
+        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->setUrl(\Tk\Uri::create('/institutionEdit.html'))
+            ->setOnPropertyValue(function ($cell, $obj, $value) {
+                /* @var $obj \Uni\Db\Institution */
+                /* @var $cell \Tk\Table\Cell\Text */
+                $cell->setUrl($obj->getLoginUrl());
+                return $value;
+            });
+        $this->table->appendCell(new \Tk\Table\Cell\Text('description'))->addCss('key')->setCharacterLimit(150);
+
+        $filter = $this->table->getFilterValues();
+        $filter['active'] = true;
+        $list = $this->getConfig()->getInstitutionMapper()->findFiltered($filter, $this->table->getTool());
+        $this->table->setList($list);
 
     }
 
@@ -40,32 +68,7 @@ class Listing extends \Uni\Controller\AdminIface
     {
         $template = parent::getTemplate();
 
-        $list = \Uni\Db\InstitutionMap::create()->findFiltered(array(
-            'active' => true
-        ));
-        foreach ($list as $institution) {
-            $loginUrl = \Uni\Uri::createInstitutionUrl('/login.html', $institution);
-            if ($institution->getDomain()) {
-                $loginUrl = \Uni\Uri::create('/login.html');
-                $loginUrl->setHost($institution->getDomain());
-            }
-
-            $row = $template->getRepeat('ins-row');
-            $row->insertText('name', $institution->name);
-            $row->insertText('name-extra', $institution->email);
-            $row->setAttr('panel', 'data-panel-title', $institution->name);
-
-            $row->setAttr('login-url', 'href', $loginUrl);
-
-            $row->appendHtml('description', \Tk\Str::wordcat(strip_tags($institution->description), 200));
-
-            if ($institution->getLogoUrl()) {
-                $row->setAttr('image', 'src', $institution->getLogoUrl());
-                $row->setChoice('image');
-            }
-            $row->appendRepeat();
-
-        }
+        $template->appendTemplate('table', $this->table->getRenderer()->show());
 
 
         return $template;
@@ -81,26 +84,12 @@ class Listing extends \Uni\Controller\AdminIface
         $xhtml = <<<HTML
 <div class="institution-list">
   
-  <section>
-
-    <div class="row inst-list">
+  <div class="tk-panel" data-panel-icon="fa fa-institution" var="header-panel">
+    <p>Select an Institution you would like to login to.</p>
     
-      <div class="col-md-4" repeat="ins-row" var="ins-row">
-        
-        <div class="tk-panel" data-panel-icon="fa fa-institution" var="panel">
-          
-          <div var="description"></div>
-          
-          <div class="team-member-social clearfix">
-            <a href="#" class="btn btn-success pull-right" var="login-url"><i class="fa fa-sign-in"></i> Login</a>
-          </div>
-        </div>
-        
-      </div>
+    <div var="table"></div>
 
-    </div>
-  </section> 
-  
+  </div>
   
 </div>
 HTML;
