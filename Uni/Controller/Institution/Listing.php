@@ -53,8 +53,8 @@ class Listing extends \Uni\Controller\AdminIface
             $row = $template->getRepeat('ins-row');
             $row->insertText('name', $institution->name);
             $row->insertText('name-extra', $institution->email);
-            $row->insertText('title', $institution->name);
-            $row->setAttr('title', 'href', $loginUrl);
+            $row->setAttr('panel', 'data-panel-title', $institution->name);
+
             $row->setAttr('login-url', 'href', $loginUrl);
 
             $row->appendHtml('description', \Tk\Str::wordcat(strip_tags($institution->description), 200));
@@ -86,13 +86,16 @@ class Listing extends \Uni\Controller\AdminIface
     <div class="row inst-list">
     
       <div class="col-md-4" repeat="ins-row" var="ins-row">
-        <div class="institution-cell">
-          <h3><a href="#" var="title"></a></h3>
+        
+        <div class="tk-panel" data-panel-icon="fa fa-institution" var="panel">
+          
           <div var="description"></div>
+          
           <div class="team-member-social clearfix">
-            <a href="#" class="btn btn-primary" var="login-url"><i class="fa fa-sign-in"></i> Login</a>
+            <a href="#" class="btn btn-success pull-right" var="login-url"><i class="fa fa-sign-in"></i> Login</a>
           </div>
         </div>
+        
       </div>
 
     </div>
