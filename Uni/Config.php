@@ -248,11 +248,10 @@ class Config extends \Bs\Config
      * @param \Tk\Form $form
      * @return \Tk\Form\Renderer\FieldGroup
      */
-    public function getFormFieldGroupRenderer($form)
-    {
-        //$form->addCss('form-horizontal'); // Required for bootstrap 3 sites, deprecated now
-        return \Uni\Form\Renderer\HorizontalFieldGroup::create($form);
-    }
+//    public function getFormFieldGroupRenderer($form)
+//    {
+//        return \Tk\Form\Renderer\FieldGroup::create($form);
+//    }
 
 
     // ------------------------------- Commonly Overridden ---------------------------------------
