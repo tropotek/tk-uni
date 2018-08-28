@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.4 [2018-08-29]:
+-------------------------------
+  - adding ros/cols layout manager to form renderer
+
+
 Ver 2.1.2 [2018-08-28]:
 -------------------------------
 
