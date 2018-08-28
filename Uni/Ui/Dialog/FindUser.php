@@ -25,6 +25,7 @@ use Tk\Request;
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
+ * @deprecated
  */
 class FindUser extends Iface
 {
@@ -45,7 +46,6 @@ class FindUser extends Iface
      *
      * @param $title
      * @param array $filter
-     * @throws \Tk\Exception
      */
     public function __construct($title, $filter = array())
     {
@@ -77,7 +77,6 @@ class FindUser extends Iface
      * Process the enrolments as submitted from the dialog
      *
      * @param Request $request
-     * @throws \Tk\Exception
      */
     public function execute(Request $request)
     {

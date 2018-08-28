@@ -25,8 +25,10 @@ class Enrolled extends \Uni\TableIface
      */
     public function init()
     {
-
-        $this->findSubjectDialog = new \Uni\Ui\Dialog\AjaxSelect('Migrate Student', function ($data) {
+        $this->findSubjectDialog = new \Uni\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
+        $this->findSubjectDialog->setAjaxParams(array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId()));
+        $this->findSubjectDialog->setNotes('Select the subject to migrate the student to...');
+        $this->findSubjectDialog->setOnSelect(function ($data) {
             $config = \Uni\Config::getInstance();
             $dispatcher = $config->getEventDispatcher();
             // Migrate the user to the new subject
@@ -50,11 +52,8 @@ class Enrolled extends \Uni\TableIface
                     }
                 }
             }
-            \Tk\Uri::create()->reset()->set('subjectId', $config->getSubject()->getId())->redirect();
-        },
-            \Tk\Uri::create('/ajax/subject/findFiltered.html'));
-        $this->findSubjectDialog->setAjaxParams(array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId()));
-        $this->findSubjectDialog->setNotes('Select the subject to migrate the student to...');
+            return \Tk\Uri::create()->reset()->set('subjectId', $config->getSubject()->getId());
+        });
         $this->findSubjectDialog->execute(\Uni\Config::getInstance()->getRequest());
         $template = $this->getRenderer()->getTemplate();
         $template->appendBodyTemplate($this->findSubjectDialog->show());

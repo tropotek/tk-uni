@@ -177,6 +177,7 @@ class SubjectMap extends Mapper
      * @param int $subjectId
      * @param int $userId
      * @return boolean
+     * @throws \Exception
      */
     public function hasUser($subjectId, $userId)
     {
@@ -188,6 +189,7 @@ class SubjectMap extends Mapper
     /**
      * @param int $subjectId
      * @param int $userId
+     * @throws \Exception
      */
     public function addUser($subjectId, $userId)
     {
@@ -204,6 +206,7 @@ class SubjectMap extends Mapper
      *
      * @param int $subjectId
      * @param int $userId
+     * @throws \Exception
      */
     public function removeUser($subjectId = null, $userId = null)
     {
@@ -266,6 +269,7 @@ class SubjectMap extends Mapper
      * @param array $filter    array('subjectId' => $subjectId)
      * @param \Tk\Db\Tool $tool
      * @return array
+     * @throws \Exception
      */
     public function findPreEnrollments($filter = array(), $tool = null)
     {
@@ -292,6 +296,7 @@ WHERE a.subject_id = ? ' . $toolStr);
      * @param $subjectId
      * @return array|\StdClass[]
      * @deprecated use findEnrolmentsBySubjectId($subjectId, $tool)
+     * @throws \Exception
      */
     public function findAllPreEnrollments($subjectId)
     {
@@ -304,6 +309,7 @@ WHERE a.subject_id = ? ' . $toolStr);
      * @param $subjectId
      * @param $email
      * @return bool
+     * @throws \Exception
      */
     public function hasPreEnrollment($subjectId, $email)
     {
@@ -316,6 +322,7 @@ WHERE a.subject_id = ? ' . $toolStr);
      * @param int $subjectId
      * @param string $email
      * @param string $uid
+     * @throws \Exception
      */
     public function addPreEnrollment($subjectId, $email, $uid = '')
     {
@@ -330,6 +337,7 @@ WHERE a.subject_id = ? ' . $toolStr);
     /**
      * @param int $subjectId
      * @param string $email
+     * @throws \Exception
      */
     public function removePreEnrollment($subjectId, $email)
     {

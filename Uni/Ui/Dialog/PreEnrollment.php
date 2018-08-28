@@ -34,7 +34,6 @@ class PreEnrollment extends Iface
     protected $subject = null;
 
     /**
-     * DialogBox constructor.
      * @param $title
      */
     public function __construct($title)
@@ -168,18 +167,23 @@ class PreEnrollment extends Iface
     public function show()
     {
         $template = $this->getTemplate();
+        $template->addCss('dialog', 'tk-dialog-pre-enrollment');
         $this->setBody($this->makeBodyHtml());
-        $dialogId = $this->getId();
-        $buttonId = $this->getEnrollButtonId();
-        
+        $this->getTemplate()->setAttr('dialog', 'data-enroll-btn', '#'.$this->getEnrollButtonId());
+        $this->getTemplate()->setAttr('dialog', 'data-enroll-form', '#addEnrollmentForm');
+
         $js = <<<JS
 jQuery(function($) {
-  var dialog = $('#$dialogId');
   
-  $('#$buttonId').on('click', function(e) {
-    var form = $('#addEnrollmentForm');
-    $('<input type="submit" name="enroll" value="Enroll" />').hide().appendTo(form).click().remove();
+  $('.tk-dialog-pre-enrollment').each(function () {
+    var dialog = $(this);
+    var enrollBtn = $(dialog.data('enroll-btn'));
+    var enrollForm = $(dialog.data('enroll-form'));
+    enrollBtn.on('click', function(e) {
+      $('<input type="submit" name="enroll" value="Enroll" />').hide().appendTo(enrollForm).click().remove();
+    });
   });
+  
 });
 JS;
         $template->appendJs($js);
@@ -194,7 +198,7 @@ JS;
      */
     public function makeBodyHtml()
     {
-        $url = \Uni\Config::getInstance()->getRequest()->getUri()->toString();
+        $url = htmlentities(\Uni\Config::getInstance()->getRequest()->getUri()->toString());
         $xhtml = <<<HTML
 <form id="addEnrollmentForm" method="POST" action="$url" enctype="multipart/form-data">
 

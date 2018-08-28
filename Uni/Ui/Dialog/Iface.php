@@ -101,7 +101,6 @@ class Iface extends \Dom\Renderer\Renderer
 
     /**
      * @return \Dom\Template
-     * @throws \Exception
      */
     public function show()
     {
@@ -164,7 +163,7 @@ class Iface extends \Dom\Renderer\Renderer
   </div>
 </div>
 HTML;
-
-        return \Dom\Loader::load($xhtml);
+        $t = \Dom\Loader::load($xhtml, __CLASS__);
+        return $t;
     }
 }

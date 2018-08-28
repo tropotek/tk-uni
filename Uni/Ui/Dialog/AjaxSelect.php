@@ -2,11 +2,9 @@
 namespace Uni\Ui\Dialog;
 
 
-use Tk\Request;
-
 /**
  * This class uses the bootstrap dialog box model
- * @link http://getbootstrap.com/javascript/#modals
+ * @see http://getbootstrap.com/javascript/#modals
  *
  *
  * <code>
@@ -23,7 +21,7 @@ use Tk\Request;
  *
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
 class AjaxSelect extends Iface
@@ -59,14 +57,11 @@ class AjaxSelect extends Iface
      *
      * @param $title
      * @param \Tk\Uri $ajaxUrl
-     * @throws \Tk\Exception
      */
-    public function __construct($title, $onSelect, $ajaxUrl = null)
+    public function __construct($title, $ajaxUrl = null)
     {
         parent::__construct($title);
         $this->ajaxUrl = $ajaxUrl;
-        $this->setOnSelect($onSelect);
-        
         $this->addButton('Close');
     }
 
@@ -99,7 +94,7 @@ class AjaxSelect extends Iface
      */
     public function getSelectButtonId()
     {
-        return $this->getId().'-enroll';
+        return $this->getId().'-select';
     }
 
     /**
@@ -111,7 +106,7 @@ class AjaxSelect extends Iface
         $this->notes = $notes;
         return $this;
     }
-    
+
     /**
      * @return array
      */
@@ -119,127 +114,149 @@ class AjaxSelect extends Iface
     {
         return $this->data;
     }
-    
+
     /**
      * Process the enrolments as submitted from the dialog
      *
-     * @param Request $request
-     * @throws \Tk\Exception
+     * @param \Tk\Request $request
+     * @throws \Exception
      */
-    public function execute(Request $request)
+    public function execute(\Tk\Request $request)
     {
         $eventId = $this->getSelectButtonId();
         // Fire the callback if set
         if ($request->has($eventId)) {
             $this->data = $request->all();
+            $redirect = \Tk\Uri::create();
             if (is_callable($this->onSelect)) {
-                call_user_func_array($this->onSelect, array($this->data));
+                $url = call_user_func_array($this->onSelect, array($this->data));
+                if ($url instanceof \Tk\Uri) {
+                    $redirect = $url;
+                }
             }
-            \Tk\Uri::create()->remove($this->getSelectButtonId())->remove('selectedId')->redirect();
+            $redirect->remove($this->getSelectButtonId())->remove('selectedId')->redirect();
         }
     }
 
     /**
      * @return \Dom\Template
-     * @throws \Dom\Exception
      */
     public function show()
     {
-        /** @var \Dom\Template $template */
+        $this->getTemplate()->addCss('dialog', 'tk-dialog-ajax-select');
         $template = $this->makeBodyTemplate();
         if ($this->notes) {
             $template->insertHtml('notes', $this->notes);
             $template->setChoice('notes');
         }
-        
+
         $ajaxUrl = $this->ajaxUrl->toString();
         $actionUrl = \Uni\Uri::create()->set($this->getSelectButtonId())->toString();
-        $jsonAjaxParams = json_encode($this->ajaxParams,\JSON_FORCE_OBJECT);
-        $dialogId = $this->getId();
-        
+        $ajaxParams = json_encode($this->ajaxParams,\JSON_FORCE_OBJECT);
+
+        $this->getTemplate()->setAttr('dialog', 'data-ajax-url', $ajaxUrl);
+        $this->getTemplate()->setAttr('dialog', 'data-action-url', $actionUrl);
+        $this->getTemplate()->setAttr('dialog', 'data-ajax-params', $ajaxParams);
+
         $js = <<<JS
 jQuery(function($) {
-  var dialog = $('#$dialogId');
-  var actionUrl = '$actionUrl';
-  var params = $jsonAjaxParams;
-  processing(false);
   
-  dialog.find('.btn-search').click(function(e) {
-    processing(true);
-    params.keywords = dialog.find('.input-search').val(); 
-    $.get('$ajaxUrl', params, function (data) {
-      var panel = dialog.find('.dialog-table').empty();
-      var table = buildTable(data);
-      panel.append(table);
-      processing(false);
-    });
-  });
-  
-  function buildTable(data) {
-    if (data.length === 0) {
-      return $('<p class="text-center" style="margin-top: 10px;font-weight: bold;font-style: italic;">No Data Found!</p>');
-    }
-    var table = $('<table class="table" style="margin-top: 10px;"><tr><th>ID</th><th>Name</th></tr> <tr class="data-tpl"><td class="cell-id"></td><td class="cell-name"><a href="javascript:;" class="cell-name-url"></a></td></tr> </table>');
+  $('.tk-dialog-ajax-select').each(function () {
+    let dialog = $(this);
+    let settings = $.extend({}, {
+        selectParam : 'id'
+      }, dialog.data());
     
-    $.each(data, function (i, obj) {
-      var row = table.find('tr.data-tpl').clone();
-      row.removeClass('data-tpl').addClass('data');
-      // TODO: the action url may need a `?` not a `&` at the start???
-      row.find('.cell-name-url').text(obj.name).attr('href', actionUrl+'&selectedId='+obj.id+'&'+$.param(params)).on('click', function (e) {
-        $(this).on('click', function() {return false;});
-      });
+    let launchBtn = null;
+    let launchData = {};
+    processing(false);
+    
+    dialog.find('.btn-search').click(function(e) {
+      processing(true);
+      if (dialog.find('.input-search').val())
+        settings.ajaxParams.keywords = dialog.find('.input-search').val();
       
-      row.find('.cell-id').text(obj.id);
-      table.find('tr.data-tpl').after(row);
+      $.get(settings.ajaxUrl, settings.ajaxParams, function (data) {
+        let panel = dialog.find('.dialog-table').empty();
+        let table = buildTable(data);
+        panel.append(table);
+        processing(false);
+      });
     });
-    table.find('tr.data-tpl').remove();
-    
-    return table;
-  }
   
-  function processing(bool) {
-    if (bool) {
-      dialog.find('.form-control-feedback').show();
-      dialog.find('.input-search').attr('disabled', 'disabled');
-      dialog.find('.btn-search').attr('disabled', 'disabled');
-      dialog.find('.cell-name-url').addClass('disabled');
-    } else {
-      dialog.find('.form-control-feedback').hide();
-      dialog.find('.input-search').removeAttr('disabled');
-      dialog.find('.btn-search').removeAttr('disabled');
-      dialog.find('.cell-name-url').removeClass('disabled');
+    function buildTable(data) {
+      if (data.length === 0) {
+        return $('<p class="text-center" style="margin-top: 10px;font-weight: bold;font-style: italic;">No Data Found!</p>');
+      }
+      //let table = $('<table class="table" style="margin-top: 10px;"><tr><th>ID</th><th>Name</th></tr> <tr class="data-tpl"><td class="cell-id"></td><td class="cell-name"><a href="javascript:;" class="cell-name-url"></a></td></tr> </table>');
+      let table = $('<table class="table" style="margin-top: 10px;"><tr><th>Name</th></tr> <tr class="data-tpl"><td class="cell-name"><a href="javascript:;" class="cell-name-url"></a></td></tr> </table>');
+      $.each(data, function (i, obj) {
+        let row = table.find('tr.data-tpl').clone();
+        row.removeClass('data-tpl').addClass('data');
+        var href = settings.actionUrl+'&selectedId=' + obj[settings.selectParam];
+        if (!$.isEmptyObject(launchData)) {
+          href += '&' + $.param(launchData);
+        }
+        row.find('.cell-name-url').text(obj.name).attr('href', href).on('click', function (e) {
+          $(this).on('click', function() {return false;});
+        });
+        //row.find('.cell-id').text(obj.id);
+        table.find('tr.data-tpl').after(row);
+      });
+      table.find('tr.data-tpl').remove();
+      
+      return table;
     }
-  }
+    
+    function processing(bool) {
+      if (bool) {
+        dialog.find('.form-control-feedback').show();
+        dialog.find('.input-search').attr('disabled', 'disabled');
+        dialog.find('.btn-search').attr('disabled', 'disabled');
+        dialog.find('.cell-name-url').addClass('disabled');
+      } else {
+        dialog.find('.form-control-feedback').hide();
+        dialog.find('.input-search').removeAttr('disabled');
+        dialog.find('.btn-search').removeAttr('disabled');
+        dialog.find('.cell-name-url').removeClass('disabled');
+      }
+    }
+    
+    // Some focus and key logic
+    dialog.on('shown.bs.modal', function (e) {
+      dialog.find('.input-search').val('').focus();
+      launchBtn = $(e.relatedTarget);
+      launchData = {};
+      $.each(launchBtn.data(), function (k, v) {
+        if (k === 'toggle' || k === 'target' || k === 'trigger') return;
+        if (typeof v === 'string' || typeof v === 'number')
+          launchData[k] = v;
+      });
+      dialog.find('.btn-search').click();
+    });
+    
+    dialog.find('.input-search').on('keyup', function(e) {
+      let code = (e.keyCode ? e.keyCode : e.which);
+      if(code === 13) { //Enter keycode
+          dialog.find('.btn-search').click();
+      }    
+    });
+    
+  });
   
-  // Some focus and key logic
-  dialog.on('shown.bs.modal', function (e) {
-    dialog.find('.input-search').val('').focus();
-    var d = $(e.relatedTarget).data();
-    delete d.target;
-    delete d.toggle;
-    $.extend(params, d);
-    dialog.find('.btn-search').click();
-  });
-  dialog.find('.input-search').on('keyup', function(e) {
-    var code = (e.keyCode ? e.keyCode : e.which);
-    if(code === 13) { //Enter keycode
-        dialog.find('.btn-search').click();
-    }    
-  });
+  
   
 });
 JS;
         $template->appendJs($js);
-        
-        
+
+
         $this->setBody($template);
         return parent::show();
     }
 
     /**
-     * DomTemplate magic method
-     *
-     * @return string
+     * @return \Dom\template
      */
     public function makeBodyTemplate()
     {
