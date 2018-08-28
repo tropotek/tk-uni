@@ -46,17 +46,20 @@ class Uri extends \Bs\Uri
             return clone $spec;
         }
         if ($institution === null) {
-            $institution = Config::getInstance()->getInstitution();
+            try {
+                $institution = Config::getInstance()->getInstitution();
+            } catch (\Exception $e) { \Tk\Log::warning($e->getMessage()); }
         }
         if (!$institution) {
             return static::create($spec);
         }
-
-        $url = self::create('/inst/' . $institution->getHash() . '/' . trim($spec,'/'));
-        if ($institution->getDomain() && $useDomain) {
-            // $url = self::create($spec);
-            $url = $url->setHost($institution->getDomain());
-        }
+        try {
+            $url = self::create('/inst/' . $institution->getHash() . '/' . trim($spec, '/'));
+            if ($institution->getDomain() && $useDomain) {
+                // $url = self::create($spec);
+                $url = $url->setHost($institution->getDomain());
+            }
+        } catch (\Exception $e) { \Tk\Log::warning($e->getMessage()); }
 
         return $url;
     }
