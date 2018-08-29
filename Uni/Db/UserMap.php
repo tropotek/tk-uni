@@ -138,7 +138,7 @@ class UserMap extends Mapper
      * @return ArrayObject|User[]
      * @throws \Exception
      */
-    public function findFiltered($filter = array(), $tool = null)
+    public function +findFiltered($filter = array(), $tool = null)
     {
         $from = sprintf('%s a ', $this->getDb()->quoteParameter($this->getTable()));
         $where = '';
