@@ -128,7 +128,7 @@ class Edit extends \Uni\Controller\AdminEditIface
                 ->setNotes('The student or staff number assigned by the institution (if Applicable).');
         }
         if($this->getUser()->getId() != $this->user->getId()){
-            $this->form->appendField(new Field\Checkbox('active'))->setTabGroup($tabGroup);
+            $this->form->appendField(Field\Checkbox::create('active')->setCheckboxLabel('Enable/Disable user login.'))->setTabGroup($tabGroup);
         }
 
         $tabGroup = 'Subjects';

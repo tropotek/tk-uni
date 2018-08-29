@@ -241,17 +241,10 @@ class Config extends \Bs\Config
     {
         $obj = \Tk\Form\Renderer\Dom::create($form);
         $obj->setFieldGroupRenderer($this->getFormFieldGroupRenderer($form));
+        $obj->getLayout()->setDefaultCol('col');
         return $obj;
     }
 
-    /**
-     * @param \Tk\Form $form
-     * @return \Tk\Form\Renderer\FieldGroup
-     */
-//    public function getFormFieldGroupRenderer($form)
-//    {
-//        return \Tk\Form\Renderer\FieldGroup::create($form);
-//    }
 
 
     // ------------------------------- Commonly Overridden ---------------------------------------
