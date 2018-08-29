@@ -103,7 +103,6 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
             }
             if ($i) {
                 \Tk\Alert::addSuccess('Added ' . $i . ' students to the subject `' . $destSubject->name . '`');
-                vd('-----------');
             }
             //return \Tk\Uri::create()->reset()->set('subjectId', $subject->getId());
             return \Uni\Uri::create()->reset();
@@ -227,7 +226,6 @@ JS;
 }
 .tk-table tr.tk-hover td {
   background-color: #7796b4;
-  color: #efefef !important;
 }
 CSS;
         $template->appendCss($css);
