@@ -9,6 +9,8 @@ namespace Uni\Db;
  */
 class Role extends \Bs\Db\Role
 {
+    
+    // TODO: Rename these to DEFAULT_ID_ADMIN 
 
     const DEFAULT_TYPE_ADMIN    = 1;
     const DEFAULT_TYPE_CLIENT   = 2;
