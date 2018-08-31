@@ -63,15 +63,22 @@ class Manager extends \Uni\Controller\AdminIface
         $this->table->appendAction(\Tk\Table\Action\Delete::create());
         $this->table->appendAction(\Tk\Table\Action\Csv::create());
 
+        $this->setList();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function setList()
+    {
         $filter = $this->table->getFilterValues();
         $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         if (!empty($filter['userId'])) {
             $filter['userId'] = $this->getUser()->id;
         }
-        
+
         $users = $this->getConfig()->getSubjectMapper()->findFiltered($filter, $this->table->getTool('a.id'));
         $this->table->setList($users);
-
     }
 
     /**
