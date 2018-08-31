@@ -86,6 +86,8 @@ $routes->add('client-subject-enrollment', new \Tk\Routing\Route('/client/subject
 
 $routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
+$routes->add('staff-subject-manager', new \Tk\Routing\Route('/staff/subjectManager.html', 'Uni\Controller\Subject\StudentManager::doDefault'));
+
 $routes->add('staff-subject-add', new \Tk\Routing\Route('/staff/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('staff-subject-add-enrollment', new \Tk\Routing\Route('/staff/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
 
@@ -116,7 +118,7 @@ $routes->add('staff-subject-plugin-manager', new \Tk\Routing\Route('/staff/{zone
 //$routes->add('student-subject-dashboard', new \Tk\Routing\Route('/student/{subjectCode}/index.html', 'Uni\Controller\Student\SubjectDashboard::doDefault'));
 
 $routes->add('student-user-profile', new \Tk\Routing\Route('/student/profile.html', 'Uni\Controller\User\Profile::doDefault'));
-$routes->add('student-subject-manager', new \Tk\Routing\Route('/student/subjectManager.html', 'Uni\Controller\Subject\StudentManager::doDefault'));
+//$routes->add('student-subject-manager', new \Tk\Routing\Route('/student/subjectManager.html', 'Uni\Controller\Subject\StudentManager::doDefault'));
 
 
 
