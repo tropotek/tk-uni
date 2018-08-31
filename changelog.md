@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.1.8 [2018-09-01]:
+-------------------------------
+  - Merge branch 'master' of https://github.com/tropotek/tk-uni
+  - Fixed student add to subject on LTI login
+
+
 Ver 2.1.6 [2018-08-31]:
 -------------------------------
 
