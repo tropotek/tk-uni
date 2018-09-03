@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.1.10 [2018-09-04]:
+-------------------------------
+  - Started implementing new cube template
+  - Added new UNIMELB public page
+
+
 Ver 2.1.8 [2018-09-01]:
 -------------------------------
   - Merge branch 'master' of https://github.com/tropotek/tk-uni
