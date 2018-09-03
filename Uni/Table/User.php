@@ -63,7 +63,7 @@ class User extends \Uni\TableIface
         }
 
         $this->appendCell(new \Tk\Table\Cell\Boolean('active'));
-        $this->appendCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        $this->appendCell(\Tk\Table\Cell\Date::create('created'));
 
         // Filters
         $this->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
@@ -78,7 +78,7 @@ class User extends \Uni\TableIface
     /**
      * @param array $filter
      * @param null|\Tk\Db\Tool $tool
-     * @return \Tk\Db\Map\ArrayObject|\App\Db\Mentor[]
+     * @return \Tk\Db\Map\ArrayObject|\Uni\Db\User[]
      * @throws \Exception
      */
     public function findList($filter = array(), $tool = null)

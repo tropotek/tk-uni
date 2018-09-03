@@ -129,19 +129,6 @@ class PluginZoneManager extends AdminIface
 
   <div class="tk-panel" data-panel-title="Plugins" data-panel-icon="fa fa-compress" var="table"></div>
   
-  <!--<div class="row">-->
-    <!--<div class="col-md-12">-->
-      <!--<div class="panel panel-default">-->
-        <!--<div class="panel-heading">-->
-          <!--<h4 class="panel-title"><i class="glyphicon glyphicon-compressed"></i> Available <span var="zone"></span> Plugins</h4>-->
-        <!--</div>-->
-        <!--<div class="panel-body">-->
-          <!--<div class="pluginList" var="PluginList"></div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
 </div>
 HTML;
         return \Dom\Loader::load($xhtml);
@@ -309,9 +296,9 @@ CSS;
     {
         $html = <<<HTML
 <div class="text-right">
-  <a href="#" class="btn btn-success btn-xs noblock act" choice="inactive" var="enable" title="Enable Plugin"><i class="glyphicon glyphicon-log-in"></i></a>
-  <a href="#" class="btn btn-primary btn-xs noblock setup" choice="active" var="setup" title="Configure Plugin"><i class="glyphicon glyphicon-cog"></i></a>
-  <a href="#" class="btn btn-danger btn-xs noblock deact" choice="active" var="disable" title="Disable Plugin"><i class="glyphicon glyphicon-remove"></i></a>
+  <a href="#" class="btn btn-success btn-xs noblock act" choice="inactive" var="enable" title="Enable Plugin"><i class="fa fa-sign-in"></i></a>
+  <a href="#" class="btn btn-primary btn-xs noblock setup" choice="active" var="setup" title="Configure Plugin"><i class="fa fa-cog"></i></a>
+  <a href="#" class="btn btn-danger btn-xs noblock deact" choice="active" var="disable" title="Disable Plugin"><i class="fa fa-remove"></i></a>
 </div>
 HTML;
         return \Dom\Loader::load($html);

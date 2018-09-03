@@ -37,11 +37,11 @@ class Edit extends \Uni\Controller\AdminIface
      * @param string $subjectCode
      * @throws \Exception
      */
-    public function doSubject(\Tk\Request $request, $subjectCode)
-    {
-        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
-        $this->doDefault($request);
-    }
+//    public function doSubject(\Tk\Request $request, $subjectCode)
+//    {
+//        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
+//        $this->doDefault($request);
+//    }
 
     /**
      * @param \Tk\Request $request
@@ -49,6 +49,8 @@ class Edit extends \Uni\Controller\AdminIface
      */
     public function doDefault(\Tk\Request $request)
     {
+        $this->subject = $this->getConfig()->getSubject();
+
         if (!$this->subject) {
             $this->subject = $this->getConfig()->createSubject();
             $this->subject->institutionId = $this->getConfig()->getInstitutionId();
@@ -68,7 +70,7 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form->appendField(new Field\Input('code'))->setRequired(true);
         $this->form->appendField(new Field\Input('email'))->setRequired(true);
         $this->form->appendField(new Field\DateRange('date'))->setRequired(true)->setLabel('Dates')
-            ->setNotes('The start and end dates of the subject. Placements cannot be created outside these dates.');
+            ->setNotes('The start and end dates of the subject. Student actions will be restricted outside these dates.');
 //        $this->form->appendField(new Field\Input('dateStart'))->addCss('date')->setRequired(true);
 //        $this->form->appendField(new Field\Input('dateEnd'))->addCss('date')->setRequired(true);
         $this->form->appendField(new Field\Textarea('description'));
@@ -157,12 +159,6 @@ class Edit extends \Uni\Controller\AdminIface
 <div class="">
 
   <div class="tk-panel" data-panel-title="Subject Edit" data-panel-icon="fa fa-graduation-cap" var="form"></div>
-  <!--<div class="panel panel-default">-->
-    <!--<div class="panel-heading"><i class="fa fa-graduation-cap"></i> Subject Edit</div>-->
-    <!--<div class="panel-body">-->
-      <!--<div var="form"></div>-->
-    <!--</div>-->
-  <!--</div>-->
   
 </div>
 HTML;
