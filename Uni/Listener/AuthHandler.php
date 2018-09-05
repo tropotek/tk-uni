@@ -225,6 +225,10 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $config = \Uni\Config::getInstance();
         $auth = $config->getAuth();
 
+        if (MasqueradeHandler::isMasquerading()) {
+            MasqueradeHandler::masqueradeClear();
+        }
+
         $adapter = $config->getAuthDbTableAdapter($event->all());
         $result = $auth->authenticate($adapter);
 
