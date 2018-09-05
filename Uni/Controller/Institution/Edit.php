@@ -167,7 +167,7 @@ class Edit extends \Uni\Controller\AdminIface
         if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs($this->getUser(), $this->user)) {
             $this->getActionPanel()->add(\Tk\Ui\Button::create('Masquerade',
                 \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->hash),
-                'fa fa-user-secret'))->addCss('tk-masquerade');
+                'fa fa-user-secret'))->addCss('tk-masquerade')->setAttr('data-confirm', 'You are about to masquerade as the selected user?');
         }
 
         if ($this->getUser()->isClient() || $this->getUser()->isStaff()) {

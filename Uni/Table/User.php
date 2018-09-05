@@ -40,6 +40,7 @@ class User extends \Uni\TableIface
     {
         $actionsCell = new \Tk\Table\Cell\Actions();
         $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade', \Tk\Uri::create(), 'fa  fa-user-secret', 'tk-masquerade'))
+            ->setAttr('data-confirm', 'You are about to masquerade as the selected user?')
             ->setOnShow(function ($cell, $obj, $button) {
                 /* @var $obj \Uni\Db\User */
                 /* @var $button \Tk\Table\Cell\ActionButton */
