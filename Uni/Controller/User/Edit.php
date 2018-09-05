@@ -186,7 +186,7 @@ class Edit extends \Uni\Controller\AdminEditIface
                 $form->addFieldError('confPassword');
             }
         }
-        if (!$this->user->id && !$this->form->getFieldValue('newPassword')) {
+        if (!$this->user->getId() && !$this->form->getFieldValue('newPassword')) {
             $form->addFieldError('newPassword', 'Please enter a new password.');
         }
 
@@ -202,25 +202,19 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         // Add user to subjects
         $selected = $form->getFieldValue('selSubject');
-        if ($selected && count($selected)) {
-            if ($this->user->id && is_array($selected)) {
-                $list = $this->getConfig()->getSubjectMapper()->findActive($this->user->institutionId);
-                /** @var \Uni\Db\Subject $subject */
-                foreach ($list as $subject) {
-                    if (in_array($subject->id, $selected)) {
-                        $this->getConfig()->getSubjectMapper()->addUser($subject->id, $this->user->id);
-                    } else {
-                        $this->getConfig()->getSubjectMapper()->removeUser($subject->id, $this->user->id);
-                    }
-                }
+        if ($this->user->getId() && is_array($selected)) {
+            $this->getConfig()->getSubjectMapper()->removeUser(null, $this->user->getId());
+            foreach ($selected as $subjectId) {
+                $this->getConfig()->getSubjectMapper()->addUser($subjectId, $this->user->getId());
             }
         }
+
         $this->user->save();
 
         \Tk\Alert::addSuccess('User record saved!');
         $event->setRedirect($this->getBackUrl());
         if ($form->getTriggeredEvent()->getName() == 'save')
-            $event->setRedirect(\Tk\Uri::create()->set('userId', $this->user->id));
+            $event->setRedirect(\Tk\Uri::create()->set('userId', $this->user->getId()));
     }
 
     /**
@@ -240,7 +234,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         $template->appendTemplate('form', $this->form->getRenderer()->show());
         
         if ($this->user->id) {
-            $template->setAttr('form', 'data-panel-title', $this->user->name . ' - [UID ' . $this->user->id . ']');
+            $template->setAttr('form', 'data-panel-title', $this->user->name . ' - [UID ' . $this->user->getId() . ']');
         } else {
             $template->setAttr('form', 'data-panel-title', 'Create User');
         }

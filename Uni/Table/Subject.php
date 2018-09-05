@@ -25,8 +25,8 @@ class Subject extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
         $this->appendCell(new \Tk\Table\Cell\Text('code'));
         //$this->appendCell(new \Tk\Table\Cell\Email('email'));
-        //$this->appendCell(new \Tk\Table\Cell\Date('dateStart'));
-        $this->appendCell(new \Tk\Table\Cell\Date('dateEnd'));
+        $this->appendCell(\Tk\Table\Cell\Date::createDate('dateStart', \Tk\Date::FORMAT_ISO_DATE));
+        $this->appendCell(\Tk\Table\Cell\Date::createDate('dateEnd', \Tk\Date::FORMAT_ISO_DATE));
 
         $this->appendCell(new \Tk\Table\Cell\Boolean('active'));
         //$this->appendCell(new \Tk\Table\Cell\Date('created'))->setFormat(\Tk\Table\Cell\Date::FORMAT_RELATIVE);

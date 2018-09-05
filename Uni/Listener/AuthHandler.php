@@ -1,8 +1,6 @@
 <?php
 namespace Uni\Listener;
 
-use Tk\Event\Subscriber;
-use Tk\Kernel\KernelEvents;
 use Tk\Event\GetResponseEvent;
 use Tk\Event\AuthEvent;
 use Tk\Auth\AuthEvents;
@@ -14,73 +12,6 @@ use Tk\Auth\AuthEvents;
  */
 class AuthHandler extends \Bs\Listener\AuthHandler
 {
-
-    /**
-     * do any auth init setup
-     *
-     * @param GetResponseEvent $event
-     * @throws \Exception
-     */
-    public function onRequest(GetResponseEvent $event)
-    {
-        // if a user is in the session add them to the global config
-        // Only the identity details should be in the auth session not the full user object, to save space and be secure.
-        $config = \Uni\Config::getInstance();
-        $auth = $config->getAuth();
-        $user = null;                       // public user
-        if ($auth->getIdentity()) {         // Check if user is logged in
-            /** @var \Uni\Db\User $user */
-            $user = $config->getUserMapper()->find($auth->getIdentity());
-            if (!$user || !$user->isActive()) {
-                $config->setUser(null);
-                $user = null;
-                $config->getSession()->destroy();
-            }
-            if ($user && $user->sessionId != $config->getSession()->getId()) {
-                $user->sessionId = $config->getSession()->getId();
-                $user->save();
-            }
-        }
-        $config->setUser($user);
-
-        // ---------------- deprecated  ---------------------
-        // The following is deprecated in preference of the validatePageAccess() method
-
-        $role = $event->getRequest()->getAttribute('role');
-        if (!$role || empty($role)) return;
-
-        if (!$user || $user->isPublic()) {
-            if ($event->getRequest()->getUri()->getRelativePath() != '/login.html') {
-                \Tk\Uri::create('/login.html')->redirect();
-            } else {
-                \Tk\Alert::addWarning('You do not have access to the requested page.');
-                $config->getUserHomeUrl($user)->redirect();
-            }
-        } else {
-            if (!$user->getRole()->hasType($role)) {
-                \Tk\Alert::addWarning('You do not have access to the requested page.');
-                $config->getUserHomeUrl($user)->redirect();
-            }
-        }
-        //-----------------------------------------------------
-
-    }
-
-    /**
-     * @param AuthEvent $event
-     * @throws \Exception
-     */
-    public function onLogin(AuthEvent $event)
-    {
-        $config = \Uni\Config::getInstance();
-        $auth = $config->getAuth();
-
-        $adapter = $config->getAuthDbTableAdapter($event->all());
-        $result = $auth->authenticate($adapter);
-
-        $event->setResult($result);
-        $event->set('auth.password.access', true);   // Can modify their own password
-    }
 
     /**
      * @param \Tk\Event\AuthEvent $event
@@ -178,7 +109,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                             $data->save();
                         }
 
-                        $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $user->getId()));
+                        $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $config->getUserIdentity($user)));
                     }
                 }
             }
@@ -235,9 +166,53 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             }
             $config->getSession()->set('lti.subjectId', $subject->getId());   // Limit the dashboard to one subject for LTI logins
             $config->getSession()->set('auth.password.access', false);
-            $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $user->getId()));
+            $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $config->getUserIdentity($user)));
         }
 
+
+    }
+
+
+
+    /**
+     * @param GetResponseEvent $event
+     * @throws \Exception
+     */
+    public function onRequest(GetResponseEvent $event)
+    {
+        // if a user is in the session add them to the global config
+        // Only the identity details should be in the auth session not the full user object, to save space and be secure.
+        $config = \Uni\Config::getInstance();
+        $auth = $config->getAuth();
+        $user = null;                       // public user
+        if ($auth->getIdentity()) {         // Check if user is logged in
+            /** @var \Uni\Db\User $user */
+            $user = $config->getUserMapper()->findByAuthIdentity($auth->getIdentity());
+            if ($user && $user->isActive()) {
+                $config->setUser($user);            // We set the user here
+            }
+        }
+
+        // ---------------- deprecated  ---------------------
+        // The following is deprecated in preference of the validatePageAccess() method
+
+        $role = $event->getRequest()->getAttribute('role');
+        if (!$role || empty($role)) return;
+
+        if (!$user || $user->isPublic()) {
+            if ($event->getRequest()->getUri()->getRelativePath() != '/login.html') {
+                \Tk\Uri::create('/login.html')->redirect();
+            } else {
+                \Tk\Alert::addWarning('You do not have access to the requested page.');
+                $config->getUserHomeUrl($user)->redirect();
+            }
+        } else {
+            if (!$user->getRole()->hasType($role)) {
+                \Tk\Alert::addWarning('You do not have access to the requested page.');
+                $config->getUserHomeUrl($user)->redirect();
+            }
+        }
+        //-----------------------------------------------------
 
     }
 
@@ -245,37 +220,34 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @param AuthEvent $event
      * @throws \Exception
      */
-    public function onLoginSuccess(AuthEvent $event)
+    public function onLogin(AuthEvent $event)
     {
         $config = \Uni\Config::getInstance();
-        $result = $event->getResult();
-        if (!$result) {
-            throw new \Tk\Auth\Exception('Invalid login credentials');
-        }
-        if (!$result->isValid()) {
-            return;
-        }
+        $auth = $config->getAuth();
 
-        /* @var \Uni\Db\User|\Uni\Db\UserIface $user */
-        $user = $config->getUserMapper()->find($result->getIdentity());
+        $adapter = $config->getAuthDbTableAdapter($event->all());
+        $result = $auth->authenticate($adapter);
 
-        if (!$user) {
-            throw new \Tk\Auth\Exception('Invalid user login credentials');
-        }
-        if (!$user->isActive()) {
-            throw new \Tk\Auth\Exception('Inactive account, please contact your administrator.');
-        }
+        $event->setResult($result);
+        $event->set('auth.password.access', true);   // Can modify their own password
+    }
 
-        if($user && $event->getRedirect() == null) {
-            $event->setRedirect($config->getUserHomeUrl($user));
+    /**
+     * @param AuthEvent $event
+     * @throws \Exception
+     */
+    public function updateUser(AuthEvent $event)
+    {
+        parent::updateUser($event);
+        if (\Bs\Listener\MasqueradeHandler::isMasquerading()) return;
+        $config = \Uni\Config::getInstance();
+        $user = $config->getUser();
+        if ($user) {
+            if (property_exists($user, 'sessionId') && $user->sessionId != $config->getSession()->getId()) {
+                $user->sessionId = $config->getSession()->getId();
+            }
+            $user->save();
         }
-
-        // Update the user record.
-        if (property_exists($user, 'sessionId') && $user->sessionId != $config->getSession()->getId()) {
-            $user->sessionId = $config->getSession()->getId();
-        }
-        $user->lastLogin = \Tk\Date::create();
-        $user->save();
     }
 
     /**

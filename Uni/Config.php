@@ -164,6 +164,21 @@ class Config extends \Bs\Config
     }
 
     /**
+     * @param null|\Uni\Db\Subject $subject
+     * @return $this
+     */
+    public function resetCrumbs($subject = null)
+    {
+        if ($this->getCrumbs()) {
+            $this->getCrumbs()->reset();
+            if ($subject) {
+                $this->getCrumbs()->addCrumb($subject->getName(), \Uni\Uri::createSubjectUrl('/index.html', $subject));
+            }
+        }
+        return $this;
+    }
+
+    /**
      * This function returns true if the url is one that uses the {subjectCode}
      *
      * @return bool
@@ -281,6 +296,15 @@ class Config extends \Bs\Config
     public function findUser($id)
     {
         return $this->getUserMapper()->find($id);
+    }
+
+    /**
+     * @param Db\User $user
+     * @return int|string
+     */
+    public function getUserIdentity($user)
+    {
+        return $user->getId();
     }
 
 

@@ -60,7 +60,7 @@ class DbTable extends \Tk\Auth\Adapter\DbTable
                 //  It may not get to this point yet...
             }
             if ($user && $this->hashPassword($password, $user) == $user->{$this->passwordColumn}) {
-                return new Result(Result::SUCCESS, $user->getId());
+                return new Result(Result::SUCCESS, \Uni\Config::getInstance()->getUserIdentity($user));
             }
         } catch (\Exception $e) {
             vd($e->__toString());

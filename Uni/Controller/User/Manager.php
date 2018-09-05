@@ -159,8 +159,9 @@ class Manager extends \Uni\Controller\AdminIface
      */
     protected function initActionPanel($actionPanel)
     {
-        $actionPanel->add(\Tk\Ui\Button::create('New ' . ucfirst($this->targetRole), clone $this->editUrl, 'fa fa-user-plus'));
-
+        if (!$this->getConfig()->getSession()->get('auth.password.access')) {
+            $actionPanel->add(\Tk\Ui\Button::create('New ' . ucfirst($this->targetRole), clone $this->editUrl, 'fa fa-user-plus'));
+        }
     }
 
     /**
