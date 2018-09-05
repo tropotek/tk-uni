@@ -120,7 +120,6 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
     /**
      * Get the institution related to this user
-     * @throws \Exception
      */
     public function getInstitution()
     {
@@ -134,7 +133,6 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      * Get the data object
      *
      * @return \Tk\Db\Data
-     * @throws \Exception
      */
     public function getData()
     {
@@ -158,6 +156,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      *
      * @param $user
      * @return mixed
+     * @throws \Exception
      */
     public function isUserEnrolled($user)
     {
@@ -169,6 +168,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      *
      * @param $user
      * @return $this
+     * @throws \Exception
      */
     public function enrollUser($user)
     {

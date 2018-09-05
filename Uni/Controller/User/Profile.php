@@ -1,7 +1,6 @@
 <?php
 namespace Uni\Controller\User;
 
-use Tk\Db\Exception;
 use Tk\Request;
 use Dom\Template;
 use Tk\Form;
@@ -33,7 +32,7 @@ class Profile extends \Uni\Controller\AdminIface
     public function __construct()
     {
         $this->setPageTitle('My Profile');
-        $this->getConfig()->getCrumbs()->reset();
+        //$this->getConfig()->getCrumbs()->reset();
     }
 
     /**
