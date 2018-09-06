@@ -49,7 +49,7 @@ class Manager extends \Uni\Controller\AdminIface
         });
         $this->table->appendCell(\Tk\Table\Cell\Date::create('dateStart')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
         $this->table->appendCell(\Tk\Table\Cell\Date::create('dateEnd')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
-        $this->table->appendCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
+        //$this->table->appendCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
 
         // Filters
         $this->table->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
@@ -77,7 +77,7 @@ class Manager extends \Uni\Controller\AdminIface
             $filter['userId'] = $this->getUser()->id;
         }
 
-        $users = $this->getConfig()->getSubjectMapper()->findFiltered($filter, $this->table->getTool('a.id'));
+        $users = $this->getConfig()->getSubjectMapper()->findFiltered($filter, $this->table->getTool('dateStart DESC'));
         $this->table->setList($users);
     }
 

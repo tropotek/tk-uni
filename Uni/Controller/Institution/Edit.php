@@ -55,28 +55,36 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form = \Uni\Config::getInstance()->createForm('institutionEdit');
         $this->form->setRenderer(\Uni\Config::getInstance()->createFormRenderer($this->form));
 
-        $this->form->appendField(new Field\Input('name'))->setRequired(true)->setTabGroup('Details');
-        $this->form->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup('Details');
-        $this->form->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup('Details');
+        $tab = 'Details';
+        $this->form->appendField(new Field\Input('name'))->setRequired(true)->setTabGroup($tab);
+        $this->form->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup($tab);
+        $this->form->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
         $this->form->appendField(new Field\File('logo', $this->institution->getDataPath().'/logo/'))
-            ->setAttr('accept', '.png,.jpg,.jpeg,.gif')->setTabGroup('Details')->addCss('tk-imageinput');
+            ->setAttr('accept', '.png,.jpg,.jpeg,.gif')->setTabGroup($tab)->addCss('tk-imageinput');
 
         $insUrl = \Tk\Uri::create('/inst/'.$this->institution->getHash().'/login.html');
         if ($this->institution->domain)
             $insUrl = \Tk\Uri::create('/login.html')->setHost($this->institution->domain);
         $insUrlStr = $insUrl->setScheme('https')->toString();
-        $this->form->appendField(new Field\Input('domain'))->setTabGroup('Details')->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>' )
+        $this->form->appendField(new Field\Input('domain'))->setTabGroup($tab)->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>' )
             ->setAttr('placeholder', $insUrl->getHost());
-        $this->form->appendField(new Field\Textarea('description'))->setTabGroup('Details');
-        $this->form->appendField(new Field\Checkbox('active'))->setTabGroup('Details');
+        $this->form->appendField(new Field\Textarea('description'))->setTabGroup($tab);
 
+
+        $tab = 'Account';
+        $this->form->appendField(new Field\Checkbox('active'))->setTabGroup($tab)->setCheckboxLabel('Institution login accounts enabled/disabled.');
         $this->form->setAttr('autocomplete', 'off');
-        $f = $this->form->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")->setTabGroup('Password');
+        $f = $this->form->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
+            ->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
+            ->setTabGroup($tab);
         if (!$this->user->getId())
             $f->setRequired(true);
-        $f = $this->form->appendField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")->setNotes('Change this users password.')->setTabGroup('Password');
+        $f = $this->form->appendField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
+            ->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
+            ->setNotes('Change this users password.')->setTabGroup($tab);
         if (!$this->user->getId())
             $f->setRequired(true);
+
 
         $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
