@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.1.12 [2018-09-11]:
+-------------------------------
+  - Fixed most of it now
+  - Still updating new-template branch
+
+
 Ver 2.1.10 [2018-09-04]:
 -------------------------------
   - Started implementing new cube template
