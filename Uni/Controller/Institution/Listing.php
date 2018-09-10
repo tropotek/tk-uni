@@ -31,10 +31,11 @@ class Listing extends \Uni\Controller\AdminIface
     public function doDefault(Request $request)
     {
         $this->table = $this->getConfig()->createTable('institution-list');
+        $this->table = $this->getConfig()->createTable('institution-list');
         $this->table->setRenderer($this->getConfig()->createTableRenderer($this->table));
 
         $actionsCell = new \Tk\Table\Cell\Actions();
-        $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Login', \Tk\Uri::create(), 'fa  fa-sign-in')->setAttr('title', 'Institution Login'))
+        $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Login', \Tk\Uri::create(), 'fa  fa-sign-in', 'button-small soft')->setAttr('title', 'Institution Login'))
             ->setOnShow(function ($cell, $obj, $button) {
                 /* @var $obj \Uni\Db\Institution */
                 /* @var $button \Tk\Table\Cell\ActionButton */
@@ -83,13 +84,14 @@ class Listing extends \Uni\Controller\AdminIface
     {
         $xhtml = <<<HTML
 <div class="institution-list">
+  <h2 class="title">Institutions</h2>
   
-  <div class="tk-panel" data-panel-icon="fa fa-institution" var="header-panel">
-    <p>Select an Institution you would like to login to.</p>
+  <p>Select an Institution you would like to login to.</p>
+  <div var="table"></div>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
     
-    <div var="table"></div>
-
-  </div>
+  
   
 </div>
 HTML;
