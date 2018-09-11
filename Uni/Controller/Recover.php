@@ -72,7 +72,7 @@ class Recover extends Iface
         }
 
         $this->form->appendField(new Field\Input('account'));
-        $this->form->appendField(new Event\Submit('recover', array($this, 'doRecover')))->addCss('btn btn-primary btn-ss');
+        $this->form->appendField(new Event\Submit('recover', array($this, 'doRecover')))->removeCss('btn-default')->addCss('btn btn-primary btn-ss');
         $this->form->appendField(new Event\Link('login', \Tk\Uri::create('/login.html'), ''))
             ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-login-url');
 

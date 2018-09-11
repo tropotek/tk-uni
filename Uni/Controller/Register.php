@@ -95,7 +95,7 @@ class Register extends Iface
         $this->form->appendField(new Field\Input('username'));
         $this->form->appendField(new Field\Password('password'));
         $this->form->appendField(new Field\Password('passwordConf'))->setLabel('Password Confirm');
-        $this->form->appendField(new Event\Submit('register', array($this, 'doRegister')))->addCss('btn btn-primary btn-ss');
+        $this->form->appendField(new Event\Submit('register', array($this, 'doRegister')))->removeCss('btn-default')->addCss('btn btn-primary btn-ss');
         $this->form->appendField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
             ->removeCss('btn btn-sm btn-default btn-once');
     }
