@@ -115,7 +115,7 @@ class PluginApi
 //    {
 //        \Tk\Log::notice('PluginApi::autoAuthenticate() called!');
 //        $auth = $this->getConfig()->getAuth();
-//        \App\Listener\MasqueradeHandler::masqueradeClear();
+//        $this->getConfig()->getMasqueradeHandler()->masqueradeClear();
 //        $authResult = new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $user->getId());
 //        $auth->clearIdentity()->getStorage()->write($user->getId());
 //        $this->getConfig()->setUser($user);

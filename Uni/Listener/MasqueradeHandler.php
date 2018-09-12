@@ -1,10 +1,7 @@
 <?php
 namespace Uni\Listener;
 
-use Tk\Kernel\KernelEvents;
 use Tk\Event\GetResponseEvent;
-use Tk\Event\AuthEvent;
-use Tk\Auth\AuthEvents;
 use Uni\Db\Role;
 use Uni\Db\User;
 
@@ -53,7 +50,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
             if (!$msqUser) {
                 throw new \Tk\Exception('Invalid User');
             }
-            static::masqueradeLogin($user, $msqUser);
+            $this->masqueradeLogin($user, $msqUser);
         } catch (\Exception $e) {
             \Tk\Alert::addWarning($e->getMessage());
             \Tk\Uri::create()->remove(static::MSQ)->redirect();
@@ -72,7 +69,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      * @return bool
      * @throws \Exception
      */
-    public static function canMasqueradeAs($user, $msqUser)
+    public function canMasqueradeAs($user, $msqUser)
     {
         $b = parent::canMasqueradeAs($user, $msqUser);
         // If not admins they must be of the same institution
@@ -82,17 +79,4 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
         return $b;
     }
 
-
-    /**
-     * getSubscribedEvents
-     *
-     * @return array
-     */
-//    public static function getSubscribedEvents()
-//    {
-//        return array(
-//            KernelEvents::REQUEST => 'onMasquerade',
-//            AuthEvents::LOGOUT => array('onLogout', 10)
-//        );
-//    }
 }
