@@ -44,7 +44,8 @@ class User extends \Uni\TableIface
             ->setOnShow(function ($cell, $obj, $button) {
                 /* @var $obj \Uni\Db\User */
                 /* @var $button \Tk\Table\Cell\ActionButton */
-                if (\Uni\Listener\MasqueradeHandler::canMasqueradeAs(\Uni\Config::getInstance()->getUser(), $obj)) {
+                $config = \Uni\Config::getInstance();
+                if ($config->getMasqueradeHandler()->canMasqueradeAs($config->getUser(), $obj->getUser())) {
                     $button->setUrl(\Uni\Uri::create()->set(\Uni\Listener\MasqueradeHandler::MSQ, $obj->getHash()));
                 } else {
                     $button->setAttr('disabled', 'disabled')->addCss('disabled');

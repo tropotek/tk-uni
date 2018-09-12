@@ -225,8 +225,8 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $config = \Uni\Config::getInstance();
         $auth = $config->getAuth();
 
-        if (MasqueradeHandler::isMasquerading()) {
-            MasqueradeHandler::masqueradeClear();
+        if ($config->getMasqueradeHandler()->isMasquerading()) {
+            $config->getMasqueradeHandler()->masqueradeClear();
         }
 
         $adapter = $config->getAuthDbTableAdapter($event->all());
@@ -242,9 +242,9 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      */
     public function updateUser(AuthEvent $event)
     {
-        parent::updateUser($event);
-        if (\Bs\Listener\MasqueradeHandler::isMasquerading()) return;
         $config = \Uni\Config::getInstance();
+        parent::updateUser($event);
+        if ($config->getMasqueradeHandler()->isMasquerading()) return;
         $user = $config->getUser();
         if ($user) {
             if (property_exists($user, 'sessionId') && $user->sessionId != $config->getSession()->getId()) {
