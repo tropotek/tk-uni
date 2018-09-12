@@ -51,6 +51,11 @@ interface InstitutionIface
     public function isActive();
 
     /**
+     * @return \Tk\Uri
+     */
+    public function getLoginUrl();
+
+    /**
      * @param string $subjectCode
      * @return SubjectIface
      * @todo: \App\Db\SubjectMap::create()->findByCode($subjectCode, $this->getId());
