@@ -190,6 +190,7 @@ class Login extends Iface
             }
             $template->insertText('instName', $this->institution->name);
             $template->setChoice('inst');
+            $this->getPage()->getTemplate()->show('has-inst');
         } else {
             $template->setChoice('noinst');
             $template->setChoice('recover');
