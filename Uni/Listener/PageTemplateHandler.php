@@ -23,6 +23,7 @@ class PageTemplateHandler extends \Bs\Listener\PageTemplateHandler
         if ($controller instanceof \Bs\Controller\Iface) {
             $page = $controller->getPage();
             if (!$page) return;
+
             $template = $page->getTemplate();
             /** @var \Uni\Db\User $user */
             $user = $controller->getUser();
@@ -44,6 +45,12 @@ JS;
                 $node->setAttribute('href', \Uni\Uri::createDefaultUrl($node->getAttribute('href')));
             }
 
+            // get the unimelb login url
+            /** @var \Uni\Db\Institution $inst */
+            $inst = $this->getConfig()->getInstitutionMapper()->find(1);
+            if ($inst) {
+                $template->setAttr('institution-login', 'href', $inst->getLoginUrl());
+            }
         }
     }
 
