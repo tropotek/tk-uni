@@ -66,6 +66,9 @@ class Login extends Iface
     {
         $this->isInstLogin = false;
         $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getUri()->getHost());
+        if (!$this->institution && $request->hasAttribute('institutionId')) {
+            $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->getAttribute('institutionId'));
+        }
         if ($this->institution) {
             $this->doInsLogin($request, $this->institution->getHash());
         } else {
@@ -107,7 +110,8 @@ class Login extends Iface
         $this->form->appendField(new Field\Input('username'));
         $this->form->appendField(new Field\Password('password'));
         $this->form->appendField(new Event\Submit('login', array($this, 'doLogin')))->removeCss('btn-default')->addCss('btn btn-lg btn-primary btn-ss');
-        if (!$this->isInstLogin) {
+
+        if (!$this->institution) {
             $this->form->appendField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
                 ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-recover-url');
         }
