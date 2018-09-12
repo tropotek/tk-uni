@@ -44,9 +44,9 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
             $iid = $config->getInstitutionId();
             if (!$iid)
                 $iid = (int)$request->get('institutionId');
+
             /** @var User $msqUser */
             $msqUser = $config->getUserMapper()->findByhash($request->get(static::MSQ), $iid);
-
             if (!$msqUser) {
                 throw new \Tk\Exception('Invalid User');
             }
