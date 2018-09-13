@@ -35,6 +35,13 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 
                     /* @var \Uni\Db\User $user */
                     $user = $config->getUserMapper()->findByUsername($adapter->get('username'), $config->getInstitutionId());
+
+
+                    if (!$user) {   // Error out if no user
+                        $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID,
+                                $adapter->get('username'), 'Invalid username. Please contact your administrator to setup an account.'));
+                        return;
+                    }
 //                    if (!$user) { // Create a user record if none exists
 //                        $role = 'student';
 //                        if (preg_match('/(staff|student)/', strtolower($ldapData[0]['auedupersontype'][0]), $reg)) {
@@ -133,6 +140,14 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //            if (!$user) {   // Find user by username (this is the start pat of the email address, not reliable
 //                $user = $config->getUserMapper()->findByUsername($userData['username'], $adapter->getInstitution()->getId());
 //            }
+
+
+
+            if (!$user) {   // Error out if no user
+                $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID,
+                    $userData['username'], 'Invalid username. Please contact your administrator to setup an account.'));
+                return;
+            }
 //            if (!$user) {   // Create the new user account
 //                // optional to check the pre-enrollment list before creation
 //                $isPreEnrolled = \Uni\Db\Subject::isPreEnrolled($adapter->getInstitution()->getId(), array($userData['email']) );
