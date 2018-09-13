@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.1.16 [2018-09-13]:
+-------------------------------
+  - Merge branch 'master' of https://github.com/tropotek/tk-uni
+  - Remove Masquerade from App lib
+  - Preparing branch master for new release
+
+
 Ver 2.1.14 [2018-09-12]:
 -------------------------------
 
