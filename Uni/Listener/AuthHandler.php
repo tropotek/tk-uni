@@ -117,6 +117,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                         }
 
                         $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $config->getUserIdentity($user)));
+                        $config->getSession()->set('auth.password.access', false);
                     }
                 }
             }
