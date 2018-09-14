@@ -489,17 +489,6 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return \Uni\Ui\MenuManager
-     */
-    public function getMenuManager()
-    {
-        if (!$this->get('system.menu.manager')) {
-            $this->set('system.menu.manager', \Uni\Ui\MenuManager::getInstance());
-        }
-        return $this->get('system.menu.manager');
-    }
-
-    /**
      * @param string $templatePath (optional)
      * @return Page
      */
