@@ -164,6 +164,18 @@ class Config extends \Bs\Config
     }
 
     /**
+     * @return \Tk\Db\Map\Model
+     * @throws \Exception
+     */
+    public function getLastCreatedSubject()
+    {
+        $subject = $this->getSubjectMapper()->findFiltered(array('institutionId' => $this->getInstitutionId()),
+            \Tk\Db\Tool::create('created DESC'))->current();
+        return $subject;
+    }
+
+
+    /**
      * @param null|\Uni\Db\Subject $subject
      * @return $this
      */
