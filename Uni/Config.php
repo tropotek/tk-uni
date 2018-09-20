@@ -164,13 +164,16 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return \Tk\Db\Map\Model
+     * @param bool $skip
+     * @return null|\Tk\Db\Map\Model|Db\SubjectIface
      * @throws \Exception
      */
-    public function getLastCreatedSubject()
+    public function getLastCreatedSubject($skip = false)
     {
-        $subject = $this->getSubjectMapper()->findFiltered(array('institutionId' => $this->getInstitutionId()),
-            \Tk\Db\Tool::create('created DESC'))->current();
+        $list = $this->getSubjectMapper()->findFiltered(array('institutionId' => $this->getInstitutionId()),
+            \Tk\Db\Tool::create('created DESC'), 2);
+        $subject = $list->get(0);
+        if ($skip) $subject = $list->get(1);
         return $subject;
     }
 
