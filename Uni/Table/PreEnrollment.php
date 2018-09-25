@@ -50,14 +50,17 @@ class PreEnrollment extends \Uni\TableIface
             $config = \Uni\Config::getInstance();
             $subjectMap = $config->getSubjectMapper();
             $subjectMap->removePreEnrollment($obj->subject_id, $obj->email);
+
+            // TODO: I do not think this is required, as it may not be what the use wants to do.
             /** @var \Uni\Db\Subject $subject */
-            $subject = $subjectMap->find($obj->subject_id);
-            if ($subject) {  // Delete user from subject enrolment
-                $user = $config->getUserMapper()->findByEmail($obj->email, $subject->institutionId);
-                if ($user) {
-                    $subjectMap->removeUser($subject->getId(), $user->getId());
-                }
-            }
+//            $subject = $subjectMap->find($obj->subject_id);
+//            if ($subject) {  // Delete user from subject enrolment
+//                $user = $config->getUserMapper()->findByEmail($obj->email, $subject->institutionId);
+//                if ($user) {
+//                    $subjectMap->removeUser($subject->getId(), $user->getId());
+//                }
+//            }
+
             return false;
         }));
         $this->appendAction(\Tk\Table\Action\Csv::create());
