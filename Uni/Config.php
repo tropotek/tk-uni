@@ -435,10 +435,11 @@ class Config extends \Bs\Config
     /**
      * @return array
      */
-    public function getAvailableUserRoleTypes()
-    {
-        return \Tk\ObjectUtil::getClassConstants('Uni\Db\Role', 'TYPE');
-    }
+//    public function getAvailableUserRoleTypes()
+//    {
+//        vd();
+//        return \Tk\ObjectUtil::getClassConstants('Uni\Db\Role', 'TYPE');
+//    }
 
     /**
      * Get the current logged in user
