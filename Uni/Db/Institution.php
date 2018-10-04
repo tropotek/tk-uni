@@ -167,7 +167,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     public function getUser()
     {
         if (!$this->user)
-            $this->user = $this->getConfig()->getUserMapper()->find($this->userId);
+            $this->user = \Uni\Config::getInstance()->getUserMapper()->find($this->userId);
         return $this->user;
     }
 
