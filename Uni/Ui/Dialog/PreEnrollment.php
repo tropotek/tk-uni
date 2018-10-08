@@ -106,7 +106,7 @@ class PreEnrollment extends Iface
 
             // Add users if found
             if (!$config->getSubjectMapper()->hasPreEnrollment($this->subject->getId(), $email)) {
-                $config->getSubjectMapper()->addPreEnrollment($this->subject->getId(), $email, $uid);
+                $config->getSubjectMapper()->addPreEnrollment($this->subject->getId(), $email, $uid, $username);
                 $user = $config->getUserMapper()->findByEmail($email, $this->subject->institutionId);
                 if ($user) {
                     $config->getSubjectMapper()->addUser($this->subject->getId(), $user->getId());
@@ -217,17 +217,12 @@ JS;
   <p>Valid CSV formats are:</p>
   <p>Preferred Method:</p>
   <p><pre>
-uid,email
-123456,student1@uni.edu.au
-123457,staff2@uni.edu.au
+uid,email,username
+123456,student1@uni.edu.au,student1
+123457,staff2@uni.edu.au,staff1
 </pre></p>
-  <p>Optional Method:</p>
-  <p><pre>
-email
-student1@uni.edu.au
-staff2@uni.edu.au
-</pre></p>
-  <p><small>NOTE: Entering single Student ID's on their own is no longer permitted.</small></p>
+
+  <p><small>NOTE: The uid and username are currently optional. The email is the pimary value.</small></p>
     
 </form>
 HTML;

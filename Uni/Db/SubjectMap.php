@@ -227,6 +227,13 @@ class SubjectMap extends Mapper
 
     //  Enrolment Pending List Queries - The enrollment table holds emails of users that are to be enrolled on their next login.
 
+    // TODO: Currently we are using the email as the primary key queries
+    // TODO: Main reason is that we only get the email from the LMS/LTI
+    // TODO: Ideally I would like to get the UID or/and the username to be the primary key...
+    // TODO:
+
+
+
     /**
      * find all subject that the user is pending enrolment
      *
@@ -262,6 +269,22 @@ class SubjectMap extends Mapper
         return $ret;
     }
 
+    /**
+     * @param int $institutionId
+     * @param string $username
+     * @param null|\Tk\Db\Tool $tool
+     * @return ArrayObject|Subject[]
+     * @throws \Exception
+     */
+    public function findPendingPreEnrollmentsByUsername($institutionId, $username, $tool = null)
+    {
+        $from = sprintf('%s a, %s b',
+            $this->quoteTable($this->getTable()), $this->quoteTable('subject_pre_enrollment'));
+        $where = sprintf('a.id = b.subject_id AND a.institution_id = %d AND b.username = %s', (int)$institutionId, $this->quote($username));
+        $ret = $this->selectFrom($from, $where, $tool);
+        return $ret;
+    }
+
 
     /**
      * Find all pre enrolments for a subject and return with an `enrolled` boolean field
@@ -279,7 +302,7 @@ class SubjectMap extends Mapper
             $toolStr = ' '.$tool->toSql('', $this->getDb());
         }
 
-        $stm = $this->getDb()->prepare('SELECT a.subject_id, a.email, a.uid, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL, 0, 1) as enrolled
+        $stm = $this->getDb()->prepare('SELECT a.subject_id, a.uid, a.email, a.username, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL, 0, 1) as enrolled
 FROM  subject_pre_enrollment a 
   LEFT JOIN  user b ON (b.email = a.email)  
   LEFT JOIN subject_has_user c ON (b.id = c.user_id AND c.subject_id = ?)
@@ -322,13 +345,14 @@ WHERE a.subject_id = ? ' . $toolStr);
      * @param int $subjectId
      * @param string $email
      * @param string $uid
+     * @param string $username
      * @throws \Exception
      */
-    public function addPreEnrollment($subjectId, $email, $uid = '')
+    public function addPreEnrollment($subjectId, $email, $uid = '', $username = '')
     {
         if (!$this->hasPreEnrollment($subjectId, $email)) {
-            $stm = $this->getDb()->prepare('INSERT INTO subject_pre_enrollment (subject_id, email, uid)  VALUES (?, ?, ?)');
-            $stm->execute(array($subjectId, $email, $uid));
+            $stm = $this->getDb()->prepare('INSERT INTO subject_pre_enrollment (subject_id, uid, email, username)  VALUES (?, ?, ?, ?)');
+            $stm->execute(array($subjectId, $uid, $email, $username));
         }
         // Do not add the user to the subject_has_user table as this will be added automatically the next time the user logs in
         // This part should be implemented in a auth.onLogin listener
@@ -352,14 +376,19 @@ WHERE a.subject_id = ? ' . $toolStr);
      * @param $institutionId
      * @param array $emailList
      * @param string $uid
+     * @param string $username
      * @return bool
      * @throws \Exception
      */
-    public function isPreEnrolled($institutionId, $emailList = array(), $uid = '')
+    public function isPreEnrolled($institutionId, $emailList = array(), $uid = '', $username = '')
     {
         $found = false;
         if ($uid) {
             $subjectList = $this->findPendingPreEnrollmentsByUid($institutionId, $uid);
+            $found = (count($subjectList) > 0);
+        }
+        if ($username) {
+            $subjectList = $this->findPendingPreEnrollmentsByUsername($institutionId, $username);
             $found = (count($subjectList) > 0);
         }
         if (!$found) {

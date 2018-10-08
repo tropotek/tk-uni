@@ -184,7 +184,6 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $template = parent::show();
 
 
-
         // Enrolled Table
         $template->appendTemplate('enrolledTable', $this->enrolledTable->getRenderer()->show());
         // Pre Enrollment Table
@@ -248,7 +247,7 @@ CSS;
 
     </div>
     <div class="col-md-4">
-
+    
       <div class="tk-panel" data-panel-title="Enrolled" data-panel-icon="fa fa-users" var="pendingTable">
           <div class="small">
             <p>

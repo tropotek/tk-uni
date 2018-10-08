@@ -26,7 +26,8 @@ class PreEnrollment extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Checkbox('email'));
         $this->appendCell(new \Tk\Table\Cell\Text('email'))->addCss('key');
         $this->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
-        $this->appendCell(new \Tk\Table\Cell\Boolean('enrolled'))->setOnCellHtml(function ($cell, $obj, $html) {
+        $this->appendCell(new \Tk\Table\Cell\Text('username'));
+        $this->appendCell(new \Tk\Table\Cell\Boolean('enrolled'))->setLabel('E')->setOnCellHtml(function ($cell, $obj, $html) {
             /** @var $cell \Tk\Table\Cell\Boolean */
             /** @var $obj \StdClass */
             $config = \Uni\Config::getInstance();
