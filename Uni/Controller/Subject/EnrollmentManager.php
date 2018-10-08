@@ -248,12 +248,12 @@ CSS;
     </div>
     <div class="col-md-4">
     
-      <div class="tk-panel" data-panel-title="Enrolled" data-panel-icon="fa fa-users" var="pendingTable">
-          <div class="small">
+      <div class="tk-panel" data-panel-title="Pre-Enrollment" data-panel-icon="fa fa-users" var="pendingTable">
+          <div>
             <p>
-              - Pre-enrolled users will automatically be enrolled into this subject on their next login.<br/>
-              - Deleting an enrolled user from this list will also delete them from the pre-enrollment list.
+              Pre-enrolled users will automatically be enrolled into this subject on their next login.
             </p>
+            <p class="small">Note: Deleting a user from this list will <b>not</b> delete them from the `Enrolled` list.</p>
           </div>
       </div>
 
