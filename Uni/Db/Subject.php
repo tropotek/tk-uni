@@ -97,25 +97,14 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      * @param $institutionId
      * @param array $emailList
      * @param string $uid
+     * @param string $username
      * @return bool
      * @throws \Exception
+     * @deprecated use subjectMap::isPreEnrolled()
      */
-    public static function isPreEnrolled($institutionId, $emailList = array(), $uid = '')
+    public static function isPreEnrolled($institutionId, $emailList = array(), $uid = '', $username = '')
     {
-        $found = false;
-        if ($uid) {
-            $subjectList = SubjectMap::create()->findPendingPreEnrollmentsByUid($institutionId, $uid);
-            $found = (count($subjectList) > 0);
-        }
-        if (!$found) {
-            foreach ($emailList as $email) {
-                if ($found) break;
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) continue;
-                $subjectList = \Uni\Config::getInstance()->getSubjectMapper()->findPendingPreEnrollments($institutionId, $email);
-                $found = (count($subjectList) > 0);
-            }
-        }
-        return $found;
+        return self::createMapper()->isPreEnrolled($institutionId, $emailList, $uid, $username);
     }
 
     /**
