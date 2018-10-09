@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS `user_role_institution` (
 ) ENGINE=InnoDB;
 
 TRUNCATE `user_role`;
-INSERT INTO `user_role` (name, type, description, static, modified, created) VALUES
+INSERT INTO `user_role` (name, type, description, static, modified, created)
+VALUES
   ('admin', 'admin', 'System administrator role', 1, NOW(), NOW()),
   ('client', 'client', 'Institution user account role', 1, NOW(), NOW()),
   ('staff', 'staff', 'Institutions default staff role', 1, NOW(), NOW()),
@@ -68,20 +69,23 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
 
 TRUNCATE `user_permission`;
 INSERT INTO `user_permission` (`role_id`, `name`)
-  VALUES
-         (1, 'perm.admin'),
-         (2, 'perm.client'),
+VALUES
+   (1, 'perm.admin'),
+   (2, 'perm.client'),
 
-         (3, 'perm.staff'),
-         (3, 'perm.manage.staff'),
-         (3, 'perm.manage.student'),
-         (3, 'perm.manage.subject'),
+   (3, 'perm.staff'),
+   (3, 'perm.manage.staff'),
+   (3, 'perm.manage.student'),
+   (3, 'perm.manage.subject'),
 
-         (4, 'perm.student'),
+   (4, 'perm.student'),
 
-         (5, 'perm.staff'),
+   (5, 'perm.staff'),
+   (5, 'perm.manage.staff'),
+   (5, 'perm.manage.student'),
+   (5, 'perm.manage.subject'),
 
-         (6, 'perm.staff')
+   (6, 'perm.staff')
 ;
 
 
