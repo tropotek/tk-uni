@@ -71,7 +71,7 @@ class Register extends Iface
         }
 
         $this->user = $this->getConfig()->createUser();
-        $this->user->roleId = \Uni\Db\Role::DEFAULT_TYPE_STAFF;
+        $this->user->roleId = \Uni\Db\Role::DEFAULT_TYPE_COORDINATOR;
 
         $this->init();
 

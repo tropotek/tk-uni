@@ -11,26 +11,6 @@ use Tk\Db\Data;
  */
 class User extends \Bs\Db\User implements UserIface
 {
-    /**
-     * @deprecated Use Role::TYPE_PUBLIC
-     */
-    const ROLE_PUBLIC = 'public';
-    /**
-     * @deprecated Use Role::TYPE_ADMIN
-     */
-    const ROLE_ADMIN = 'admin';
-    /**
-     * @deprecated Use Role::TYPE_CLIENT
-     */
-    const ROLE_CLIENT = 'client';
-    /**
-     * @deprecated Use Role::TYPE_STAFF
-     */
-    const ROLE_STAFF = 'staff';
-    /**
-     * @deprecated Use Role::TYPE_STUDENT
-     */
-    const ROLE_STUDENT = 'student';
 
 
     /**
@@ -199,6 +179,7 @@ class User extends \Bs\Db\User implements UserIface
 
     /**
      * @return boolean
+     * @deprecated use getRole()->hasType('..')
      */
     public function isClient()
     {
@@ -207,14 +188,16 @@ class User extends \Bs\Db\User implements UserIface
 
     /**
      * @return boolean
+     * @deprecated use getRole()->hasType('..')
      */
     public function isStaff()
     {
-        return $this->getRole()->hasType(Role::TYPE_STAFF);
+        return $this->getRole()->hasType(Role::TYPE_COORDINATOR);
     }
 
     /**
      * @return boolean
+     * @deprecated use getRole()->hasType('..')
      */
     public function isStudent()
     {

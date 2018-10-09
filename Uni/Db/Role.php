@@ -9,19 +9,21 @@ namespace Uni\Db;
  */
 class Role extends \Bs\Db\Role
 {
-    
-    // TODO: Rename these to DEFAULT_ID_ADMIN 
 
-    const DEFAULT_TYPE_ADMIN    = 1;
-    const DEFAULT_TYPE_CLIENT   = 2;
-    const DEFAULT_TYPE_STAFF    = 3;
-    const DEFAULT_TYPE_STUDENT  = 4;
+    // TODO: We need to deprecate these constants as they are influencing the app design
 
-    const TYPE_ADMIN    = 'admin';
-    const TYPE_CLIENT   = 'client';
-    const TYPE_STAFF    = 'staff';
-    const TYPE_STUDENT  = 'student';
-    const TYPE_PUBLIC   = 'public';
+    const DEFAULT_TYPE_CLIENT       = 2;
+    const DEFAULT_TYPE_STAFF        = 3;
+    const DEFAULT_TYPE_STUDENT      = 4;
+    const DEFAULT_TYPE_LECTURER     = 5;
+    const DEFAULT_TYPE_COORDINATOR  = 6;
+
+
+    const TYPE_CLIENT       = 'client';
+    const TYPE_STAFF        = 'staff';
+    const TYPE_STUDENT      = 'student';
+    const TYPE_COORDINATOR  = 'staff';
+    const TYPE_LECTURER     = 'staff';
 
 
     /**
@@ -37,6 +39,7 @@ class Role extends \Bs\Db\Role
      *
      * @param string $type Use the constants self::TYPE_ADMIN|self:TYPE_CLIENT...
      * @return int
+     * @deprecated removing roleType over time
      */
     public static function getDefaultRoleId($type)
     {
@@ -47,6 +50,10 @@ class Role extends \Bs\Db\Role
                 return self::DEFAULT_TYPE_CLIENT;
             case self::TYPE_STAFF:
                 return self::DEFAULT_TYPE_STAFF;
+            case self::TYPE_COORDINATOR:
+                return self::DEFAULT_TYPE_COORDINATOR;
+            case self::TYPE_LECTURER:
+                return self::DEFAULT_TYPE_LECTURER;
             case self::TYPE_STUDENT:
                 return self::DEFAULT_TYPE_STUDENT;
         }

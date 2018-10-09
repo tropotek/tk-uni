@@ -37,12 +37,14 @@ CREATE TABLE IF NOT EXISTS `user_role_institution` (
   PRIMARY KEY (`role_id`, `institution_id`)
 ) ENGINE=InnoDB;
 
-
+TRUNCATE `user_role`;
 INSERT INTO `user_role` (name, type, description, static, modified, created) VALUES
-  ('Administrator', 'admin', 'System administrator role', 1, NOW(), NOW()),
-  ('Client', 'client', 'Institution user account role', 1, NOW(), NOW()),
-  ('Staff', 'staff', 'Institutions default staff role', 1, NOW(), NOW()),
-  ('Student', 'student', 'Institutions default student role', 1, NOW(), NOW())
+  ('admin', 'admin', 'System administrator role', 1, NOW(), NOW()),
+  ('client', 'client', 'Institution user account role', 1, NOW(), NOW()),
+  ('staff', 'staff', 'Institutions default staff role', 1, NOW(), NOW()),
+  ('student', 'student', 'Institutions default student role', 1, NOW(), NOW()),
+  ('coordinator', 'staff', 'Coordinator', 1, NOW(), NOW()),
+  ('lecturer', 'staff', 'Lecturer', 1, NOW(), NOW())
 ;
 
 
@@ -64,18 +66,22 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
 ) ENGINE=InnoDB;
 
 
-
-
-# INSERT INTO `user_role` (name, type, description, static, modified, created) VALUES
-#   ('Coordinator', 'staff', 'Staff Coordinator role', 1, NOW(), NOW()),
-#   ('Lecturer', 'staff', 'Staff Lecturer role', 1, NOW(), NOW())
-# ;
-
+TRUNCATE `user_permission`;
 INSERT INTO `user_permission` (`role_id`, `name`)
   VALUES
-    (3, 'perm.manage.staff'),
-    (3, 'perm.manage.student'),
-    (3, 'perm.manage.subject')
+         (1, 'perm.admin'),
+         (2, 'perm.client'),
+
+         (3, 'perm.staff'),
+         (3, 'perm.manage.staff'),
+         (3, 'perm.manage.student'),
+         (3, 'perm.manage.subject'),
+
+         (4, 'perm.student'),
+
+         (5, 'perm.staff'),
+
+         (6, 'perm.staff')
 ;
 
 
@@ -90,7 +96,7 @@ INSERT INTO `user_permission` (`role_id`, `name`)
 
 
 -- TODO: remove the username, password and role fields from the user table
--- TODO: Consider the positived and negitives
+-- TODO: Consider the positive and negatives
 -- --------------------------------------------------------
 --
 -- Table structure for table `user_auth`

@@ -21,7 +21,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
     public static $roleOrder = array(
         Role::TYPE_ADMIN,           // Highest
         Role::TYPE_CLIENT,
-        Role::TYPE_STAFF,
+        Role::TYPE_COORDINATOR,
         Role::TYPE_STUDENT          // Lowest
     );
 

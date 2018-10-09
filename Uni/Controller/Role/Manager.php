@@ -54,7 +54,7 @@ class Manager extends \Uni\Controller\AdminIface
 
         $list = array(
             '-- Type --' => '',
-            'Staff' => \Uni\Db\Role::TYPE_STAFF
+            'Staff' => \Uni\Db\Role::TYPE_COORDINATOR
             //,'Student' => \Uni\Db\Role::TYPE_STUDENT
         );
         //$this->table->appendFilter(Field\Select::createSelect('type', $list));
@@ -73,7 +73,7 @@ class Manager extends \Uni\Controller\AdminIface
         $filter = $this->table->getFilterValues();
         if (empty($filter['type'])) {
             $filter['type'] = array(
-                \Uni\Db\Role::TYPE_STAFF
+                \Uni\Db\Role::TYPE_COORDINATOR
                 //,\Uni\Db\Role::TYPE_STUDENT
             );
         }
@@ -90,7 +90,7 @@ class Manager extends \Uni\Controller\AdminIface
     public function show()
     {
         $btn = \Tk\Ui\ButtonDropdown::createButtonDropdown('Add Role', 'fa fa-id-badge', array(
-            \Tk\Ui\Link::create('Staff Role', \Uni\Uri::createHomeUrl('/roleEdit.html')->set('type', \Uni\Db\Role::TYPE_STAFF))
+            \Tk\Ui\Link::create('Staff Role', \Uni\Uri::createHomeUrl('/roleEdit.html')->set('type', \Uni\Db\Role::TYPE_COORDINATOR))
             //,\Tk\Ui\Link::create('Student Role', \Uni\Uri::createHomeUrl('/roleEdit.html')->set('type', \Uni\Db\Role::TYPE_STUDENT))
         ));
         $this->getActionPanel()->add($btn);

@@ -76,7 +76,7 @@ class Manager extends \Uni\Controller\AdminIface
             case \Uni\Db\Role::TYPE_ADMIN:
                 $this->setPageTitle('Admin Users');
                 break;
-            case \Uni\Db\Role::TYPE_STAFF:
+            case \Uni\Db\Role::TYPE_COORDINATOR:
                 $this->setPageTitle('Staff Manager');
                 break;
             case \Uni\Db\Role::TYPE_STUDENT:

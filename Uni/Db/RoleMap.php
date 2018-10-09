@@ -33,11 +33,11 @@ class RoleMap extends \Bs\Db\RoleMap
     }
 
 
-
     /**
      * @param int $roleId
      * @param int $institutionId
      * @return bool
+     * @throws \Tk\Db\Exception
      */
     public function hasInstitution($roleId, $institutionId)
     {
@@ -49,6 +49,7 @@ class RoleMap extends \Bs\Db\RoleMap
     /**
      * @param int $roleId
      * @param int $institutionId
+     * @throws \Tk\Db\Exception
      */
     public function addInstitution($roleId, $institutionId)
     {
@@ -61,6 +62,7 @@ class RoleMap extends \Bs\Db\RoleMap
     /**
      * @param int $roleId
      * @param int $institutionId
+     * @throws \Tk\Db\Exception
      */
     public function removeInstitution($roleId, $institutionId)
     {

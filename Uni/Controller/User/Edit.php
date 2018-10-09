@@ -66,7 +66,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             case \Uni\Db\Role::TYPE_ADMIN:
                 $this->setPageTitle('Admin Edit');
                 break;
-            case \Uni\Db\Role::TYPE_STAFF:
+            case \Uni\Db\Role::TYPE_COORDINATOR:
                 $this->setPageTitle('Staff Edit');
                 break;
             case \Uni\Db\Role::TYPE_STUDENT:
@@ -76,7 +76,7 @@ class Edit extends \Uni\Controller\AdminEditIface
 
 
         $this->user = $this->getConfig()->createUser();
-        if ($this->targetRole == \Uni\Db\Role::TYPE_STUDENT || $this->targetRole == \Uni\Db\Role::TYPE_STAFF) {
+        if ($this->targetRole == \Uni\Db\Role::TYPE_STUDENT || $this->targetRole == \Uni\Db\Role::TYPE_COORDINATOR) {
             $this->user->institutionId = $this->getConfig()->getInstitutionId();
         }
         $this->user->roleId = \Uni\Db\Role::getDefaultRoleId($this->targetRole);
@@ -108,8 +108,8 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         $tabGroup = 'Details';
 
-        $list = \Uni\Db\RoleMap::create()->findFiltered(array('type' => \Uni\Db\Role::TYPE_STAFF, 'institutionId' => $this->getConfig()->getInstitutionId()));
-        if ($this->targetRole == \Uni\Db\Role::TYPE_STAFF && $list->count() > 1) {
+        $list = \Uni\Db\RoleMap::create()->findFiltered(array('type' => \Uni\Db\Role::TYPE_COORDINATOR, 'institutionId' => $this->getConfig()->getInstitutionId()));
+        if ($this->targetRole == \Uni\Db\Role::TYPE_COORDINATOR && $list->count() > 1) {
             $this->form->appendField(Field\Select::createSelect('roleId', $list)->setTabGroup($tabGroup)->setRequired()->prependOption('-- Select --', ''));
         }
 
@@ -123,7 +123,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         $this->form->appendField(new Field\Input('name'))->setTabGroup($tabGroup);
         //$this->form->appendField(new Field\Input('displayName'))->setTabGroup($tabGroup);
 
-        if ($this->targetRole != \Uni\Db\Role::TYPE_STAFF || $this->targetRole != \Uni\Db\Role::TYPE_STUDENT) {
+        if ($this->targetRole != \Uni\Db\Role::TYPE_COORDINATOR || $this->targetRole != \Uni\Db\Role::TYPE_STUDENT) {
             $this->form->appendField(new Field\Input('uid'))->setLabel('UID')->setTabGroup($tabGroup)
                 ->setNotes('The student or staff number assigned by the institution (if Applicable).');
         }

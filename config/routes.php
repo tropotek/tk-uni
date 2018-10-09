@@ -64,9 +64,9 @@ $routes->add('client-role-manager', new \Tk\Routing\Route('/client/roleManager.h
 $routes->add('client-role-edit', new \Tk\Routing\Route('/client/roleEdit.html', 'Uni\Controller\Role\Edit::doDefault'));
 
 $routes->add('client-staff-manager', new \Tk\Routing\Route('/client/staffManager.html', 'Uni\Controller\User\Manager::doDefaultRole',
-    array('targetRole' => \Uni\Db\Role::TYPE_STAFF)));
+    array('targetRole' => \Uni\Db\Role::TYPE_COORDINATOR)));
 $routes->add('client-staff-edit', new \Tk\Routing\Route('/client/staffEdit.html', 'Uni\Controller\User\Edit::doDefaultRole',
-    array('targetRole' => \Uni\Db\Role::TYPE_STAFF)));
+    array('targetRole' => \Uni\Db\Role::TYPE_COORDINATOR)));
 
 $routes->add('client-student-manager', new \Tk\Routing\Route('/client/studentManager.html', 'Uni\Controller\User\Manager::doDefaultRole',
     array('targetRole' => \Uni\Db\Role::TYPE_STUDENT)));
@@ -97,9 +97,9 @@ $routes->add('staff-role-manager', new \Tk\Routing\Route('/staff/roleManager.htm
 $routes->add('staff-role-edit', new \Tk\Routing\Route('/staff/roleEdit.html', 'Uni\Controller\Role\Edit::doDefault'));
 
 $routes->add('staff-staff-manager', new \Tk\Routing\Route('/staff/staffManager.html', 'Uni\Controller\User\Manager::doDefaultRole',
-    array('targetRole' => \Uni\Db\Role::TYPE_STAFF)));
+    array('targetRole' => \Uni\Db\Role::TYPE_COORDINATOR)));
 $routes->add('staff-staff-edit', new \Tk\Routing\Route('/staff/staffEdit.html', 'Uni\Controller\User\Edit::doDefaultRole',
-    array('targetRole' => \Uni\Db\Role::TYPE_STAFF)));
+    array('targetRole' => \Uni\Db\Role::TYPE_COORDINATOR)));
 
 $routes->add('staff-student-manager', new \Tk\Routing\Route('/staff/{subjectCode}/studentManager.html', 'Uni\Controller\User\Manager::doSubject',
     array('targetRole' => \Uni\Db\Role::TYPE_STUDENT)));

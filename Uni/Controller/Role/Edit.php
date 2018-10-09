@@ -65,7 +65,7 @@ class Edit extends \Uni\Controller\AdminIface
         } else {
             $list = array(
                 '-- Type --' => '',
-                'Staff' => \Uni\Db\Role::TYPE_STAFF
+                'Staff' => \Uni\Db\Role::TYPE_COORDINATOR
                 //,'Student' => \Uni\Db\Role::TYPE_STUDENT
             );
             $this->form->appendField(new Field\Select('type', $list))->setLabel('Role Type')->setTabGroup($tab)->setRequired();
