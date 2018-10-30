@@ -45,11 +45,6 @@ JS;
                 $node->setAttribute('href', \Uni\Uri::createDefaultUrl($node->getAttribute('href')));
             }
 
-            //show user icon 'user-image'
-            $img = $user->getImageUrl();
-            if ($img)
-                $template->setAttr('user-image', 'src', $img);
-
             // get the unimelb login url
             /** @var \Uni\Db\Institution $inst */
             $inst = $this->getConfig()->getInstitutionMapper()->find(1);
