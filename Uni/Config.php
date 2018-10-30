@@ -530,4 +530,31 @@ class Config extends \Bs\Config
         return $this->get('plugin.api');
     }
 
+
+    /**
+     * @return array
+     */
+    public function getElfinderPath()
+    {
+        /** @var \App\Db\Institution $institution */
+        $institution = null;
+        try {
+            $institution = $this->getInstitution();
+            if ($this->getRequest()->get('institutionId'))
+                $institution = \App\Db\InstitutionMap::create()->find($this->getRequest()->get('institutionId'));
+            if ($institution) {
+                $dataPath = $this->getDataPath() . $institution->getDataPath() . '/media';
+                $dataUrl = $this->getDataUrl() . $institution->getDataPath() . '/media';
+            }
+        } catch (\Exception $e) { \Tk\Log::warning($e->getMessage()); }
+
+        if (!is_dir($dataPath)) {
+            mkdir($dataPath, 0777, true);
+        }
+        if (!is_dir($dataPath . '/.trash/')) {
+            mkdir($dataPath . '/.trash/', 0777, true);
+        }
+        return array($dataPath, $dataUrl);
+    }
+
 }
