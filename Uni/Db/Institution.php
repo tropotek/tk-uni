@@ -39,12 +39,67 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     /**
      * @var string
      */
+    public $phone = '';
+
+    /**
+     * @var string
+     */
+    public $street = '';
+
+    /**
+     * @var string
+     */
+    public $city = '';
+
+    /**
+     * @var string
+     */
+    public $state = '';
+
+    /**
+     * @var string
+     */
+    public $country = '';
+
+    /**
+     * @var string
+     */
+    public $postcode = '';
+
+    /**
+     * @var string
+     */
+    public $address = '';
+
+    /**
+     * @var float
+     */
+    public $mapLat = -37.797441;
+
+    /**
+     * @var float
+     */
+    public $mapLng = 144.960773;
+
+    /**
+     * @var float
+     */
+    public $mapZoom = 14.0;
+
+    /**
+     * @var string
+     */
     public $description = '';
 
     /**
      * @var string
      */
     public $logo = '';
+
+    /**
+     * @var string
+     */
+    public $feature = '';
 
     /**
      * @var boolean
@@ -96,6 +151,19 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
         $this->getHash();
         $this->getData()->save();
         parent::save();
+    }
+
+    /**
+     * Find this institutions owner user
+     *
+     * @return User
+     * @throws \Exception
+     */
+    public function getUser()
+    {
+        if (!$this->user)
+            $this->user = \Uni\Config::getInstance()->getUserMapper()->find($this->userId);
+        return $this->user;
     }
 
     /**
@@ -159,16 +227,14 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     }
 
     /**
-     * Find this institutions owner user
+     * Returns null if no feature available
      *
-     * @return User
-     * @throws \Exception
+     * @return \Tk\Uri|null
      */
-    public function getUser()
+    public function getFeatureUrl()
     {
-        if (!$this->user)
-            $this->user = \Uni\Config::getInstance()->getUserMapper()->find($this->userId);
-        return $this->user;
+        if ($this->feature)
+            return \Tk\Uri::create(\App\Config::getInstance()->getDataUrl().$this->feature);
     }
 
     /**
@@ -182,6 +248,26 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
             $loginUrl->setHost($this->getDomain());
         }
         return $loginUrl;
+    }
+
+    /**
+     * @param string $subjectCode
+     * @return SubjectIface
+     * @throws \Exception
+     */
+    public function findSubjectByCode($subjectCode)
+    {
+        return \Uni\Config::getInstance()->getSubjectMapper()->findByCode($subjectCode, $this->getId());
+    }
+
+    /**
+     * @param int $subjectId
+     * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|SubjectIface
+     * @throws \Exception
+     */
+    public function findSubject($subjectId)
+    {
+        return \Uni\Config::getInstance()->getSubjectMapper()->find($subjectId);
     }
 
     /**
@@ -255,25 +341,5 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
         }
 
         return $error;
-    }
-
-    /**
-     * @param string $subjectCode
-     * @return SubjectIface
-     * @throws \Exception
-     */
-    public function findSubjectByCode($subjectCode)
-    {
-        return \Uni\Config::getInstance()->getSubjectMapper()->findByCode($subjectCode, $this->getId());
-    }
-
-    /**
-     * @param int $subjectId
-     * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|SubjectIface
-     * @throws \Exception
-     */
-    public function findSubject($subjectId)
-    {
-        return \Uni\Config::getInstance()->getSubjectMapper()->find($subjectId);
     }
 }
