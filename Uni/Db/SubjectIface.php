@@ -7,13 +7,9 @@ namespace Uni\Db;
  * @see http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
  */
-interface SubjectIface
+interface SubjectIface extends \Tk\Db\ModelInterface
 {
 
-    /**
-     * @return int
-     */
-    public function getId();
 
     /**
      * @return int
@@ -50,4 +46,11 @@ interface SubjectIface
      */
     public function getDateEnd();
 
+
+    /**
+     * Validate the institution object form user input
+     *
+     * @throws \Exception
+     */
+    public function validate();
 }

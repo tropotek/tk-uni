@@ -7,13 +7,9 @@ namespace Uni\Db;
  * @see http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
  */
-interface InstitutionIface
+interface InstitutionIface extends \Tk\Db\ModelInterface
 {
 
-    /**
-     * @return int
-     */
-    public function getId();
 
     /**
      * @return int
@@ -51,9 +47,28 @@ interface InstitutionIface
     public function isActive();
 
     /**
+     * @return \Tk\Db\Data
+     */
+    public function getData();
+
+    /**
      * @return \Tk\Uri
      */
     public function getLoginUrl();
+
+    /**
+     * Returns null if no logo image available
+     *
+     * @return \Tk\Uri|null
+     */
+    public function getLogoUrl();
+
+    /**
+     * Returns null if no feature image available
+     *
+     * @return \Tk\Uri|null
+     */
+    public function getFeatureUrl();
 
     /**
      * @param string $subjectCode
@@ -69,4 +84,10 @@ interface InstitutionIface
      */
     public function findSubject($subjectId);
 
+    /**
+     * Validate the institution object form user input
+     *
+     * @throws \Exception
+     */
+    public function validate();
 }

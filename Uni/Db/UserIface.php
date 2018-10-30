@@ -7,7 +7,7 @@ namespace Uni\Db;
  * @see http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
  */
-interface UserIface extends \Bs\Db\UserIface
+interface UserIface extends \Bs\Db\UserIface, \Tk\Db\ModelInterface
 {
 
     /**
@@ -26,4 +26,11 @@ interface UserIface extends \Bs\Db\UserIface
      */
     public function getInstitution();
 
+
+    /**
+     * Validate the institution object form user input
+     *
+     * @throws \Exception
+     */
+    public function validate();
 }
