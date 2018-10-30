@@ -166,14 +166,16 @@ class Config extends \Bs\Config
     /**
      * @param bool $skip
      * @return null|\Tk\Db\Map\Model|Db\SubjectIface
-     * @throws \Exception
      */
     public function getLastCreatedSubject($skip = false)
     {
-        $list = $this->getSubjectMapper()->findFiltered(array('institutionId' => $this->getInstitutionId()),
-            \Tk\Db\Tool::create('created DESC'), 2);
-        $subject = $list->get(0);
-        if ($skip) $subject = $list->get(1);
+        $subject = null;
+        try {
+            $list = $this->getSubjectMapper()->findFiltered(array('institutionId' => $this->getInstitutionId()),
+                \Tk\Db\Tool::create('created DESC', 2));
+            $subject = $list->get(0);
+            if ($skip) $subject = $list->get(1);
+        } catch (\Exception $e) {}
         return $subject;
     }
 
@@ -283,23 +285,27 @@ class Config extends \Bs\Config
     /**
      * @param int $id
      * @return \Uni\Db\InstitutionIface|\Tk\Db\ModelInterface|\Uni\Db\Institution
-     * @throws \Exception
      * @deprecated Use the getInstitutionMapper() method
      */
     public function findInstitution($id)
     {
-        return $this->getInstitutionMapper()->find($id);
+        try {
+            return $this->getInstitutionMapper()->find($id);
+        } catch (\Exception $e) {}
+        return null;
     }
 
     /**
      * @param int $id
      * @return null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\Subject
-     * @throws \Exception
      * @deprecated Use the getSubjectMapper() method
      */
     public function findSubject($id)
     {
-        return $this->getSubjectMapper()->find($id);
+        try {
+            return $this->getSubjectMapper()->find($id);
+        } catch (\Exception $e) {}
+        return null;
     }
 
     /**
