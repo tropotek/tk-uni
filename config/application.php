@@ -43,6 +43,12 @@ $config['template.public']      = $config['system.theme.admin'] . '/public.html'
 $config['template.login']       = $config['system.theme.admin']    . '/login.html';
 
 
+/*
+ * Does this html template use bootstrap4 markup
+ * Default: 'bs4'
+ */
+$config['css.framework']         = 'bs4';
+
 
 
 /*
