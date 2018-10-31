@@ -77,6 +77,47 @@ class User extends \Bs\Db\User implements UserIface
         return $this->institution;
     }
 
+
+    /**
+     * @return boolean
+     */
+    public function isClient()
+    {
+        return $this->getRole()->hasPermission(Permission::TYPE_CLIENT);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isCoordinator()
+    {
+        return $this->getRole()->hasPermission(Permission::TYPE_COORDINATOR);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isLecturer()
+    {
+        return $this->getRole()->hasPermission(Permission::TYPE_LECTURER);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isStaff()
+    {
+        return $this->getRole()->hasPermission(Permission::TYPE_STAFF);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isStudent()
+    {
+        return $this->getRole()->hasPermission(Permission::TYPE_LECTURER);
+    }
+
     /**
      * Returns true if the user is enrolled fully into the subject
      *
@@ -106,7 +147,14 @@ class User extends \Bs\Db\User implements UserIface
         }
 
         if (!$this->roleId) {
-            $errors['roleId'] = 'Invalid field roleId value';
+            $errors['roleId'] = 'Invalid field role value';
+        } else {
+            try {
+                $role = $this->getRole();
+                if (!$role) throw new \Tk\Exception('Please select a valid role.');
+            } catch (\Exception $e) {
+                $errors['roleId'] = $e->getMessage();
+            }
         }
 
         if (!$this->username) {
@@ -132,37 +180,6 @@ class User extends \Bs\Db\User implements UserIface
 
 
 
-
-
-    /**
-     * @return boolean
-     * @deprecated use getRole()->hasType('..')
-     */
-    public function isClient()
-    {
-        //return $this->getRole()->hasPermission(Permission::TYPE_CLIENT);
-        return $this->getRole()->hasType(Role::TYPE_CLIENT);
-    }
-
-    /**
-     * @return boolean
-     * @deprecated use getRole()->hasType('..')
-     */
-    public function isStaff()
-    {
-        //return $this->getRole()->hasPermission(Permission::TYPE_COORDINATOR);
-        return $this->getRole()->hasType(Role::TYPE_COORDINATOR);
-    }
-
-    /**
-     * @return boolean
-     * @deprecated use getRole()->hasType('..')
-     */
-    public function isStudent()
-    {
-        //return $this->getRole()->hasPermission(Permission::TYPE_LECTURER);
-        return $this->getRole()->hasType(Role::TYPE_STUDENT);
-    }
 
 
 }

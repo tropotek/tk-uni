@@ -179,6 +179,11 @@ class UserMap extends Mapper
             }
         }
 
+
+        if (!empty($filter['roleId'])) {
+            $where .= sprintf('a.role_id = %s AND ', (int)$filter['roleId']);
+        }
+
         if (!empty($filter['uid'])) {
             $where .= sprintf('a.uid = %s AND ', $this->getDb()->quote($filter['uid']));
         }
