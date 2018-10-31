@@ -29,7 +29,6 @@ class UserMap extends Mapper
             $this->dbMap->addPropertyMap(new Db\Text('username'));
             $this->dbMap->addPropertyMap(new Db\Text('password'));
             $this->dbMap->addPropertyMap(new Db\Text('name'));
-            //$this->dbMap->addPropertyMap(new Db\Text('displayName', 'display_name'));
             $this->dbMap->addPropertyMap(new Db\Text('email'));
             $this->dbMap->addPropertyMap(new Db\Text('image'));
             $this->dbMap->addPropertyMap(new Db\Date('lastLogin', 'last_login'));
@@ -57,7 +56,6 @@ class UserMap extends Mapper
             $this->formMap->addPropertyMap(new Form\Text('username'));
             $this->formMap->addPropertyMap(new Form\Text('password'));
             $this->formMap->addPropertyMap(new Form\Text('name'));
-            //$this->formMap->addPropertyMap(new Form\Text('displayName'));
             $this->formMap->addPropertyMap(new Form\Text('email'));
             $this->formMap->addPropertyMap(new Form\Text('image'));
             $this->formMap->addPropertyMap(new Form\Text('notes'));
@@ -74,22 +72,6 @@ class UserMap extends Mapper
     public function findByAuthIdentity($identity)
     {
         return $this->find($identity);
-    }
-
-    /**
-     * @param $hash
-     * @param int $institutionId
-     * @param string|array $role
-     * @return null|Model|User
-     * @throws \Exception
-     */
-    public function findByHash($hash, $institutionId = 0, $role = null)
-    {
-        return $this->findFiltered(array(
-            'institutionId' => $institutionId,
-            'hash' => $hash,
-            'role' => $role
-        ))->current();
     }
 
     /**
@@ -125,6 +107,22 @@ class UserMap extends Mapper
     }
 
     /**
+     * @param $hash
+     * @param int $institutionId
+     * @param string|array $role
+     * @return null|Model|User
+     * @throws \Exception
+     */
+    public function findByHash($hash, $institutionId = 0, $role = null)
+    {
+        return $this->findFiltered(array(
+            'institutionId' => $institutionId,
+            'hash' => $hash,
+            'role' => $role
+        ))->current();
+    }
+
+    /**
      *
      * @param int $institutionId
      * @param string|array $role
@@ -141,8 +139,6 @@ class UserMap extends Mapper
     }
 
     /**
-     * Find filtered records
-     *
      * @param array $filter
      * @param Tool $tool
      * @return ArrayObject|User[]
@@ -150,8 +146,21 @@ class UserMap extends Mapper
      */
     public function findFiltered($filter = array(), $tool = null)
     {
-        $from = sprintf('%s a ', $this->getDb()->quoteParameter($this->getTable()));
-        $where = '';
+        $this->makeQuery($filter, $tool, $where, $from);
+        $res = $this->selectFrom($from, $where, $tool);
+        return $res;
+    }
+
+    /**
+     * @param array $filter
+     * @param Tool $tool
+     * @param string $where
+     * @param string $from
+     * @return $this
+     */
+    public function makeQuery($filter = array(), $tool = null, &$where = '', &$from = '')
+    {
+        $from .= sprintf('%s a ', $this->quoteParameter($this->getTable()));
 
         if (!empty($filter['keywords'])) {
             $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
@@ -201,6 +210,10 @@ class UserMap extends Mapper
             $where .= sprintf('a.active = %s AND ', (int)$filter['active']);
         }
 
+        if (!empty($filter['hasSession'])) {
+            $where .= sprintf('a.session_id != "" AND a.session_id IS NOT NULL AND ');
+        }
+
         if (!empty($filter['subjectId'])) {
             $from .= sprintf(', subject_has_user c');
             $where .= sprintf('a.id = c.user_id AND c.subject_id = %d AND ', (int)$filter['subjectId']);
@@ -228,9 +241,8 @@ class UserMap extends Mapper
             $where = substr($where, 0, -4);
         }
 
-        $res = $this->selectFrom($from, $where, $tool);
-        //vd($this->getDb()->getLastQuery());
-        return $res;
+        return $this;
     }
+
 
 }

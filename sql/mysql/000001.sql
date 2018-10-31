@@ -40,12 +40,12 @@ CREATE TABLE IF NOT EXISTS `user_role_institution` (
 TRUNCATE `user_role`;
 INSERT INTO `user_role` (name, type, description, static, modified, created)
 VALUES
-  ('admin', 'admin', 'System administrator role', 1, NOW(), NOW()),
-  ('client', 'client', 'Institution user account role', 1, NOW(), NOW()),
-  ('staff', 'staff', 'Institutions default staff role', 1, NOW(), NOW()),
-  ('student', 'student', 'Institutions default student role', 1, NOW(), NOW()),
-  ('coordinator', 'staff', 'Coordinator', 1, NOW(), NOW()),
-  ('lecturer', 'staff', 'Lecturer', 1, NOW(), NOW())
+   ('admin', 'admin', 'System administrator role', 1, NOW(), NOW()),
+   ('client', 'client', 'Institution user account role', 1, NOW(), NOW()),
+   ('staff', 'staff', 'Institutions default staff role. Has al permissions of the staff types.', 1, NOW(), NOW()),
+   ('student', 'student', 'Institutions default student role', 1, NOW(), NOW()),
+   ('coordinator', 'staff', 'Coordinator: Manage subject settings/Students/Staff.', 1, NOW(), NOW()),
+   ('lecturer', 'staff', 'Lecturer: Manage Student submissions/communications', 1, NOW(), NOW())
 ;
 
 
@@ -74,18 +74,24 @@ VALUES
    (2, 'perm.client'),
 
    (3, 'perm.staff'),
+   (3, 'perm.coordinator'),
+   (3, 'perm.lecturer'),
    (3, 'perm.manage.staff'),
    (3, 'perm.manage.student'),
    (3, 'perm.manage.subject'),
+   (3, 'perm.masquerade'),
 
    (4, 'perm.student'),
 
    (5, 'perm.staff'),
+   (5, 'perm.coordinator'),
    (5, 'perm.manage.staff'),
    (5, 'perm.manage.student'),
    (5, 'perm.manage.subject'),
+   (5, 'perm.masquerade'),
 
-   (6, 'perm.staff')
+   (6, 'perm.staff'),
+   (6, 'perm.lecturer')
 ;
 
 
