@@ -75,16 +75,17 @@ VALUES
    (3, 'type.staff'),
    (4, 'type.student'),
 
-   (5, 'type.staff'),
    (5, 'type.coordinator'),
    (5, 'type.lecturer'),
+   (5, 'type.staff'),
    (5, 'perm.manage.staff'),
    (5, 'perm.manage.student'),
    (5, 'perm.manage.subject'),
    (5, 'perm.masquerade'),
 
-   (6, 'type.staff'),
-   (6, 'type.lecturer')
+   (6, 'type.lecturer'),
+   (6, 'type.staff')
+
 ;
 
 

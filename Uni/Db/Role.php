@@ -11,13 +11,11 @@ class Role extends \Bs\Db\Role
 {
 
     // TODO: We need to deprecate these constants as they are influencing the app design
-
     const DEFAULT_TYPE_CLIENT       = 2;
     const DEFAULT_TYPE_STAFF        = 3;
     const DEFAULT_TYPE_STUDENT      = 4;
     const DEFAULT_TYPE_LECTURER     = 5;
     const DEFAULT_TYPE_COORDINATOR  = 6;
-
 
     const TYPE_CLIENT       = 'client';
     const TYPE_STAFF        = 'staff';
