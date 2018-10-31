@@ -22,7 +22,7 @@ class User extends \Bs\Db\User implements UserIface
     /**
      * @var \Uni\Db\Institution
      */
-    protected $institution = null;
+    private $institution = null;
 
 
 
