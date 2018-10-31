@@ -140,7 +140,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isClient()
     {
-        //return $this->getRole()->hasPermission(Permission::PERM_CLIENT);
+        //return $this->getRole()->hasPermission(Permission::TYPE_CLIENT);
         return $this->getRole()->hasType(Role::TYPE_CLIENT);
     }
 
@@ -150,7 +150,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isStaff()
     {
-        //return $this->getRole()->hasPermission(Permission::PERM_COORDINATOR);
+        //return $this->getRole()->hasPermission(Permission::TYPE_COORDINATOR);
         return $this->getRole()->hasType(Role::TYPE_COORDINATOR);
     }
 
@@ -160,7 +160,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isStudent()
     {
-        //return $this->getRole()->hasPermission(Permission::PERM_LECTURER);
+        //return $this->getRole()->hasPermission(Permission::TYPE_LECTURER);
         return $this->getRole()->hasType(Role::TYPE_STUDENT);
     }
 
