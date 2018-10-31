@@ -63,28 +63,29 @@ class Config extends \Bs\Config
      * Get the Institution object for the logged in user
      *
      * @return null|Db\Institution|Db\InstitutionIface
-     * @throws \Exception
      */
     public function getInstitution()
     {
         // TODO: this needs to be refactored and made simpler and as getSubject()
         if (!$this->get('institution')) {
             $obj = null;
-            if ($this->getUser()) {
-                $obj = $this->getUser()->getInstitution();          // TODO: This should be all we need???
-                                                                    // TODO: In cases of public pages there should be an institution url that
-                                                                    // TODO: uses the domain or the has path of that institution....
-                                                                    // OH! What about Client with institution_id = 0
-            } else if ($this->getRequest()->has('subjectId')) {
-                \TK\Log::warning('This code should not be reached ever???');
-                /** @var Db\Subject $subject */
-                try {
-                    $subject = $this->getSubjectMapper()->find($this->getRequest()->has('subjectId'));
-                    if ($subject) $obj = $subject->getInstitution();
-                } catch (\Exception $e) {
-                    \Tk\Log::error($e->__toString());
+            try {
+                if ($this->getUser()) {
+                    $obj = $this->getUser()->getInstitution();          // TODO: This should be all we need???
+                    // TODO: In cases of public pages there should be an institution url that
+                    // TODO: uses the domain or the has path of that institution....
+                    // OH! What about Client with institution_id = 0
+                } else if ($this->getRequest()->has('subjectId')) {
+                    \TK\Log::warning('This code should not be reached ever???');
+                    /** @var Db\Subject $subject */
+                    try {
+                        $subject = $this->getSubjectMapper()->find($this->getRequest()->has('subjectId'));
+                        if ($subject) $obj = $subject->getInstitution();
+                    } catch (\Exception $e) {
+                        \Tk\Log::error($e->__toString());
+                    }
                 }
-            }
+            } catch (\Exception $e) { \Tk\Log::error($e->__toString()); }
             $this->set('institution', $obj);
         }
         return $this->get('institution');
@@ -92,7 +93,6 @@ class Config extends \Bs\Config
 
     /**
      * @return int
-     * @throws \Exception
      */
     public function getInstitutionId()
     {
@@ -320,6 +320,8 @@ class Config extends \Bs\Config
     }
 
     /**
+     * Get the user identity used by the auth object
+     *
      * @param Db\User $user
      * @return int|string
      */
@@ -342,7 +344,7 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return Db\Role
+     * @return Db\Role|Db\RoleIface
      */
     public function createRole()
     {
@@ -439,15 +441,6 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @return array
-     */
-//    public function getAvailableUserRoleTypes()
-//    {
-//        vd();
-//        return \Tk\ObjectUtil::getClassConstants('Uni\Db\Role', 'TYPE');
-//    }
-
-    /**
      * Get the current logged in user
      * @return Db\User|Db\UserIface
      */
@@ -469,12 +462,10 @@ class Config extends \Bs\Config
 
     /**
      * @param \Tk\Event\Dispatcher $dispatcher
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
      */
     public function setupDispatcher($dispatcher)
     {
-        \Uni\Dispatch::create($dispatcher);
+        Dispatch::create($dispatcher);
     }
 
     /**
@@ -512,7 +503,7 @@ class Config extends \Bs\Config
 
     /**
      * @param string $templatePath (optional)
-     * @return Page
+     * @return Page|null
      */
     public function createPage($templatePath = '')
     {
@@ -521,6 +512,7 @@ class Config extends \Bs\Config
         } catch (\Exception $e) {
             \Tk\Log::error($e->__toString());
         }
+        return null;
     }
 
     /**
@@ -542,12 +534,14 @@ class Config extends \Bs\Config
      */
     public function getElfinderPath()
     {
-        /** @var \App\Db\Institution $institution */
+        /** @var \Uni\Db\InstitutionIface $institution */
         $institution = null;
+        $dataPath = $this->getDataPath() . '/media';
+        $dataUrl = $this->getDataUrl() . '/media';
         try {
             $institution = $this->getInstitution();
             if ($this->getRequest()->get('institutionId'))
-                $institution = \App\Db\InstitutionMap::create()->find($this->getRequest()->get('institutionId'));
+                $institution = $this->getInstitutionMapper()->find($this->getRequest()->get('institutionId'));
             if ($institution) {
                 $dataPath = $this->getDataPath() . $institution->getDataPath() . '/media';
                 $dataUrl = $this->getDataUrl() . $institution->getDataPath() . '/media';

@@ -7,7 +7,7 @@ namespace Uni\Db;
  * @see http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
  */
-interface InstitutionIface extends \Tk\Db\ModelInterface
+interface InstitutionIface extends \Tk\Db\ModelInterface, \Tk\ValidInterface
 {
 
 
@@ -84,10 +84,4 @@ interface InstitutionIface extends \Tk\Db\ModelInterface
      */
     public function findSubject($subjectId);
 
-    /**
-     * Validate the institution object form user input
-     *
-     * @throws \Exception
-     */
-    public function validate();
 }

@@ -6,7 +6,7 @@ namespace Uni\Db;
  * @link http://www.tropotek.com/
  * @license Copyright 2018 Michael Mifsud
  */
-interface RoleIface extends \Bs\Db\RoleIface, \Tk\Db\ModelInterface
+interface RoleIface extends \Bs\Db\RoleIface
 {
 
     /**
@@ -14,13 +14,6 @@ interface RoleIface extends \Bs\Db\RoleIface, \Tk\Db\ModelInterface
      */
     public function getInstitution();
 
-
-    /**
-     * Validate the institution object form user input
-     *
-     * @throws \Exception
-     */
-    public function validate();
 
 
 }

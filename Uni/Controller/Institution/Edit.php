@@ -153,7 +153,7 @@ class Edit extends \Uni\Controller\AdminIface
         $this->user->save();
         // Hash the password correctly
         if ($this->form->getFieldValue('newPassword')) {
-            $pwd = $this->getConfig()->generatePassword(10);
+            $pwd = $this->getConfig()->createPassword(10);
             $this->user->setNewPassword($pwd);
             $this->user->save();
         }
