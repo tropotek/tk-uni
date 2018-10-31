@@ -101,7 +101,7 @@ class User extends \Bs\Db\User implements UserIface
     {
         $errors = array();
 
-        if (!$this->institutionId) {
+        if (!$this->institutionId && !$this->getRole()->hasPermission(array(Permission::TYPE_ADMIN, Permission::TYPE_CLIENT))) {
             $errors['institutionId'] = 'Invalid field institutionId value';
         }
 

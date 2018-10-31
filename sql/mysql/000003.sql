@@ -39,25 +39,5 @@ UPDATE user_permission SET name = 'type.coordinator' WHERE name = 'perm.coordina
 UPDATE user_permission SET name = 'type.lecturer' WHERE name = 'perm.lecturer';
 
 
--- NOTE: new permission listing
-# TRUNCATE `user_permission`;
-# INSERT INTO `user_permission` (`role_id`, `name`)
-# VALUES
-#    (1, 'type.admin'),
-#    (2, 'type.client'),
-#    (3, 'type.staff'),
-#    (4, 'type.student'),
-#
-#    (5, 'type.staff'),
-#    (5, 'type.coordinator'),
-#    (5, 'type.lecturer'),
-#    (5, 'perm.manage.staff'),
-#    (5, 'perm.manage.student'),
-#    (5, 'perm.manage.subject'),
-#    (5, 'perm.masquerade'),
-#
-#    (6, 'type.staff'),
-#    (6, 'type.lecturer')
-# ;
 
 
