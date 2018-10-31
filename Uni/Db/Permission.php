@@ -12,8 +12,10 @@ class Permission extends \Bs\Db\Permission
     
     const PERM_ADMIN            = 'perm.admin';
     const PERM_CLIENT           = 'perm.client';
-    const PERM_STAFF            = 'perm.staff';
+    const PERM_STAFF            = 'perm.staff';             // Institutions default staff role. Has al permissions of the staff types.
     const PERM_STUDENT          = 'perm.student';
+    const PERM_COORDINATOR      = 'perm.coordinator';       // Coordinator: Manage subject settings/Students/Staff.
+    const PERM_LECTURER         = 'perm.lecturer';          // Lecturer: Manage Student submissions/communications
 
     /**
      * Add/Edit Staff user accounts
@@ -33,7 +35,7 @@ class Permission extends \Bs\Db\Permission
     /**
      * Can masquerade as other users
      */
-    const MASQUERADE        = 'masquerade';
+    const CAN_MASQUERADE        = 'perm.masquerade';
 
 
 
