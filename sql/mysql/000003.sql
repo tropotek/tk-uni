@@ -21,6 +21,6 @@ ALTER TABLE institution
   MODIFY COLUMN active tinyint(1) NOT NULL DEFAULT 1 AFTER address,
   MODIFY COLUMN phone varchar(32) DEFAULT '' AFTER email;
 
-
+alter table user drop column display_name;
 
 

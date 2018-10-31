@@ -121,7 +121,6 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         $this->form->appendField(new Field\Input('email'))->setTabGroup($tabGroup)->setRequired();
         $this->form->appendField(new Field\Input('name'))->setTabGroup($tabGroup);
-        //$this->form->appendField(new Field\Input('displayName'))->setTabGroup($tabGroup);
 
         if ($this->targetRole != \Uni\Db\Role::TYPE_COORDINATOR || $this->targetRole != \Uni\Db\Role::TYPE_STUDENT) {
             $this->form->appendField(new Field\Input('uid'))->setLabel('UID')->setTabGroup($tabGroup)

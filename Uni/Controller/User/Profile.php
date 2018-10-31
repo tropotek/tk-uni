@@ -51,7 +51,7 @@ class Profile extends \Uni\Controller\AdminIface
 
         $tabGroup = 'Details';
         $this->form->appendField(new Field\Html('username'))->setTabGroup($tabGroup);
-        $this->form->appendField(new Field\Input('displayName'))->setTabGroup($tabGroup);
+        $this->form->appendField(new Field\Input('name'))->setTabGroup($tabGroup);
         if ($this->getConfig()->canChangePassword()) {
             $this->form->appendField(new Field\Input('email'))->setTabGroup($tabGroup);
         } else {

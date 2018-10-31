@@ -10,20 +10,21 @@ namespace Uni\Db;
 interface UserIface extends \Bs\Db\UserIface
 {
 
-    /**
-     * This is the institution assigned staff/student number
-     * @return int
-     */
-    public function getUid();
-
-    /**
-     * @return null|\Tk\Uri
-     */
-    public function getImageUrl();
 
     /**
      * @return null|InstitutionIface
      */
     public function getInstitution();
+
+    /**
+     * Returns true if the user is enrolled fully into the subject
+     *
+     * @param int $subjectId
+     * @return bool
+     * @throws \Exception
+     */
+    public function isEnrolled($subjectId);
+
+
 
 }
