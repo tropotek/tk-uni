@@ -41,11 +41,11 @@ TRUNCATE `user_role`;
 INSERT INTO `user_role` (name, type, description, static, modified, created)
 VALUES
    ('admin', 'admin', 'System administrator role', 1, NOW(), NOW()),
-   ('client', 'client', 'Institution user account role', 1, NOW(), NOW()),
-   ('staff', 'staff', 'Institutions default staff role. Has al permissions of the staff types.', 1, NOW(), NOW()),
-   ('student', 'student', 'Institutions default student role', 1, NOW(), NOW()),
-   ('coordinator', 'staff', 'Coordinator: Manage subject settings/Students/Staff.', 1, NOW(), NOW()),
-   ('lecturer', 'staff', 'Lecturer: Manage Student submissions/communications', 1, NOW(), NOW())
+   ('client', 'client', 'Institution user role. Can manage all staff/subjects/students', 1, NOW(), NOW()),
+   ('staff', 'staff', 'Default staff role. Has basic staff permissions.', 1, NOW(), NOW()),
+   ('student', 'student', 'Default student role.', 1, NOW(), NOW()),
+   ('coordinator', 'staff', 'Coordinator: Manage settings/students/staff for linked subjects.', 1, NOW(), NOW()),
+   ('lecturer', 'staff', 'Lecturer: Manage student submissions/communications for linked subjects', 1, NOW(), NOW())
 ;
 
 
@@ -70,28 +70,21 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
 TRUNCATE `user_permission`;
 INSERT INTO `user_permission` (`role_id`, `name`)
 VALUES
-   (1, 'perm.admin'),
-   (2, 'perm.client'),
+   (1, 'type.admin'),
+   (2, 'type.client'),
+   (3, 'type.staff'),
+   (4, 'type.student'),
 
-   (3, 'perm.staff'),
-   (3, 'perm.coordinator'),
-   (3, 'perm.lecturer'),
-   (3, 'perm.manage.staff'),
-   (3, 'perm.manage.student'),
-   (3, 'perm.manage.subject'),
-   (3, 'perm.masquerade'),
-
-   (4, 'perm.student'),
-
-   (5, 'perm.staff'),
-   (5, 'perm.coordinator'),
+   (5, 'type.staff'),
+   (5, 'type.coordinator'),
+   (5, 'type.lecturer'),
    (5, 'perm.manage.staff'),
    (5, 'perm.manage.student'),
    (5, 'perm.manage.subject'),
    (5, 'perm.masquerade'),
 
-   (6, 'perm.staff'),
-   (6, 'perm.lecturer')
+   (6, 'type.staff'),
+   (6, 'type.lecturer')
 ;
 
 

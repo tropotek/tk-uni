@@ -10,12 +10,12 @@ namespace Uni\Db;
 class Permission extends \Bs\Db\Permission
 {
     
-    const PERM_ADMIN            = 'perm.admin';
-    const PERM_CLIENT           = 'perm.client';
-    const PERM_STAFF            = 'perm.staff';             // Institutions default staff role. Has al permissions of the staff types.
-    const PERM_STUDENT          = 'perm.student';
-    const PERM_COORDINATOR      = 'perm.coordinator';       // Coordinator: Manage subject settings/Students/Staff.
-    const PERM_LECTURER         = 'perm.lecturer';          // Lecturer: Manage Student submissions/communications
+    const PERM_ADMIN            = 'type.admin';
+    const PERM_CLIENT           = 'type.client';
+    const PERM_STAFF            = 'type.staff';             // Default staff role. Has basic staff permissions.
+    const PERM_STUDENT          = 'type.student';
+    const PERM_COORDINATOR      = 'type.coordinator';       // Coordinator: Manage settings/students/staff for linked subjects.
+    const PERM_LECTURER         = 'type.lecturer';          // Lecturer: Manage student submissions/communications for linked subjects
 
     /**
      * Add/Edit Staff user accounts
