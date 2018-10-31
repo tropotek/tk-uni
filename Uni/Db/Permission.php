@@ -30,6 +30,11 @@ class Permission extends \Bs\Db\Permission
      */
     const MANAGE_SUBJECT        = 'perm.manage.subject';
 
+    /**
+     * Can masquerade as other users
+     */
+    const MASQUERADE        = 'masquerade';
+
 
 
 

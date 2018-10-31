@@ -507,12 +507,7 @@ class Config extends \Bs\Config
      */
     public function createPage($templatePath = '')
     {
-        try {
-            return new Page($templatePath);
-        } catch (\Exception $e) {
-            \Tk\Log::error($e->__toString());
-        }
-        return null;
+        return new Page($templatePath);
     }
 
     /**
