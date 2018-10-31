@@ -159,6 +159,8 @@ class UserMap extends Mapper
             $w .= sprintf('a.name LIKE %s OR ', $this->getDb()->quote($kw));
             $w .= sprintf('a.username LIKE %s OR ', $this->getDb()->quote($kw));
             $w .= sprintf('a.email LIKE %s OR ', $this->getDb()->quote($kw));
+            $w .= sprintf('a.uid LIKE %s OR ', $this->getDb()->quote($kw));
+            $w .= sprintf('a.phone LIKE %s OR ', $this->getDb()->quote($kw));
             if (is_numeric($filter['keywords'])) {
                 $id = (int)$filter['keywords'];
                 $w .= sprintf('a.id = %d OR ', $id);
@@ -178,6 +180,10 @@ class UserMap extends Mapper
 
         if (!empty($filter['email'])) {
             $where .= sprintf('a.email = %s AND ', $this->getDb()->quote($filter['email']));
+        }
+
+        if (!empty($filter['phone'])) {
+            $where .= sprintf('a.phone = %s AND ', $this->getDb()->quote($filter['phone']));
         }
 
         if (!empty($filter['hash'])) {
