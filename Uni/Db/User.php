@@ -130,6 +130,22 @@ class User extends \Bs\Db\User implements UserIface
         return SubjectMap::create()->hasUser($subjectId, $this->getVolatileId());
     }
 
+
+    /**
+     * Can the user change their password
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function canChangePassword()
+    {
+        $config = \App\Config::getInstance();
+        if ($config->getMasqueradeHandler()->isMasquerading()) {
+            return false;
+        }
+        return $config->getSession()->get('auth.password.access');
+    }
+
     /**
      * Validate this object's current state and return an array
      * with error messages. This will be useful for validating
