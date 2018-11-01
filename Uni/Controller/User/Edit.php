@@ -108,7 +108,7 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         $tabGroup = 'Details';
 
-        $list = \Uni\Db\RoleMap::create()->findFiltered(array('type' => \Uni\Db\Role::TYPE_COORDINATOR, 'institutionId' => $this->getConfig()->getInstitutionId()));
+        $list = $this->getConfig()->getRoleMapper()->findFiltered(array('type' => \Uni\Db\Role::TYPE_COORDINATOR, 'institutionId' => $this->getConfig()->getInstitutionId()));
         if ($this->targetRole == \Uni\Db\Role::TYPE_COORDINATOR && $list->count() > 1) {
             $this->form->appendField(Field\Select::createSelect('roleId', $list)->setTabGroup($tabGroup)->setRequired()->prependOption('-- Select --', ''));
         }
