@@ -511,20 +511,6 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @todo This must be implemented in your \App\Config object (for now)
-     * @return null|PluginApi
-     * @deprecated Find a way to avid using this mess
-     */
-    public function getPluginApi()
-    {
-        if (!$this->get('plugin.api')) {
-            $this->set('plugin.api', new \Uni\PluginApi());
-        }
-        return $this->get('plugin.api');
-    }
-
-
-    /**
      * @return array
      */
     public function getElfinderPath()

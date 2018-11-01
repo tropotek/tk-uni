@@ -60,8 +60,8 @@ $routes->add('client-institution-plugin-manager', new \Tk\Routing\Route('/client
 $routes->add('client-institution-edit', new \Tk\Routing\Route('/client/settings.html', 'Uni\Controller\Institution\Edit::doDefault'));
 $routes->add('client-user-profile', new \Tk\Routing\Route('/client/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
-$routes->add('client-role-manager', new \Tk\Routing\Route('/client/roleManager.html', 'Uni\Controller\Role\Manager::doDefault'));
-$routes->add('client-role-edit', new \Tk\Routing\Route('/client/roleEdit.html', 'Uni\Controller\Role\Edit::doDefault'));
+//$routes->add('client-role-manager', new \Tk\Routing\Route('/client/roleManager.html', 'Uni\Controller\Role\Manager::doDefault'));
+//$routes->add('client-role-edit', new \Tk\Routing\Route('/client/roleEdit.html', 'Uni\Controller\Role\Edit::doDefault'));
 
 $routes->add('client-staff-manager', new \Tk\Routing\Route('/client/staffManager.html', 'Uni\Controller\User\Manager::doDefaultRole',
     array('targetRole' => \Uni\Db\Role::TYPE_COORDINATOR)));
@@ -93,8 +93,8 @@ $routes->add('staff-subject-add-enrollment', new \Tk\Routing\Route('/staff/subje
 $routes->add('staff-subject-edit', new \Tk\Routing\Route('/staff/{subjectCode}/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('staff-subject-enrollment', new \Tk\Routing\Route('/staff/{subjectCode}/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doSubject'));
 
-$routes->add('staff-role-manager', new \Tk\Routing\Route('/staff/roleManager.html', 'Uni\Controller\Role\Manager::doDefault'));
-$routes->add('staff-role-edit', new \Tk\Routing\Route('/staff/roleEdit.html', 'Uni\Controller\Role\Edit::doDefault'));
+//$routes->add('staff-role-manager', new \Tk\Routing\Route('/staff/roleManager.html', 'Uni\Controller\Role\Manager::doDefault'));
+//$routes->add('staff-role-edit', new \Tk\Routing\Route('/staff/roleEdit.html', 'Uni\Controller\Role\Edit::doDefault'));
 
 $routes->add('staff-staff-manager', new \Tk\Routing\Route('/staff/staffManager.html', 'Uni\Controller\User\Manager::doDefaultRole',
     array('targetRole' => \Uni\Db\Role::TYPE_COORDINATOR)));

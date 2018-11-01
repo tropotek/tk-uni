@@ -43,7 +43,10 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function getDataPath()
     {
-        return sprintf('%s/user/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
+        if ($this->institutionId) {
+            return sprintf('%s/user/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
+        }
+        return sprintf('user/%s', $this->getVolatileId());
     }
 
     /**
@@ -115,7 +118,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isStudent()
     {
-        return $this->hasPermission(Permission::TYPE_LECTURER);
+        return $this->hasPermission(Permission::TYPE_STUDENT);
     }
 
     /**
