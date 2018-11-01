@@ -204,8 +204,6 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         // TODO: We seem to loos the user session when a link from an email arrives?????
         // TODO: Currently the user would have to re-login every time they click a link from an email
 
-
-
         if ($auth->getIdentity()) {         // Check if user is logged in
             /** @var \Uni\Db\User $user */
             $user = $config->getUserMapper()->findByAuthIdentity($auth->getIdentity());
@@ -224,12 +222,12 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             if ($event->getRequest()->getUri()->getRelativePath() != '/login.html') {
                 \Tk\Uri::create('/login.html')->redirect();
             } else {
-                \Tk\Alert::addWarning('You do not have access to the requested page.');
+                \Tk\Alert::addWarning('1001: You do not have access to the requested page.');
                 $config->getUserHomeUrl($user)->redirect();
             }
         } else {
             if (!$user->getRole()->hasType($role)) {
-                \Tk\Alert::addWarning('You do not have access to the requested page.');
+                \Tk\Alert::addWarning('1002: You do not have access to the requested page.');
                 $config->getUserHomeUrl($user)->redirect();
             }
         }

@@ -83,7 +83,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isClient()
     {
-        return $this->getRole()->hasPermission(Permission::TYPE_CLIENT);
+        return $this->hasPermission(Permission::TYPE_CLIENT);
     }
 
     /**
@@ -91,7 +91,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isCoordinator()
     {
-        return $this->getRole()->hasPermission(Permission::TYPE_COORDINATOR);
+        return $this->hasPermission(Permission::TYPE_COORDINATOR);
     }
 
     /**
@@ -99,7 +99,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isLecturer()
     {
-        return $this->getRole()->hasPermission(Permission::TYPE_LECTURER);
+        return $this->hasPermission(Permission::TYPE_LECTURER);
     }
 
     /**
@@ -107,7 +107,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isStaff()
     {
-        return $this->getRole()->hasPermission(Permission::TYPE_STAFF);
+        return $this->hasPermission(Permission::TYPE_STAFF);
     }
 
     /**
@@ -115,7 +115,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isStudent()
     {
-        return $this->getRole()->hasPermission(Permission::TYPE_LECTURER);
+        return $this->hasPermission(Permission::TYPE_LECTURER);
     }
 
     /**
