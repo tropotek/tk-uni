@@ -500,24 +500,26 @@ class Config extends \Bs\Config
     }
 
     /**
+     * @param string $customDataPath
      * @return array
      */
-    public function getElfinderPath()
+    public function getElfinderPath($customDataPath = '')
     {
-        /** @var \Uni\Db\InstitutionIface $institution */
-        $institution = null;
-        $dataPath = $this->getDataPath() . '/media';
-        $dataUrl = $this->getDataUrl() . '/media';
-        try {
-            $institution = $this->getInstitution();
-            if ($this->getRequest()->get('institutionId'))
-                $institution = $this->getInstitutionMapper()->find($this->getRequest()->get('institutionId'));
-            if ($institution) {
-                $dataPath = $this->getDataPath() . $institution->getDataPath() . '/media';
-                $dataUrl = $this->getDataUrl() . $institution->getDataPath() . '/media';
+        $dataPath = $this->getDataPath() . $customDataPath;
+        $dataUrl = $this->getDataUrl() . $customDataPath;
+        if (!$customDataPath) {
+            try {
+                $institution = $this->getInstitution();
+                if ($this->getRequest()->get('institutionId'))
+                    $institution = $this->getInstitutionMapper()->find($this->getRequest()->get('institutionId'));
+                if ($institution) {
+                    $dataPath = $this->getDataPath() . $institution->getDataPath() . '/media';
+                    $dataUrl = $this->getDataUrl() . $institution->getDataPath() . '/media';
+                }
+            } catch (\Exception $e) {
+                \Tk\Log::warning($e->getMessage());
             }
-        } catch (\Exception $e) { \Tk\Log::warning($e->getMessage()); }
-
+        }
         if (!is_dir($dataPath)) {
             mkdir($dataPath, 0777, true);
         }
