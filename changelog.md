@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.1.36 [2018-11-07]:
+-------------------------------
+  - Updated user role and institution objects to use the \Uni libs
+  - Merge branch 'master' of https://github.com/tropotek/tk-uni
+  - Rearanged a lot of javascript files to make it more maintainable
+
+
 Ver 2.1.34 [2018-10-10]:
 -------------------------------
   - Merge branch 'master' of https://github.com/tropotek/tk-uni
