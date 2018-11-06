@@ -195,7 +195,6 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      * Get the path for all file associated to this object
      *
      * @return string
-     * @throws \Exception
      */
     public function getDataPath()
     {
@@ -206,7 +205,6 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      * Get the institution data object
      *
      * @return Data
-     * @throws \Exception
      */
     public function getData()
     {
