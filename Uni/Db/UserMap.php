@@ -23,18 +23,19 @@ class UserMap extends Mapper
         if (!$this->dbMap) {
             $this->dbMap = new \Tk\DataMap\DataMap();
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
-            $this->dbMap->addPropertyMap(new Db\Integer('institutionId', 'institution_id'));
             $this->dbMap->addPropertyMap(new Db\Integer('roleId', 'role_id'));
+            $this->dbMap->addPropertyMap(new Db\Integer('institutionId', 'institution_id'));
             $this->dbMap->addPropertyMap(new Db\Text('uid'));
             $this->dbMap->addPropertyMap(new Db\Text('username'));
             $this->dbMap->addPropertyMap(new Db\Text('password'));
             $this->dbMap->addPropertyMap(new Db\Text('name'));
             $this->dbMap->addPropertyMap(new Db\Text('email'));
+            $this->dbMap->addPropertyMap(new Db\Text('phone'));
             $this->dbMap->addPropertyMap(new Db\Text('image'));
-            $this->dbMap->addPropertyMap(new Db\Date('lastLogin', 'last_login'));
             $this->dbMap->addPropertyMap(new Db\Text('notes'));
-            $this->dbMap->addPropertyMap(new Db\Text('sessionId', 'session_id'));
             $this->dbMap->addPropertyMap(new Db\Boolean('active'));
+            $this->dbMap->addPropertyMap(new Db\Date('lastLogin', 'last_login'));
+            $this->dbMap->addPropertyMap(new Db\Text('sessionId', 'session_id'));
             $this->dbMap->addPropertyMap(new Db\Text('hash'));
             $this->dbMap->addPropertyMap(new Db\Date('modified'));
             $this->dbMap->addPropertyMap(new Db\Date('created'));
@@ -57,6 +58,7 @@ class UserMap extends Mapper
             $this->formMap->addPropertyMap(new Form\Text('password'));
             $this->formMap->addPropertyMap(new Form\Text('name'));
             $this->formMap->addPropertyMap(new Form\Text('email'));
+            $this->formMap->addPropertyMap(new Form\Text('phone'));
             $this->formMap->addPropertyMap(new Form\Text('image'));
             $this->formMap->addPropertyMap(new Form\Text('notes'));
             $this->formMap->addPropertyMap(new Form\Boolean('active'));
