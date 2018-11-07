@@ -23,12 +23,12 @@ class Edit extends \Uni\Controller\AdminIface
     /**
      * @var \Uni\Db\Institution
      */
-    private $institution = null;
+    protected $institution = null;
 
     /**
      * @var \Uni\Db\user
      */
-    private $user = null;
+    protected $user = null;
 
 
     /**
@@ -39,48 +39,71 @@ class Edit extends \Uni\Controller\AdminIface
     {
         $this->setPageTitle('Institution Edit');
 
-        $this->institution = $this->getConfig()->createInstitution();
-        $this->user = $this->getConfig()->createUser();
-        $this->user->roleId = \Uni\Db\Role::getDefaultRoleId(\Uni\Db\Role::TYPE_CLIENT);
+        if (!$this->institution) {
+            $this->institution = $this->getConfig()->createInstitution();
+            $this->user = $this->getConfig()->createUser();
+            $this->user->roleId = \Uni\Db\Role::getDefaultRoleId(\Uni\Db\Role::TYPE_CLIENT);
 
-        if ($request->get('institutionId')) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->get('institutionId'));
-            $this->user = $this->institution->getUser();
-        }
-        if ($this->getUser()->isClient()) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getuser()->getId());
-            $this->user = $this->institution->getUser();
+            if ($request->get('institutionId')) {
+                $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->get('institutionId'));
+                $this->user = $this->institution->getUser();
+            }
+            if ($this->getUser()->isClient()) {
+                $this->institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getuser()->getId());
+                $this->user = $this->institution->getUser();
+            }
         }
 
-        $this->form = \Uni\Config::getInstance()->createForm('institutionEdit');
-        $this->form->setRenderer(\Uni\Config::getInstance()->createFormRenderer($this->form));
+        $this->initForm($request);
+
+        $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
+        $this->form->load($this->getConfig()->getInstitutionMapper()->unmapForm($this->institution));
+        $this->form->load($this->institution->getData()->all());
+
+        $this->form->execute();
+
+    }
+
+    /**
+     * @param Request $request
+     * @throws \Exception
+     */
+    public function initForm(\Tk\Request $request)
+    {
+
+        $this->form = $this->getConfig()->createForm('institutionEdit');
+        $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
 
         $tab = 'Details';
         $this->form->appendField(new Field\Input('name'))->setRequired(true)->setTabGroup($tab);
         $this->form->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup($tab);
-        $this->form->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
         $this->form->appendField(new Field\File('logo', $this->institution->getDataPath().'/logo/'))
             ->setAttr('accept', '.png,.jpg,.jpeg,.gif')->setTabGroup($tab)->addCss('tk-imageinput');
+        $this->form->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
 
         $insUrl = \Tk\Uri::create('/inst/'.$this->institution->getHash().'/login.html');
         if ($this->institution->domain)
             $insUrl = \Tk\Uri::create('/login.html')->setHost($this->institution->domain);
         $insUrlStr = $insUrl->setScheme('https')->toString();
-        $this->form->appendField(new Field\Input('domain'))->setTabGroup($tab)->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>' )
+        $this->form->appendField(new Field\Input('domain'))->setTabGroup($tab)
+            ->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>')
             ->setAttr('placeholder', $insUrl->getHost());
         $this->form->appendField(new Field\Textarea('description'))->setTabGroup($tab);
 
 
         $tab = 'Account';
-        $this->form->appendField(new Field\Checkbox('active'))->setTabGroup($tab)->setCheckboxLabel('Institution login accounts enabled/disabled.');
+        $this->form->appendField(new Field\Checkbox('active'))->setTabGroup($tab)
+            ->setCheckboxLabel('Institution login accounts enabled/disabled.');
         $this->form->setAttr('autocomplete', 'off');
         $f = $this->form->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
-            ->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
+            ->setAttr('readonly', 'true')
+            ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
             ->setTabGroup($tab);
         if (!$this->user->getId())
             $f->setRequired(true);
         $f = $this->form->appendField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
-            ->setAttr('readonly', 'true')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
+            ->setAttr('readonly', 'true')
+            ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
             ->setNotes('Change this users password.')->setTabGroup($tab);
         if (!$this->user->getId())
             $f->setRequired(true);
@@ -88,13 +111,7 @@ class Edit extends \Uni\Controller\AdminIface
 
         $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->appendField(new Event\Link('cancel', \Tk\Uri::create('/admin/institutionManager.html')));
-
-        $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
-        $this->form->load($this->getConfig()->getInstitutionMapper()->unmapForm($this->institution));
-        $this->form->load($this->institution->getData()->all());
-
-        $this->form->execute();
+        $this->form->appendField(new Event\Link('cancel', $this->getBackUrl()));
 
     }
 
@@ -161,7 +178,7 @@ class Edit extends \Uni\Controller\AdminIface
         $this->institution->save();
 
         \Tk\Alert::addSuccess('Record saved!');
-        $event->setRedirect($this->getConfig()->getBackUrl());
+        $event->setRedirect($this->getBackUrl());
         if ($form->getTriggeredEvent()->getName() == 'save')
             $event->setRedirect(\Tk\Uri::create()->set('institutionId', $this->institution->id));
     }

@@ -52,6 +52,8 @@ class Settings extends \Uni\Controller\AdminIface
         $this->form->appendField(new Field\Input('site.title'))->setTabGroup($tab)->setLabel('Site Title')->setRequired(true);
         $this->form->appendField(new Field\Input('site.short.title'))->setTabGroup($tab)->setLabel('Site Short Title')->setRequired(true);
         $this->form->appendField(new Field\Input('site.email'))->setTabGroup($tab)->setLabel('Site Email')->setRequired(true);
+        $this->form->appendField(new Field\Textarea('site.email.sig'))->setTabGroup($tab)->setLabel('Email Signature')
+            ->addCss('mce-min')->setNotes('Set the email signature to appear at the foot of all system emails.');
 
         $tab = 'SEO';
         $this->form->appendField(new Field\Input('site.meta.keywords'))->setTabGroup($tab)->setLabel('SEO Keywords');
@@ -137,14 +139,6 @@ class Settings extends \Uni\Controller\AdminIface
         $xhtml = <<<HTML
 <div>
   <div class="tk-panel" data-panel-title="Site Settings" data-panel-icon="fa fa-cogs" var="form"></div>
-  <!--<div class="panel panel-default">-->
-    <!--<div class="panel-heading">-->
-      <!--<i class="fa fa-cog"></i> Site Settings-->
-    <!--</div>-->
-    <!--<div class="panel-body">-->
-      <!--<div var="form"></div>-->
-    <!--</div>-->
-  <!--</div>-->
 </div>
 HTML;
 

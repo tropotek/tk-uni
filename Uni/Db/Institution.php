@@ -170,7 +170,6 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      * Get the user hash or generate one if needed
      *
      * @return string
-     * @throws \Exception
      */
     public function getHash()
     {
@@ -184,7 +183,6 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      * Helper method to generate user hash
      *
      * @return string
-     * @throws \Exception
      */
     public function generateHash()
     {
@@ -250,7 +248,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
 
     /**
      * @param string $subjectCode
-     * @return SubjectIface
+     * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|SubjectIface|null
      * @throws \Exception
      */
     public function findSubjectByCode($subjectCode)
@@ -260,7 +258,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
 
     /**
      * @param int $subjectId
-     * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|SubjectIface
+     * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|SubjectIface|null
      * @throws \Exception
      */
     public function findSubject($subjectId)
