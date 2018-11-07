@@ -51,6 +51,8 @@ JS;
             if ($inst) {
                 $template->setAttr('institution-login', 'href', $inst->getLoginUrl());
             }
+            $template->setAttr('client-login', 'href', \Uni\Uri::createDefaultUrl('/login.html'));
+
         }
     }
 
