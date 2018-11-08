@@ -302,7 +302,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $config->getSession()->remove('auth.password.access');
         $auth->clearIdentity();
 
-        if ($config->getMasqueradeHandler()->isMasquerading()) {
+        if (!$config->getMasqueradeHandler()->isMasquerading()) {
             \Tk\Log::warning('Destroying Session');
             $config->getSession()->destroy();
         };
