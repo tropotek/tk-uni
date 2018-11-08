@@ -40,7 +40,7 @@ $config['template.staff']       = $config['system.theme.admin'] . '/admin.html';
 $config['template.student']     = $config['system.theme.admin'] . '/admin.html';
 $config['template.public']      = $config['system.theme.admin'] . '/public.html';
 
-$config['template.login']       = $config['system.theme.admin']    . '/login.html';
+$config['template.login']       = $config['system.theme.admin'] . '/login.html';
 
 
 /*

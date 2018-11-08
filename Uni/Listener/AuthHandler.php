@@ -301,7 +301,11 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $config->getSession()->remove('lti.subjectId'); // Remove limit the dashboard to one subject for LTI logins
         $config->getSession()->remove('auth.password.access');
         $auth->clearIdentity();
-        //$config->getSession()->destroy();
+
+        if (!$config->getMasqueradeHandler()->isMasquerading()) {
+            \Tk\Log::warning('Destroying Session');
+            $config->getSession()->destroy();
+        };
     }
 
 
