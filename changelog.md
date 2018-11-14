@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.1.48 [2018-11-15]:
+-------------------------------
+
+
 Ver 2.1.46 [2018-11-08]:
 -------------------------------
   - Merge branch 'master' of https://github.com/tropotek/tk-uni
