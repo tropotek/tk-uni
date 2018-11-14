@@ -43,6 +43,13 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                     }
 
 //                    if (!$user) { // Create a user record if none exists
+//
+//                        if (!$config->get('auth.ldap.auto.account')) {
+//                            $msg = sprintf('Please contact your site administrator to enable your user account. Please provide the following details' .
+//                                "\nusername: %s\nUID: %s\nEmail: %s", $adapter->get('username'), $uid, $email);
+//                            $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID, $adapter->get('username'), $msg));
+//                        }
+//
 //                        $role = 'student';
 //                        if (preg_match('/(staff|student)/', strtolower($ldapData[0]['auedupersontype'][0]), $reg)) {
 //                            if ($reg[1] == 'staff') $role = 'staff';
@@ -57,8 +64,8 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //
 //                            if (!$isPreEnrolled) {      // Only create users accounts for enrolled students
 //                                $msg = sprintf('We cannot find any enrolled subjects. Please contact your coordinator.' .
-//                                    "\ninstitutionId: %s\nusername: %s\nUID: %s\nEmail: %s", $config->getInstitutionId(), $adapter->get('username'), $uid, $email);
-//                                $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID, $adapter->get('username'), nl2br($msg)));
+//                                    "\nusername: %s\nUID: %s\nEmail: %s", $adapter->get('username'), $uid, $email);
+//                                $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID, $adapter->get('username'), $msg));
 //                                return;
 //                            }
 //
