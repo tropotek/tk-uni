@@ -130,7 +130,13 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isEnrolled($subjectId)
     {
-        return SubjectMap::create()->hasUser($subjectId, $this->getVolatileId());
+        /** @var \Uni\Db\Subject $subject */
+        $subject = $this->getConfig()->getSubjectMapper()->find($subjectId);
+        if ($subject) {
+            return $subject->isUserEnrolled($this);
+        }
+        //return $this->getConfig()->getSubjectMapper()->hasUser($subjectId, $this->getVolatileId());
+        return false;
     }
 
 
@@ -198,7 +204,12 @@ class User extends \Bs\Db\User implements UserIface
     }
 
 
-
-
+    /**
+     * @return \Uni\Config|\Tk\Config
+     */
+    public function getConfig()
+    {
+        return parent::getConfig();
+    }
 
 }

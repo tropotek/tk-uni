@@ -149,7 +149,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function isUserEnrolled($user)
     {
-        return SubjectMap::create()->hasUser($this->id, $user->id);
+        return $this->getConfig()->getSubjectMapper()->hasUser($this->id, $user->id);
     }
 
     /**
@@ -162,7 +162,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function enrollUser($user)
     {
         if (!$this->isUserEnrolled($user)) {
-            SubjectMap::create()->addUser($this->id, $user->id);
+            $this->getConfig()->getSubjectMapper()->addUser($this->id, $user->id);
         }
         return $this;
     }
@@ -257,5 +257,13 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
         }
         
         return $errors;
+    }
+
+    /**
+     * @return \Uni\Config|\Tk\Config
+     */
+    public function getConfig()
+    {
+        return parent::getConfig();
     }
 }
