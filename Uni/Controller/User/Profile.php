@@ -12,13 +12,8 @@ use Tk\Form\Event;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Profile extends \Uni\Controller\AdminIface
+class Profile extends \Uni\Controller\AdminEditIface
 {
-
-    /**
-     * @var Form
-     */
-    protected $form = null;
 
     /**
      * @var \Uni\Db\User
@@ -49,26 +44,26 @@ class Profile extends \Uni\Controller\AdminIface
         $this->form->setRenderer(\Uni\Config::getInstance()->createFormRenderer($this->form));
         $this->form->setAttr('autocomplete', 'off');
 
-        $tabGroup = 'Details';
-        $this->form->appendField(new Field\Html('username'))->setTabGroup($tabGroup);
-        $this->form->appendField(new Field\Input('name'))->setTabGroup($tabGroup);
+        $tab = 'Details';
+        $this->form->appendField(new Field\Html('username'))->setTabGroup($tab);
+        $this->form->appendField(new Field\Input('name'))->setTabGroup($tab);
         if ($this->getConfig()->canChangePassword()) {
-            $this->form->appendField(new Field\Input('email'))->setTabGroup($tabGroup);
+            $this->form->appendField(new Field\Input('email'))->setTabGroup($tab);
         } else {
-            $this->form->appendField(new Field\Html('email'))->setTabGroup($tabGroup);
+            $this->form->appendField(new Field\Html('email'))->setTabGroup($tab);
         }
 
-        $tabGroup = 'Password';
+        $tab = 'Password';
         if ($this->getConfig()->canChangePassword()) {
             $this->form->setAttr('autocomplete', 'off');
             $f = $this->form->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
-                ->setAttr('readonly', 'true')->setTabGroup($tabGroup)
+                ->setAttr('readonly', 'true')->setTabGroup($tab)
                 ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
             if (!$this->user->getId()) {
                 $f->setRequired(true);
             }
             $f = $this->form->appendField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
-                ->setNotes('Change this users password.')->setTabGroup($tabGroup)->setAttr('readonly', 'true')
+                ->setNotes('Change this users password.')->setTabGroup($tab)->setAttr('readonly', 'true')
                 ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
             if (!$this->user->getId()) {
                 $f->setRequired(true);
@@ -143,9 +138,7 @@ class Profile extends \Uni\Controller\AdminIface
 
         $html = <<<HTML
 <div class="">
-
-  <div class="tk-panel" data-panel-title="User Edit" data-panel-icon="fa fa-user" var="form"></div>
-
+  <div class="tk-panel" data-panel-icon="fa fa-user" var="form"></div>
 </div>
 HTML;
 

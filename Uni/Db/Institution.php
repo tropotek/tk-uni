@@ -148,6 +148,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      */
     public function save()
     {
+        if (!$this->userId && $this->user) $this->userId = $this->getUser()->getId();
         $this->getHash();
         $this->getData()->save();
         parent::save();
@@ -161,8 +162,14 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      */
     public function getUser()
     {
-        if (!$this->user)
-            $this->user = \Uni\Config::getInstance()->getUserMapper()->find($this->userId);
+        if (!$this->user) {
+            if (!$this->getId()) {
+                $this->user = \Uni\Config::getInstance()->createUser();
+                $this->user->roleId = \Uni\Db\Role::getDefaultRoleId(\Uni\Db\Role::TYPE_CLIENT);
+            } else {
+                $this->user = \Uni\Config::getInstance()->getUserMapper()->find($this->userId);
+            }
+        }
         return $this->user;
     }
 

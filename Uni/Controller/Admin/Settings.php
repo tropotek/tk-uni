@@ -119,7 +119,10 @@ class Settings extends \Uni\Controller\AdminIface
     public function show()
     {
         $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins', \Uni\Uri::createHomeUrl('/plugins.html'), 'fa fa-plug'));
-        //$this->getActionPanel()->add(\Tk\Ui\Button::create('Users', \Uni\Uri::createHomeUrl('/userManager.html'), 'fa fa-users'));
+
+        $this->getActionPanel()->add(\Tk\Ui\Button::create('Admin Users', \Uni\Uri::createHomeUrl('/adminManager.html'), 'fa fa-users'));
+
+        $this->getActionPanel()->add(\Tk\Ui\Button::create('Institutions', \Uni\Uri::createHomeUrl('/institutionManager.html'), 'fa fa-institution'));
 
         $template = parent::show();
 

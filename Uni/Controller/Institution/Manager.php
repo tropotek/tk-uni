@@ -1,9 +1,6 @@
 <?php
 namespace Uni\Controller\Institution;
 
-use Dom\Template;
-use Tk\Form\Field;
-use Tk\Request;
 
 /**
  *
@@ -12,13 +9,8 @@ use Tk\Request;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Manager extends \Uni\Controller\AdminIface
+class Manager extends \Uni\Controller\AdminManagerIface
 {
-
-    /**
-     * @var \Tk\Table
-     */
-    protected $table = null;
 
 
     /**
@@ -32,15 +24,15 @@ class Manager extends \Uni\Controller\AdminIface
 
     /**
      *
-     * @param Request $request
+     * @param \Tk\Request $request
      * @throws \Exception
      */
-    public function doDefault(Request $request)
+    public function doDefault(\Tk\Request $request)
     {
         $this->setPageTitle('Institution Manager');
 
         $this->table = \Uni\Table\Institution::create()->init();
-        $this->table->setList($this->table->findList());
+        $this->getTable()->setList($this->table->findList());
 
     }
 
@@ -54,7 +46,7 @@ class Manager extends \Uni\Controller\AdminIface
 
         $template = parent::show();
 
-        $template->appendTemplate('table', $this->table->getRenderer()->show());
+        $template->appendTemplate('table', $this->getTable()->show());
 
         return $template;
     }
@@ -62,14 +54,14 @@ class Manager extends \Uni\Controller\AdminIface
     /**
      * DomTemplate magic method
      *
-     * @return Template
+     * @return \Dom\Template
      */
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
 <div class="">
 
-  <div class="tk-panel" data-panel-title="Institution" data-panel-icon="fa fa-university" var="table"></div>
+  <div class="tk-panel" data-panel-icon="fa fa-university" var="table"></div>
 
 </div>
 HTML;
