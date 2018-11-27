@@ -39,7 +39,7 @@ class Institution extends \Uni\TableIface
         $this->appendCell($actionsCell);
         $this->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Tk\Uri::create('admin/institutionEdit.html'));
         $this->appendCell(new \Tk\Table\Cell\Email('email'));
-        $this->appendCell(new \Tk\Table\Cell\Text('description'))->setCharacterLimit(64);
+        //$this->appendCell(new \Tk\Table\Cell\Text('description'))->setCharacterLimit(64);
         $this->appendCell(new \Tk\Table\Cell\Boolean('active'));
         $this->appendCell(new \Tk\Table\Cell\Date('created'));
 
