@@ -53,7 +53,7 @@ class Settings extends \Uni\Controller\AdminIface
         $this->form->appendField(new Field\Input('site.short.title'))->setTabGroup($tab)->setLabel('Site Short Title')->setRequired(true);
         $this->form->appendField(new Field\Input('site.email'))->setTabGroup($tab)->setLabel('Site Email')->setRequired(true);
         $this->form->appendField(new Field\Textarea('site.email.sig'))->setTabGroup($tab)->setLabel('Email Signature')
-            ->addCss('mce-min')->setNotes('Set the email signature to appear at the foot of all system emails.');
+            ->setNotes('Set the email signature to appear at the foot of all system emails.')->addCss('mce-min');
 
         $tab = 'SEO';
         $this->form->appendField(new Field\Input('site.meta.keywords'))->setTabGroup($tab)->setLabel('SEO Keywords');
