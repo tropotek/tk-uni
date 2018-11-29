@@ -266,8 +266,8 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @param $form
-     * @return \Tk\Form\Renderer\Dom
+     * @param \Tk\Form $form
+     * @return \Tk\Form\Renderer\Dom|\Tk\Form\Renderer\Iface
      */
     public function createFormRenderer($form)
     {
