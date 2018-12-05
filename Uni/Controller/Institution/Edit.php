@@ -56,22 +56,21 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function show()
     {
         if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->getInstitution()->getUser())) {
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Masquerade',
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
                 \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->getInstitution()->getUser()->getHash()),
                 'fa fa-user-secret'))->addCss('tk-masquerade')->setAttr('data-confirm', 'You are about to masquerade as the selected user?');
         }
 
         if ($this->getUser()->isClient() || $this->getUser()->isStaff()) {
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins',
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
                 \Uni\Uri::createHomeUrl('/institution/'.$this->getInstitution()->getId().'/plugins.html'), 'fa fa-plug'));
 
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Staff',
-                \Uni\Uri::createHomeUrl('/staffManager.html'), 'fa fa-users'));
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Staff',
+                \Uni\Uri::createHomeUrl('/staffUserManager.html'), 'fa fa-users'));
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Student',
+                \Uni\Uri::createHomeUrl('/studentUserManager.html'), 'fa fa-users'));
 
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
-                \Uni\Uri::createHomeUrl('/studentManager.html'), 'fa fa-users'));
-
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Subjects',
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Subjects',
                 \Uni\Uri::createHomeUrl('/subjectManager.html'), 'fa fa-graduation-cap'));
 
         }

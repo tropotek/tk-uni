@@ -124,19 +124,19 @@ class Edit extends \Uni\Controller\AdminIface
     public function show()
     {
         if ($this->subject->getId() && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
-            $this->getActionPanel()->add(\Tk\Ui\Button::create('Plugins',
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
                 \Uni\Uri::createHomeUrl('/subject/'.$this->subject->getId().'/plugins.html')->set('subjectId', $this->subject->getId()), 'fa fa-plug'));
 
             if(!$this->getConfig()->isSubjectUrl()) {
-                $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
+                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
                     \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->getId()), 'fa fa-list'));
-                $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
-                    \Uni\Uri::createHomeUrl('/studentManager.html')->set('subjectId', $this->subject->getId()), 'fa fa-group'));
+                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Students',
+                    \Uni\Uri::createHomeUrl('/studentUserManager.html')->set('subjectId', $this->subject->getId()), 'fa fa-group'));
             } else {
-                $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrollments',
+                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
                     \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
-                $this->getActionPanel()->add(\Tk\Ui\Button::create('Students',
-                    \Uni\Uri::createSubjectUrl('/studentManager.html'), 'fa fa-group'));
+                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Students',
+                    \Uni\Uri::createSubjectUrl('/studentUserManager.html'), 'fa fa-group'));
             }
         }
         $template = parent::show();

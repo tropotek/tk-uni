@@ -61,9 +61,9 @@ class Manager extends \Uni\Controller\AdminManagerIface
         }
 
         if (!$this->editUrl) {
-            $this->editUrl = \Uni\Uri::createHomeUrl('/'.$this->targetRole.'Edit.html');
+            $this->editUrl = \Uni\Uri::createHomeUrl('/'.$this->targetRole.'UserEdit.html');
             if ($this->getConfig()->isSubjectUrl()) {
-                $this->editUrl = \Uni\Uri::createSubjectUrl('/'.$this->targetRole.'Edit.html');
+                $this->editUrl = \Uni\Uri::createSubjectUrl('/'.$this->targetRole.'UserEdit.html');
             }
         }
 
@@ -93,7 +93,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
     protected function initActionPanel($actionPanel)
     {
         if (!$this->getConfig()->getSession()->get('auth.password.access')) {
-            $actionPanel->add(\Tk\Ui\Button::create('New ' . ucfirst($this->targetRole), clone $this->editUrl, 'fa fa-user-plus'));
+            $actionPanel->append(\Tk\Ui\Link::createBtn('New ' . ucfirst($this->targetRole), clone $this->editUrl, 'fa fa-user-plus'));
         }
     }
 
