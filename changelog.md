@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.62 [2018-12-05]:
+-------------------------------
+  - Fixed mce media path for projects
+
+
 Ver 2.1.60 [2018-12-05]:
 -------------------------------
   - fixed user manager URL
