@@ -87,5 +87,7 @@ $config['system.auth.dbtable.passwordColumn'] = 'password';
 $config['system.auth.dbtable.saltColumn']     = 'hash';
 $config['system.auth.dbtable.activeColumn']   = 'active';
 
+$config['system.auth.email.require']   = true;
+$config['system.auth.email.unique']    = true;
 
 

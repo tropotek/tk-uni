@@ -190,16 +190,21 @@ class User extends \Bs\Db\User implements UserIface
                 $errors['username'] = 'This username is already in use';
             }
         }
-        if ($this->email) {
-            if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+
+        if ($this->getConfig()->get('system.auth.email.require')) {
+            if (!filter_var($this->email, FILTER_VALIDATE_EMAIL))
                 $errors['email'] = 'Please enter a valid email address';
-            } else {
-                $dup = UserMap::create()->findByEmail($this->email, $this->institutionId);
-                if ($dup && $dup->getId() != $this->getId()) {
-                    $errors['email'] = 'This email is already in use';
-                }
+        } else {
+            if ($this->email && !filter_var($this->email, FILTER_VALIDATE_EMAIL))
+                $errors['email'] = 'Please enter a valid email address';
+        }
+        if ($this->getConfig()->get('system.auth.email.unique') && $this->email) {
+            $dup = UserMap::create()->findByEmail($this->email, $this->institutionId);
+            if ($dup && $dup->getId() != $this->getId()) {
+                $errors['email'] = 'This email is already in use';
             }
         }
+
         return $errors;
     }
 

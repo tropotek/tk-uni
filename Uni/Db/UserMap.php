@@ -101,6 +101,9 @@ class UserMap extends Mapper
      */
     public function findByEmail($email, $institutionId = null, $role = null)
     {
+        if (!$this->getConfig()->get('system.auth.email.unique') || !$this->getConfig()->get('system.auth.email.require')) {
+            throw new \Tk\Exception('User email is not a unique key. Change config[system.auth.email.unique] = false;');
+        }
         return $this->findFiltered(array(
             'institutionId' => $institutionId,
             'email' => $email,
