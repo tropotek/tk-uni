@@ -66,7 +66,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
     /**
      * Check if this user can masquerade as the supplied msqUser
      *
-     * @param User|\Uni\Db\UserIface $user
+     * @param User|\Uni\Db\UserIface $user The current User
      * @param User|\Uni\Db\UserIface $msqUser
      * @return bool
      * @throws \Exception
@@ -76,7 +76,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
         $b = parent::canMasqueradeAs($user, $msqUser);
         // If not admins they must be of the same institution
         if ($user->institutionId != 0 && $user->institutionId != $msqUser->institutionId) {
-            return false;
+            $b = false;
         }
         return $b;
     }
