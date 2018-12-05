@@ -14,8 +14,8 @@ class Role extends \Bs\Db\Role
     const DEFAULT_TYPE_CLIENT       = 2;
     const DEFAULT_TYPE_STAFF        = 3;
     const DEFAULT_TYPE_STUDENT      = 4;
-    const DEFAULT_TYPE_LECTURER     = 5;
-    const DEFAULT_TYPE_COORDINATOR  = 6;
+    const DEFAULT_TYPE_COORDINATOR  = 5;
+    const DEFAULT_TYPE_LECTURER     = 6;
 
     const TYPE_CLIENT       = 'client';
     const TYPE_STAFF        = 'staff';
