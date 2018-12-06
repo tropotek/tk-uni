@@ -169,8 +169,6 @@ class SubjectMap extends Mapper
     }
 
 
-
-
     // Enrolment direct queries - subject_has_user holds the currently enrolled users
 
     /**
@@ -299,7 +297,8 @@ class SubjectMap extends Mapper
         $toolStr = '';
         if ($tool) {
             $tool->setLimit(0);
-            $toolStr = ' '.$tool->toSql('', $this->getDb());
+            //$toolStr = ' '.$tool->toSql('', $this->getDb());
+            $toolStr = ' '.$this->getToolSql($tool);
         }
 
         $stm = $this->getDb()->prepare('SELECT a.subject_id, a.uid, a.email, a.username, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL, 0, 1) as enrolled
