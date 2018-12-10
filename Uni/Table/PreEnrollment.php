@@ -27,7 +27,7 @@ class PreEnrollment extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Text('email'))->addCss('key');
         $this->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
         $this->appendCell(new \Tk\Table\Cell\Text('username'));
-        $this->appendCell(new \Tk\Table\Cell\Boolean('enrolled'))->setLabel('E')->setOnCellHtml(function ($cell, $obj, $html) {
+        $this->appendCell(new \Tk\Table\Cell\Boolean('enrolled'))->setOrderProperty('IF(c.subject_id IS NULL,0,1)')->setLabel('E')->setOnCellHtml(function ($cell, $obj, $html) {
             /** @var $cell \Tk\Table\Cell\Boolean */
             /** @var $obj \StdClass */
             $config = \Uni\Config::getInstance();
@@ -77,7 +77,7 @@ class PreEnrollment extends \Uni\TableIface
      */
     public function findList($filter = array(), $tool = null)
     {
-        if (!$tool) $tool = $this->getTool('enrolled DESC');
+        if (!$tool) $tool = $this->getTool('IF(c.subject_id IS NULL,0,1) DESC');
         $filter = array_merge($this->getFilterValues(), $filter);
         $list = $this->getConfig()->getSubjectMapper()->findPreEnrollments($filter, $tool);
         return $list;

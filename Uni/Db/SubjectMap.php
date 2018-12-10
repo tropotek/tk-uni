@@ -301,7 +301,7 @@ class SubjectMap extends Mapper
             $toolStr = ' '.$this->getToolSql($tool);
         }
 
-        $stm = $this->getDb()->prepare('SELECT a.subject_id, a.uid, a.email, a.username, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL, 0, 1) as enrolled
+        $stm = $this->getDb()->prepare('SELECT a.subject_id, a.uid, a.email, a.username, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL,0,1) as enrolled
 FROM  subject_pre_enrollment a 
   LEFT JOIN  user b ON (b.email = a.email)  
   LEFT JOIN subject_has_user c ON (b.id = c.user_id AND c.subject_id = ?)

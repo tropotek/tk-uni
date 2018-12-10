@@ -166,15 +166,15 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
      */
     public function show()
     {
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrol','#', 'fa fa-user-plus'))
+        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrol','#', 'fa fa-user-plus'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->enrolStudentDialog->getId())
             ->setAttr('title', 'Add an existing student to this subject');
 
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('Pre-Enrol','#', 'fa fa-user-plus'))
+        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Pre-Enrol','#', 'fa fa-user-plus'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->preEnrolDialog->getId())
             ->setAttr('title', 'Pre-Enrol a non-existing student, they will automatically be enrolled on login');
 
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('Enrol Into...', '#', 'fa fa-copy'))
+        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrol Into...', '#', 'fa fa-copy'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->enrolClassDialog->getId())
             ->setAttr('title', 'Copy this enrollment list into another subject.');
 
