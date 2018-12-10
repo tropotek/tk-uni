@@ -75,7 +75,7 @@ class Edit extends \Uni\Controller\AdminEditIface
 
 
 
-        $this->setForm(\Uni\Form\User::create()->setModel($this->user));
+        $this->setForm(\Uni\Form\User::create()->setTargetRole($this->targetRole)->setModel($this->user));
         $this->getForm()->execute();
 
     }

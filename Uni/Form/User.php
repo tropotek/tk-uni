@@ -40,20 +40,20 @@ class User extends \Bs\Form\User
             $this->remove('confPassword');
         } else {
             if ($this->getUser()->getId() && $this->getUser()->getId() > 1) {
-                $this->form->appendField(new Field\Html('username'))->setTabGroup($tab);
+                $this->appendField(new Field\Html('username'))->setTabGroup($tab);
             }
         }
 
-        if ($this->getConfig()->getUser()->hasPermission(array(\Uni\Db\Permission::TYPE_COORDINATOR, \Uni\Db\Permission::TYPE_CLIENT))) {
+        if ($this->getTargetRole() == \Uni\Db\Role::TYPE_STAFF) {
             $list = $this->getConfig()->getRoleMapper()->findFiltered(array(
                 'type' => \Uni\Db\Role::TYPE_COORDINATOR,
                 'institutionId' => $this->getConfig()->getInstitutionId()
             ));
             if ($list->count() > 1) {
-                $this->form->appendField(Field\Select::createSelect('roleId', $list)->setTabGroup($tab)
+                $this->appendField(Field\Select::createSelect('roleId', $list)->setTabGroup($tab)
                     ->setRequired()->prependOption('-- Select --', ''));
             }
-        } else if ($this->getConfig()->getUser()->hasPermission(\Uni\Db\Permission::TYPE_STUDENT)) {
+        } else {
             $this->remove('roleId');
         }
 
@@ -73,11 +73,11 @@ class User extends \Bs\Form\User
                 $tab = 'Subjects';
                 $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
                 if ($list->count()) {
-                    $this->form->appendField(new Field\Select('selSubject[]', $list), 'active')->setLabel('Subject Selection')
+                    $this->appendField(new Field\Select('selSubject[]', $list), 'active')->setLabel('Subject Selection')
                         ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
                         ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
                     $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->getUser()->getId())->toArray('id');
-                    $this->form->setFieldValue('selSubject', $arr);
+                    $this->setFieldValue('selSubject', $arr);
                 }
             }
         }
