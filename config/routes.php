@@ -39,10 +39,8 @@ $routes->add('admin-settings', new \Tk\Routing\Route('/admin/settings.html', 'Un
 $routes->add('admin-institution-manager', new \Tk\Routing\Route('/admin/institutionManager.html', 'Uni\Controller\Institution\Manager::doDefault'));
 $routes->add('admin-institution-edit', new \Tk\Routing\Route('/admin/institutionEdit.html', 'Uni\Controller\Institution\Edit::doDefault'));
 
-$routes->add('admin-adminUser-manager', new \Tk\Routing\Route('/admin/{targetRole}Manager.html', 'Uni\Controller\User\Manager::doDefaultRole'));
-$routes->add('admin-adminUser-edit', new \Tk\Routing\Route('/admin/{targetRole}Edit.html', 'Uni\Controller\User\Edit::doDefaultRole'));
-$routes->remove('admin-user-manager');
-$routes->remove('admin-user-edit');
+$routes->add('admin-user-manager', new \Tk\Routing\Route('/admin/{targetRole}UserManager.html', 'Uni\Controller\User\Manager::doDefaultRole'));
+$routes->add('admin-user-edit', new \Tk\Routing\Route('/admin/{targetRole}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultRole'));
 
 $routes->add('admin-user-profile', new \Tk\Routing\Route('/admin/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 

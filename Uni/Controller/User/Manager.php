@@ -75,9 +75,9 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
 
         $filter = array();
-        if ($this->getUser()->getInstitution())
-            $filter['institutionId'] = $this->getUser()->getInstitution()->getId();
-
+        if ($this->getUser()->institutionId) {
+            $filter['institutionId'] = $this->getUser()->institutionId;
+        }
         if (empty($filter['type'])) {
             $filter['type'] = $this->targetRole;
         }
