@@ -18,7 +18,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
      */
     public function __construct()
     {
-        $this->getConfig()->getCrumbs()->reset();
+        //$this->getConfig()->getCrumbs()->reset();
     }
 
 
@@ -41,7 +41,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
      */
     public function show()
     {
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('New Institution',
+        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New Institution',
             \Uni\Uri::createHomeUrl('/institutionEdit.html'), 'fa fa-university'));
 
         $template = parent::show();
