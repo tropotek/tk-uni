@@ -20,7 +20,7 @@ class Edit extends \Uni\Controller\AdminIface
     /**
      * @var \Uni\Db\Subject
      */
-    private $subject = null;
+    protected $subject = null;
 
 
 
