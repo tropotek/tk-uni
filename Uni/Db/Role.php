@@ -49,8 +49,10 @@ class Role extends \Bs\Db\Role
             case self::TYPE_STAFF:
                 return self::DEFAULT_TYPE_STAFF;
             case self::TYPE_COORDINATOR:
+            case 'coordinator':
                 return self::DEFAULT_TYPE_COORDINATOR;
             case self::TYPE_LECTURER:
+            case 'lecturer':
                 return self::DEFAULT_TYPE_LECTURER;
             case self::TYPE_STUDENT:
                 return self::DEFAULT_TYPE_STUDENT;
