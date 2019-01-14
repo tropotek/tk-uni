@@ -47,7 +47,7 @@ JS;
 
             // get the unimelb login url
             /** @var \Uni\Db\Institution $inst */
-            $inst = $this->getConfig()->getInstitutionMapper()->find(1);
+            $inst = $this->getConfig()->getInstitutionMapper()->findFiltered(array('active' => true))->current();
             if ($inst) {
                 $template->setAttr('institution-login', 'href', $inst->getLoginUrl());
             }
