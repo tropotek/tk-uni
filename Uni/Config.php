@@ -76,7 +76,7 @@ class Config extends \Bs\Config
                     // TODO: uses the domain or the has path of that institution....
                     // OH! What about Client with institution_id = 0
                 } else if ($this->getRequest()->has('subjectId')) {
-                    \TK\Log::warning('This code should not be reached ever???');
+                    //\TK\Log::warning('This code should not be reached ever???');
                     /** @var Db\Subject $subject */
                     try {
                         $subject = $this->getSubjectMapper()->find($this->getRequest()->has('subjectId'));
