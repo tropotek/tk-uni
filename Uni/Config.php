@@ -84,6 +84,8 @@ class Config extends \Bs\Config
                     } catch (\Exception $e) {
                         \Tk\Log::error($e->__toString());
                     }
+                } else {
+                    $obj = $this->getInstitutionMapper()->findByDomain(\Tk\Uri::create()->getHost());
                 }
             } catch (\Exception $e) { \Tk\Log::error($e->__toString()); }
             $this->set('institution', $obj);
