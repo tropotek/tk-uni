@@ -103,7 +103,7 @@ class PreEnrollment extends Iface
             if (isset($arr['email']))
                 $email = trim(strip_tags($arr['email']));
 
-            if (!$uid && !$username) continue;
+            if ((!$uid && !$username) || $uid == 'uid' || $username == 'username' || $email == 'email') continue;
 
             // Add users if found
             if (!$config->getSubjectMapper()->hasPreEnrollment($this->subject->getId(), $email)) {
