@@ -309,6 +309,7 @@ WHERE a.subject_id = ? ' . $toolStr);
         $stm->execute(array($filter['subjectId'], $filter['subjectId']));
 
         $arr = $stm->fetchAll();
+        $tool->setFoundRows(count($arr));
         return $arr;
     }
 

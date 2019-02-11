@@ -92,7 +92,7 @@ class PreEnrollment extends Iface
         $success = array();
         $info = array();
         foreach ($list as $i => $arr) {
-
+vd($arr);
             $uid = '';          // TODO: Make this the primary search param
             $username = '';     // TODO: Make this the secondary search param
             $email = '';        // TODO: We need to keep this for LTI integrations
@@ -103,6 +103,9 @@ class PreEnrollment extends Iface
                 $uid = trim(strip_tags($arr['uid']));
             if (isset($arr['email']))
                 $email = trim(strip_tags($arr['email']));
+
+            if (!$uid && !$username) continue;
+
 
             // Add users if found
             if (!$config->getSubjectMapper()->hasPreEnrollment($this->subject->getId(), $email)) {

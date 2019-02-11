@@ -24,9 +24,9 @@ class PreEnrollment extends \Uni\TableIface
         $this->addCss('tk-pending-users');
 
         $this->appendCell(new \Tk\Table\Cell\Checkbox('email'));
-        $this->appendCell(new \Tk\Table\Cell\Text('email'))->addCss('key');
-        $this->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID');
+        $this->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID')->addCss('key');
         $this->appendCell(new \Tk\Table\Cell\Text('username'));
+        $this->appendCell(new \Tk\Table\Cell\Text('email'));
         $this->appendCell(new \Tk\Table\Cell\Boolean('enrolled'))->setOrderProperty('IF(c.subject_id IS NULL,0,1)')->setLabel('E')->setOnCellHtml(function ($cell, $obj, $html) {
             /** @var $cell \Tk\Table\Cell\Boolean */
             /** @var $obj \StdClass */
