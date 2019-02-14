@@ -24,7 +24,27 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function doDefault(\Tk\Request $request)
     {
         $this->setPageTitle('Institution Edit');
+        $this->getCurrentInstitution($request);
 
+
+        $this->setForm(\Uni\Form\Institution::create()->setModel($this->institution));
+        $this->initForm($request);
+        $this->getForm()->execute();
+
+    }
+
+    public function initForm(\Tk\Request $request)
+    {
+
+    }
+
+    /**
+     * @param \Tk\Request $request
+     * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\Institution|\Uni\Db\InstitutionIface|null
+     * @throws \Exception
+     */
+    protected function getCurrentInstitution(\Tk\Request $request)
+    {
         if (!$this->institution) {
             $this->institution = $this->getConfig()->createInstitution();
             if ($request->get('institutionId')) {
@@ -35,10 +55,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             }
             $this->institution->getUser();
         }
-
-        $this->setForm(\Uni\Form\Institution::create()->setModel($this->institution));
-        $this->getForm()->execute();
-
+        return $this->institution;
     }
 
     /**
