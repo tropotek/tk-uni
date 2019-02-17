@@ -60,7 +60,7 @@ class Edit extends \Uni\Controller\AdminEditIface
 
 
         $this->user = $this->getConfig()->createUser();
-        if ($this->targetRole == \Uni\Db\Role::TYPE_STUDENT || $this->targetRole == \Uni\Db\Role::TYPE_COORDINATOR) {
+        if ($this->targetRole != \Uni\Db\Role::TYPE_ADMIN && $this->targetRole != \Uni\Db\Role::TYPE_CLIENT) {
             $this->user->institutionId = $this->getConfig()->getInstitutionId();
         }
         $this->user->roleId = \Uni\Db\Role::getDefaultRoleId($this->targetRole);
@@ -72,8 +72,6 @@ class Edit extends \Uni\Controller\AdminEditIface
             if ($this->getUser()->isStaff() && $this->getUser()->institutionId != $this->user->institutionId)
                 throw new \Tk\Exception('Invalid system details');
         }
-
-
 
         $this->setForm(\Uni\Form\User::create()->setTargetRole($this->targetRole)->setModel($this->user));
         $this->getForm()->execute();
