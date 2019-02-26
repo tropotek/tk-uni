@@ -47,6 +47,7 @@ class Login extends \Bs\Controller\Login
             \Tk\Alert::addWarning('Invalid or inactive Institution.');
             \Uni\Uri::create('/index.html')->redirect();
         }
+
         $this->doDefault($request);
     }
 
@@ -56,12 +57,15 @@ class Login extends \Bs\Controller\Login
      */
     public function doDefault(\Tk\Request $request)
     {
-        $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getUri()->getHost());
-        if (!$this->institution && $request->hasAttribute('institutionId')) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->getAttribute('institutionId'));
+        if (!$this->institution) {
+            $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getUri()->getHost());
+            if (!$this->institution && $request->hasAttribute('institutionId')) {
+                $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->getAttribute('institutionId'));
+            }
         }
 
         $this->init();
+
         if ($this->institution && $this->isInstLogin) {
             $this->form->appendField(new Field\Hidden('instHash', $this->institution->getHash()));
         }
