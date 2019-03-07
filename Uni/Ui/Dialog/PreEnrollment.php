@@ -106,9 +106,12 @@ class PreEnrollment extends Iface
             if ((!$uid && !$username) || $uid == 'uid' || $username == 'username' || $email == 'email') continue;
 
             // Add users if found
-            if (!$config->getSubjectMapper()->hasPreEnrollment($this->subject->getId(), $email)) {
+            if (!$config->getSubjectMapper()->hasPreEnrollment($this->subject->getId(), $email, $uid, $username)) {
                 $config->getSubjectMapper()->addPreEnrollment($this->subject->getId(), $email, $uid, $username);
+
                 $user = $config->getUserMapper()->findByEmail($email, $this->subject->institutionId);
+                if (!$user) $user = $config->getUserMapper()->findByUsername($username, $this->subject->institutionId);
+                if (!$user) $user = $config->getUserMapper()->findFiltered(array('institutionId' => $this->subject->institutionId, 'uid' => $uid))->current();
                 if ($user) {
                     $config->getSubjectMapper()->addUser($this->subject->getId(), $user->getId());
                 }

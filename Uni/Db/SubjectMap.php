@@ -331,14 +331,29 @@ WHERE a.subject_id = ? ' . $toolStr);
     /**
      * @param $subjectId
      * @param $email
+     * @param string $uid
+     * @param string $username
      * @return bool
      * @throws \Exception
      */
-    public function hasPreEnrollment($subjectId, $email)
+    public function hasPreEnrollment($subjectId, $email = '', $uid = '', $username = '')
     {
-        $stm = $this->getDb()->prepare('SELECT * FROM subject_pre_enrollment WHERE subject_id = ? AND email = ?');
-        $stm->execute(array($subjectId, $email));
-        return ($stm->rowCount() > 0);
+        if ($email) {
+            $stm = $this->getDb()->prepare('SELECT * FROM subject_pre_enrollment WHERE subject_id = ? AND email = ?');
+            $stm->execute(array($subjectId, $email));
+            if ($stm->rowCount()) return true;
+        }
+        if ($uid) {
+            $stm = $this->getDb()->prepare('SELECT * FROM subject_pre_enrollment WHERE subject_id = ? AND uid = ?');
+            $stm->execute(array($subjectId, $uid));
+            if ($stm->rowCount()) return true;
+        }
+        if ($username) {
+            $stm = $this->getDb()->prepare('SELECT * FROM subject_pre_enrollment WHERE subject_id = ? AND username = ?');
+            $stm->execute(array($subjectId, $username));
+            if ($stm->rowCount()) return true;
+        }
+        return false;
     }
 
     /**
@@ -348,9 +363,9 @@ WHERE a.subject_id = ? ' . $toolStr);
      * @param string $username
      * @throws \Exception
      */
-    public function addPreEnrollment($subjectId, $email, $uid = '', $username = '')
+    public function addPreEnrollment($subjectId, $email = '', $uid = '', $username = '')
     {
-        if (!$this->hasPreEnrollment($subjectId, $email)) {
+        if (($email || $uid || $username) && !$this->hasPreEnrollment($subjectId, $email, $uid, $username)) {
             $stm = $this->getDb()->prepare('INSERT INTO subject_pre_enrollment (subject_id, uid, email, username)  VALUES (?, ?, ?, ?)');
             $stm->execute(array($subjectId, $uid, $email, $username));
         }
@@ -361,26 +376,36 @@ WHERE a.subject_id = ? ' . $toolStr);
     /**
      * @param int $subjectId
      * @param string $email
+     * @param string $uid
+     * @param string $username
      * @throws \Exception
      */
-    public function removePreEnrollment($subjectId, $email)
+    public function removePreEnrollment($subjectId, $email = '', $uid = '', $username = '')
     {
         if ($this->hasPreEnrollment($subjectId, $email)) {
             $stm = $this->getDb()->prepare('DELETE FROM subject_pre_enrollment WHERE subject_id = ? AND email = ?');
             $stm->execute(array($subjectId, $email));
+        }
+        if ($this->hasPreEnrollment($subjectId, '', $uid)) {
+            $stm = $this->getDb()->prepare('DELETE FROM subject_pre_enrollment WHERE subject_id = ? AND uid = ?');
+            $stm->execute(array($subjectId, $uid));
+        }
+        if ($this->hasPreEnrollment($subjectId, '', '', $username)) {
+            $stm = $this->getDb()->prepare('DELETE FROM subject_pre_enrollment WHERE subject_id = ? AND username = ?');
+            $stm->execute(array($subjectId, $username));
         }
     }
 
 
     /**
      * @param $institutionId
-     * @param array $emailList
+     * @param array|string $email
      * @param string $uid
      * @param string $username
      * @return bool
      * @throws \Exception
      */
-    public function isPreEnrolled($institutionId, $emailList = array(), $uid = '', $username = '')
+    public function isPreEnrolled($institutionId, $email = '', $uid = '', $username = '')
     {
         $found = false;
         if ($uid) {
@@ -391,11 +416,13 @@ WHERE a.subject_id = ? ' . $toolStr);
             $subjectList = $this->findPendingPreEnrollmentsByUsername($institutionId, $username);
             $found = (count($subjectList) > 0);
         }
-        if (!$found) {
-            foreach ($emailList as $email) {
+
+        if (is_string($email)) $email = array($email);
+        if (!$found && is_array($email)) {
+            foreach ($email as $e) {
                 if ($found) break;
-                if (!filter_var($email, \FILTER_VALIDATE_EMAIL)) continue;
-                $subjectList = $this->findPendingPreEnrollments($institutionId, $email);
+                if (!filter_var($e, \FILTER_VALIDATE_EMAIL)) continue;
+                $subjectList = $this->findPendingPreEnrollments($institutionId, $e);
                 $found = (count($subjectList) > 0);
             }
         }

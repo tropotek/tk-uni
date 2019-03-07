@@ -130,7 +130,11 @@ class Config extends \Bs\Config
                 if (!$subject && $this->getSession()->has('lti.subjectId')) { // Check for an LTI default subject selection
                     $subject = $this->getSubjectMapper()->find(self::getSession()->get('lti.subjectId'));
                 }
-                if (!$subject && $this->getSession()->has(self::SID_SUBJECT)) {
+                $route = $this->getRequest()->getAttribute('_route');
+                $routePath = $this->getRouteCollection()->get($route)->getPath();
+//                vd($route);
+//                vd($this->getRouteCollection()->get($route)->getPath());
+                if (!$subject && $this->getSession()->has(self::SID_SUBJECT) && strpos($routePath, '/{subjectCode}') !== -1) {
                     $subject = $this->getSubjectMapper()->find(self::getSession()->get(self::SID_SUBJECT));
                 }
                 $this->set('subject', $subject);
