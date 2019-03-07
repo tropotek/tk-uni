@@ -220,12 +220,12 @@ JS;
   <p>Valid CSV formats are:</p>
   <p>Preferred Method:</p>
   <p><pre>
-uid,email,username
-123456,student1@uni.edu.au,student1
-123457,staff2@uni.edu.au,staff1
+uid,username,email
+123456,student1,student1@uni.edu.au
+123457,staff1,staff2@uni.edu.au
 </pre></p>
 
-  <p><small>NOTE: The uid and username are currently optional. The email is the pimary value.</small></p>
+  <p><small>NOTE: The uid and username are prefered for LDAP authentication and the email being required for LTI authentication.</small></p>
     
 </form>
 HTML;

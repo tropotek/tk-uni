@@ -254,8 +254,8 @@ class ActionsCell extends \Tk\Table\Cell\Text
             $template->setChoice('active');
             $template->setAttr('disable', 'href', \Tk\Uri::create()->set('disable', $plugin->getName()));
 
-            $template->setAttr('title', 'href', $plugin->getZoneSettingsUrl($this->zoneName));
-            $template->setAttr('setup', 'href', $plugin->getZoneSettingsUrl($this->zoneName)->set('zoneId', $this->zoneId));
+            $template->setAttr('title', 'href', $plugin->getZoneSettingsUrl($this->zoneName, $this->zoneId));
+            $template->setAttr('setup', 'href', $plugin->getZoneSettingsUrl($this->zoneName, $this->zoneId)->set('zoneId', $this->zoneId));
         } else {
             $this->getRow()->addCss('plugin-inactive');
             $template->setChoice('inactive');
