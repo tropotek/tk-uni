@@ -51,7 +51,7 @@ class Subject extends \Uni\TableIface
      */
     public function findList($filter = array(), $tool = null)
     {
-        if (!$tool) $tool = $this->getTool();
+        if (!$tool) $tool = $this->getTool('dateStart DESC');
         $filter = array_merge($this->getFilterValues(), $filter);
         $list = \Uni\Db\SubjectMap::create()->findFiltered($filter, $tool);
         return $list;
