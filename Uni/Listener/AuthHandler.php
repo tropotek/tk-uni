@@ -143,13 +143,11 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             $adapter = $event->getAdapter();
             $userData = $adapter->get('userData');
             $config = \Uni\Config::getInstance();
+            $ltiData = $adapter->get('ltiData');
 
-            $user = $config->getUserMapper()->findByEmail($userData['email'], $adapter->getInstitution()->getId());
-//            if (!$user) {   // Find user by username (this is the start pat of the email address, not reliable
-//                $user = $config->getUserMapper()->findByUsername($userData['username'], $adapter->getInstitution()->getId());
-//            }
-
-
+            $user = $config->getUserMapper()->findByUsername($adapter->get('username'), $adapter->getInstitution()->getId());
+            if (!$user)
+                $user = $config->getUserMapper()->findByEmail($userData['email'], $adapter->getInstitution()->getId());
 
             if (!$user) {   // Error out if no user
                 $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID,
@@ -171,14 +169,16 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                $user->save();
 //                $adapter->setUser($user);
 //            }
-            if (!$user) return;
+
+            vd($ltiData);
+
             $subjectData = $adapter->get('subjectData');
             $subject = $config->getSubjectMapper()->find($subjectData['id']);
             if (!$subject) {
                 $subject = $config->getSubjectMapper()->findByCode($subjectData['code'], $adapter->getInstitution()->getId());
             }
             if (!$subject) {
-                throw new \Tk\Exception('Subject not available, Please contact subject coordinator.');
+                throw new \Tk\Exception('Subject ['.$subjectData['code'].'] not available, Please contact the subject coordinator.');
 
                 // Create a new subject here if needed
 //                $subject = $config->createSubject();

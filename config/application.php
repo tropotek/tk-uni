@@ -35,6 +35,7 @@ $config['system.theme.admin']   = $config['system.template.path'] . '/admin';
 $config['system.theme.public']  = $config['system.template.path'] . '/admin';
 
 $config['template.admin']       = $config['system.theme.admin'] . '/admin.html';
+//$config['template.lti']         = $config['system.theme.admin'] . '/lti.html';        // Use this if you want to enable an LTI only template (see tk2uni base project)
 $config['template.client']      = $config['system.theme.admin'] . '/admin.html';
 $config['template.staff']       = $config['system.theme.admin'] . '/admin.html';
 $config['template.student']     = $config['system.theme.admin'] . '/admin.html';

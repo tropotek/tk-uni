@@ -223,6 +223,21 @@ class Config extends \Bs\Config
     }
 
     /**
+     * Is this request within an LTI session
+     *
+     * @return bool
+     */
+    public function isLti()
+    {
+        // TODO: should this be in the LTI plugin?
+        if ($this->getSession()->has('lti_launch')) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * A helper method to create an instance of an Auth adapter
      *
      * @param array $submittedData
