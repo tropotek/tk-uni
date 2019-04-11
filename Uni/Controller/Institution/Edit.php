@@ -26,7 +26,6 @@ class Edit extends \Uni\Controller\AdminEditIface
         $this->setPageTitle('Institution Edit');
         $this->getCurrentInstitution($request);
 
-
         $this->setForm(\Uni\Form\Institution::create()->setModel($this->institution));
         $this->initForm($request);
         $this->getForm()->execute();
@@ -46,14 +45,17 @@ class Edit extends \Uni\Controller\AdminEditIface
     protected function getCurrentInstitution(\Tk\Request $request)
     {
         if (!$this->institution) {
-            $this->institution = $this->getConfig()->createInstitution();
+            if ($this->getUser()->isAdmin())
+                $this->institution = $this->getConfig()->createInstitution();
             if ($request->get('institutionId')) {
                 $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->get('institutionId'));
             }
             if ($this->getUser()->isClient()) {
                 $this->institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getUser()->getId());
             }
-            $this->institution->getUser();
+            if ($this->getUser()->isStaff()) {
+                $this->institution = $this->getUser()->getInstitution();
+            }
         }
         return $this->institution;
     }
