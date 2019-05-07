@@ -9,13 +9,9 @@ use Tk\Form\Field;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Edit extends \Uni\Controller\AdminIface
+class Edit extends \Uni\Controller\AdminEditIface
 {
 
-    /**
-     * @var \Tk\Form
-     */
-    protected $form = null;
 
     /**
      * @var \Uni\Db\Subject
@@ -81,10 +77,17 @@ class Edit extends \Uni\Controller\AdminIface
         $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
         $this->form->appendField(new Event\Link('cancel', $this->getBackUrl()));
 
+        $this->postInitForm($request);
+
         $this->form->load($this->getConfig()->getSubjectMapper()->unmapForm($this->subject));
         $this->form->execute();
 
     }
+
+    /**
+     * @param \Tk\Request $request
+     */
+    protected function postInitForm(\Tk\Request $request) { }
 
 
     /**

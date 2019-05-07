@@ -137,6 +137,7 @@ class Institution extends \Uni\FormIface
         }
         //$this->getInstitution()->userId = $this->getInstitution()->getUser()->getId();
         $this->getInstitution()->save();
+        $data->save();
 
         \Tk\Alert::addSuccess('Record saved!');
         $event->setRedirect($this->getBackUrl());
