@@ -2,8 +2,7 @@
 namespace Uni\Listener;
 
 use Tk\Event\Subscriber;
-use Tk\Kernel\KernelEvents;
-use Tk\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 
 /**
@@ -19,10 +18,10 @@ class InstitutionHandler implements Subscriber
      * Set the global institution into the config as a central data access point
      * If no institution is set then we know we are either an admin or public user...
      *
-     * @param GetResponseEvent $event
+     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
      * @throws \Exception
      */
-    public function onRequest(GetResponseEvent $event)
+    public function onRequest(\Symfony\Component\HttpKernel\Event\RequestEvent $event)
     {
         $config = \Uni\Config::getInstance();
         /** @var \Uni\Db\User $user */

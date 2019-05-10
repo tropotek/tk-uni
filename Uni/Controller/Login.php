@@ -58,7 +58,7 @@ class Login extends \Bs\Controller\Login
     public function doDefault(\Tk\Request $request)
     {
         if (!$this->institution) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getUri()->getHost());
+            $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getTkUri()->getHost());
             if (!$this->institution && $request->hasAttribute('institutionId')) {
                 $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->getAttribute('institutionId'));
             }
