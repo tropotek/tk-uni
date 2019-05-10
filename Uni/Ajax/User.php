@@ -31,6 +31,7 @@ class User
             /** @var \Uni\Db\User $user */
             foreach ($users as $user) {
                 $u = new \stdClass();
+                $u->id = $user->getId();
                 $u->uid = $user->uid;
                 $u->username = $user->username;
                 $u->name = $user->getName();

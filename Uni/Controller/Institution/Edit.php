@@ -50,7 +50,6 @@ class Edit extends \Uni\Controller\AdminEditIface
             if ($request->get('institutionId')) {
                 $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->get('institutionId'));
             }
-            vd($this->getUser(), $this->getUser()->getRole()->getPermissions());
             if ($this->getUser()->isClient()) {
                 $this->institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getUser()->getId());
             }

@@ -87,11 +87,10 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
             /** @var \Uni\Db\Subject $destSubject */
             $config = \Uni\Config::getInstance();
             $destSubject = $config->getSubjectMapper()->find($data['selectedId']);
-            $userList = $config->getUserMapper()->findFiltered(array(
+            $userList = $config->getUserMapper()->findByHash(array(
                 'subjectId' => $subject->getId()
             ));
             $i = 0;
-
             foreach ($userList as $user) {
                 if (!$user->isEnrolled($destSubject->getId())) {
                     $config->getSubjectMapper()->addUser($destSubject->getId(), $user->getId());
@@ -119,7 +118,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $this->enrolStudentDialog->setOnSelect(function ($data) use ($subject) {
             /** @var \Uni\Db\User $user */
             $config = \Uni\Config::getInstance();
-            $user = $config->getUserMapper()->findByHash($data['selectedId'], $subject->institutionId);
+            $user = $config->getUserMapper()->find($data['selectedId'], $subject->institutionId);
             if (!$user || (!$user->isStaff() && !$user->isStudent())) {
                 \Tk\Alert::addWarning('Invalid user.');
             } else {
