@@ -1,7 +1,6 @@
 <?php
 namespace Uni\Listener;
 
-use Tk\Event\GetResponseEvent;
 use Uni\Db\Role;
 use Uni\Db\User;
 
@@ -30,9 +29,9 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
     /**
      * Add any headers to the final response.
      *
-     * @param GetResponseEvent $event
+     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
      */
-    public function onMasquerade(GetResponseEvent $event)
+    public function onMasquerade(\Symfony\Component\HttpKernel\Event\RequestEvent $event)
     {
         $request = $event->getRequest();
         if (!$request->has(static::MSQ)) return;

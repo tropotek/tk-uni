@@ -131,7 +131,7 @@ class PreEnrollment extends Iface
             \Tk\Alert::addError(count($error) . ' records contained errors.');
         }
 
-        $request->getUri()->redirect();
+        $request->getTkUri()->redirect();
     }
 
 
@@ -201,7 +201,7 @@ JS;
      */
     public function makeBodyHtml()
     {
-        $url = htmlentities(\Uni\Config::getInstance()->getRequest()->getUri()->toString());
+        $url = htmlentities(\Uni\Config::getInstance()->getRequest()->getTkUri()->toString());
         $xhtml = <<<HTML
 <form id="addEnrollmentForm" method="POST" action="$url" enctype="multipart/form-data">
 
