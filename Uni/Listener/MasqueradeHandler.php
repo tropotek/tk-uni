@@ -33,6 +33,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      */
     public function onMasquerade(\Symfony\Component\HttpKernel\Event\RequestEvent $event)
     {
+        /** @var \Tk\Request $request */
         $request = $event->getRequest();
         if (!$request->has(static::MSQ)) return;
         try {
