@@ -16,7 +16,7 @@ class PageTemplateHandler extends \Bs\Listener\PageTemplateHandler
      * @param \Tk\Event\Event $event
      * @throws \Exception
      */
-    public function showPage($event)
+    public function showPage(\Tk\Event\Event $event)
     {
         parent::showPage($event);
         $controller = \Tk\Event\Event::findControllerObject($event);

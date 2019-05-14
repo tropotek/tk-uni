@@ -17,7 +17,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @return null|void
      * @throws \Exception
      */
-    public function onLoginProcess($event)
+    public function onLoginProcess(\Tk\Event\AuthEvent $event)
     {
         if ($event->getAdapter() instanceof \Tk\Auth\Adapter\Ldap) {
             /** @var \Tk\Auth\Adapter\Ldap $adapter */
@@ -251,7 +251,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @param AuthEvent $event
      * @throws \Exception
      */
-    public function onLogin($event)
+    public function onLogin(AuthEvent $event)
     {
         $config = \Uni\Config::getInstance();
         $auth = $config->getAuth();
@@ -272,7 +272,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @param AuthEvent $event
      * @throws \Exception
      */
-    public function updateUser($event)
+    public function updateUser(AuthEvent $event)
     {
         $config = \Uni\Config::getInstance();
         parent::updateUser($event);
@@ -290,7 +290,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @param AuthEvent $event
      * @throws \Exception
      */
-    public function onLogout($event)
+    public function onLogout(AuthEvent $event)
     {
         $config = \Uni\Config::getInstance();
         $auth = $config->getAuth();
