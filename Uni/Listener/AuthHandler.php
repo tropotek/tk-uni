@@ -17,7 +17,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @return null|void
      * @throws \Exception
      */
-    public function onLoginProcess(\Tk\Event\AuthEvent $event)
+    public function onLoginProcess($event)
     {
         if ($event->getAdapter() instanceof \Tk\Auth\Adapter\Ldap) {
             /** @var \Tk\Auth\Adapter\Ldap $adapter */
@@ -206,7 +206,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
      * @throws \Exception
      */
-    public function onRequest(\Symfony\Component\HttpKernel\Event\RequestEvent $event)
+    public function onRequest($event)
     {
         // if a user is in the session add them to the global config
         // Only the identity details should be in the auth session not the full user object, to save space and be secure.
@@ -251,7 +251,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @param AuthEvent $event
      * @throws \Exception
      */
-    public function onLogin(AuthEvent $event)
+    public function onLogin($event)
     {
         $config = \Uni\Config::getInstance();
         $auth = $config->getAuth();
@@ -272,7 +272,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @param AuthEvent $event
      * @throws \Exception
      */
-    public function updateUser(AuthEvent $event)
+    public function updateUser($event)
     {
         $config = \Uni\Config::getInstance();
         parent::updateUser($event);
@@ -290,7 +290,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      * @param AuthEvent $event
      * @throws \Exception
      */
-    public function onLogout(AuthEvent $event)
+    public function onLogout($event)
     {
         $config = \Uni\Config::getInstance();
         $auth = $config->getAuth();

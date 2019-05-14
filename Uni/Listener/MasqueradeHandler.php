@@ -31,7 +31,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      *
      * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
      */
-    public function onMasquerade(\Symfony\Component\HttpKernel\Event\RequestEvent $event)
+    public function onMasquerade($event)
     {
         /** @var \Tk\Request $request */
         $request = $event->getRequest();
