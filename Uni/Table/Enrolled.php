@@ -18,6 +18,17 @@ class Enrolled extends \Uni\TableIface
      */
     protected $findSubjectDialog = null;
 
+    protected $ajaxDialogParams = null;
+
+    /**
+     * @param null|array $ajaxDialogParams
+     * @return Enrolled
+     */
+    public function setAjaxDialogParams($ajaxDialogParams)
+    {
+        $this->ajaxDialogParams = $ajaxDialogParams;
+        return $this;
+    }
 
     /**
      * @return \$this
@@ -26,11 +37,16 @@ class Enrolled extends \Uni\TableIface
     public function init()
     {
         $this->findSubjectDialog = new \Uni\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
-        $this->findSubjectDialog->setAjaxParams(array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId()));
+        //$params = array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId());
+        $params = array('subjectId' => $this->getConfig()->getSubject()->getId());
+        if ($this->ajaxDialogParams)
+            $params = $this->ajaxDialogParams;
+        $this->findSubjectDialog->setAjaxParams($params);
         $this->findSubjectDialog->setNotes('Select the subject to migrate the student to...');
         $this->findSubjectDialog->setOnSelect(function ($data) {
             $config = \Uni\Config::getInstance();
             $dispatcher = $config->getEventDispatcher();
+
             // Migrate the user to the new subject
             $event = new \Tk\Event\Event();
             $event->set('subjectFromId', $config->getSubject()->getId());
@@ -60,26 +76,23 @@ class Enrolled extends \Uni\TableIface
 
 
         $this->addCss('tk-enrolled-users');
-        $actionsCell = new \Tk\Table\Cell\Actions();
 
+
+        $this->appendCell(new \Tk\Table\Cell\Checkbox('id'));
+        $actionsCell = new \Tk\Table\Cell\Actions();
         $btn = $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Migrate', null, 'fa fa-exchange'));
         $btn->setAttr('data-target','#' . $this->findSubjectDialog->getId());
         $btn->setAttr('data-toggle','modal');
-
-        $this->appendCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->appendCell($actionsCell)->setOnCellHtml(function ($cell, $obj) {
+        $btn->setOnShow(function ($cell, $obj, $btn) use ($params) {
             /** @var \Tk\Table\Cell\Actions $cell */
             /** @var \Uni\Db\User $obj */
-            $config = \Uni\Config::getInstance();
-            $cell->getRow()->setAttr('data-user-id', $obj->getHash());
+            /** @var \Tk\Table\Cell\ActionButton $btn */
+            if ($btn->getTitle() != 'Migrate') return;
 
-            $btn = $cell->findButtonByName('Migrate');
+            $config = \Uni\Config::getInstance();
             if ($btn) {
-                $exclude  = $config->getSubjectMapper()->findFiltered(array('userId' => $obj->getId()))->toArray('id');
-                $exclude[] = $config->getSubject()->getId();
-                $list = $config->getSubjectMapper()->findFiltered(array(
-                    'exclude' => $exclude
-                ));
+                $params['exclude'] = $config->getSubject()->getId();
+                $list = $config->getSubjectMapper()->findFiltered($params);
                 if (count($list) && $obj->isStudent()) {
                     $btn->setAttr('data-user-id', $obj->getId());
                 } else {
@@ -88,6 +101,7 @@ class Enrolled extends \Uni\TableIface
             }
 
         });
+        $this->appendCell($actionsCell);
         $this->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
         $this->appendCell(new \Tk\Table\Cell\Text('username'));
         $this->appendCell(new \Tk\Table\Cell\Email('email'));

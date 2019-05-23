@@ -1,25 +1,40 @@
 <?php
 namespace Uni\Controller\Subject;
 
+use Dom\Loader;
+use Exception;
+use Tk\Alert;
 use Tk\Request;
 use Dom\Template;
+use Tk\Ui\Link;
+use Uni\Config;
+use Uni\Controller\AdminIface;
+use Uni\Db\Role;
+use Uni\Db\Subject;
+use Uni\Db\SubjectIface;
+use Uni\Db\User;
+use Uni\Table\Enrolled;
+use Uni\Table\PreEnrollment;
+use Uni\Ui\Dialog\AjaxSelect;
+use Uni\Uri;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class EnrollmentManager extends \Uni\Controller\AdminIface
+class EnrollmentManager extends AdminIface
 {
 
+    protected $filter = null;
 
     /**
-     * @var \Uni\Table\Enrolled
+     * @var Enrolled
      */
     protected $enrolledTable = null;
 
     /**
-     * @var \Uni\Table\PreEnrollment
+     * @var PreEnrollment
      */
     protected $preEnrolTable = null;
 
@@ -29,15 +44,17 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
     protected $preEnrolDialog = null;
 
     /**
-     * @var \Uni\Ui\Dialog\AjaxSelect
+     * @var AjaxSelect
      */
     protected $enrolStudentDialog = null;
 
     /**
-     * @var \Uni\Ui\Dialog\AjaxSelect
+     * @var AjaxSelect
      */
     protected $enrolClassDialog = null;
 
+
+    protected $enrolledAjaxDialogParams = null;
 
 
     /**
@@ -51,7 +68,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
     /**
      * @param \Tk\Request $request
      * @param string $subjectCode
-     * @throws \Exception
+     * @throws Exception
      */
     public function doSubject(\Tk\Request $request, $subjectCode)
     {
@@ -60,7 +77,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
 
     /**
      * @param Request $request
-     * @throws \Exception
+     * @throws Exception
      */
     public function doDefault(Request $request)
     {
@@ -79,17 +96,23 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $filter = array();
         $filter['institutionId'] = $subject->institutionId;
         $filter['exclude'] = $subject->getId();
+        if ($this->filter) {
+            $filter = $this->filter;
+        }
 
-        $this->enrolClassDialog = new \Uni\Ui\Dialog\AjaxSelect('Enrol Class', \Uni\Uri::create('/ajax/subject/findFiltered.html'));
+        $this->enrolClassDialog = new AjaxSelect('Enroll Class', Uri::create('/ajax/subject/findFiltered.html'));
         $this->enrolClassDialog->setAjaxParams($filter);
         $this->enrolClassDialog->setNotes('Select the subject to enroll all the students into.');
         $this->enrolClassDialog->setOnSelect(function ($data) use ($subject) {
-            /** @var \Uni\Db\Subject $destSubject */
-            $config = \Uni\Config::getInstance();
+            /** @var Subject $destSubject */
+            $config = Config::getInstance();
             $destSubject = $config->getSubjectMapper()->find($data['selectedId']);
-            $userList = $config->getUserMapper()->findByHash(array(
+
+            $filter = array(
+                'institutionId' => $subject->institutionId,
                 'subjectId' => $subject->getId()
-            ));
+            );
+            $userList = $config->getUserMapper()->findFiltered($filter);
             $i = 0;
             foreach ($userList as $user) {
                 if (!$user->isEnrolled($destSubject->getId())) {
@@ -98,10 +121,9 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
                 }
             }
             if ($i) {
-                \Tk\Alert::addSuccess('Added ' . $i . ' students to the subject `' . $destSubject->name . '`');
+                Alert::addSuccess('Added ' . $i . ' students to the subject `' . $destSubject->name . '`');
             }
-            //return \Tk\Uri::create()->reset()->set('subjectId', $subject->getId());
-            return \Uni\Uri::create()->reset();
+            return Uri::create()->reset();
         });
         $this->enrolClassDialog->execute($request);
 
@@ -110,38 +132,40 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
         $filter = array();
         $filter['institutionId'] = $this->getSubject()->institutionId;
         $filter['active'] = '1';
-        $filter['type'] = array(\Uni\Db\Role::TYPE_STUDENT, \Uni\Db\Role::TYPE_COORDINATOR);
+        $filter['type'] = array(Role::TYPE_STUDENT, Role::TYPE_COORDINATOR);
 
-        $this->enrolStudentDialog = new \Uni\Ui\Dialog\AjaxSelect('Enrol Student', \Uni\Uri::create('/ajax/user/findFiltered.html'));
+        $this->enrolStudentDialog = new AjaxSelect('Enrol Student', Uri::create('/ajax/user/findFiltered.html'));
         $this->enrolStudentDialog->setAjaxParams($filter);
         //$this->enrolStudentDialog->setNotes('');
         $this->enrolStudentDialog->setOnSelect(function ($data) use ($subject) {
-            /** @var \Uni\Db\User $user */
-            $config = \Uni\Config::getInstance();
+            /** @var User $user */
+            $config = Config::getInstance();
             $user = $config->getUserMapper()->find($data['selectedId'], $subject->institutionId);
             if (!$user || (!$user->isStaff() && !$user->isStudent())) {
-                \Tk\Alert::addWarning('Invalid user.');
+                Alert::addWarning('Invalid user.');
             } else {
                 if (!$user->isEnrolled($subject->getId())) {
                     $config->getSubjectMapper()->addUser($subject->getId(), $user->getId());
-                    \Tk\Alert::addSuccess($user->getName() . ' added to the subject ' . $subject->name);
+                    Alert::addSuccess($user->getName() . ' added to the subject ' . $subject->name);
                 } else {
-                    \Tk\Alert::addWarning($user->getName() . ' already enrolled in the subject ' . $subject->name);
+                    Alert::addWarning($user->getName() . ' already enrolled in the subject ' . $subject->name);
                 }
             }
-            return \Uni\Uri::create()->reset();
+            return Uri::create()->reset();
         });
         $this->enrolStudentDialog->execute($request);
 
 
         // Enrolled Table
-        $this->enrolledTable = \Uni\Table\Enrolled::create()->init();
+        $this->enrolledTable = Enrolled::create();
+        $this->enrolledTable->setAjaxDialogParams($this->enrolledAjaxDialogParams);
+        $this->enrolledTable->init();
         $filter = array('subjectId' => $this->getSubject()->getId());
-        $filter['type'] = array(\Uni\Db\Role::TYPE_COORDINATOR, \Uni\Db\Role::TYPE_STUDENT);
+        $filter['type'] = array(Role::TYPE_COORDINATOR, Role::TYPE_STUDENT);
         $this->enrolledTable->setList($this->enrolledTable->findList($filter));
 
         // Pre-Enrol table
-        $this->preEnrolTable = \Uni\Table\PreEnrollment::create()->init();
+        $this->preEnrolTable = PreEnrollment::create()->init();
         $this->preEnrolTable->prependAction(\Tk\Table\Action\Link::createLink('Pre-Enrol', '#', 'fa fa-plus')
             ->setAttr('data-toggle', 'modal')
             ->setAttr('data-target', '#'.$this->preEnrolDialog->getId()));
@@ -151,7 +175,7 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
     }
 
     /**
-     * @return null|\Uni\Db\Subject|\Uni\Db\SubjectIface
+     * @return null|Subject|SubjectIface
      */
     public function getSubject()
     {
@@ -160,20 +184,30 @@ class EnrollmentManager extends \Uni\Controller\AdminIface
 
 
     /**
+     * @param null|array $ajaxDialogParams
+     * @return EnrollmentManager
+     */
+    public function setEnrolledAjaxDialogParams($ajaxDialogParams)
+    {
+        $this->enrolledAjaxDialogParams = $ajaxDialogParams;
+        return $this;
+    }
+
+    /**
      * @return \Dom\Template
-     * @throws \Exception
+     * @throws Exception
      */
     public function show()
     {
-        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrol','#', 'fa fa-user-plus'))
+        $this->getActionPanel()->append(Link::createBtn('Enrol','#', 'fa fa-user-plus'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->enrolStudentDialog->getId())
             ->setAttr('title', 'Add an existing student to this subject');
 
-        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Pre-Enrol','#', 'fa fa-user-plus'))
+        $this->getActionPanel()->append(Link::createBtn('Pre-Enrol','#', 'fa fa-user-plus'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->preEnrolDialog->getId())
             ->setAttr('title', 'Pre-Enrol a non-existing student, they will automatically be enrolled on login');
 
-        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrol Into...', '#', 'fa fa-copy'))
+        $this->getActionPanel()->append(Link::createBtn('Enrol Into...', '#', 'fa fa-copy'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->enrolClassDialog->getId())
             ->setAttr('title', 'Copy this enrollment list into another subject.');
 
@@ -259,7 +293,7 @@ CSS;
 </div>
 HTML;
 
-        return \Dom\Loader::load($xhtml);
+        return Loader::load($xhtml);
     }
     
 }

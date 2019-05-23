@@ -10,6 +10,8 @@ use Tk\Db\Data;
  */
 class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 {
+    use \Uni\Db\Traits\InstitutionTrait;
+    use \Bs\Db\Traits\TimestampTrait;
     
     /**
      * @var int
@@ -62,22 +64,18 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public $created = null;
 
     /**
-     * @var \Uni\Db\Institution
-     */
-    protected $institution = null;
-
-    /**
      * @var Data
      */
     protected $data = null;
 
 
     /**
+     * Subject constructor.
+     * @throws \Exception
      */
     public function __construct()
     {
-        $this->modified = \Tk\Date::create();
-        $this->created = \Tk\Date::create();
+        $this->_TimestampTrait();
 
         $this->dateStart = \Tk\Date::floor()->setDate($this->created->format('Y'), 1, 1);
         $this->dateEnd = \Tk\Date::ceil()->setDate($this->created->format('Y'), 12, 31);
@@ -107,16 +105,6 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
         return self::createMapper()->isPreEnrolled($institutionId, $emailList, $uid, $username);
     }
 
-    /**
-     * Get the institution related to this user
-     */
-    public function getInstitution()
-    {
-        if (!$this->institution) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->find($this->institutionId);
-        }
-        return $this->institution;
-    }
 
     /**
      * Get the data object
@@ -138,7 +126,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function getDataPath()
     {
-        return sprintf('%s/subject/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
+        return sprintf('%s/subject/%s', $this->getInstitutionObj()->getDataPath(), $this->getVolatileId());
     }
 
     /**
