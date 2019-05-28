@@ -405,6 +405,7 @@ class Config extends \Bs\Config
 
     /**
      * @return Db\Subject|Db\SubjectIface
+     * @throws \Exception
      */
     public function createSubject()
     {
@@ -472,7 +473,7 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @param \Tk\Event\Dispatcher $dispatcher
+     * @param \Tk\EventDispatcher\EventDispatcher $dispatcher
      */
     public function setupDispatcher($dispatcher)
     {
