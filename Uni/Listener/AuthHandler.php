@@ -197,55 +197,8 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $config->getUserIdentity($user)));
         }
 
-
     }
 
-
-
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
-     * @throws \Exception
-     */
-//    public function onRequest($event)
-//    {
-//        // if a user is in the session add them to the global config
-//        // Only the identity details should be in the auth session not the full user object, to save space and be secure.
-//        $config = \Uni\Config::getInstance();
-//        $auth = $config->getAuth();
-//        $user = null;                       // public user
-//        // TODO: We seem to loos the user session when a link from an email arrives?????
-//        // TODO: Currently the user would have to re-login every time they click a link from an email
-//
-//        if ($auth->getIdentity()) {         // Check if user is logged in
-//            /** @var \Uni\Db\User $user */
-//            $user = $config->getUserMapper()->findByAuthIdentity($auth->getIdentity());
-//            if ($user && $user->isActive()) {
-//                $config->setUser($user);            // We set the user here
-//            }
-//        }
-//
-//        // ---------------- deprecated  ---------------------
-//        // The following is deprecated in preference of the validatePageAccess() method
-//
-//        $role = $event->getRequest()->getAttribute('role');
-//        if (!$role || empty($role)) return;
-//
-//        if (!$user || $user->isPublic()) {
-//            if ($event->getRequest()->getTkUri()->getRelativePath() != '/login.html') {
-//                \Tk\Uri::create('/login.html')->redirect();
-//            } else {
-//                \Tk\Alert::addWarning('1001: You do not have access to the requested page.');
-//                $config->getUserHomeUrl($user)->redirect();
-//            }
-//        } else {
-//            if (!$user->getRole()->hasType($role)) {
-//                \Tk\Alert::addWarning('1002: You do not have access to the requested page.');
-//                $config->getUserHomeUrl($user)->redirect();
-//            }
-//        }
-//        //-----------------------------------------------------
-//
-//    }
 
     /**
      * @param AuthEvent $event
