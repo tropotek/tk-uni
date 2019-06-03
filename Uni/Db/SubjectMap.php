@@ -2,6 +2,7 @@
 namespace Uni\Db;
 
 
+use Tk\Date;
 use Tk\Db\Tool;
 use Tk\Db\Map\ArrayObject;
 use Tk\DataMap\Db;
@@ -103,17 +104,30 @@ class SubjectMap extends Mapper
         return $this->select($where, $tool);
     }
 
-
     /**
      * @param array $filter
      * @param Tool $tool
-     * @return ArrayObject|Subject[]
+     * @return ArrayObject|Role[]
      * @throws \Exception
      */
     public function findFiltered($filter = array(), $tool = null)
     {
-        $from = sprintf('%s a ', $this->getDb()->quoteParameter($this->getTable()));
-        $where = '';
+        $this->makeQuery($filter, $tool, $where, $from);
+        $res = $this->selectFrom($from, rtrim($where, 'AND '), $tool);
+        return $res;
+    }
+
+
+    /**
+     * @param array $filter
+     * @param Tool $tool
+     * @param string $where
+     * @param string $from
+     * @return $this
+     */
+    public function makeQuery($filter = array(), $tool = null, &$where = '', &$from = '')
+    {
+        $from .= sprintf('%s a ', $this->quoteParameter($this->getTable()));
 
         if (!empty($filter['keywords'])) {
             $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
@@ -148,10 +162,48 @@ class SubjectMap extends Mapper
             $where .= sprintf('a.id = b.subject_id AND b.user_id = %s AND ', (int)$filter['userId']);
         }
 
-        if (isset($filter['active']) && $filter['active'] !== null && $filter['active'] !== '') {
-            $now = \Tk\Date::create()->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $where .= sprintf('a.date_start <= %s AND a.date_end >= %s AND ', $this->quote($now), $this->quote($now));
+        if (isset($filter['publish']) && $filter['publish'] !== '' && $filter['publish'] !== null) {
+            $where .= sprintf('a.publish = %s AND ', (int)$filter['publish']);
         }
+
+        if (!empty($filter['dateStart']) && !empty($filter['dateEnd'])) {     // Contains
+            /** @var \DateTime $dateStart */
+            $dateStart = Date::floor($filter['dateStart']);
+            /** @var \DateTime $dateEnd */
+            $dateEnd = Date::floor($filter['dateEnd']);
+
+            $where .= sprintf('((a.date_start >= %s AND ', $this->quote($dateStart->format(Date::FORMAT_ISO_DATETIME)) );
+            $where .= sprintf('a.date_start <= %s) OR ', $this->quote($dateEnd->format(Date::FORMAT_ISO_DATETIME)) );
+
+            $where .= sprintf('(a.date_end <= %s AND ', $this->quote($dateStart->format(Date::FORMAT_ISO_DATETIME)) );
+            $where .= sprintf('a.date_end >= %s)) AND ', $this->quote($dateEnd->format(Date::FORMAT_ISO_DATETIME)) );
+
+        } else if (!empty($filter['dateStart'])) {
+            /** @var \DateTime $date */
+            $date = Date::floor($filter['dateStart']);
+            $where .= sprintf('a.date_start >= %s AND ', $this->quote($date->format(Date::FORMAT_ISO_DATETIME)) );
+        } else if (!empty($filter['dateEnd'])) {
+            /** @var \DateTime $date */
+            $date = Date::floor($filter['dateEnd']);
+            $where .= sprintf('a.date_end <= %s AND ', $this->quote($date->format(Date::FORMAT_ISO_DATETIME)) );
+        }
+
+        $active = null;
+        if (isset($filter['active']) && $filter['active'] !== null && $filter['active'] !== '') $active = (int)$filter['active'];
+        if (isset($filter['current']) && $filter['current'] !== null && $filter['current'] !== '') $active = (int)$filter['current'];
+        if ($active !== null) {
+            $now = Date::create()->format(Date::FORMAT_ISO_DATETIME);
+            if ($active) {
+                $where .= sprintf('a.date_start <= %s AND a.date_end >= %s AND ', $this->quote($now), $this->quote($now));
+            } else {
+                $where .= sprintf('a.date_start > %s OR a.date_end < %s AND ', $this->quote($now), $this->quote($now));
+            }
+        }
+
+//        if (isset($filter['active']) && $filter['active'] !== null && $filter['active'] !== '') {
+//            $now = \Tk\Date::create()->format(\Tk\Date::FORMAT_ISO_DATETIME);
+//            $where .= sprintf('a.date_start <= %s AND a.date_end >= %s AND ', $this->quote($now), $this->quote($now));
+//        }
 
         if (!empty($filter['exclude'])) {
             $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
@@ -160,13 +212,9 @@ class SubjectMap extends Mapper
             }
         }
 
-        if ($where) {
-            $where = substr($where, 0, -4);
-        }
-
-        $res = $this->selectFrom($from, $where, $tool);
-        return $res;
+        return $this;
     }
+
 
 
     // Enrolment direct queries - subject_has_user holds the currently enrolled users

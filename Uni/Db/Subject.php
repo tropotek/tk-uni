@@ -54,6 +54,16 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public $dateEnd = null;
 
     /**
+     * @var boolean
+     */
+    public $notifications = true;
+
+    /**
+     * @var boolean
+     */
+    public $publish = true;
+
+    /**
      * @var \DateTime
      */
     public $modified = null;
@@ -214,6 +224,60 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function getDateEnd()
     {
         return $this->dateEnd;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return Subject
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotifications()
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * @param bool $notifications
+     * @return Subject
+     */
+    public function setNotifications($notifications)
+    {
+        $this->notifications = $notifications;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublish()
+    {
+        return $this->publish;
+    }
+
+    /**
+     * @param bool $publish
+     * @return Subject
+     */
+    public function setPublish($publish)
+    {
+        $this->publish = $publish;
+        return $this;
     }
 
     /**
