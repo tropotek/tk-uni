@@ -92,7 +92,7 @@ class Manager extends \Uni\Controller\AdminIface
 
         $template->appendTemplate('table', $this->table->getRenderer()->show());
 
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('New Subject', \Uni\Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-graduation-cap'));
+        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New Subject', \Uni\Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-graduation-cap'));
 
         return $template;
     }
@@ -109,13 +109,7 @@ class Manager extends \Uni\Controller\AdminIface
 <div class="">
 
   <div class="tk-panel" data-panel-title="Subject" data-panel-icon="fa fa-graduation-cap" var="table"></div>
-  <!--<div class="panel panel-default">-->
-    <!--<div class="panel-heading"><i class="fa fa-graduation-cap fa-fw"></i> Subject</div>-->
-    <!--<div class="panel-body">-->
-      <!--<div var="table"></div>-->
-    <!--</div>-->
-  <!--</div>-->
-    
+  
 </div>
 HTML;
 
