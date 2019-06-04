@@ -27,7 +27,6 @@ class Subject extends \Uni\FormIface
      */
     public function init()
     {
-
         $layout = $this->getRenderer()->getLayout();
         $layout->addRow('name', 'col-md-6');
         $layout->removeRow('code', 'col-md-6');
