@@ -7,6 +7,7 @@ try {
     $db = $config->getDb();
 
     $subjectInfo = $db->getTableInfo('subject');
+    vd($subjectInfo);
     if (!in_array('publish', $subjectInfo)) {
         $sql = sprintf('alter table subject add publish TINYINT(1) default 1 not null after date_end;');
         $db->exec($sql);
