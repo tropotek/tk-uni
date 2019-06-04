@@ -96,7 +96,7 @@ class Subject extends \Uni\FormIface
         if ($form->getTriggeredEvent()->getName() == 'save') {
             $url = \Tk\Uri::create()->set('subjectId', $this->getSubject()->getId());
             if ($this->getConfig()->isSubjectUrl())
-                $url = \Uni\Uri::createSubjectUrl('/subjectEdit.html');
+                $url = \Uni\Uri::create();
             $event->setRedirect($url);
         }
     }
