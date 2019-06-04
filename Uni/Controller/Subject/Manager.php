@@ -1,9 +1,15 @@
 <?php
 namespace Uni\Controller\Subject;
 
+use Dom\Loader;
 use Dom\Template;
-use Tk\Form\Field;
+use Exception;
 use Tk\Request;
+use Tk\Table;
+use Tk\Ui\Link;
+use Uni\Controller\AdminManagerIface;
+use Uni\Table\Institution;
+use Uni\Uri;
 
 
 /**
@@ -11,92 +17,58 @@ use Tk\Request;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Manager extends \Uni\Controller\AdminIface
+class Manager extends AdminManagerIface
 {
 
     /**
-     * @var \Tk\Table
+     * @var Table
      */
     protected $table = null;
 
 
+
     /**
-     *
+     * @throws Exception
      */
     public function __construct()
     {
-        $this->setPageTitle('Subject Manager');
+        //$this->getConfig()->getCrumbs()->reset();
     }
 
     /**
      *
      * @param Request $request
-     * @throws \Exception
+     * @throws Exception
      */
     public function doDefault(Request $request)
     {
+        $this->setPageTitle('Subject Manager');
 
-        $this->table = \Uni\Config::getInstance()->createTable('subject-manager');
-        $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
+        $this->table = Institution::create()->init();
 
-        $this->table->appendCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createHomeUrl('/subjectEdit.html'));
-        $this->table->appendCell(new \Tk\Table\Cell\Text('code'));
-        $this->table->appendCell(new \Tk\Table\Cell\Email('email'));
-        $this->table->appendCell(new \Tk\Table\Cell\Boolean('notify'));
-        $this->table->appendCell(new \Tk\Table\Cell\Boolean('publish'));
-        $this->table->appendCell(new \Tk\Table\Cell\Boolean('active'))->setOrderProperty()->setOnPropertyValue(function ($cell, $obj, $value) {
-            /** @var \Uni\Db\Subject $obj */
-            return $obj->isActive();
-        });
-        $this->table->appendCell(\Tk\Table\Cell\Date::create('dateStart')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
-        $this->table->appendCell(\Tk\Table\Cell\Date::create('dateEnd')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
-        //$this->table->appendCell(\Tk\Table\Cell\Date::create('created')->setFormat(\Tk\Date::FORMAT_ISO_DATE));
-
-        // Filters
-        $this->table->appendFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
-        if ($this->getUser()->isStaff()) {
-            $list = array('-- Show All --' => '', 'My Subjects' => '1');
-            $this->table->appendFilter(new Field\Select('userId', $list))->setLabel('')->setValue('1');
-        }
-
-        // Actions
-        //$this->table->appendAction(\Tk\Table\Action\Button::getInstance('New Subject', 'fa fa-plus', \Tk\Uri::create('/client/subjectEdit.html')));
-        $this->table->appendAction(\Tk\Table\Action\Delete::create());
-        $this->table->appendAction(\Tk\Table\Action\Csv::create());
-
-        $this->setList();
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function setList()
-    {
-        $filter = $this->table->getFilterValues();
+        $filter = array();
         $filter['institutionId'] = $this->getConfig()->getInstitutionId();
-        if (!empty($filter['userId'])) {
-            $filter['userId'] = $this->getUser()->id;
-        }
+        if ($this->getUser()->isStudent() || $this->getUser()->isStaff())
+            $filter['userId'] = $this->getUser()->getId();
 
-        $users = $this->getConfig()->getSubjectMapper()->findFiltered($filter, $this->table->getTool('dateStart DESC'));
-        $this->table->setList($users);
+        $this->getTable()->setList($this->table->findList($filter));
+
     }
 
     /**
-     * @return \Dom\Template
+     * @return Template
      */
     public function show()
     {
+        $this->getActionPanel()->append(Link::createBtn('New Subject',
+            Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-graduation-cap'));
+
         $template = parent::show();
 
-        $template->appendTemplate('table', $this->table->getRenderer()->show());
-
-        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New Subject', \Uni\Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-graduation-cap'));
+        $template->appendTemplate('panel', $this->getTable()->show());
 
         return $template;
     }
-
 
     /**
      * DomTemplate magic method
@@ -108,12 +80,12 @@ class Manager extends \Uni\Controller\AdminIface
         $xhtml = <<<HTML
 <div class="">
 
-  <div class="tk-panel" data-panel-title="Subject" data-panel-icon="fa fa-graduation-cap" var="table"></div>
+  <div class="tk-panel" data-panel-title="Subject" data-panel-icon="fa fa-graduation-cap" var="panel"></div>
   
 </div>
 HTML;
 
-        return \Dom\Loader::load($xhtml);
+        return Loader::load($xhtml);
     }
 
 

@@ -24,16 +24,21 @@ class Subject extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Checkbox('id'));
         $this->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
         $this->appendCell(new \Tk\Table\Cell\Text('code'));
-        //$this->appendCell(new \Tk\Table\Cell\Email('email'));
+        $this->appendCell(new \Tk\Table\Cell\Email('email'));
+        $this->appendCell(new \Tk\Table\Cell\Boolean('notify'));
+        $this->appendCell(new \Tk\Table\Cell\Boolean('publish'));
         $this->appendCell(\Tk\Table\Cell\Date::createDate('dateStart', \Tk\Date::FORMAT_ISO_DATE));
         $this->appendCell(\Tk\Table\Cell\Date::createDate('dateEnd', \Tk\Date::FORMAT_ISO_DATE));
 
         $this->appendCell(new \Tk\Table\Cell\Boolean('active'));
-        //$this->appendCell(new \Tk\Table\Cell\Date('created'))->setFormat(\Tk\Table\Cell\Date::FORMAT_RELATIVE);
         $this->appendCell(new \Tk\Table\Cell\Date('created'));
 
         // Filters
         $this->appendFilter(new \Tk\Form\Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
+//        if ($this->getUser()->isStaff()) {
+//            $list = array('-- Show All --' => '', 'My Subjects' => '1');
+//            $this->appendFilter(new Field\Select('userId', $list))->setLabel('')->setValue('1');
+//        }
 
         // Actions
         //$this->appendAction(\Tk\Table\Action\Link::create('New Subject', 'fa fa-plus', \Uni\Uri::createHomeUrl('/subjectEdit.html')));

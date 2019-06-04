@@ -155,7 +155,11 @@ class Edit extends \Uni\Controller\AdminEditIface
         $template = parent::show();
 
         // Render the form
-        $template->appendTemplate('form', $this->form->getRenderer()->show());
+        $template->appendTemplate('panel', $this->form->getRenderer()->show());
+
+        if ($this->subject->getId()) {
+            $template->setAttr('panel', 'data-panel-title', "'" . $this->subject->name . "' [ID: "  . $this->subject->getId() . ']');
+        }
 
         if ($this->subject->getId() && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
             $template->show('update');
@@ -174,7 +178,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         $xhtml = <<<HTML
 <div class="">
 
-  <div class="tk-panel" data-panel-title="Subject Edit" data-panel-icon="fa fa-graduation-cap" var="form"></div>
+  <div class="tk-panel" data-panel-title="Subject Edit" data-panel-icon="fa fa-graduation-cap" var="panel"></div>
   
 </div>
 HTML;
