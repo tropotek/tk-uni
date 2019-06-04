@@ -32,6 +32,8 @@ class SubjectMap extends Mapper
             $this->dbMap->addPropertyMap(new Db\Text('description'));
             $this->dbMap->addPropertyMap(new Db\Date('dateStart', 'date_start'));
             $this->dbMap->addPropertyMap(new Db\Date('dateEnd', 'date_end'));
+            $this->dbMap->addPropertyMap(new Db\Boolean('notify'));
+            $this->dbMap->addPropertyMap(new Db\Boolean('publish'));
             $this->dbMap->addPropertyMap(new Db\Date('modified'));
             $this->dbMap->addPropertyMap(new Db\Date('created'));
         }
@@ -53,6 +55,8 @@ class SubjectMap extends Mapper
             $this->formMap->addPropertyMap(new Form\Text('description'));
             $this->formMap->addPropertyMap(new Form\Date('dateStart'));
             $this->formMap->addPropertyMap(new Form\Date('dateEnd'));
+            $this->formMap->addPropertyMap(new Form\Boolean('notify'));
+            $this->formMap->addPropertyMap(new Form\Boolean('publish'));
         }
         return $this->formMap;
     }
@@ -272,13 +276,6 @@ class SubjectMap extends Mapper
 
 
     //  Enrolment Pending List Queries - The enrollment table holds emails of users that are to be enrolled on their next login.
-
-    // TODO: Currently we are using the email as the primary key queries
-    // TODO: Main reason is that we only get the email from the LMS/LTI
-    // TODO: Ideally I would like to get the UID or/and the username to be the primary key...
-    // TODO:
-
-
 
     /**
      * find all subject that the user is pending enrolment

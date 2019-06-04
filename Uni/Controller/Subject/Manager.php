@@ -43,6 +43,8 @@ class Manager extends \Uni\Controller\AdminIface
         $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createHomeUrl('/subjectEdit.html'));
         $this->table->appendCell(new \Tk\Table\Cell\Text('code'));
         $this->table->appendCell(new \Tk\Table\Cell\Email('email'));
+        $this->table->appendCell(new \Tk\Table\Cell\Boolean('notify'));
+        $this->table->appendCell(new \Tk\Table\Cell\Boolean('publish'));
         $this->table->appendCell(new \Tk\Table\Cell\Boolean('active'))->setOrderProperty()->setOnPropertyValue(function ($cell, $obj, $value) {
             /** @var \Uni\Db\Subject $obj */
             return $obj->isActive();

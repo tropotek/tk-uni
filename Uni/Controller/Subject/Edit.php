@@ -62,13 +62,23 @@ class Edit extends \Uni\Controller\AdminEditIface
         $this->form = $this->getConfig()->createForm('subject-edit');
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
 
+        $layout = $this->form->getRenderer()->getLayout();
+        $layout->addRow('name', 'col-md-6');
+        $layout->removeRow('code', 'col-md-6');
+        $layout->addRow('publish', 'col-md-6');
+        $layout->removeRow('notifications', 'col-md-6');
+
         $this->form->appendField(new Field\Input('name'))->setRequired(true);
         $this->form->appendField(new Field\Input('code'))->setRequired(true);
         $this->form->appendField(new Field\Input('email'))->setRequired(true);
         $this->form->appendField(new Field\DateRange('date'))->setRequired(true)->setLabel('Dates')
             ->setNotes('The start and end dates of the subject. Student actions will be restricted outside these dates.');
-//        $this->form->appendField(new Field\Input('dateStart'))->addCss('date')->setRequired(true);
-//        $this->form->appendField(new Field\Input('dateEnd'))->addCss('date')->setRequired(true);
+
+        $this->form->appendField(new Field\Checkbox('publish'))
+            ->setCheckboxLabel('If not set, students will not be able to access this subject and its data.');
+        $this->form->appendField(new Field\Checkbox('notifications'))
+            ->setCheckboxLabel('Use this setting to disable email notifications for the entire subject.');
+
         $this->form->appendField(new Field\Textarea('description'));
 
         if ($this->subject->getId()) {

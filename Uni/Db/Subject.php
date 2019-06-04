@@ -56,7 +56,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     /**
      * @var boolean
      */
-    public $notifications = true;
+    public $notify = true;
 
     /**
      * @var boolean
@@ -102,7 +102,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
 
     /**
-     * @param $institutionId
+     * @param int $institutionId
      * @param array $emailList
      * @param string $uid
      * @param string $username
@@ -141,7 +141,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
     /**
      *
-     * @param $user
+     * @param UserIface $user
      * @return mixed
      * @throws \Exception
      */
@@ -245,24 +245,28 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
+     * if set to false the no email notifications should be sent for this subject
+     *
      * @return bool
      */
-    public function isNotifications()
+    public function isNotify()
     {
-        return $this->notifications;
+        return $this->notify;
     }
 
     /**
-     * @param bool $notifications
+     * @param bool $notify
      * @return Subject
      */
-    public function setNotifications($notifications)
+    public function setNotify($notify)
     {
-        $this->notifications = $notifications;
+        $this->notify = $notify;
         return $this;
     }
 
     /**
+     * If false, students will not be able to access/view this subject and its or their data.
+     *
      * @return bool
      */
     public function isPublish()
