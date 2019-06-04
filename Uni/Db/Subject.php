@@ -96,25 +96,10 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function save()
     {
+        $this->code = self::cleanCode($this->code);
         $this->getData()->save();
         parent::save();
     }
-
-
-    /**
-     * @param int $institutionId
-     * @param array $emailList
-     * @param string $uid
-     * @param string $username
-     * @return bool
-     * @throws \Exception
-     * @deprecated use subjectMap::isPreEnrolled()
-     */
-    public static function isPreEnrolled($institutionId, $emailList = array(), $uid = '', $username = '')
-    {
-        return self::createMapper()->isPreEnrolled($institutionId, $emailList, $uid, $username);
-    }
-
 
     /**
      * Get the data object
@@ -147,7 +132,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function isUserEnrolled($user)
     {
-        return $this->getConfig()->getSubjectMapper()->hasUser($this->id, $user->id);
+        return $this->getConfig()->getSubjectMapper()->hasUser($this->getId(), $user->getId());
     }
 
     /**
@@ -160,9 +145,55 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function enrollUser($user)
     {
         if (!$this->isUserEnrolled($user)) {
-            $this->getConfig()->getSubjectMapper()->addUser($this->id, $user->id);
+            $this->getConfig()->getSubjectMapper()->addUser($this->getId(), $user->getId());
         }
         return $this;
+    }
+
+    /**
+     * Clean a subject code to be compatible with LMS/LTI systems
+     * valid chars are  [a-zA-Z0-9_-]
+     *
+     * @param $subjectCode
+     * @return mixed
+     */
+    public static function cleanCode($subjectCode)
+    {
+        $s = preg_replace('/[^a-z0-9_-]/i', '_', $subjectCode);
+        //$s = preg_replace('/__++/', '_', $s);     // TODO: check if this is needed
+        return $s;
+    }
+
+    /**
+     * @param $str
+     * @return null|string|string[]
+     */
+    public static function incrementString($str)
+    {
+        // increment years
+
+        $s = preg_replace_callback('/(.*)(20[0-9]{2})(.*)/', function ($regs) {
+            if (count($regs) == 4) {
+                return $regs[1] . ($regs[2]+1) . $regs[3];
+            }
+            return '';
+        }, $str);
+        if ($s) $str = $s;
+
+        // increment semester
+        $s = preg_replace_callback('/(.*SEM)([12])(.*)/', function ($regs) {
+            if (count($regs) == 4) {
+                $sem = '2';
+                if ($regs[2] == '2') {
+                    $sem = '1';
+                }
+                return $regs[1] . $sem . $regs[3];
+            }
+            return '';
+        }, $str);
+        if ($s) $str = $s;
+
+        return $str;
     }
 
     /**
@@ -204,6 +235,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function getEmail()
     {
@@ -291,19 +323,17 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function validate()
     {
         $errors = array();
+        $errors = $this->validateInstitutionId($errors);
 
-        if ((int)$this->institutionId <= 0) {
-            $errors['institutionId'] = 'Invalid Institution ID';
-        }
-        if (!$this->name) {
+        if (!$this->getName()) {
             $errors['name'] = 'Please enter a valid name';
         }
-        if (!$this->code) {
+        if (!$this->getCode()) {
             $errors['code'] = 'Please enter a valid code';
         } else {
             // Look for existing subjects with same code
-            $c = $this->getConfig()->getSubjectMapper()->findByCode($this->code, $this->institutionId);
-            if ($c && $c->id != $this->id) {
+            $c = $this->getConfig()->getSubjectMapper()->findByCode($this->getCode(), $this->getInstitutionId());
+            if ($c && $c->getId() != $this->getId()) {
                 $errors['code'] = 'Subject code already exists';
             }
         }

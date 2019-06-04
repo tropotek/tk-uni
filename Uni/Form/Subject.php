@@ -44,7 +44,9 @@ class Subject extends \Uni\FormIface
         $this->appendField(new Field\Checkbox('notify'))
             ->setCheckboxLabel('Use this setting to disable email notifications for the entire subject.');
 
-        $this->appendField(new Field\Textarea('description'));
+        $this->appendField(new Field\Textarea('description'))->addCss('tkTextareaTool');
+
+
         if ($this->getSubject()->getId())
             $this->appendField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->appendField(new Event\Submit('save', array($this, 'doSubmit')));
