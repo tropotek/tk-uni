@@ -32,10 +32,7 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     }
 
-    public function initForm(\Tk\Request $request)
-    {
-
-    }
+    public function initForm(\Tk\Request $request) { }
 
     /**
      * @param \Tk\Request $request
@@ -97,7 +94,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         $template = parent::show();
 
         // Render the form
-        $template->appendTemplate('form', $this->getForm()->show());
+        $template->appendTemplate('panel', $this->getForm()->show());
 
         return $template;
     }
@@ -112,7 +109,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         $xhtml = <<<HTML
 <div>
 
-  <div class="tk-panel" data-panel-icon="fa fa-university" var="form"></div>
+  <div class="tk-panel" data-panel-icon="fa fa-university" var="panel"></div>
   
 </div>
 HTML;

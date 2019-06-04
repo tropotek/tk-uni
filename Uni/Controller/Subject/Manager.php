@@ -5,10 +5,9 @@ use Dom\Loader;
 use Dom\Template;
 use Exception;
 use Tk\Request;
-use Tk\Table;
 use Tk\Ui\Link;
 use Uni\Controller\AdminManagerIface;
-use Uni\Table\Institution;
+use Uni\Table\Subject;
 use Uni\Uri;
 
 
@@ -21,17 +20,11 @@ class Manager extends AdminManagerIface
 {
 
     /**
-     * @var Table
-     */
-    protected $table = null;
-
-
-
-    /**
      * @throws Exception
      */
     public function __construct()
     {
+        $this->setPageTitle('Subject Manager');
         //$this->getConfig()->getCrumbs()->reset();
     }
 
@@ -42,16 +35,15 @@ class Manager extends AdminManagerIface
      */
     public function doDefault(Request $request)
     {
-        $this->setPageTitle('Subject Manager');
 
-        $this->table = Institution::create()->init();
+        $this->setTable(Subject::create()->setEditUrl(\Uni\Uri::createHomeUrl('/subjectEdit.html'))->init());
 
         $filter = array();
         $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         if ($this->getUser()->isStudent() || $this->getUser()->isStaff())
             $filter['userId'] = $this->getUser()->getId();
 
-        $this->getTable()->setList($this->table->findList($filter));
+        $this->getTable()->setList($this->getTable()->findList($filter));
 
     }
 
@@ -80,7 +72,7 @@ class Manager extends AdminManagerIface
         $xhtml = <<<HTML
 <div class="">
 
-  <div class="tk-panel" data-panel-title="Subject" data-panel-icon="fa fa-graduation-cap" var="panel"></div>
+  <div class="tk-panel" data-panel-title="Subject Manager" data-panel-icon="fa fa-graduation-cap" var="panel"></div>
   
 </div>
 HTML;

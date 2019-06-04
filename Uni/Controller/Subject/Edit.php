@@ -14,7 +14,7 @@ class Edit extends \Uni\Controller\AdminEditIface
 
 
     /**
-     * @var \Uni\Db\Subject
+     * @var \Uni\Db\SubjectIface|\Uni\Db\Subject
      */
     protected $subject = null;
 
@@ -30,14 +30,29 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     /**
      * @param \Tk\Request $request
-     * @param string $subjectCode
+     * @return \Uni\Db\Subject|\Uni\Db\SubjectIface|null
      * @throws \Exception
      */
-//    public function doSubject(\Tk\Request $request, $subjectCode)
-//    {
-//        $this->subject = $this->getConfig()->getSubjectMapper()->findByCode($subjectCode, $this->getConfig()->getInstitutionId());
-//        $this->doDefault($request);
-//    }
+    protected function findSubject(\Tk\Request $request)
+    {
+        if (!$this->subject) {
+            $this->subject = $this->getConfig()->getSubject();
+            if (!$this->subject) {
+                $this->subject = $this->getConfig()->createSubject();
+                $this->subject->institutionId = $this->getConfig()->getInstitutionId();
+                $this->subject->email = $this->getConfig()->getInstitution()->getEmail();
+                if ($request->get('subjectId')) {
+                    $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
+                    if ($this->getConfig()->getInstitutionId() != $this->subject->institutionId) {
+                        \Tk\Alert::addError('You do not have permission to edit this subject.');
+                        \Uni\Uri::createHomeUrl('/index.html')->redirect();
+                    }
+                }
+            }
+        }
+        return $this->subject;
+    }
+
 
     /**
      * @param \Tk\Request $request
@@ -45,89 +60,28 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function doDefault(\Tk\Request $request)
     {
-        $this->subject = $this->getConfig()->getSubject();
+        $this->subject = $this->findSubject($request);
 
-        if (!$this->subject) {
-            $this->subject = $this->getConfig()->createSubject();
-            $this->subject->institutionId = $this->getConfig()->getInstitutionId();
-            $this->subject->email = $this->getConfig()->getInstitution()->getEmail();
-            if ($request->get('subjectId')) {
-                $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
-                if ($this->getConfig()->getInstitutionId() != $this->subject->institutionId) {
-                    throw new \Tk\Exception('You do not have permission to edit this subject.');
-                }
-            }
-        }
-
-        $this->form = $this->getConfig()->createForm('subject-edit');
-        $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
-
-        $layout = $this->form->getRenderer()->getLayout();
-        $layout->addRow('name', 'col-md-6');
-        $layout->removeRow('code', 'col-md-6');
-        $layout->addRow('publish', 'col-md-6');
-        $layout->removeRow('notifications', 'col-md-6');
-
-        $this->form->appendField(new Field\Input('name'))->setRequired(true);
-        $this->form->appendField(new Field\Input('code'))->setRequired(true);
-        $this->form->appendField(new Field\Input('email'))->setRequired(true);
-        $this->form->appendField(new Field\DateRange('date'))->setRequired(true)->setLabel('Dates')
-            ->setNotes('The start and end dates of the subject. Student actions will be restricted outside these dates.');
-
-        $this->form->appendField(new Field\Checkbox('publish'))
-            ->setCheckboxLabel('If not set, students will not be able to access this subject and its data.');
-        $this->form->appendField(new Field\Checkbox('notifications'))
-            ->setCheckboxLabel('Use this setting to disable email notifications for the entire subject.');
-
-        $this->form->appendField(new Field\Textarea('description'));
-
-        if ($this->subject->getId()) {
-            $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
-        }
-        $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->appendField(new Event\Link('cancel', $this->getBackUrl()));
-
-        $this->postInitForm($request);
-
-        $this->form->load($this->getConfig()->getSubjectMapper()->unmapForm($this->subject));
-        $this->form->execute();
+        $this->setForm(\Uni\Form\Subject::create()->setModel($this->subject));
+        $this->initForm($request);
+        $this->getForm()->execute();
 
     }
 
     /**
+     * Use this to init the form before execute is called
      * @param \Tk\Request $request
      */
-    protected function postInitForm(\Tk\Request $request) { }
-
+    public function initForm(\Tk\Request $request) { }
 
     /**
-     * @param \Tk\Form $form
-     * @param \Tk\Form\Event\Iface $event
-     * @throws \Exception
+     * @param \Tk\Request $request
+     *
+     * @deprecated use initForm()
      */
-    public function doSubmit($form, $event)
-    {
-        // Load the object with data from the form using a helper object
-        $this->getConfig()->getSubjectMapper()->mapForm($form->getValues(), $this->subject);
-
-        $form->addFieldErrors($this->subject->validate());
-
-        if ($form->hasErrors()) {
-            return;
-        }
-
-        $this->subject->save();
-
-        // If this is a staff member add them to the subject
-        if ($this->getUser()->isStaff()) {
-            $this->getConfig()->getSubjectMapper()->addUser($this->subject->id, $this->getUser()->id);
-        }
-
-        \Tk\Alert::addSuccess('Record saved!');
-        $event->setRedirect($this->getConfig()->getBackUrl());
-        if ($form->getTriggeredEvent()->getName() == 'save') {
-            $event->setRedirect(\Tk\Uri::create()->set('subjectId', $this->subject->id));
-        }
+    protected function postInitForm(\Tk\Request $request) {
+        $this->initForm($request);
+        \Tk\Log::warning('Using Deprecated Method: ' . \Tk\Debug\StackTrace::dumpLine());
     }
 
     /**
@@ -155,14 +109,9 @@ class Edit extends \Uni\Controller\AdminEditIface
         $template = parent::show();
 
         // Render the form
-        $template->appendTemplate('panel', $this->form->getRenderer()->show());
-
+        $template->appendTemplate('panel', $this->getForm()->show());
         if ($this->subject->getId()) {
-            $template->setAttr('panel', 'data-panel-title', "'" . $this->subject->name . "' [ID: "  . $this->subject->getId() . ']');
-        }
-
-        if ($this->subject->getId() && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
-            $template->show('update');
+            $template->setAttr('panel', 'data-panel-title', "'" . $this->subject->getName() . "' [ID: "  . $this->subject->getId() . ']');
         }
 
         return $template;
