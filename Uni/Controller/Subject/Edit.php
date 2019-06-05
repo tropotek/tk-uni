@@ -118,6 +118,14 @@ class Edit extends \Uni\Controller\AdminEditIface
     }
 
     /**
+     * @return \App\Db\Subject|null|\Uni\Db\Subject
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
      * DomTemplate magic method
      *
      * @return \Dom\Template
