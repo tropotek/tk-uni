@@ -103,10 +103,7 @@ class PreEnrollment extends Iface
             if (isset($arr['email']))
                 $email = trim(strip_tags($arr['email']));
 
-            vd($arr, $uid, $username, $email);
-            vd((!$uid && !$username), $uid, $uid == 'uid', $username, $username == 'username', $email, $email == 'email');
-
-            if ((!$uid && !$username) || $uid == 'uid' || $username == 'username' || $email == 'email') {
+            if ((!$uid && !$username)) {
                 continue;
             }
 
@@ -151,7 +148,8 @@ class PreEnrollment extends Iface
 
         while (($data = fgetcsv($stream, 1000, ',')) !== FALSE) {
             $num = count($data);
-            $list[$row] = array();
+            $list[$row] = array('email' => '', 'uid' => '', 'username' => '');
+            if (in_array('uid', $data) || in_array('email', $data) || in_array('username', $data)) continue;
             for ($c=0; $c < $num; $c++) {
                 if (filter_var($data[$c], FILTER_VALIDATE_EMAIL)) {
                     $list[$row]['email'] = $data[$c];

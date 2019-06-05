@@ -346,7 +346,7 @@ FROM  subject_pre_enrollment a
   LEFT JOIN subject_has_user c ON (b.id = c.user_id AND c.subject_id = ?)
 WHERE a.subject_id = ? ' . $toolStr);
         $stm->execute(array($filter['subjectId'], $filter['subjectId']));
-vd($this->getDb()->getLastQuery());
+
         $arr = $stm->fetchAll();
         $tool->setFoundRows(count($arr));
         return $arr;

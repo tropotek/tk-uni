@@ -18,7 +18,6 @@ class PreEnrollment extends \Uni\TableIface
      */
     public function init()
     {
-        //$actionsCell = new \Tk\Table\Cell\Actions();
         $this->addCss('tk-pending-users');
 
         $this->appendCell(new \Tk\Table\Cell\Checkbox('email'));
@@ -45,7 +44,6 @@ class PreEnrollment extends \Uni\TableIface
         });
 
         // Actions
-        //$this->appendAction(\Tk\Table\Action\Link::create('Add', 'fa fa-plus')->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->dialog->getId()));
         $this->appendAction(\Tk\Table\Action\Delete::create('delete', 'email')->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
             $config = \Uni\Config::getInstance();
             $subjectMap = $config->getSubjectMapper();
