@@ -22,6 +22,10 @@ try {
     if (!array_key_exists('email', $tableInfo)) {
         $sql = sprintf('ALTER TABLE subject_pre_enrollment MODIFY COLUMN email varchar(168) NOT NULL DEFAULT \'\' AFTER uid;');
         $db->exec($sql);
+        $sql = sprintf('
+alter table subject_pre_enrollment drop primary key;
+alter table subject_pre_enrollment add constraint subject_pre_enrollment_pk unique (subject_id, uid, username, email);
+		');
     }
 
 } catch (\Tk\Db\Exception $e) {
