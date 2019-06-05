@@ -342,11 +342,11 @@ class SubjectMap extends Mapper
 
         $stm = $this->getDb()->prepare('SELECT a.subject_id, a.uid, a.email, a.username, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL,0,1) as enrolled
 FROM  subject_pre_enrollment a 
-  LEFT JOIN  user b ON (b.email = a.email)  
+  LEFT JOIN  user b ON (b.email != \'\' AND b.email IS NOT NULL AND b.email = a.email)  
   LEFT JOIN subject_has_user c ON (b.id = c.user_id AND c.subject_id = ?)
 WHERE a.subject_id = ? ' . $toolStr);
         $stm->execute(array($filter['subjectId'], $filter['subjectId']));
-
+vd($this->getDb()->getLastQuery());
         $arr = $stm->fetchAll();
         $tool->setFoundRows(count($arr));
         return $arr;
@@ -424,14 +424,15 @@ WHERE a.subject_id = ? ' . $toolStr);
         if ($this->hasPreEnrollment($subjectId, $email)) {
             $stm = $this->getDb()->prepare('DELETE FROM subject_pre_enrollment WHERE subject_id = ? AND email = ?');
             $stm->execute(array($subjectId, $email));
-        }
-        if ($this->hasPreEnrollment($subjectId, '', $uid)) {
+        } else if ($this->hasPreEnrollment($subjectId, '', $uid)) {
             $stm = $this->getDb()->prepare('DELETE FROM subject_pre_enrollment WHERE subject_id = ? AND uid = ?');
             $stm->execute(array($subjectId, $uid));
-        }
-        if ($this->hasPreEnrollment($subjectId, '', '', $username)) {
+        } else if ($this->hasPreEnrollment($subjectId, '', '', $username)) {
             $stm = $this->getDb()->prepare('DELETE FROM subject_pre_enrollment WHERE subject_id = ? AND username = ?');
             $stm->execute(array($subjectId, $username));
+        } else {
+//            $stm = $this->getDb()->prepare('DELETE FROM subject_pre_enrollment WHERE subject_id = ? AND email = ? AND uid = ? AND username = ?');
+//            $stm->execute(array($subjectId, $email, $uid, $username));
         }
     }
 

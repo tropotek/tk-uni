@@ -1,8 +1,6 @@
 <?php
 namespace Uni\Table;
 
-use Tk\Form\Field;
-use Tk\Table\Cell;
 
 /**
  * @author Mick Mifsud
@@ -27,7 +25,8 @@ class PreEnrollment extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('UID')->addCss('key');
         $this->appendCell(new \Tk\Table\Cell\Text('username'));
         $this->appendCell(new \Tk\Table\Cell\Text('email'));
-        $this->appendCell(new \Tk\Table\Cell\Boolean('enrolled'))->setOrderProperty('IF(c.subject_id IS NULL,0,1)')->setLabel('E')->setOnCellHtml(function ($cell, $obj, $html) {
+        $this->appendCell(new \Tk\Table\Cell\Boolean('enrolled'))->setOrderProperty('IF(c.subject_id IS NULL,0,1)')
+            ->setLabel('E')->setOnCellHtml(function ($cell, $obj, $html) {
             /** @var $cell \Tk\Table\Cell\Boolean */
             /** @var $obj \StdClass */
             $config = \Uni\Config::getInstance();
@@ -50,18 +49,7 @@ class PreEnrollment extends \Uni\TableIface
         $this->appendAction(\Tk\Table\Action\Delete::create('delete', 'email')->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
             $config = \Uni\Config::getInstance();
             $subjectMap = $config->getSubjectMapper();
-            $subjectMap->removePreEnrollment($obj->subject_id, $obj->email);
-
-            // TODO: I do not think this is required, as it may not be what the use wants to do.
-            /** @var \Uni\Db\Subject $subject */
-//            $subject = $subjectMap->find($obj->subject_id);
-//            if ($subject) {  // Delete user from subject enrolment
-//                $user = $config->getUserMapper()->findByEmail($obj->email, $subject->institutionId);
-//                if ($user) {
-//                    $subjectMap->removeUser($subject->getId(), $user->getId());
-//                }
-//            }
-
+            $subjectMap->removePreEnrollment($obj->subject_id, $obj->email, $obj->uid, $obj->username);
             return false;
         }));
         $this->appendAction(\Tk\Table\Action\Csv::create());
