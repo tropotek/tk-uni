@@ -16,30 +16,12 @@ class Edit extends \Uni\Controller\AdminEditIface
     protected $institution = null;
 
 
-
-    /**
-     * @param \Tk\Request $request
-     * @throws \Exception
-     */
-    public function doDefault(\Tk\Request $request)
-    {
-        $this->setPageTitle('Institution Edit');
-        $this->getCurrentInstitution($request);
-
-        $this->setForm(\Uni\Form\Institution::create()->setModel($this->institution));
-        $this->initForm($request);
-        $this->getForm()->execute();
-
-    }
-
-    public function initForm(\Tk\Request $request) { }
-
     /**
      * @param \Tk\Request $request
      * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\Institution|\Uni\Db\InstitutionIface|null
      * @throws \Exception
      */
-    protected function getCurrentInstitution(\Tk\Request $request)
+    protected function findInstitution(\Tk\Request $request)
     {
         if (!$this->institution) {
             if ($this->getUser()->isAdmin())
@@ -57,13 +39,23 @@ class Edit extends \Uni\Controller\AdminEditIface
         return $this->institution;
     }
 
+
     /**
-     * @return \Tk\Db\ModelInterface|\Uni\Db\Institution
+     * @param \Tk\Request $request
+     * @throws \Exception
      */
-    public function getInstitution()
+    public function doDefault(\Tk\Request $request)
     {
-        return $this->institution;
+        $this->setPageTitle('Institution Edit');
+        $this->findInstitution($request);
+
+        $this->setForm(\Uni\Form\Institution::create()->setModel($this->institution));
+        $this->initForm($request);
+        $this->getForm()->execute();
+
     }
+
+    public function initForm(\Tk\Request $request) { }
 
     /**
      * @return \Dom\Template
@@ -115,6 +107,14 @@ class Edit extends \Uni\Controller\AdminEditIface
 HTML;
 
         return \Dom\Loader::load($xhtml);
+    }
+
+    /**
+     * @return \Tk\Db\ModelInterface|\Uni\Db\Institution
+     */
+    public function getInstitution()
+    {
+        return $this->institution;
     }
 
 }

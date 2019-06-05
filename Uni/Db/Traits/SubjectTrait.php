@@ -43,7 +43,6 @@ trait SubjectTrait
      * Get the subject related to this object
      *
      * @return Subject|null
-     * @deprecated Use getSubjectObj()
      */
     public function getSubject()
     {
@@ -52,6 +51,9 @@ trait SubjectTrait
 
     /**
      * Get the Subject object found using $this->subjectId
+     *
+     * Note: This is use as an alias incases where get{Object}()
+     *   is already used in the main object for another reason
      *
      * @return Subject|SubjectIface|null
      */

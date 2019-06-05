@@ -338,7 +338,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
             }
         }
 
-        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+        if ($this->email && !filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Please enter a valid email address';
         }
         
