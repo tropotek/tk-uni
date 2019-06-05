@@ -109,29 +109,26 @@ class SubjectMap extends Mapper
     }
 
     /**
-     * @param array $filter
+     * @param array|Filter $filter
      * @param Tool $tool
      * @return ArrayObject|Role[]
      * @throws \Exception
      */
-    public function findFiltered($filter = array(), $tool = null)
+    public function findFiltered($filter, $tool = null)
     {
-        $this->makeQuery($filter, $tool, $where, $from);
-        $res = $this->selectFrom($from, rtrim($where, 'AND '), $tool);
+        $filter = \Tk\Db\Filter::create($filter, $tool);
+        $this->makeQuery($filter);
+        $res = $this->selectFrom($filter->getFrom(), rtrim($filter->getWhere(), 'AND '), $tool);
         return $res;
     }
 
-
     /**
-     * @param array $filter
-     * @param Tool $tool
-     * @param string $where
-     * @param string $from
+     * @param \Tk\Db\Filter $filter
      * @return $this
      */
-    public function makeQuery($filter = array(), $tool = null, &$where = '', &$from = '')
+    public function makeQuery(\Tk\Db\Filter $filter)
     {
-        $from .= sprintf('%s a ', $this->quoteParameter($this->getTable()));
+        $filter->appendFrom('%s a ', $this->quoteParameter($this->getTable()));
 
         if (!empty($filter['keywords'])) {
             $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
@@ -145,29 +142,29 @@ class SubjectMap extends Mapper
                 $w .= sprintf('a.id = %d OR ', $id);
             }
             if ($w) {
-                $where .= '(' . substr($w, 0, -3) . ') AND ';
+                $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
             }
         }
 
         if (!empty($filter['code'])) {
-            $where .= sprintf('a.code = %s AND ', $this->getDb()->quote($filter['code']));
+            $filter->appendWhere('a.code = %s AND ', $this->getDb()->quote($filter['code']));
         }
 
         if (!empty($filter['email'])) {
-            $where .= sprintf('a.email = %s AND ', $this->getDb()->quote($filter['email']));
+            $filter->appendWhere('a.email = %s AND ', $this->getDb()->quote($filter['email']));
         }
 
         if (!empty($filter['institutionId'])) {
-            $where .= sprintf('a.institution_id = %s AND ', (int)$filter['institutionId']);
+            $filter->appendWhere('a.institution_id = %s AND ', (int)$filter['institutionId']);
         }
 
         if (!empty($filter['userId'])) {
-            $from .= sprintf(', subject_has_user b');
-            $where .= sprintf('a.id = b.subject_id AND b.user_id = %s AND ', (int)$filter['userId']);
+            $filter->appendFrom(', subject_has_user k');
+            $filter->appendWhere('a.id = k.subject_id AND k.user_id = %s AND ', (int)$filter['userId']);
         }
 
         if (isset($filter['publish']) && $filter['publish'] !== '' && $filter['publish'] !== null) {
-            $where .= sprintf('a.publish = %s AND ', (int)$filter['publish']);
+            $filter->appendWhere('a.publish = %s AND ', (int)$filter['publish']);
         }
 
         if (!empty($filter['dateStart']) && !empty($filter['dateEnd'])) {     // Contains
@@ -176,20 +173,19 @@ class SubjectMap extends Mapper
             /** @var \DateTime $dateEnd */
             $dateEnd = Date::floor($filter['dateEnd']);
 
-            $where .= sprintf('((a.date_start >= %s AND ', $this->quote($dateStart->format(Date::FORMAT_ISO_DATETIME)) );
-            $where .= sprintf('a.date_start <= %s) OR ', $this->quote($dateEnd->format(Date::FORMAT_ISO_DATETIME)) );
+            $filter->appendWhere('((a.date_start >= %s AND ', $this->quote($dateStart->format(Date::FORMAT_ISO_DATETIME)) );
+            $filter->appendWhere('a.date_start <= %s) OR ', $this->quote($dateEnd->format(Date::FORMAT_ISO_DATETIME)) );
 
-            $where .= sprintf('(a.date_end <= %s AND ', $this->quote($dateStart->format(Date::FORMAT_ISO_DATETIME)) );
-            $where .= sprintf('a.date_end >= %s)) AND ', $this->quote($dateEnd->format(Date::FORMAT_ISO_DATETIME)) );
-
+            $filter->appendWhere('(a.date_end <= %s AND ', $this->quote($dateStart->format(Date::FORMAT_ISO_DATETIME)) );
+            $filter->appendWhere('a.date_end >= %s)) AND ', $this->quote($dateEnd->format(Date::FORMAT_ISO_DATETIME)) );
         } else if (!empty($filter['dateStart'])) {
             /** @var \DateTime $date */
             $date = Date::floor($filter['dateStart']);
-            $where .= sprintf('a.date_start >= %s AND ', $this->quote($date->format(Date::FORMAT_ISO_DATETIME)) );
+            $filter->appendWhere('a.date_start >= %s AND ', $this->quote($date->format(Date::FORMAT_ISO_DATETIME)) );
         } else if (!empty($filter['dateEnd'])) {
             /** @var \DateTime $date */
             $date = Date::floor($filter['dateEnd']);
-            $where .= sprintf('a.date_end <= %s AND ', $this->quote($date->format(Date::FORMAT_ISO_DATETIME)) );
+            $filter->appendWhere('a.date_end <= %s AND ', $this->quote($date->format(Date::FORMAT_ISO_DATETIME)) );
         }
 
         $active = null;
@@ -198,21 +194,21 @@ class SubjectMap extends Mapper
         if ($active !== null) {
             $now = Date::create()->format(Date::FORMAT_ISO_DATETIME);
             if ($active) {
-                $where .= sprintf('a.date_start <= %s AND a.date_end >= %s AND ', $this->quote($now), $this->quote($now));
+                $filter->appendWhere('a.date_start <= %s AND a.date_end >= %s AND ', $this->quote($now), $this->quote($now));
             } else {
-                $where .= sprintf('a.date_start > %s OR a.date_end < %s AND ', $this->quote($now), $this->quote($now));
+                $filter->appendWhere('a.date_start > %s OR a.date_end < %s AND ', $this->quote($now), $this->quote($now));
             }
         }
 
 //        if (isset($filter['active']) && $filter['active'] !== null && $filter['active'] !== '') {
 //            $now = \Tk\Date::create()->format(\Tk\Date::FORMAT_ISO_DATETIME);
-//            $where .= sprintf('a.date_start <= %s AND a.date_end >= %s AND ', $this->quote($now), $this->quote($now));
+//            $filter->appendWhere('a.date_start <= %s AND a.date_end >= %s AND ', $this->quote($now), $this->quote($now));
 //        }
 
         if (!empty($filter['exclude'])) {
             $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
             if ($w) {
-                $where .= '('. $w . ') AND ';
+                $filter->appendWhere('(%s) AND ', $w);
             }
         }
 
@@ -271,8 +267,6 @@ class SubjectMap extends Mapper
             $stm->execute(array($subjectId));
         }
     }
-
-
 
 
     //  Enrolment Pending List Queries - The enrollment table holds emails of users that are to be enrolled on their next login.

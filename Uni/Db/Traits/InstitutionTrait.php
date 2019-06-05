@@ -42,7 +42,6 @@ trait InstitutionTrait
      * Get the institution related to this user
      *
      * @return Institution|null
-     * @deprecated Use getInstitutionObj()
      */
     public function getInstitution()
     {
@@ -51,6 +50,9 @@ trait InstitutionTrait
 
     /**
      * Get the Institution object found using $this->subjectId
+     * 
+     * Note: This is use as an alias incases where get{Object}()
+     *   is already used in the main object for another reason
      *
      * @return Institution|null
      */
