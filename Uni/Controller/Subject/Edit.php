@@ -85,10 +85,9 @@ class Edit extends \Uni\Controller\AdminEditIface
     }
 
     /**
-     * @return \Dom\Template
-     * @throws \Exception
+     *
      */
-    public function show()
+    public function initActionPanel()
     {
         if ($this->subject->getId() && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
@@ -106,6 +105,15 @@ class Edit extends \Uni\Controller\AdminEditIface
                     \Uni\Uri::createSubjectUrl('/studentUserManager.html'), 'fa fa-group'));
             }
         }
+    }
+
+    /**
+     * @return \Dom\Template
+     * @throws \Exception
+     */
+    public function show()
+    {
+        $this->initActionPanel();
         $template = parent::show();
 
         // Render the form
