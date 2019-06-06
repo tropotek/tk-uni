@@ -147,7 +147,7 @@ class AjaxSelect extends Iface
         $template = $this->makeBodyTemplate();
         if ($this->notes) {
             $template->insertHtml('notes', $this->notes);
-            $template->setChoice('notes');
+            $template->setVisible('notes');
         }
 
         $ajaxUrl = $this->ajaxUrl->toString();

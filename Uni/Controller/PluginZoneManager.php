@@ -4,7 +4,6 @@ namespace Uni\Controller;
 use Tk\Db\Exception;
 use Tk\Request;
 use Dom\Template;
-use Bs\Controller\Iface;
 
 /**
  *
@@ -38,16 +37,20 @@ class PluginZoneManager extends AdminIface
     {
         $this->setPageTitle('Plugin Manager');
     }
-    
+
     /**
      * @param Request $request
-     * @throws \Tk\Exception
+     * @param string $zoneName
+     * @param string $zoneId
+     * @throws \Exception
      */
-    public function doDefault(Request $request, $zoneName, $zoneId)
+    public function doDefault(Request $request, $zoneName = '', $zoneId = '')
     {
+        if (!$this->zoneName)
+            $this->zoneName = $zoneName;
+        if (!$this->zoneId)
+            $this->zoneId = $zoneId;
 
-        $this->zoneName = $zoneName;
-        $this->zoneId = $zoneId;
         if (!$this->zoneName || !$this->zoneId) {
             throw new \Tk\Exception('Invalid zone plugin information?');
         }
@@ -167,7 +170,7 @@ class IconCell extends \Tk\Table\Cell\Text
         }
         if (is_file(\Uni\Config::getInstance()->getPluginPath() . '/' . $pluginName . '/icon.png')) {
             $template->setAttr('icon', 'src', \Uni\Config::getInstance()->getPluginUrl() . '/' . $pluginName . '/icon.png');
-            $template->setChoice('icon');
+            $template->setVisible('icon');
         }
 
         return $template;
@@ -235,30 +238,33 @@ class ActionsCell extends \Tk\Table\Cell\Text
      * @param \StdClass $info
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string|\Dom\Template
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getCellHtml($info, $rowIdx = null)
     {
         $template = $this->__makeTemplate();
+
         try {
             $pluginFactory = \Uni\Config::getInstance()->getPluginFactory();
-        } catch (Exception $e) {
-        } catch (\Tk\Plugin\Exception $e) {
-        }
+        } catch (Exception $e) { }
+
         $pluginName = $pluginFactory->cleanPluginName($info->name);
         /** @var \Tk\Plugin\Iface $plugin */
         $plugin = $pluginFactory->getPlugin($pluginName);
 
         if ($plugin->isZonePluginEnabled($this->zoneName, $this->zoneId)) {
             $this->getRow()->addCss('plugin-active');
-            $template->setChoice('active');
+            $template->setVisible('disable');
             $template->setAttr('disable', 'href', \Tk\Uri::create()->set('disable', $plugin->getName()));
-
-            $template->setAttr('title', 'href', $plugin->getZoneSettingsUrl($this->zoneName, $this->zoneId));
-            $template->setAttr('setup', 'href', $plugin->getZoneSettingsUrl($this->zoneName, $this->zoneId)->set('zoneId', $this->zoneId));
+            $settingsUrl = $plugin->getZoneSettingsUrl($this->zoneName, $this->zoneId);
+            if ($settingsUrl) {
+                $template->setAttr('title', 'href', $settingsUrl);
+                $template->setAttr('setup', 'href', $settingsUrl->set('zoneId', $this->zoneId));
+                $template->setVisible('setup');
+            }
         } else {
             $this->getRow()->addCss('plugin-inactive');
-            $template->setChoice('inactive');
+            $template->setVisible('enable');
             $template->setAttr('enable', 'href', \Tk\Uri::create()->set('enable', $plugin->getName()));
         }
 
@@ -296,9 +302,9 @@ CSS;
     {
         $html = <<<HTML
 <div class="text-right">
-  <a href="#" class="btn btn-success btn-xs noblock act" choice="inactive" var="enable" title="Enable Plugin"><i class="fa fa-sign-in"></i></a>
-  <a href="#" class="btn btn-primary btn-xs noblock setup" choice="active" var="setup" title="Configure Plugin"><i class="fa fa-cog"></i></a>
-  <a href="#" class="btn btn-danger btn-xs noblock deact" choice="active" var="disable" title="Disable Plugin"><i class="fa fa-remove"></i></a>
+  <a href="#" class="btn btn-success btn-xs noblock act" choice="enable" var="enable" title="Enable Plugin"><i class="fa fa-sign-in"></i></a>
+  <a href="#" class="btn btn-primary btn-xs noblock setup" choice="setup" var="setup" title="Configure Plugin"><i class="fa fa-cog"></i></a>
+  <a href="#" class="btn btn-danger btn-xs noblock deact" choice="disable" var="disable" title="Disable Plugin"><i class="fa fa-remove"></i></a>
 </div>
 HTML;
         return \Dom\Loader::load($html);

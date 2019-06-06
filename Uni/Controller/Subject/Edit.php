@@ -66,6 +66,8 @@ class Edit extends \Uni\Controller\AdminEditIface
         $this->initForm($request);
         $this->getForm()->execute();
 
+        $this->initActionPanel();
+
     }
 
     /**
@@ -113,7 +115,6 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function show()
     {
-        $this->initActionPanel();
         $template = parent::show();
 
         // Render the form

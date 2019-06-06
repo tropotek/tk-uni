@@ -107,15 +107,15 @@ class Login extends \Bs\Controller\Login
 
         if ($this->institution) {
             if ($this->institution->getLogoUrl()) {
-                $template->show('instLogo');
+                $template->setVisible('instLogo');
                 $template->setAttr('instLogo', 'src', $this->institution->getLogoUrl()->toString());
             }
             $template->insertText('instName', $this->institution->name);
-            $template->show('inst');
+            $template->setVisible('inst');
             $this->getPage()->getTemplate()->show('has-inst');
         } else {
-            $template->show('noinst');
-            $template->show('recover');
+            $template->setVisible('noinst');
+            $template->setVisible('recover');
         }
 
         return $template;
