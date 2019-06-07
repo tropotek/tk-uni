@@ -56,10 +56,10 @@ $routes->add('client-institution-plugin-manager', new \Tk\Routing\Route('/client
     array('zoneName' => 'institution', 'zoneId' => '0') ));
 
 $routes->add('client-institution-edit', new \Tk\Routing\Route('/client/settings.html', 'Uni\Controller\Institution\Edit::doDefault'));
-$routes->add('client-user-profile', new \Tk\Routing\Route('/client/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
 $routes->add('client-user-manager', new \Tk\Routing\Route('/client/{targetRole}UserManager.html', 'Uni\Controller\User\Manager::doDefaultRole'));
 $routes->add('client-user-edit', new \Tk\Routing\Route('/client/{targetRole}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultRole'));
+$routes->add('client-user-profile', new \Tk\Routing\Route('/client/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
 $routes->add('client-subject-manager', new \Tk\Routing\Route('/client/subjectManager.html', 'Uni\Controller\Subject\Manager::doDefault'));
 $routes->add('client-subject-edit', new \Tk\Routing\Route('/client/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
