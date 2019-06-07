@@ -42,7 +42,6 @@ $routes->add('admin-institution-edit', new \Tk\Routing\Route('/admin/institution
 
 $routes->add('admin-user-manager', new \Tk\Routing\Route('/admin/{targetRole}UserManager.html', 'Uni\Controller\User\Manager::doDefaultRole'));
 $routes->add('admin-user-edit', new \Tk\Routing\Route('/admin/{targetRole}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultRole'));
-
 $routes->add('admin-user-profile', new \Tk\Routing\Route('/admin/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
 $routes->add('admin-dev-events', new \Tk\Routing\Route('/admin/dev/events.html', 'Bs\Controller\Admin\Dev\Events::doDefault'));

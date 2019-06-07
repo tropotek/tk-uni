@@ -86,18 +86,18 @@ class Manager extends \Uni\Controller\AdminManagerIface
         }
         $this->table->setList($this->table->findList($filter));
 
-        $this->initActionPanel($this->getActionPanel());
+        $this->initActionPanel();
 
     }
 
     /**
-     * @param \Tk\Ui\Admin\ActionPanel $actionPanel
+     *
      */
-    protected function initActionPanel($actionPanel)
+    public function initActionPanel()
     {
         //if (!$this->getConfig()->getSession()->get('auth.password.access')) {
         if ($this->getConfig()->getUser()->hasPermission(\Uni\Db\Permission::TYPE_COORDINATOR) || $this->getConfig()->getUser()->isClient() || $this->getConfig()->getUser()->isAdmin()) {
-            $actionPanel->append(\Tk\Ui\Link::createBtn('New ' . ucfirst($this->targetRole), clone $this->editUrl, 'fa fa-user-plus'));
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New ' . ucfirst($this->targetRole), clone $this->editUrl, 'fa fa-user-plus'));
         }
     }
 

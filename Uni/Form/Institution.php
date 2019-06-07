@@ -31,39 +31,76 @@ class Institution extends \Uni\FormIface
 
         $tab = 'Details';
         $this->appendField(new Field\Input('name'))->setRequired(true)->setTabGroup($tab);
-        $this->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup($tab);
-        $this->appendField(new Field\File('logo', $this->getInstitution()->getDataPath().'/logo/'))
-            ->setAttr('accept', '.png,.jpg,.jpeg,.gif')->setTabGroup($tab)->addCss('tk-imageinput');
-        $this->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
+        $field = $this->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup($tab);
+        if (!$this->getUser()->isAdmin()) {
+            $field->setDisabled(true);
+        }
+        $field = $this->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
+        if (!$this->getUser()->isAdmin()) {
+            $field->setDisabled(true);
+        }
+        $this->appendField(new Field\Input('phone'))->setTabGroup($tab);
 
         $insUrl = \Tk\Uri::create('/inst/'.$this->getInstitution()->getHash().'/login.html');
         if ($this->getInstitution()->domain)
             $insUrl = \Tk\Uri::create('/login.html')->setHost($this->getInstitution()->domain);
         $insUrlStr = $insUrl->setScheme('https')->toString();
+
         $this->appendField(new Field\Input('domain'))->setTabGroup($tab)
             ->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>')
             ->setAttr('placeholder', $insUrl->getHost());
-        $this->appendField(new Field\Textarea('description'))->setTabGroup($tab);
+
+        if ($this->getUser()->isAdmin()) {
+            $this->appendField(new Field\Checkbox('active'))->setTabGroup($tab)->setCheckboxLabel('Institution login accounts enabled/disabled.');
+        }
+
+        // Fully implement this
+        $this->appendField(new Field\File('logo', $this->getInstitution()->getDataPath()))
+            ->setMaxFileSize($this->getConfig()->get('upload.profile.imagesize'))->setAttr('accept', '.png,.jpg,.jpeg,.gif')
+            ->setTabGroup($tab)->addCss('tk-imageinput')
+            ->setNotes('Upload your institutions logo (recommended size: 100x300)');
+
+        $this->appendField(new Field\File('feature', $this->getInstitution()->getDataPath()))
+            ->setMaxFileSize($this->getConfig()->get('upload.profile.imagesize'))->setAttr('accept', '.png,.jpg,.jpeg,.gif')
+            ->setTabGroup('Details')->addCss('tk-imageinput')
+            ->setNotes('Upload an image to be used for backgrounds and features within the institutions site (recommended size: 512x512)');
+
+
+        $this->appendField(new Field\Textarea('description'))->setTabGroup($tab)
+            ->addCss('mce')->setAttr('data-elfinder-path', $this->getInstitution()->getDataPath().'/media');
+
+        $tab = 'Location';
+        $this->appendField(new \Tk\Form\Field\GmapSelect('map'))->setAttr('data-no-js', 'true')->setTabGroup($tab);
+
+        $this->appendField(new Field\Input('street'))->setTabGroup($tab);
+        $this->appendField(new Field\Input('city'))->setTabGroup($tab);
+        $this->appendField(new Field\Input('state'))->setTabGroup($tab);
+        $this->appendField(new Field\Input('postcode'))->setTabGroup($tab);
+        $this->appendField(new Field\Input('country'))->setTabGroup($tab);
+
+        $this->appendField(new Field\GmapAddress('address'))->setTabGroup($tab)
+            ->setNotes('Select a location on the map or enter the address manually');
 
 
         $tab = 'Account';
-        $this->appendField(new Field\Checkbox('active'))->setTabGroup($tab)
-            ->setCheckboxLabel('Institution login accounts enabled/disabled.');
+        if ($this->getUser()->isAdmin()) {
 
-        $this->setAttr('autocomplete', 'off');
-        $f = $this->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
-            ->setAttr('readonly', 'true')
-            ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
-            ->setTabGroup($tab);
-        if (!$this->getInstitution()->getId())
-            $f->setRequired(true);
+            $this->setAttr('autocomplete', 'off');
+            $f = $this->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')
+                ->setAttr('readonly', 'true')
+                ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
+                ->setTabGroup($tab);
+            if (!$this->getInstitution()->getId())
+                $f->setRequired(true);
 
-        $f = $this->appendField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
-            ->setAttr('readonly', 'true')
-            ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
-            ->setNotes('Change this users password.')->setTabGroup($tab);
-        if (!$this->getInstitution()->getId())
-            $f->setRequired(true);
+            $f = $this->appendField(new Field\Password('confPassword'))->setAttr('placeholder', 'Click to edit')
+                ->setAttr('readonly', 'true')
+                ->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');")
+                ->setNotes('Change this users password.')->setTabGroup($tab);
+            if (!$this->getInstitution()->getId())
+                $f->setRequired(true);
+        }
+
 
         $this->appendField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->appendField(new Event\Submit('save', array($this, 'doSubmit')));
@@ -105,6 +142,11 @@ class Institution extends \Uni\FormIface
         if ($logo->hasFile() && !preg_match('/\.(gif|jpe?g|png)$/i', $logo->getValue())) {
             $form->addFieldError('logo', 'Please Select a valid image file. (jpg, png, gif only)');
         }
+        /** @var \Tk\Form\Field\File $feature */
+        $feature = $form->getField('feature');
+        if ($feature->hasFile() && !preg_match('/\.(gif|jpe?g|png)$/i', $feature->getValue())) {
+            $form->addFieldError('feature', 'Please Select a valid image file. (jpg, png, gif only)');
+        }
 
         // Password validation needs to be here
         if ($form->getFieldValue('newPassword')) {
@@ -128,14 +170,29 @@ class Institution extends \Uni\FormIface
             \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
         }
 
+        $feature->saveFile();
+        // resize the image if needed
+        if ($feature->hasFile()) {
+            $fullPath = $this->getConfig()->getDataPath() . $this->getInstitution()->feature;
+            \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
+        }
+
+        $this->getInstitution()->name = $this->getInstitution()->getName();
         $this->getInstitution()->getUser()->save();
+
         // Hash the password correctly
         if ($form->getFieldValue('newPassword')) {
             $pwd = $this->getConfig()->createPassword(10);
             $this->getInstitution()->getUser()->setNewPassword($pwd);
             $this->getInstitution()->getUser()->save();
+
+            // TODO: Email user to update the account password.
+
         }
-        //$this->getInstitution()->userId = $this->getInstitution()->getUser()->getId();
+        if (!$this->getInstitution()->getId() && !$this->getInstitution()->userId) {
+            $this->getInstitution()->userId = $this->getInstitution()->getUser()->getId();       // ?? This was commented out??? WHY???????
+        }
+
         $this->getInstitution()->save();
         $data->save();
 
