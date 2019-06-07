@@ -55,13 +55,10 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     }
 
-    public function initForm(\Tk\Request $request) { }
-
     /**
-     * @return \Dom\Template
      * @throws \Exception
      */
-    public function show()
+    public function initActionPanel()
     {
         if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->getInstitution()->getUser())) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
@@ -82,7 +79,15 @@ class Edit extends \Uni\Controller\AdminEditIface
                 \Uni\Uri::createHomeUrl('/subjectManager.html'), 'fa fa-graduation-cap'));
 
         }
+    }
 
+    /**
+     * @return \Dom\Template
+     * @throws \Exception
+     */
+    public function show()
+    {
+        $this->initActionPanel();
         $template = parent::show();
 
         // Render the form

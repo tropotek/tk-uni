@@ -19,7 +19,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
      * Setup the controller to work with users of this role
      * @var string
      */
-    protected $targetRole = 'user';
+    protected $targetRole = '';
 
 
     /**
@@ -67,11 +67,10 @@ class Manager extends \Uni\Controller\AdminManagerIface
             }
         }
 
-
-        $this->table = \Uni\Table\User::create()->setEditUrl($this->editUrl);
+        $this->setTable(\Uni\Table\User::create()->setEditUrl($this->editUrl));
         if (!$this->getUser()->isStudent())
-            $this->table->getActionCell()->removeButton('Masquerade');
-        $this->table->init();
+            $this->getTable()->getActionCell()->removeButton('Masquerade');
+        $this->getTable()->init();
 
 
         $filter = array();
@@ -84,9 +83,9 @@ class Manager extends \Uni\Controller\AdminManagerIface
         if ($this->getConfig()->isSubjectUrl() && $this->getConfig()->getSubjectId()) {
             $filter['subjectId'] = $this->getConfig()->getSubjectId();
         }
-        $this->table->setList($this->table->findList($filter));
+        vd($filter);
+        $this->getTable()->setList($this->getTable()->findList($filter));
 
-        $this->initActionPanel();
 
     }
 
@@ -97,7 +96,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
     {
         //if (!$this->getConfig()->getSession()->get('auth.password.access')) {
         if ($this->getConfig()->getUser()->hasPermission(\Uni\Db\Permission::TYPE_COORDINATOR) || $this->getConfig()->getUser()->isClient() || $this->getConfig()->getUser()->isAdmin()) {
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New ' . ucfirst($this->targetRole), clone $this->editUrl, 'fa fa-user-plus'));
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New ' . ucfirst($this->targetRole), $this->getTable()->getEditUrl(), 'fa fa-user-plus'));
         }
     }
 
@@ -106,6 +105,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
      */
     public function show()
     {
+        $this->initActionPanel();
         $template = parent::show();
 
         $template->appendTemplate('table', $this->table->show());
@@ -121,9 +121,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div>
-  <div class="tk-panel" data-panel-icon="fa fa-users" var="table"></div>
-</div>
+<div class="tk-panel" data-panel-icon="fa fa-users" var="table"></div>
 HTML;
 
         return \Dom\Loader::load($xhtml);
