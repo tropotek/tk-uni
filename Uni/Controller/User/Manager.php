@@ -95,7 +95,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
     {
         //if (!$this->getConfig()->getSession()->get('auth.password.access')) {
         if ($this->getConfig()->getUser()->hasPermission(\Uni\Db\Permission::TYPE_COORDINATOR) || $this->getConfig()->getUser()->isClient() || $this->getConfig()->getUser()->isAdmin()) {
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New ' . ucfirst($this->targetRole), $this->getTable()->getEditUrl(), 'fa fa-user-plus'));
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Create ' . ucfirst($this->targetRole), $this->getTable()->getEditUrl(), 'fa fa-user-plus'));
         }
     }
 

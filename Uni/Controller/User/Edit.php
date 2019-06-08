@@ -78,27 +78,31 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     }
 
-    /**
-     * @return \Dom\Template
-     * @throws \Exception
-     */
-    public function show()
+    public function initActionPanel()
     {
         if ($this->user->getId() && $this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->user)) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
                 \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->hash), 'fa fa-user-secret'))
                 ->setAttr('data-confirm', 'You are about to masquerade as the selected user?')->addCss('tk-masquerade');
         }
+    }
 
+    /**
+     * @return \Dom\Template
+     * @throws \Exception
+     */
+    public function show()
+    {
+        $this->initActionPanel();
         $template = parent::show();
 
         // Render the form
-        $template->appendTemplate('form', $this->form->show());
+        $template->appendTemplate('panel', $this->form->show());
         
         if ($this->user->id) {
-            $template->setAttr('form', 'data-panel-title', $this->user->name . ' - [UID ' . $this->user->getId() . ']');
+            $template->setAttr('panel', 'data-panel-title', $this->user->name . ' - [UID ' . $this->user->getId() . ']');
         } else {
-            $template->setAttr('form', 'data-panel-title', 'Create User');
+            $template->setAttr('panel', 'data-panel-title', 'Create User');
         }
         return $template;
     }
@@ -113,9 +117,7 @@ class Edit extends \Uni\Controller\AdminEditIface
     {
 
         $xhtml = <<<HTML
-<div class="">
-  <div class="tk-panel" data-panel-icon="fa fa-user" var="form"></div>
-</div>
+<div class="tk-panel" data-panel-icon="fa fa-user" var="panel"></div>
 HTML;
 
         return \Dom\Loader::load($xhtml);

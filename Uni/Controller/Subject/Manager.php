@@ -47,14 +47,19 @@ class Manager extends AdminManagerIface
 
     }
 
+    public function initActionPanel()
+    {
+
+        $this->getActionPanel()->append(Link::createBtn('New Subject',
+            Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-graduation-cap'));
+    }
+
     /**
      * @return Template
      */
     public function show()
     {
-        $this->getActionPanel()->append(Link::createBtn('New Subject',
-            Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-graduation-cap'));
-
+        $this->initActionPanel();
         $template = parent::show();
 
         $template->appendTemplate('panel', $this->getTable()->show());

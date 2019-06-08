@@ -40,7 +40,7 @@ class User extends \Bs\Form\User
             $this->remove('confPassword');
         } else {
             if ($this->getUser()->getId() && $this->getUser()->getId() > 1) {
-                $this->appendField(new Field\Html('username'))->setTabGroup($tab);
+                $this->appendField(new Field\Html('username'))->setAttr('disabled')->addCss('form-control disabled')->setTabGroup($tab);
             }
         }
 
