@@ -116,7 +116,7 @@ class SubjectMap extends Mapper
      */
     public function findFiltered($filter, $tool = null)
     {
-        $filter = \Tk\Db\Filter::create($filter, $tool);
+        $filter = \Tk\Db\Filter::create($filter);
         $this->makeQuery($filter);
         $res = $this->selectFrom($filter->getFrom(), rtrim($filter->getWhere(), 'AND '), $tool);
         return $res;

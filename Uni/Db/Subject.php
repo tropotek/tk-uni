@@ -307,6 +307,16 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
+     * If false, students will not be able to access/view this subject and its or their data.
+     *
+     * @return bool
+     */
+    public function isPublished()
+    {
+        return $this->publish;
+    }
+
+    /**
      * @param bool $publish
      * @return Subject
      */
