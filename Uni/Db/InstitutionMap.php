@@ -84,7 +84,6 @@ class InstitutionMap extends Mapper
 
 
     /**
-     *
      * @param null|\Tk\Db\Tool $tool
      * @return ArrayObject|Institution[]
      * @throws \Exception
@@ -130,15 +129,23 @@ class InstitutionMap extends Mapper
     }
 
     /**
-     * @param array $filter
+     * @param array|Filter $filter
      * @param Tool $tool
-     * @return ArrayObject|Institution[]
+     * @return ArrayObject|Role[]
      * @throws \Exception
      */
-    public function findFiltered($filter = array(), $tool = null)
+    public function findFiltered($filter, $tool = null)
     {
-        $from = sprintf('%s a ', $this->getDb()->quoteParameter($this->getTable()));
-        $where = '';
+        return $this->selectFromFilter($this->makeQuery(\Tk\Db\Filter::create($filter)), $tool);
+    }
+
+    /**
+     * @param \Tk\Db\Filter $filter
+     * @return \Tk\Db\Filter
+     */
+    public function makeQuery(\Tk\Db\Filter $filter)
+    {
+        $filter->appendFrom('%s a, ', $this->quoteParameter($this->getTable()));
 
         if (!empty($filter['keywords'])) {
             $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
@@ -156,53 +163,44 @@ class InstitutionMap extends Mapper
                 $w .= sprintf('a.id = %d OR ', $id);
             }
             if ($w) {
-                $where .= '(' . substr($w, 0, -3) . ') AND ';
+                $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
             }
         }
 
         if (!empty($filter['email'])) {
-            $where .= sprintf('a.email = %s AND ', $this->getDb()->quote($filter['email']));
+            $filter->appendWhere('a.email = %s AND ', $this->getDb()->quote($filter['email']));
         }
-
         if (!empty($filter['userId'])) {
-            $where .= sprintf('a.user_id = %s AND ', (int)$filter['userId']);
+            $filter->appendWhere('a.user_id = %s AND ', (int)$filter['userId']);
         }
-
-        if (!empty($filter['active'])) {
-            $where .= sprintf('a.active = %s AND ', (int)$filter['active']);
+        if (isset($filter['active']) && $filter['active'] !== '' && $filter['active'] !== null) {
+            $filter->appendWhere('a.active = %s AND ', (int)$filter['active']);
         }
-
         if (!empty($filter['postcode'])) {
-            $where .= sprintf('a.postcode = %s AND ', $this->getDb()->quote($filter['postcode']));
+            $filter->appendWhere('a.postcode = %s AND ', $this->getDb()->quote($filter['postcode']));
         }
         if (!empty($filter['country'])) {
-            $where .= sprintf('a.country = %s AND ', $this->getDb()->quote($filter['country']));
+            $filter->appendWhere('a.country = %s AND ', $this->getDb()->quote($filter['country']));
         }
         if (!empty($filter['state'])) {
-            $where .= sprintf('a.state = %s AND ', $this->getDb()->quote($filter['state']));
+            $filter->appendWhere('a.state = %s AND ', $this->getDb()->quote($filter['state']));
         }
         if (!empty($filter['hash'])) {
-            $where .= sprintf('a.hash = %s AND ', $this->getDb()->quote($filter['hash']));
+            $filter->appendWhere('a.hash = %s AND ', $this->getDb()->quote($filter['hash']));
         }
         if (!empty($filter['domain'])) {
-            $where .= sprintf('a.domain = %s AND ', $this->getDb()->quote($filter['domain']));
+            $filter->appendWhere('a.domain = %s AND ', $this->getDb()->quote($filter['domain']));
         }
 
         if (!empty($filter['exclude'])) {
             $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
             if ($w) {
-                $where .= '('. $w . ') AND ';
+                $filter->appendWhere('(%s) AND ', $w);
             }
         }
 
-        if ($where) {
-            $where = substr($where, 0, -4);
-        }
-
-        $res = $this->selectFrom($from, $where, $tool);
-        return $res;
+        return $filter;
     }
-
 
 }
 

@@ -197,14 +197,6 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
-     * @return int
-     */
-    public function getInstitutionId()
-    {
-        return $this->institutionId;
-    }
-
-    /**
      * If false, the student should be denied access to creating new submissions of any type for that subject.
      * If false, the UI should display historic grades and placement data.
      *
@@ -220,48 +212,61 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
+     * @param string $name
+     * @return Subject
+     */
+    public function setName(string $name): Subject
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
 
     /**
-     * @return string
-     * @throws \Exception
+     * @param string $code
+     * @return Subject
      */
-    public function getEmail()
+    public function setCode(string $code): Subject
+    {
+        $this->code = $code;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
     {
         return $this->email;
     }
 
     /**
-     * @return \DateTime
+     * @param string $email
+     * @return Subject
      */
-    public function getDateStart()
+    public function setEmail(string $email): Subject
     {
-        return $this->dateStart;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateEnd()
-    {
-        return $this->dateEnd;
+        $this->email = $email;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -270,18 +275,52 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      * @param string $description
      * @return Subject
      */
-    public function setDescription($description)
+    public function setDescription(string $description): Subject
     {
         $this->description = $description;
         return $this;
     }
 
     /**
-     * if set to false the no email notifications should be sent for this subject
-     *
+     * @return \DateTime
+     */
+    public function getDateStart(): \DateTime
+    {
+        return $this->dateStart;
+    }
+
+    /**
+     * @param \DateTime $dateStart
+     * @return Subject
+     */
+    public function setDateStart(\DateTime $dateStart): Subject
+    {
+        $this->dateStart = $dateStart;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateEnd(): \DateTime
+    {
+        return $this->dateEnd;
+    }
+
+    /**
+     * @param \DateTime $dateEnd
+     * @return Subject
+     */
+    public function setDateEnd(\DateTime $dateEnd): Subject
+    {
+        $this->dateEnd = $dateEnd;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
-    public function isNotify()
+    public function isNotify(): bool
     {
         return $this->notify;
     }
@@ -290,28 +329,25 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      * @param bool $notify
      * @return Subject
      */
-    public function setNotify($notify)
+    public function setNotify(bool $notify): Subject
     {
         $this->notify = $notify;
         return $this;
     }
 
     /**
-     * If false, students will not be able to access/view this subject and its or their data.
-     *
      * @return bool
      */
-    public function isPublish()
+    public function isPublish(): bool
     {
         return $this->publish;
     }
 
     /**
-     * If false, students will not be able to access/view this subject and its or their data.
-     *
      * @return bool
+     * @alias isPublish()
      */
-    public function isPublished()
+    public function isPublished(): bool
     {
         return $this->publish;
     }
@@ -320,11 +356,121 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      * @param bool $publish
      * @return Subject
      */
-    public function setPublish($publish)
+    public function setPublish(bool $publish): Subject
     {
         $this->publish = $publish;
         return $this;
     }
+
+
+//    /**
+//     * @return string
+//     */
+//    public function getName()
+//    {
+//        return $this->name;
+//    }
+//
+//    /**
+//     * @return string
+//     */
+//    public function getCode()
+//    {
+//        return $this->code;
+//    }
+//
+//    /**
+//     * @return string
+//     * @throws \Exception
+//     */
+//    public function getEmail()
+//    {
+//        return $this->email;
+//    }
+//
+//    /**
+//     * @return \DateTime
+//     */
+//    public function getDateStart()
+//    {
+//        return $this->dateStart;
+//    }
+//
+//    /**
+//     * @return \DateTime
+//     */
+//    public function getDateEnd()
+//    {
+//        return $this->dateEnd;
+//    }
+//
+//    /**
+//     * @return string
+//     */
+//    public function getDescription()
+//    {
+//        return $this->description;
+//    }
+//
+//    /**
+//     * @param string $description
+//     * @return Subject
+//     */
+//    public function setDescription($description)
+//    {
+//        $this->description = $description;
+//        return $this;
+//    }
+//
+//    /**
+//     * if set to false the no email notifications should be sent for this subject
+//     *
+//     * @return bool
+//     */
+//    public function isNotify()
+//    {
+//        return $this->notify;
+//    }
+//
+//    /**
+//     * @param bool $notify
+//     * @return Subject
+//     */
+//    public function setNotify($notify)
+//    {
+//        $this->notify = $notify;
+//        return $this;
+//    }
+//
+//    /**
+//     * If false, students will not be able to access/view this subject and its or their data.
+//     *
+//     * @return bool
+//     */
+//    public function isPublish()
+//    {
+//        return $this->publish;
+//    }
+//
+//    /**
+//     * If false, students will not be able to access/view this subject and its or their data.
+//     *
+//     * @return bool
+//     */
+//    public function isPublished()
+//    {
+//        return $this->publish;
+//    }
+//
+//    /**
+//     * @param bool $publish
+//     * @return Subject
+//     */
+//    public function setPublish($publish)
+//    {
+//        $this->publish = $publish;
+//        return $this;
+//    }
 
     /**
      * @return array

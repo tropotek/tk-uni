@@ -216,7 +216,6 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $adapter = $config->getAuthDbTableAdapter($event->all());
         $result = $auth->authenticate($adapter);
 
-
         $event->setResult($result);
         $event->set('auth.password.access', true);   // Can modify their own password
     }

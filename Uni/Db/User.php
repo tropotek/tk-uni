@@ -39,7 +39,6 @@ class User extends \Bs\Db\User implements UserIface
      * Get the path for all file associated to this object
      *
      * @return string
-     * @throws \Exception
      */
     public function getDataPath()
     {
@@ -54,7 +53,6 @@ class User extends \Bs\Db\User implements UserIface
      *
      * @param bool $isTemp
      * @return string
-     * @throws \Exception
      */
     public function generateHash($isTemp = false)
     {
@@ -67,14 +65,16 @@ class User extends \Bs\Db\User implements UserIface
 
     /**
      * Get the institution related to this user
-     * @throws \Exception
      */
     public function getInstitution()
     {
         if (!$this->institution) {
-            $this->institution = \Uni\Config::getInstance()->getInstitutionMapper()->find($this->institutionId);
-            if (!$this->institution && $this->isClient()) {
-                $this->institution = \Uni\Config::getInstance()->getInstitutionMapper()->findByUserId($this->id);
+            try {
+                $this->institution = \Uni\Config::getInstance()->getInstitutionMapper()->find($this->institutionId);
+                if (!$this->institution && $this->isClient()) {
+                    $this->institution = \Uni\Config::getInstance()->getInstitutionMapper()->findByUserId($this->id);
+                }
+            } catch (\Exception $e) {
             }
         }
         return $this->institution;

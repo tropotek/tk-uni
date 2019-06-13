@@ -116,10 +116,7 @@ class SubjectMap extends Mapper
      */
     public function findFiltered($filter, $tool = null)
     {
-        $filter = \Tk\Db\Filter::create($filter);
-        $this->makeQuery($filter);
-        $res = $this->selectFrom($filter->getFrom(), rtrim($filter->getWhere(), 'AND '), $tool);
-        return $res;
+        return $this->selectFromFilter($this->makeQuery(\Tk\Db\Filter::create($filter)), $tool);
     }
 
     /**
@@ -128,7 +125,7 @@ class SubjectMap extends Mapper
      */
     public function makeQuery(\Tk\Db\Filter $filter)
     {
-        $filter->appendFrom('%s a ', $this->quoteParameter($this->getTable()));
+        $filter->appendFrom('%s a', $this->quoteParameter($this->getTable()));
 
         if (!empty($filter['keywords'])) {
             $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
@@ -212,7 +209,7 @@ class SubjectMap extends Mapper
             }
         }
 
-        return $this;
+        return $filter;
     }
 
 

@@ -13,24 +13,21 @@ class RoleMap extends \Bs\Db\RoleMap
 
 
     /**
-     * @param array $filter
-     * @param Tool $tool
-     * @param string $where
-     * @param string $from
-     * @return $this
+     * @param \Tk\Db\Filter $filter
+     * @return \Tk\Db\Filter
      */
-    public function makeQuery($filter = array(), $tool = null, &$where = '', &$from = '')
+    public function makeQuery(\Tk\Db\Filter $filter)
     {
-        parent::makeQuery($filter, $tool, $where, $from);
+        parent::makeQuery($filter);
 
         if (!empty($filter['institutionId'])) {
-            $from .= sprintf(' LEFT JOIN user_role_institution b1 ON (a.id = b1.role_id)');
-            $where .= sprintf('(b1.institution_id = %s OR (b1.institution_id IS NULL AND a.static = 1)) AND ', (int)$filter['institutionId']);
+            $filter->appendFrom(' LEFT JOIN user_role_institution b1 ON (a.id = b1.role_id)');
+            $filter->appendWhere('(b1.institution_id = %s OR (b1.institution_id IS NULL AND a.static = 1)) AND ', (int)$filter['institutionId']);
         }
 
-
-        return $this;
+        return $filter;
     }
+
 
 
     /**

@@ -2,19 +2,18 @@
 namespace Uni\Db;
 
 use Tk\Db\Map\Model;
-use Tk\Db\Tool;
 use Tk\Db\Map\ArrayObject;
 use Tk\DataMap\Db;
 use Tk\DataMap\Form;
-use \Bs\Db\Mapper;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class UserMap extends Mapper
+class UserMap extends \Bs\Db\UserMap
 {
+
     /**
      * @return \Tk\DataMap\DataMap
      */
@@ -128,7 +127,6 @@ class UserMap extends Mapper
     }
 
     /**
-     *
      * @param int $institutionId
      * @param string|array $role
      * @param \Tk\Db\Tool|null $tool
@@ -144,115 +142,26 @@ class UserMap extends Mapper
     }
 
     /**
-     * @param array $filter
-     * @param Tool $tool
-     * @return ArrayObject|User[]
-     * @throws \Exception
+     * @param \Tk\Db\Filter $filter
+     * @return \Tk\Db\Filter
      */
-    public function findFiltered($filter = array(), $tool = null)
+    public function makeQuery(\Tk\Db\Filter $filter)
     {
-        $this->makeQuery($filter, $tool, $where, $from);
-        $res = $this->selectFrom($from, $where, $tool);
-        return $res;
-    }
-
-    /**
-     * @param array $filter
-     * @param Tool $tool
-     * @param string $where
-     * @param string $from
-     * @return $this
-     */
-    public function makeQuery($filter = array(), $tool = null, &$where = '', &$from = '')
-    {
-        $from .= sprintf('%s a ', $this->quoteParameter($this->getTable()));
-
-        if (!empty($filter['keywords'])) {
-            $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
-            $w = '';
-            $w .= sprintf('a.name LIKE %s OR ', $this->getDb()->quote($kw));
-            $w .= sprintf('a.username LIKE %s OR ', $this->getDb()->quote($kw));
-            $w .= sprintf('a.email LIKE %s OR ', $this->getDb()->quote($kw));
-            $w .= sprintf('a.uid LIKE %s OR ', $this->getDb()->quote($kw));
-            $w .= sprintf('a.phone LIKE %s OR ', $this->getDb()->quote($kw));
-            if (is_numeric($filter['keywords'])) {
-                $id = (int)$filter['keywords'];
-                $w .= sprintf('a.id = %d OR ', $id);
-            }
-            if ($w) {
-                $where .= '(' . substr($w, 0, -3) . ') AND ';
-            }
-        }
-
-
-        if (!empty($filter['roleId'])) {
-            $where .= sprintf('a.role_id = %s AND ', (int)$filter['roleId']);
-        }
-
-        if (!empty($filter['uid'])) {
-            $where .= sprintf('a.uid = %s AND ', $this->getDb()->quote($filter['uid']));
-        }
-
-        if (!empty($filter['username'])) {
-            $where .= sprintf('a.username = %s AND ', $this->getDb()->quote($filter['username']));
-        }
-
-        if (!empty($filter['email'])) {
-            $where .= sprintf('a.email = %s AND ', $this->getDb()->quote($filter['email']));
-        }
-
-        if (!empty($filter['phone'])) {
-            $where .= sprintf('a.phone = %s AND ', $this->getDb()->quote($filter['phone']));
-        }
-
-        if (!empty($filter['hash'])) {
-            $where .= sprintf('a.hash = %s AND ', $this->getDb()->quote($filter['hash']));
-        }
+        parent::makeQuery($filter);
 
         if (isset($filter['institutionId'])) {
             if ($filter['institutionId'] > 0)
-                $where .= sprintf('a.institution_id = %d AND ', (int)$filter['institutionId']);
+                $filter->appendWhere('a.institution_id = %d AND ', (int)$filter['institutionId']);
             else
-                $where .= sprintf('(a.institution_id IS NULL OR a.institution_id = 0) AND ');
-        }
-
-        if (!empty($filter['active'])) {
-            $where .= sprintf('a.active = %s AND ', (int)$filter['active']);
-        }
-
-        if (!empty($filter['hasSession'])) {
-            $where .= sprintf('a.session_id != "" AND a.session_id IS NOT NULL AND ');
+                $filter->appendWhere('(a.institution_id IS NULL OR a.institution_id = 0) AND ');
         }
 
         if (!empty($filter['subjectId'])) {
-            $from .= sprintf(', subject_has_user c');
-            $where .= sprintf('a.id = c.user_id AND c.subject_id = %d AND ', (int)$filter['subjectId']);
+            $filter->appendFrom(', subject_has_user c');
+            $filter->appendWhere('a.id = c.user_id AND c.subject_id = %d AND ', (int)$filter['subjectId']);
         }
 
-        if (!empty($filter['role']) && empty($filter['type'])) {
-            $filter['type'] = $filter['role'];
-        }
-        if (!empty($filter['type'])) {
-            $from .= sprintf(', user_role d');
-            $w = $this->makeMultiQuery($filter['type'], 'd.type');
-            if ($w) {
-                $where .= 'a.role_id = d.id AND ('. $w . ') AND ';
-            }
-        }
-
-        if (!empty($filter['exclude'])) {
-            $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
-            if ($w) {
-                $where .= '('. $w . ') AND ';
-            }
-        }
-
-        if ($where) {
-            $where = substr($where, 0, -4);
-        }
-
-        return $this;
+        return $filter;
     }
-
 
 }

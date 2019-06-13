@@ -10,6 +10,8 @@ use Tk\Db\Data;
  */
 class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, InstitutionIface
 {
+    use \Bs\Db\Traits\TimestampTrait;
+    use \Bs\Db\Traits\UserTrait;
 
     /**
      * @var int
@@ -123,11 +125,6 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
 
 
     /**
-     * @var User
-     */
-    protected $user = null;
-
-    /**
      * @var Data
      */
     protected $data = null;
@@ -139,8 +136,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      */
     public function __construct()
     {
-        $this->modified = \Tk\Date::create();
-        $this->created = \Tk\Date::create();
+        $this->_TimestampTrait();
     }
 
     /**
@@ -148,7 +144,7 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      */
     public function save()
     {
-        if (!$this->userId && $this->user) $this->userId = $this->getUser()->getId();
+        if (!$this->userId && $this->_user) $this->userId = $this->getUser()->getId();
         $this->getHash();
         $this->getData()->save();
         parent::save();
@@ -162,15 +158,15 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
      */
     public function getUser()
     {
-        if (!$this->user) {
+        if (!$this->_user) {
             if (!$this->getId()) {
-                $this->user = \Uni\Config::getInstance()->createUser();
-                $this->user->roleId = \Uni\Db\Role::getDefaultRoleId(\Uni\Db\Role::TYPE_CLIENT);
+                $this->_user = \Uni\Config::getInstance()->createUser();
+                $this->_user->roleId = \Uni\Db\Role::getDefaultRoleId(\Uni\Db\Role::TYPE_CLIENT);
             } else {
-                $this->user = \Uni\Config::getInstance()->getUserMapper()->find($this->userId);
+                $this->_user = \Uni\Config::getInstance()->getUserMapper()->find($this->userId);
             }
         }
-        return $this->user;
+        return $this->_user;
     }
 
     /**
@@ -274,44 +270,311 @@ class Institution extends \Tk\Db\Map\Model implements \Tk\ValidInterface, Instit
     }
 
     /**
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @return string
+     * @param string $name
+     * @return Institution
      */
-    public function getEmail()
+    public function setName(string $name): Institution
     {
-        return $this->email;
+        $this->name = $name;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getDomain()
+    public function getDomain(): string
     {
         return $this->domain;
     }
 
     /**
-     * @return boolean
+     * @param string $domain
+     * @return Institution
      */
-    public function isActive()
+    public function setDomain(string $domain): Institution
+    {
+        $this->domain = $domain;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     * @return Institution
+     */
+    public function setEmail(string $email): Institution
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone(): string
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param string $phone
+     * @return Institution
+     */
+    public function setPhone(string $phone): Institution
+    {
+        $this->phone = $phone;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStreet(): string
+    {
+        return $this->street;
+    }
+
+    /**
+     * @param string $street
+     * @return Institution
+     */
+    public function setStreet(string $street): Institution
+    {
+        $this->street = $street;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCity(): string
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city
+     * @return Institution
+     */
+    public function setCity(string $city): Institution
+    {
+        $this->city = $city;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getState(): string
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string $state
+     * @return Institution
+     */
+    public function setState(string $state): Institution
+    {
+        $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry(): string
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param string $country
+     * @return Institution
+     */
+    public function setCountry(string $country): Institution
+    {
+        $this->country = $country;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostcode(): string
+    {
+        return $this->postcode;
+    }
+
+    /**
+     * @param string $postcode
+     * @return Institution
+     */
+    public function setPostcode(string $postcode): Institution
+    {
+        $this->postcode = $postcode;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     * @return Institution
+     */
+    public function setAddress(string $address): Institution
+    {
+        $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMapLat(): float
+    {
+        return $this->mapLat;
+    }
+
+    /**
+     * @param float $mapLat
+     * @return Institution
+     */
+    public function setMapLat(float $mapLat): Institution
+    {
+        $this->mapLat = $mapLat;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMapLng(): float
+    {
+        return $this->mapLng;
+    }
+
+    /**
+     * @param float $mapLng
+     * @return Institution
+     */
+    public function setMapLng(float $mapLng): Institution
+    {
+        $this->mapLng = $mapLng;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMapZoom(): float
+    {
+        return $this->mapZoom;
+    }
+
+    /**
+     * @param float $mapZoom
+     * @return Institution
+     */
+    public function setMapZoom(float $mapZoom): Institution
+    {
+        $this->mapZoom = $mapZoom;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return Institution
+     */
+    public function setDescription(string $description): Institution
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogo(): string
+    {
+        return $this->logo;
+    }
+
+    /**
+     * @param string $logo
+     * @return Institution
+     */
+    public function setLogo(string $logo): Institution
+    {
+        $this->logo = $logo;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFeature(): string
+    {
+        return $this->feature;
+    }
+
+    /**
+     * @param string $feature
+     * @return Institution
+     */
+    public function setFeature(string $feature): Institution
+    {
+        $this->feature = $feature;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
     {
         return $this->active;
     }
+
+    /**
+     * @param bool $active
+     * @return Institution
+     */
+    public function setActive(bool $active): Institution
+    {
+        $this->active = $active;
+        return $this;
+    }
+
 
 
     /**
