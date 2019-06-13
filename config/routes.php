@@ -32,20 +32,19 @@ $routes->add('institution-list', new \Tk\Routing\Route('/institutions.html', 'Un
 //$routes->add('admin-dashboard', new \Tk\Routing\Route('/admin/index.html', 'Uni\Controller\Admin\Dashboard::doDefault'));
 //$routes->add('admin-dashboard-base', new \Tk\Routing\Route('/admin/', 'Uni\Controller\Admin\Dashboard::doDefault'));
 
-// TODO: I do not think this is used?????
-//$routes->add('admin-institution-plugin-manager', new \Tk\Routing\Route('/admin/{zoneName}/{zoneId}/plugins.html', 'Uni\Controller\PluginZoneManager::doDefault',
-//    array('zoneName' => 'institution', 'zoneId' => '0') ));
+$routes->add('admin-institution-plugin-manager', new \Tk\Routing\Route('/admin/{zoneName}/{zoneId}/plugins.html', 'Uni\Controller\PluginZoneManager::doDefault',
+    array('zoneName' => 'institution', 'zoneId' => '0') ));
 
 $routes->add('admin-settings', new \Tk\Routing\Route('/admin/settings.html', 'Uni\Controller\Admin\Settings::doDefault'));
 
 $routes->add('admin-institution-manager', new \Tk\Routing\Route('/admin/institutionManager.html', 'Uni\Controller\Institution\Manager::doDefault'));
 $routes->add('admin-institution-edit', new \Tk\Routing\Route('/admin/institutionEdit.html', 'Uni\Controller\Institution\Edit::doDefault'));
 
-$routes->add('admin-user1-manager', new \Tk\Routing\Route('/admin/userManager.html', 'Uni\Controller\User\Manager::doDefault'));
-$routes->add('admin-user1-edit', new \Tk\Routing\Route('/admin/userEdit.html', 'Uni\Controller\User\Edit::doDefault'));
 $routes->add('admin-user-manager', new \Tk\Routing\Route('/admin/{targetRole}UserManager.html', 'Uni\Controller\User\Manager::doDefaultRole'));
 $routes->add('admin-user-edit', new \Tk\Routing\Route('/admin/{targetRole}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultRole'));
 $routes->add('admin-user-profile', new \Tk\Routing\Route('/admin/profile.html', 'Uni\Controller\User\Profile::doDefault'));
+
+
 
 
 // Client Pages
@@ -56,10 +55,10 @@ $routes->add('client-institution-plugin-manager', new \Tk\Routing\Route('/client
     array('zoneName' => 'institution', 'zoneId' => '0') ));
 
 $routes->add('client-institution-edit', new \Tk\Routing\Route('/client/settings.html', 'Uni\Controller\Institution\Edit::doDefault'));
+$routes->add('client-user-profile', new \Tk\Routing\Route('/client/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
 $routes->add('client-user-manager', new \Tk\Routing\Route('/client/{targetRole}UserManager.html', 'Uni\Controller\User\Manager::doDefaultRole'));
 $routes->add('client-user-edit', new \Tk\Routing\Route('/client/{targetRole}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultRole'));
-$routes->add('client-user-profile', new \Tk\Routing\Route('/client/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
 $routes->add('client-subject-manager', new \Tk\Routing\Route('/client/subjectManager.html', 'Uni\Controller\Subject\Manager::doDefault'));
 $routes->add('client-subject-edit', new \Tk\Routing\Route('/client/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
