@@ -102,7 +102,7 @@ class Subject extends \Uni\FormIface
     }
 
     /**
-     * @return \Tk\Db\ModelInterface|\Uni\Db\SubjectIface
+     * @return \Tk\Db\ModelInterface|\Uni\Db\Subject
      */
     public function getSubject()
     {
@@ -110,7 +110,7 @@ class Subject extends \Uni\FormIface
     }
 
     /**
-     * @param \Uni\Db\SubjectIface $subject
+     * @param \Uni\Db\Subject $subject
      * @return $this
      */
     public function setSubject($subject)

@@ -1,8 +1,6 @@
 <?php
 namespace Uni\Controller\Subject;
 
-use Tk\Form\Event;
-use Tk\Form\Field;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -64,17 +62,11 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         $this->setForm(\Uni\Form\Subject::create()->setModel($this->subject));
         $this->initForm($request);
-        $this->getForm()->execute();
+        $this->getForm()->execute($request);
 
-        $this->initActionPanel();
+        //$this->initActionPanel();
 
     }
-
-    /**
-     * Use this to init the form before execute is called
-     * @param \Tk\Request $request
-     */
-    public function initForm(\Tk\Request $request) { }
 
     /**
      * @param \Tk\Request $request
@@ -115,6 +107,7 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function show()
     {
+        $this->initActionPanel();
         $template = parent::show();
 
         // Render the form
@@ -142,11 +135,7 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="">
-
-  <div class="tk-panel" data-panel-title="Subject Edit" data-panel-icon="fa fa-graduation-cap" var="panel"></div>
-  
-</div>
+<div class="tk-panel" data-panel-title="Subject Edit" data-panel-icon="fa fa-graduation-cap" var="panel"></div>
 HTML;
 
         return \Dom\Loader::load($xhtml);
