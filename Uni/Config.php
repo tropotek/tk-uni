@@ -117,8 +117,8 @@ class Config extends \Bs\Config
         if (!$this->get('subject') && $this->getUser()) {
             try {
                 $subject = null;
-                if ($this->getInstitution() && $this->getRequest()->getAttribute('subjectCode')) {
-                    $subjectCode = strip_tags(trim($this->getRequest()->getAttribute('subjectCode')));
+                if ($this->getInstitution() && $this->getRequest()->attributes->get('subjectCode')) {
+                    $subjectCode = strip_tags(trim($this->getRequest()->attributes->get('subjectCode')));
                     $subject = $this->getInstitution()->findSubjectByCode($subjectCode);
                 } else if ($this->getRequest()->has('subjectId')) {
                     /** @var Db\Subject $c */
@@ -130,7 +130,7 @@ class Config extends \Bs\Config
                 if (!$subject && $this->getSession()->has('lti.subjectId')) { // Check for an LTI default subject selection
                     $subject = $this->getSubjectMapper()->find(self::getSession()->get('lti.subjectId'));
                 }
-                $route = $this->getRequest()->getAttribute('_route');
+                $route = $this->getRequest()->attributes->get('_route');
                 $routePath = $this->getRouteCollection()->get($route)->getPath();
 //                vd($route);
 //                vd($this->getRouteCollection()->get($route)->getPath());
@@ -212,7 +212,7 @@ class Config extends \Bs\Config
         if (!$this->get('is.subject.url')) {
             $b = false;
             /** @var \Tk\Routing\Route $route */
-            $route = $this->getRouteCollection()->get($this->getRequest()->getAttribute('_route'));
+            $route = $this->getRouteCollection()->get($this->getRequest()->attributes->get('_route'));
             if ($route) {
                 $vars = $route->compile()->getPathVariables();
                 $b = in_array('subjectCode', $vars);
@@ -268,7 +268,7 @@ class Config extends \Bs\Config
     {
         $replace = array('admin-', 'client-', 'staff-', 'student-', '-base');
         /** @var \Tk\Request $request */
-        $routeName = $this->getRequest()->getAttribute('_route');
+        $routeName = $this->getRequest()->attributes->get('_route');
         if ($routeName) {
             $routeName = str_replace($replace, '', $routeName);
             return ucwords(trim(str_replace('-', ' ', $routeName)));
