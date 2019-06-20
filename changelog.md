@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.16 [2019-06-20]:
+-------------------------------
+  - Added new top menu for Canvas
+
+
 Ver 3.0.14 [2019-06-19]:
 -------------------------------
   - Upgraded all table, forms and mappers
