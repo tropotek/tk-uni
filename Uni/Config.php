@@ -507,22 +507,30 @@ class Config extends \Bs\Config
     public function getCrumbs($homeTitle = null, $homeUrl = null)
     {
         // TODO: should this be in the LTI plugin?
-        if (!$this->get('crumbs')) {
-//            if ($homeTitle)
-//                \Tk\Crumbs::$homeTitle = $homeTitle;
-//            if ($homeUrl)
-//                \Tk\Crumbs::$homeUrl = $homeUrl;
-//            $obj = \Tk\Crumbs::getInstance();
-//            $this->set('crumbs', $obj);
-            $crumbs = parent::getCrumbs($homeTitle, $homeUrl);
-            if ($this->isLti()) {
-                $list = $crumbs->getList();
-                if (isset($list['Dashboard'])) {
-                    unset($list['Dashboard']);
-                    $crumbs->setList($list);
-                }
+        $crumbs = parent::getCrumbs($homeTitle, $homeUrl);
+        if ($this->isLti()) {
+            $list = $crumbs->getList();
+            if (isset($list['Dashboard'])) {
+                unset($list['Dashboard']);
+                $crumbs->setList($list);
             }
         }
+//        if (!$this->get('crumbs')) {
+////            if ($homeTitle)
+////                \Tk\Crumbs::$homeTitle = $homeTitle;
+////            if ($homeUrl)
+////                \Tk\Crumbs::$homeUrl = $homeUrl;
+////            $obj = \Tk\Crumbs::getInstance();
+////            $this->set('crumbs', $obj);
+//            $crumbs = parent::getCrumbs($homeTitle, $homeUrl);
+//            if ($this->isLti()) {
+//                $list = $crumbs->getList();
+//                if (isset($list['Dashboard'])) {
+//                    unset($list['Dashboard']);
+//                    $crumbs->setList($list);
+//                }
+//            }
+//        }
         return $this->get('crumbs');
     }
 
