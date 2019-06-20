@@ -222,20 +222,6 @@ class Config extends \Bs\Config
         return $this->get('is.subject.url');
     }
 
-    /**
-     * Is this request within an LTI session
-     *
-     * @return bool
-     */
-    public function isLti()
-    {
-        // TODO: should this be in the LTI plugin?
-        if ($this->getSession()->has('lti_launch')) {
-            return true;
-        }
-        return false;
-    }
-
 
     /**
      * A helper method to create an instance of an Auth adapter
@@ -511,6 +497,62 @@ class Config extends \Bs\Config
             $this->set('page.template.handler', new \Uni\Listener\PageTemplateHandler());
         }
         return $this->get('page.template.handler');
+    }
+
+    /**
+     * @param string $homeTitle
+     * @param string $homeUrl
+     * @return \Tk\Crumbs
+     */
+    public function getCrumbs($homeTitle = null, $homeUrl = null)
+    {
+        // TODO: should this be in the LTI plugin?
+        if (!$this->get('crumbs')) {
+//            if ($homeTitle)
+//                \Tk\Crumbs::$homeTitle = $homeTitle;
+//            if ($homeUrl)
+//                \Tk\Crumbs::$homeUrl = $homeUrl;
+//            $obj = \Tk\Crumbs::getInstance();
+//            $this->set('crumbs', $obj);
+            $crumbs = parent::getCrumbs($homeTitle, $homeUrl);
+            if ($this->isLti()) {
+                $list = $crumbs->getList();
+                if (isset($list['Dashboard'])) {
+                    unset($list['Dashboard']);
+                    $crumbs->setList($list);
+                }
+            }
+        }
+        return $this->get('crumbs');
+    }
+
+    /**
+     * Is this request within an LTI session
+     *
+     * @return bool
+     */
+    public function isLti()
+    {
+        // TODO: should this be in the LTI plugin?
+        if ($this->get('force.lti.template') || $this->getSession()->has('lti_launch')) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $templatePath
+     * @return Page|\Bs\Page
+     */
+    public function getPage($templatePath = '')
+    {
+        if (!$this->get('controller.page')) {
+            // TODO: Look into a way to move this somehow into the LTI plugin
+            if ($this->isLti() && $this->has('template.lti') && $this->isSubjectUrl()) {
+                $templatePath = $this->getSitePath() . $this->get('template.lti');
+            }
+        }
+        return parent::getPage($templatePath);
     }
 
     /**

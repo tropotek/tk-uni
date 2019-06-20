@@ -80,6 +80,9 @@ $routes->add('staff-subject-plugin-manager', new \Tk\Routing\Route('/staff/{zone
 $routes->add('staff-user-manager', new \Tk\Routing\Route('/staff/{targetRole}UserManager.html', 'Uni\Controller\User\Manager::doDefaultRole'));
 $routes->add('staff-user-edit', new \Tk\Routing\Route('/staff/{targetRole}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultRole'));
 
+$routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault'));
+$routes->add('staff-subject-user-profile', new \Tk\Routing\Route('/staff/{subjectCode}/profile.html', 'Uni\Controller\User\Profile::doDefault'));
+
 $routes->add('staff-subject-manager', new \Tk\Routing\Route('/staff/subjectManager.html', 'Uni\Controller\Subject\StudentManager::doDefault'));
 $routes->add('staff-subject-add', new \Tk\Routing\Route('/staff/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('staff-subject-add-enrollment', new \Tk\Routing\Route('/staff/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
@@ -98,6 +101,7 @@ $routes->add('staff-subject-user-edit', new \Tk\Routing\Route('/staff/{subjectCo
 //$routes->add('student-subject-dashboard', new \Tk\Routing\Route('/student/{subjectCode}/index.html', 'Uni\Controller\Student\SubjectDashboard::doDefault'));
 
 $routes->add('student-user-profile', new \Tk\Routing\Route('/student/profile.html', 'Uni\Controller\User\Profile::doDefault'));
+$routes->add('student-subject-user-profile', new \Tk\Routing\Route('/student/{subjectCode}/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
 
 
