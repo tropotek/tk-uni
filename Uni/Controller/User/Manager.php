@@ -80,7 +80,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
         if (empty($filter['type'])) {
             $filter['type'] = $this->targetRole;
         }
-        if ($this->getConfig()->isSubjectUrl() && $this->getConfig()->getSubjectId()) {
+        if (($this->getConfig()->isSubjectUrl() || $request->has('subjectId')) && $this->getConfig()->getSubjectId()) {
             $filter['subjectId'] = $this->getConfig()->getSubjectId();
         }
         $this->getTable()->setList($this->getTable()->findList($filter));
