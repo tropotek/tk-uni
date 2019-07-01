@@ -176,6 +176,8 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             if (!$subject) {
                 $subject = $config->getSubjectMapper()->findByCode($subjectData['code'], $adapter->getInstitution()->getId());
             }
+
+            
             if (!$subject) {
                 throw new \Tk\Exception('Subject ['.$subjectData['code'].'] not available, Please contact the subject coordinator.');
 
@@ -185,6 +187,8 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                $subject->save();
 //                $adapter->setSubject($subject);
 //                $config->getSubjectMapper()->addUser($subject->getId(), $user->getId());
+            } else {
+                $event->setRedirect(\Uni\Uri::createSubjectUrl('/index.html', $subject));
             }
             $config->getSession()->set('lti.subjectId', $subject->getId());   // Limit the dashboard to one subject for LTI logins
             $config->getSession()->set('auth.password.access', false);
