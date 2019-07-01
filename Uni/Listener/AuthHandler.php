@@ -177,7 +177,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                 $subject = $config->getSubjectMapper()->findByCode($subjectData['code'], $adapter->getInstitution()->getId());
             }
 
-            
+
             if (!$subject) {
                 throw new \Tk\Exception('Subject ['.$subjectData['code'].'] not available, Please contact the subject coordinator.');
 
