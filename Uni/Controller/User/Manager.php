@@ -85,7 +85,6 @@ class Manager extends \Uni\Controller\AdminManagerIface
         if (($this->getConfig()->isSubjectUrl() || $request->has('subjectId')) && $this->getConfig()->getSubjectId()) {
             $filter['subjectId'] = $this->getConfig()->getSubjectId();
         }
-        vd($filter);
         $this->getTable()->setList($this->getTable()->findList($filter));
 
 
