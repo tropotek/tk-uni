@@ -239,6 +239,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                 $user->sessionId = $config->getSession()->getId();
             }
             $user->save();
+
         }
     }
 
