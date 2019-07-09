@@ -33,18 +33,19 @@ class Subject extends \Uni\FormIface
         $layout->addRow('publish', 'col-md-6');
         $layout->removeRow('notify', 'col-md-6');
 
-        $this->appendField(new Field\Input('name'))->setRequired(true);
-        $this->appendField(new Field\Input('code'))->setRequired(true);
-        $this->appendField(new Field\Input('email'))->setRequired(true);
-        $this->appendField(new Field\DateRange('date'))->setRequired(true)->setLabel('Dates')
+        $tab = 'Details';
+        $this->appendField(new Field\Input('name'))->setTabGroup($tab)->setRequired(true);
+        $this->appendField(new Field\Input('code'))->setTabGroup($tab)->setRequired(true);
+        $this->appendField(new Field\Input('email'))->setTabGroup($tab)->setRequired(true);
+        $this->appendField(new Field\DateRange('date'))->setTabGroup($tab)->setRequired(true)->setLabel('Dates')
             ->setNotes('The start and end dates of the subject. Student actions will be restricted outside these dates.');
 
-        $this->appendField(new Field\Checkbox('publish'))
+        $this->appendField(new Field\Checkbox('publish'))->setTabGroup($tab)
             ->setCheckboxLabel('If not set, students will not be able to access this subject and its data.');
-        $this->appendField(new Field\Checkbox('notify'))
+        $this->appendField(new Field\Checkbox('notify'))->setTabGroup($tab)
             ->setCheckboxLabel('Use this setting to disable email notifications for the entire subject.');
 
-        $this->appendField(new Field\Textarea('description'))->addCss('tkTextareaTool');
+        $this->appendField(new Field\Textarea('description'))->setTabGroup($tab)->addCss('tkTextareaTool');
 
 
         if ($this->getSubject()->getId())
