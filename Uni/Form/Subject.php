@@ -82,7 +82,7 @@ class Subject extends \Uni\FormIface
             return;
         }
         
-        $isNew = (bool)$this->getSubject()->getId();
+        $isNew = !(bool)$this->getSubject()->getId();
         $this->getSubject()->save();
 
         // If this is a staff member add them to the subject
