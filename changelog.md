@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.0.32 [2019-07-10]:
+-------------------------------
+  - Fixed create new user password issues
+  - Merge branch 'master' of ssh://github.com/tropotek/tk-uni
+
+
 Ver 3.0.30 [2019-07-09]:
 -------------------------------
 
