@@ -36,11 +36,11 @@ class Subject extends TableIface
         $this->appendCell(new Text('name'))->addCss('key')->setUrl($this->getEditUrl());
         $this->appendCell(new Text('code'));
         $this->appendCell(new Email('email'));
-        $this->appendCell(new Boolean('notify'));
-        $this->appendCell(new Boolean('publish'));
         $this->appendCell(Date::createDate('dateStart', \Tk\Date::FORMAT_ISO_DATE));
         $this->appendCell(Date::createDate('dateEnd', \Tk\Date::FORMAT_ISO_DATE));
 
+        $this->appendCell(new Boolean('notify'));
+        $this->appendCell(new Boolean('publish'));
         $this->appendCell(new Boolean('active'));
         $this->appendCell(new Date('created'));
 

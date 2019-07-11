@@ -14,7 +14,7 @@ class AdminIface extends \Bs\Controller\AdminIface
      *
      * @return \Uni\Db\Institution|null|\Uni\Db\InstitutionIface
      */
-    public function getInstitution()
+    public function getSessionType()
     {
         return $this->getConfig()->getInstitution();
     }

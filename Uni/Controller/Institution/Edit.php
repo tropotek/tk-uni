@@ -60,15 +60,15 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function initActionPanel()
     {
-        if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->getInstitution()->getUser())) {
+        if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->getSessionType()->getUser())) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
-                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->getInstitution()->getUser()->getHash()),
+                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->getSessionType()->getUser()->getHash()),
                 'fa fa-user-secret'))->addCss('tk-masquerade')->setAttr('data-confirm', 'You are about to masquerade as the selected user?');
         }
 
         if ($this->getUser()->isClient() || $this->getUser()->isStaff()) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
-                \Uni\Uri::createHomeUrl('/institution/'.$this->getInstitution()->getId().'/plugins.html'), 'fa fa-plug'));
+                \Uni\Uri::createHomeUrl('/institution/'.$this->getSessionType()->getId().'/plugins.html'), 'fa fa-plug'));
 
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Staff',
                 \Uni\Uri::createHomeUrl('/staffUserManager.html'), 'fa fa-users'));
@@ -117,7 +117,7 @@ HTML;
     /**
      * @return \Tk\Db\ModelInterface|\Uni\Db\Institution
      */
-    public function getInstitution()
+    public function getSessionType()
     {
         return $this->institution;
     }
