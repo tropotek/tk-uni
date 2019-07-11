@@ -89,6 +89,7 @@ class User extends \Bs\Form\User
     public function doSubjectUpdate($form, $event)
     {
         if ($form->hasErrors()) return;
+        if (!$form->getField('selSubject')) return;
 
         // Add user to subjects
         $selected = $form->getFieldValue('selSubject');
