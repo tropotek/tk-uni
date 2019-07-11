@@ -78,7 +78,7 @@ $routes->add('staff-subject-plugin-manager', new \Tk\Routing\Route('/staff/{zone
     array('zoneName' => 'subject', 'zoneId' => '0') ));
 
 $routes->add('staff-user-manager', new \Tk\Routing\Route('/staff/{targetRole}UserManager.html', 'Uni\Controller\User\Manager::doDefaultRole'));
-$routes->add('staff-user-edit', new \Tk\Routing\Route('/staff/{targetRole}UserEdit.html', 'App\Controller\User\Edit::doDefaultRole'));
+$routes->add('staff-user-edit', new \Tk\Routing\Route('/staff/{targetRole}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultRole'));
 
 $routes->add('staff-user-profile', new \Tk\Routing\Route('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 $routes->add('staff-subject-user-profile', new \Tk\Routing\Route('/staff/{subjectCode}/profile.html', 'Uni\Controller\User\Profile::doDefault'));
