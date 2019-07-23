@@ -35,7 +35,6 @@ class Manager extends AdminManagerIface
      */
     public function doDefault(Request $request)
     {
-
         $this->setTable(Subject::create()->setEditUrl(\Uni\Uri::createHomeUrl('/subjectEdit.html'))->init());
 
         $filter = array();
@@ -49,7 +48,6 @@ class Manager extends AdminManagerIface
 
     public function initActionPanel()
     {
-
         $this->getActionPanel()->append(Link::createBtn('New Subject',
             Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-graduation-cap'));
     }
