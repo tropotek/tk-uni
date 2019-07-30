@@ -60,9 +60,9 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function initActionPanel()
     {
-        if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->getSessionType()->getUser())) {
+        if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->getInstitution()->getUser())) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
-                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->getSessionType()->getUser()->getHash()),
+                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->getInstitution()->getUser()->getHash()),
                 'fa fa-user-secret'))->addCss('tk-masquerade')->setAttr('data-confirm', 'You are about to masquerade as the selected user?');
         }
 
@@ -117,7 +117,7 @@ HTML;
     /**
      * @return \Tk\Db\ModelInterface|\Uni\Db\Institution
      */
-    public function getSessionType()
+    public function getInstitution()
     {
         return $this->institution;
     }

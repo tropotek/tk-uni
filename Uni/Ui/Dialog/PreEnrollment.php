@@ -75,9 +75,8 @@ class PreEnrollment extends Iface
 
         // Check file list
         if ($request->getUploadedFile('csvFile') && $request->getUploadedFile('csvFile')->getError() == \UPLOAD_ERR_OK) {
-            /* @var \Tk\UploadedFile $file */
             $file = $request->getUploadedFile('csvFile');
-            if (($handle = fopen($file->getFile(), 'r')) !== FALSE) {
+            if (($handle = fopen($file->getPathname(), 'r')) !== FALSE) {
                 $list = $this->processCsv($handle);
             }
         } else if($request->get('csvList')) {
