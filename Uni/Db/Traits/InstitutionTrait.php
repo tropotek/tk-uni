@@ -3,6 +3,7 @@ namespace Uni\Db\Traits;
 
 use Uni\Config;
 use Uni\Db\InstitutionIface;
+use Uni\Db\Institution;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
