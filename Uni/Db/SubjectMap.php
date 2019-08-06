@@ -435,6 +435,8 @@ WHERE a.subject_id = ? ' . $toolStr);
 
 
     /**
+     * Check if a user is pre-enrolled in any subject for that institution
+     *
      * @param $institutionId
      * @param array|string $email
      * @param string $uid
