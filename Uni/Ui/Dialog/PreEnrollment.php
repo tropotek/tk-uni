@@ -4,23 +4,6 @@ namespace Uni\Ui\Dialog;
 use Tk\Request;
 
 /**
- * This class uses the bootstrap dialog box model
- * @link http://getbootstrap.com/javascript/#modals
- *
- *
- * <code>
- * // doDefault()
- * $this->dialog = new \Uni\Ui\Dialog\PreEnrollment('Enroll Student');
- * $this->dialog->execute($request);
- *
- * ...
- * // show()
- * $template->insertTemplate('dialog', $this->dialog->show());
- * $template->setAttr('modelBtn', 'data-target', '#'.$this->dialog->getId());
- *
- * </code>
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
