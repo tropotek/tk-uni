@@ -11,6 +11,7 @@ use Dom\Template;
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
+ * @deprecated
  */
 class Iface extends \Dom\Renderer\Renderer
 {
@@ -42,6 +43,8 @@ class Iface extends \Dom\Renderer\Renderer
      */
     public function __construct($title, $body = '')
     {
+        throw new \Tk\Exception('deprecated');
+
         $this->setTitle($title);
         $this->setBody($body);
 

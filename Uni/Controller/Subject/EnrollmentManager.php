@@ -15,7 +15,7 @@ use Uni\Db\SubjectIface;
 use Uni\Db\User;
 use Uni\Table\Enrolled;
 use Uni\Table\PreEnrollment;
-use Uni\Ui\Dialog\AjaxSelect;
+use Tk\Ui\Dialog\AjaxSelect;
 use Uni\Uri;
 
 /**
@@ -107,13 +107,15 @@ class EnrollmentManager extends AdminIface
             /** @var Subject $destSubject */
             $config = Config::getInstance();
             $destSubject = $config->getSubjectMapper()->find($data['selectedId']);
-
+            if (!$destSubject)
+                throw new \Tk\Exception('Invalid destination subject');
             $filter = array(
                 'institutionId' => $subject->institutionId,
                 'subjectId' => $subject->getId()
             );
             $userList = $config->getUserMapper()->findFiltered($filter);
             $i = 0;
+            /** @var \Uni\Db\User $user */
             foreach ($userList as $user) {
                 if (!$user->isEnrolled($destSubject->getId())) {
                     $config->getSubjectMapper()->addUser($destSubject->getId(), $user->getId());
@@ -141,6 +143,8 @@ class EnrollmentManager extends AdminIface
             /** @var User $user */
             $config = Config::getInstance();
             $user = $config->getUserMapper()->find($data['selectedId'], $subject->institutionId);
+            if (!$user)
+                throw new \Tk\Exception('Invalid user selected');
             if (!$user || (!$user->isStaff() && !$user->isStudent())) {
                 Alert::addWarning('Invalid user.');
             } else {
@@ -212,7 +216,6 @@ class EnrollmentManager extends AdminIface
             ->setAttr('title', 'Copy this enrollment list into another subject.');
 
         $template = parent::show();
-
 
         // Enrolled Table
         $template->appendTemplate('enrolledTable', $this->enrolledTable->getRenderer()->show());

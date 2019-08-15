@@ -25,7 +25,7 @@ use Tk\Request;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class PreEnrollment extends Iface
+class PreEnrollment extends \Tk\Ui\Dialog\Dialog
 {
 
     /**
@@ -39,8 +39,8 @@ class PreEnrollment extends Iface
     public function __construct($title)
     {
         parent::__construct($title);
-        $this->addButton('Close');
-        $this->addButton('Enroll', array('class' => 'btn btn-primary'));
+        $this->getButtonList()->append(\Tk\Ui\Button::createButton('Enroll')->setAttr('id', $this->getEnrollButtonId())->addCss('btn-primary'));
+        $this->addCss('tk-dialog-pre-enrollment');
     }
 
     /**
@@ -171,11 +171,12 @@ class PreEnrollment extends Iface
      */
     public function show()
     {
-        $template = $this->getTemplate();
-        $template->addCss('dialog', 'tk-dialog-pre-enrollment');
-        $this->setBody($this->makeBodyHtml());
-        $this->getTemplate()->setAttr('dialog', 'data-enroll-btn', '#'.$this->getEnrollButtonId());
-        $this->getTemplate()->setAttr('dialog', 'data-enroll-form', '#addEnrollmentForm');
+        $this->setAttr('data-enroll-btn', '#'.$this->getEnrollButtonId());
+        $this->setAttr('data-enroll-form', '#addEnrollmentForm');
+
+        $this->setContent($this->makeBodyHtml());
+        $template = parent::show();
+
 
         $js = <<<JS
 jQuery(function($) {
@@ -193,7 +194,7 @@ jQuery(function($) {
 JS;
         $template->appendJs($js);
         
-        return parent::show();
+        return $template;
     }
 
     /**

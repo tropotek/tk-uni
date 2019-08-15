@@ -8,7 +8,6 @@ use Tk\Request;
  * This class uses the bootstrap dialog box model
  * @link http://getbootstrap.com/javascript/#modals
  *
- *
  * <code>
  * // doDefault()
  * $this->dialog = new \App\Ui\Dialog\FindUser('Enroll Student');
@@ -25,9 +24,9 @@ use Tk\Request;
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
- * @deprecated
+ * @deprecated use Ajax select
  */
-class FindUser extends Iface
+class FindUser extends \Tk\Ui\Dialog\Dialog
 {
 
     /**
@@ -49,19 +48,21 @@ class FindUser extends Iface
      */
     public function __construct($title, $filter = array())
     {
+        throw new \Tk\Exception('deprecated');
         parent::__construct($title);
         $this->filter = $filter;
-
-        $this->addButton('Close');
     }
 
     /**
-     * @param callable $callable
+     * @param callable $onSelect
      * @return $this
+     * @throws \Tk\Exception
      */
-    public function setOnSelect($callable)
+    public function setOnSelect($onSelect)
     {
-        $this->onSelect = $callable;
+        if (!is_callable($onSelect))
+            throw new \Tk\Exception('Invalid callable object given');
+        $this->onSelect = $onSelect;
         return $this;
     }
 
@@ -109,7 +110,6 @@ class FindUser extends Iface
 
         $js = <<<JS
 jQuery(function($) {
-  
   
   $('.dialog-find-user').each(function () {
     var dialog = $(this);

@@ -1,8 +1,6 @@
 <?php
 namespace Uni\Table;
 
-use Tk\Form\Field;
-use Tk\Table\Cell;
 
 /**
  * @author Mick Mifsud
@@ -14,7 +12,7 @@ class Enrolled extends \Uni\TableIface
 {
 
     /**
-     * @var \Uni\Ui\Dialog\AjaxSelect
+     * @var \Tk\Ui\Dialog\AjaxSelect
      */
     protected $findSubjectDialog = null;
 
@@ -36,7 +34,7 @@ class Enrolled extends \Uni\TableIface
      */
     public function init()
     {
-        $this->findSubjectDialog = new \Uni\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
+        $this->findSubjectDialog = new \Tk\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
         //$params = array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId());
         $params = array('subjectId' => $this->getConfig()->getSubject()->getId());
         if ($this->ajaxDialogParams)

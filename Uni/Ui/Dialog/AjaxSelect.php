@@ -60,6 +60,7 @@ class AjaxSelect extends Iface
      */
     public function __construct($title, $ajaxUrl = null)
     {
+        throw new \Tk\Exception('deprecated');
         parent::__construct($title);
         $this->ajaxUrl = $ajaxUrl;
         $this->addButton('Close');
