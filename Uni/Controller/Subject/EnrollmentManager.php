@@ -53,7 +53,9 @@ class EnrollmentManager extends AdminIface
      */
     protected $enrolClassDialog = null;
 
-
+    /**
+     * @var null
+     */
     protected $enrolledAjaxDialogParams = null;
 
 
@@ -81,12 +83,11 @@ class EnrollmentManager extends AdminIface
      */
     public function doDefault(Request $request)
     {
-        if (!$this->getSubject()) {
+        $subject = $this->getSubject();
+        if (!$subject) {
             throw new \Tk\Exception('Invalid subject details');
         }
-        $this->setPageTitle("`" . $this->getSubject()->name . '` Enrolments');
-
-        $subject = $this->getSubject();
+        $this->setPageTitle("`" . $subject->name . '` Enrolments');
 
         // Pre-Enroll Csv import dialog
         $this->preEnrolDialog = new \Uni\Ui\Dialog\PreEnrollment('Pre-Enroll User');
@@ -125,7 +126,7 @@ class EnrollmentManager extends AdminIface
             if ($i) {
                 Alert::addSuccess('Added ' . $i . ' students to the subject `' . $destSubject->name . '`');
             }
-            return Uri::create()->reset();
+            return Uri::create();
         });
         $this->enrolClassDialog->execute($request);
 
@@ -139,13 +140,14 @@ class EnrollmentManager extends AdminIface
         $this->enrolStudentDialog = new AjaxSelect('Enrol Student', Uri::create('/ajax/user/findFiltered.html'));
         $this->enrolStudentDialog->setAjaxParams($filter);
         //$this->enrolStudentDialog->setNotes('');
-        $this->enrolStudentDialog->setOnSelect(function ($data) use ($subject) {
+        $this->enrolStudentDialog->setOnSelect(function ($data) {
             /** @var User $user */
             $config = Config::getInstance();
+            $subject = $config->getSubject();
             $user = $config->getUserMapper()->find($data['selectedId'], $subject->institutionId);
             if (!$user)
                 throw new \Tk\Exception('Invalid user selected');
-            if (!$user || (!$user->isStaff() && !$user->isStudent())) {
+            if (!$user || (!$user->hasPermission(\Uni\Db\Permission::TYPE_STAFF) && !$user->hasPermission(\Uni\Db\Permission::TYPE_STUDENT))) {
                 Alert::addWarning('Invalid user.');
             } else {
                 if (!$user->isEnrolled($subject->getId())) {
@@ -155,7 +157,7 @@ class EnrollmentManager extends AdminIface
                     Alert::addWarning($user->getName() . ' already enrolled in the subject ' . $subject->name);
                 }
             }
-            return Uri::create()->reset();
+            return Uri::create();
         });
         $this->enrolStudentDialog->execute($request);
 

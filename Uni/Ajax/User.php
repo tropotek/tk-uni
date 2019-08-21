@@ -40,7 +40,6 @@ class User
                 $data[] = $u;
             }
         }
-        vd($data);
         return \Tk\ResponseJson::createJson($data, $status);
     }
 

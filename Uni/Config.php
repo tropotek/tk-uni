@@ -132,9 +132,6 @@ class Config extends \Bs\Config
                 }
                 $route = $this->getRequest()->attributes->get('_route');
                 $routePath = $this->getRouteCollection()->get($route)->getPath();
-//                vd($route);
-//                vd($this->getRouteCollection()->get($route)->getPath());
-//                vd($routePath, strpos($routePath, '/{subjectCode}'));
                 if (!$subject && $this->getSession()->has(self::SID_SUBJECT) && strpos($routePath, '/{subjectCode}') !== false) {
                     $subject = $this->getSubjectMapper()->find(self::getSession()->get(self::SID_SUBJECT));
                 }
