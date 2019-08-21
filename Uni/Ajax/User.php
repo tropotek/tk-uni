@@ -19,7 +19,7 @@ class User
     {
         $status = 200;  // change this on error
         $config = \Uni\Config::getInstance();
-        
+
         $data = array();
         $filter = $request->all();
         unset($filter['subjectId']);
@@ -40,6 +40,7 @@ class User
                 $data[] = $u;
             }
         }
+        vd($data);
         return \Tk\ResponseJson::createJson($data, $status);
     }
 
