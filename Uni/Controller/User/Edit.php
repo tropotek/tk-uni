@@ -73,10 +73,15 @@ class Edit extends \Uni\Controller\AdminEditIface
                 throw new \Tk\Exception('Invalid system details');
         }
 
-        $this->setForm(\Uni\Form\User::create()->setTargetRole($this->targetRole)->setModel($this->user));
+        $this->setForm($this->createForm());
         $this->initForm($request);
-        $this->getForm()->execute();
+        $this->getForm()->execute($request);
 
+    }
+
+    protected function createForm()
+    {
+        return \Uni\Form\User::create()->setTargetRole($this->targetRole)->setModel($this->user);
     }
 
     public function initActionPanel()
@@ -98,7 +103,7 @@ class Edit extends \Uni\Controller\AdminEditIface
         $template = parent::show();
 
         // Render the form
-        $template->appendTemplate('panel', $this->form->show());
+        $template->appendTemplate('panel', $this->getForm()->show());
         
         if ($this->user->id) {
             $template->setAttr('panel', 'data-panel-title', $this->user->name . ' - [UID ' . $this->user->getId() . ']');
