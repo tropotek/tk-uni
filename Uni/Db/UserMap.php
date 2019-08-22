@@ -100,6 +100,7 @@ class UserMap extends \Bs\Db\UserMap
      */
     public function findByEmail($email, $institutionId = null, $role = null)
     {
+        // TODO: I think we have a logic issue here?????
         if (!$this->getConfig()->get('system.auth.email.unique') && !$this->getConfig()->get('system.auth.email.require')) {
             throw new \Tk\Exception('User email is not a unique key. Change $config[\'system.auth.email.unique\'] = false;');
         }
