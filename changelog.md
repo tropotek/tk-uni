@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.1.2 [2019-08-23]:
+-------------------------------
+
+
 Ver 3.1.0 [2019-08-21]:
 -------------------------------
   - Some major updates to the \Tk\Ui\Dialog\Dialog objects
