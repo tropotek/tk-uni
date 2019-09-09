@@ -97,7 +97,8 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function save()
     {
         $this->code = self::cleanCode($this->code);
-        $this->getData()->save();
+        if ($this->getData()->count())
+            $this->getData()->save();
         parent::save();
     }
 
