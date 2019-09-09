@@ -9,13 +9,10 @@ namespace Uni\Controller\Subject;
  */
 class Edit extends \Uni\Controller\AdminEditIface
 {
-
-
     /**
      * @var \Uni\Db\SubjectIface|\Uni\Db\Subject
      */
     protected $subject = null;
-
 
 
     /**
