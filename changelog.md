@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.1.10 [2019-10-04]:
+-------------------------------
+  - Update Tk\Routing\Route constructor to be compatable with sysmfony Route object
+
+
 Ver 3.1.8 [2019-09-10]:
 -------------------------------
 
