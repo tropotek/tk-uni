@@ -164,6 +164,14 @@ class SubjectMap extends Mapper
             $filter->appendWhere('a.publish = %s AND ', (int)$filter['publish']);
         }
 
+
+        $dates = array('dateStart', 'dateEnd');
+        foreach ($dates as $name) {
+            if (!empty($filter[$name]) && !$filter[$name] instanceof \DateTime) {
+                $filter[$name] = \Tk\Date::createFormDate($filter[$name]);
+            }
+        }
+
         if (!empty($filter['dateStart']) && !empty($filter['dateEnd'])) {     // Contains
             /** @var \DateTime $dateStart */
             $dateStart = Date::floor($filter['dateStart']);
