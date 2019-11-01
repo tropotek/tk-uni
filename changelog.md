@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.1.12 [2019-11-01]:
+-------------------------------
+  - The dates for filter submissions what the F!@#$@#
+
+
 Ver 3.1.10 [2019-10-04]:
 -------------------------------
   - Update Tk\Routing\Route constructor to be compatable with sysmfony Route object
