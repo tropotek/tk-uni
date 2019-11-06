@@ -104,9 +104,10 @@ class EnrollmentManager extends AdminIface
         $this->enrolClassDialog = new AjaxSelect('Enroll Class', Uri::create('/ajax/subject/findFiltered.html'));
         $this->enrolClassDialog->setAjaxParams($filter);
         $this->enrolClassDialog->setNotes('Select the subject to enroll all the students into.');
-        $this->enrolClassDialog->setOnSelect(function ($data) use ($subject) {
+        $this->enrolClassDialog->setOnSelect(function ($request) use ($subject) {
             /** @var Subject $destSubject */
             $config = Config::getInstance();
+            $data = $request->all();
             $destSubject = $config->getSubjectMapper()->find($data['selectedId']);
             if (!$destSubject)
                 throw new \Tk\Exception('Invalid destination subject');
@@ -140,9 +141,10 @@ class EnrollmentManager extends AdminIface
         $this->enrolStudentDialog = new AjaxSelect('Enrol Student', Uri::create('/ajax/user/findFiltered.html'));
         $this->enrolStudentDialog->setAjaxParams($filter);
         //$this->enrolStudentDialog->setNotes('');
-        $this->enrolStudentDialog->setOnSelect(function ($data) {
+        $this->enrolStudentDialog->setOnSelect(function ($request) {
             /** @var User $user */
             $config = Config::getInstance();
+            $data = $request->all();
             $subject = $config->getSubject();
             $user = $config->getUserMapper()->find($data['selectedId'], $subject->institutionId);
             if (!$user)

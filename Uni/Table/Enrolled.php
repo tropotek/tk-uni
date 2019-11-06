@@ -41,9 +41,10 @@ class Enrolled extends \Uni\TableIface
             $params = $this->ajaxDialogParams;
         $this->findSubjectDialog->setAjaxParams($params);
         $this->findSubjectDialog->setNotes('Select the subject to migrate the student to...');
-        $this->findSubjectDialog->setOnSelect(function ($data) {
+        $this->findSubjectDialog->setOnSelect(function ($request) {
             $config = \Uni\Config::getInstance();
             $dispatcher = $config->getEventDispatcher();
+            $data = $request->all();
 
             // Migrate the user to the new subject
             $event = new \Tk\Event\Event();
