@@ -13,7 +13,6 @@ use Uni\Db\Institution;
 trait InstitutionTrait
 {
 
-
     /**
      * @var InstitutionIface
      */
@@ -31,7 +30,7 @@ trait InstitutionTrait
 
     /**
      * @param int $institutionId
-     * @return InstitutionTrait
+     * @return $this
      */
     public function setInstitutionId($institutionId)
     {
