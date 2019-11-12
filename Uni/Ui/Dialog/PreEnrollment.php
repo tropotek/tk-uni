@@ -78,14 +78,25 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
             $username = '';     // TODO: Make this the secondary search param
             $email = '';        // TODO: We need to keep this for LTI integrations
 
+            foreach ($arr as $val) {
+                if ((preg_match('/^[0-9]{4,10}$/', $val))) {
+                    $uid = $val;
+                } else if (filter_var($val, \FILTER_VALIDATE_EMAIL)) {
+                    $email = $val;
+                } else {
+                    $username = $val;
+                }
+            }
+            /*
             if (isset($arr['uid']))
                 $uid = trim(strip_tags($arr['uid']));
             if (isset($arr['username']))
                 $username = trim(strtolower(strip_tags($arr['username'])));
             if (isset($arr['email']))
                 $email = trim(strip_tags($arr['email']));
+            */
 
-            if ((!$uid && !$username)) {
+            if (!$uid && !$username) {
                 continue;
             }
 
