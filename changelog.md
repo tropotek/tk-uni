@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.1.14 [2019-11-12]:
+-------------------------------
+  - Updated subject enrollments to be more intellegant when importing CSV
+  - Added more to the new CA plugin
+
+
 Ver 3.1.12 [2019-11-01]:
 -------------------------------
   - The dates for filter submissions what the F!@#$@#
