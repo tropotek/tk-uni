@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.1.16 [2019-12-02]:
+-------------------------------
+
+
 Ver 3.1.14 [2019-11-12]:
 -------------------------------
   - Updated subject enrollments to be more intellegant when importing CSV
