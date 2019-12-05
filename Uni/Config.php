@@ -376,6 +376,26 @@ class Config extends \Bs\Config
     }
 
     /**
+     * @return Db\CourseMap
+     */
+    public function getCourseMapper()
+    {
+        if (!$this->get('obj.mapper.course')) {
+            $this->set('obj.mapper.course', Db\CourseMap::create());
+        }
+        return $this->get('obj.mapper.course');
+    }
+
+    /**
+     * @return Db\Course|Db\CourseIface
+     * @throws \Exception
+     */
+    public function createCourse()
+    {
+        return new Db\Course();
+    }
+
+    /**
      * @return Db\SubjectMap
      */
     public function getSubjectMapper()

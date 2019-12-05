@@ -41,7 +41,7 @@ trait InstitutionTrait
     /**
      * Get the institution related to this user
      *
-     * @return Institution|null
+     * @return InstitutionIface|null
      */
     public function getInstitution()
     {
@@ -54,7 +54,7 @@ trait InstitutionTrait
      * Note: This is use as an alias incases where get{Object}()
      *   is already used in the main object for another reason
      *
-     * @return Institution|null
+     * @return InstitutionIface|null
      */
     public function getInstitutionObj()
     {
