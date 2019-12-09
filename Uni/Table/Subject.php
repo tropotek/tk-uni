@@ -35,6 +35,12 @@ class Subject extends TableIface
         $this->appendCell(new Checkbox('id'));
         $this->appendCell(new Text('name'))->addCss('key')->setUrl($this->getEditUrl());
         $this->appendCell(new Text('code'));
+        $this->appendCell(new Text('courseId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+            $course = \Uni\Config::getInstance()->getCourseMapper()->find($value);
+            if ($course)
+                $value = $course->getName();
+            return $value;
+        });
         $this->appendCell(new Email('email'));
         $this->appendCell(Date::createDate('dateStart', \Tk\Date::FORMAT_ISO_DATE));
         $this->appendCell(Date::createDate('dateEnd', \Tk\Date::FORMAT_ISO_DATE));

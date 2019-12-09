@@ -28,6 +28,16 @@ INSERT INTO course (institution_id, coordinator_id, code, name, email, modified,
     (1, 3, 'DEFAULT', 'Default', '', NOW(), NOW())
 ;
 
+# DROP PROCEDURE IF EXISTS `?`;
+# DELIMITER //
+# CREATE PROCEDURE `?`()
+# BEGIN
+#   DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+#   alter table subject add course_id int(10) UNSIGNED default 0 not null after institution_id;
+# END //
+# DELIMITER ;
+# CALL `?`();
+# DROP PROCEDURE `?`;
 alter table subject add course_id int(10) UNSIGNED default 0 not null after institution_id;
 
 UPDATE subject SET course_id = 1 WHERE 1;

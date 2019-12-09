@@ -3,6 +3,7 @@ namespace Uni\Db;
 
 
 use Tk\Date;
+use Tk\Db\Filter;
 use Tk\Db\Tool;
 use Tk\Db\Map\ArrayObject;
 use Tk\DataMap\Db;
@@ -26,6 +27,7 @@ class SubjectMap extends Mapper
             $this->dbMap = new \Tk\DataMap\DataMap();
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
             $this->dbMap->addPropertyMap(new Db\Integer('institutionId', 'institution_id'));
+            $this->dbMap->addPropertyMap(new Db\Integer('courseId', 'course_id'));
             $this->dbMap->addPropertyMap(new Db\Text('name'));
             $this->dbMap->addPropertyMap(new Db\Text('code'));
             $this->dbMap->addPropertyMap(new Db\Text('email'));
@@ -49,6 +51,7 @@ class SubjectMap extends Mapper
             $this->formMap = new \Tk\DataMap\DataMap();
             $this->formMap->addPropertyMap(new Form\Integer('id'), 'key');
             $this->formMap->addPropertyMap(new Form\Integer('institutionId'));
+            $this->formMap->addPropertyMap(new Form\Integer('courseId'));
             $this->formMap->addPropertyMap(new Form\Text('name'));
             $this->formMap->addPropertyMap(new Form\Text('code'));
             $this->formMap->addPropertyMap(new Form\Text('email'));
@@ -111,7 +114,7 @@ class SubjectMap extends Mapper
     /**
      * @param array|Filter $filter
      * @param Tool $tool
-     * @return ArrayObject|Role[]
+     * @return ArrayObject|Subject[]
      * @throws \Exception
      */
     public function findFiltered($filter, $tool = null)
@@ -121,7 +124,7 @@ class SubjectMap extends Mapper
 
     /**
      * @param \Tk\Db\Filter $filter
-     * @return $this
+     * @return Filter
      */
     public function makeQuery(\Tk\Db\Filter $filter)
     {
@@ -143,6 +146,11 @@ class SubjectMap extends Mapper
             }
         }
 
+        if (!empty($filter['id'])) {
+            $w = $this->makeMultiQuery($filter['id'], 'a.id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        }
+
         if (!empty($filter['code'])) {
             $filter->appendWhere('a.code = %s AND ', $this->getDb()->quote($filter['code']));
         }
@@ -155,6 +163,10 @@ class SubjectMap extends Mapper
             $filter->appendWhere('a.institution_id = %s AND ', (int)$filter['institutionId']);
         }
 
+        if (!empty($filter['courseId'])) {
+            $filter->appendWhere('a.course_id = %s AND ', (int)$filter['courseId']);
+        }
+
         if (!empty($filter['userId'])) {
             $filter->appendFrom(', subject_has_user k');
             $filter->appendWhere('a.id = k.subject_id AND k.user_id = %s AND ', (int)$filter['userId']);
@@ -163,7 +175,6 @@ class SubjectMap extends Mapper
         if (isset($filter['publish']) && $filter['publish'] !== '' && $filter['publish'] !== null) {
             $filter->appendWhere('a.publish = %s AND ', (int)$filter['publish']);
         }
-
 
         $dates = array('dateStart', 'dateEnd');
         foreach ($dates as $name) {

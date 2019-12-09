@@ -12,6 +12,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 {
     use \Uni\Db\Traits\InstitutionTrait;
     use \Bs\Db\Traits\TimestampTrait;
+    use \Uni\Db\Traits\CourseTrait;
     
     /**
      * @var int
@@ -22,6 +23,11 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      * @var int
      */
     public $institutionId = 0;
+
+    /**
+     * @var int
+     */
+    public $courseId = 1;
 
     /**
      * @var string
@@ -251,7 +257,11 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function getEmail(): string
     {
-        return $this->email;
+        if ($this->email)
+            return $this->email;
+        if ($this->getCourse()->getEmail())
+            $this->getCourse()->getEmail();
+        return '';
     }
 
     /**
@@ -364,115 +374,6 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
 
-//    /**
-//     * @return string
-//     */
-//    public function getName()
-//    {
-//        return $this->name;
-//    }
-//
-//    /**
-//     * @return string
-//     */
-//    public function getCode()
-//    {
-//        return $this->code;
-//    }
-//
-//    /**
-//     * @return string
-//     * @throws \Exception
-//     */
-//    public function getEmail()
-//    {
-//        return $this->email;
-//    }
-//
-//    /**
-//     * @return \DateTime
-//     */
-//    public function getDateStart()
-//    {
-//        return $this->dateStart;
-//    }
-//
-//    /**
-//     * @return \DateTime
-//     */
-//    public function getDateEnd()
-//    {
-//        return $this->dateEnd;
-//    }
-//
-//    /**
-//     * @return string
-//     */
-//    public function getDescription()
-//    {
-//        return $this->description;
-//    }
-//
-//    /**
-//     * @param string $description
-//     * @return Subject
-//     */
-//    public function setDescription($description)
-//    {
-//        $this->description = $description;
-//        return $this;
-//    }
-//
-//    /**
-//     * if set to false the no email notifications should be sent for this subject
-//     *
-//     * @return bool
-//     */
-//    public function isNotify()
-//    {
-//        return $this->notify;
-//    }
-//
-//    /**
-//     * @param bool $notify
-//     * @return Subject
-//     */
-//    public function setNotify($notify)
-//    {
-//        $this->notify = $notify;
-//        return $this;
-//    }
-//
-//    /**
-//     * If false, students will not be able to access/view this subject and its or their data.
-//     *
-//     * @return bool
-//     */
-//    public function isPublish()
-//    {
-//        return $this->publish;
-//    }
-//
-//    /**
-//     * If false, students will not be able to access/view this subject and its or their data.
-//     *
-//     * @return bool
-//     */
-//    public function isPublished()
-//    {
-//        return $this->publish;
-//    }
-//
-//    /**
-//     * @param bool $publish
-//     * @return Subject
-//     */
-//    public function setPublish($publish)
-//    {
-//        $this->publish = $publish;
-//        return $this;
-//    }
-
     /**
      * @return array
      * @throws \Exception
@@ -481,6 +382,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     {
         $errors = array();
         $errors = $this->validateInstitutionId($errors);
+        $errors = $this->validateCourseId($errors);
 
         if (!$this->getName()) {
             $errors['name'] = 'Please enter a valid name';

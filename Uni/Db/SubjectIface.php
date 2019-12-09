@@ -22,6 +22,16 @@ interface SubjectIface extends \Tk\Db\ModelInterface, \Tk\ValidInterface
     public function getInstitution();
 
     /**
+     * @return int
+     */
+    public function getCourseId();
+
+    /**
+     * @return CourseIface
+     */
+    public function getCourse();
+
+    /**
      * @return string
      */
     public function getName();

@@ -80,14 +80,18 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         $this->_TimestampTrait();
 
     }
-    public function getInstitutionObj()
+
+    /**
+     * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|User|null
+     */
+    public function getCoordinator()
     {
-        if (!$this->_institution) {
+        if (!$this->_coordinator) {
             try {
-                $this->_institution = Config::getInstance()->getCourseMapper()->find($this->getInstitutionId());
+                $this->_coordinator = Config::getInstance()->getUserMapper()->find($this->getCoordinatorId());
             } catch (\Exception $e) {}
         }
-        return $this->_institution;
+        return $this->_coordinator;
     }
 
     /**
@@ -159,7 +163,11 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     public function getEmail() : string
     {
-        return $this->email;
+        if ($this->email)
+            return $this->email;
+        if ($this->getCoordinator() && $this->getCoordinator()->getEmail())
+            return $this->getCoordinator()->getEmail();
+        return '';
     }
 
     /**

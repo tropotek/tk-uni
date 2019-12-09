@@ -95,7 +95,11 @@ class CourseMap extends Mapper
             $w = $this->makeMultiQuery($filter['id'], 'a.id');
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
-        
+
+        if (!empty($filter['id'])) {
+            $w = $this->makeMultiQuery($filter['id'], 'a.id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        }
 
         if (!empty($filter['institutionId'])) {
             $filter->appendWhere('a.institution_id = %s AND ', (int)$filter['institutionId']);
@@ -112,7 +116,6 @@ class CourseMap extends Mapper
         if (!empty($filter['email'])) {
             $filter->appendWhere('a.email = %s AND ', $this->quote($filter['email']));
         }
-
 
         if (!empty($filter['exclude'])) {
             $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');

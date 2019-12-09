@@ -167,6 +167,11 @@ class InstitutionMap extends Mapper
             }
         }
 
+        if (!empty($filter['id'])) {
+            $w = $this->makeMultiQuery($filter['id'], 'a.id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        }
+
         if (!empty($filter['email'])) {
             $filter->appendWhere('a.email = %s AND ', $this->getDb()->quote($filter['email']));
         }
