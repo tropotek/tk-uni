@@ -4,6 +4,7 @@ namespace Uni\Form;
 use Tk\Form\Field;
 use Tk\Form\Event;
 use Tk\Form;
+use Uni\Db\Permission;
 
 /**
  * Example:
@@ -19,7 +20,7 @@ use Tk\Form;
  * @link http://tropotek.com.au/
  * @license Copyright 2019 Tropotek
  */
-class Course extends \Bs\FormIface
+class Course extends \Uni\FormIface
 {
 
     /**
@@ -27,9 +28,9 @@ class Course extends \Bs\FormIface
      */
     public function init()
     {
-        
-        $this->appendField(new Field\Select('institutionId', array()))->prependOption('-- Select --', '');
-        $this->appendField(new Field\Select('coordinatorId', array()))->prependOption('-- Select --', '');
+        $filter = array('institutionId' => $this->getConfig()->getInstitutionId(), 'permission' => Permission::TYPE_COORDINATOR);
+        $list = $this->getConfig()->getUserMapper()->findFiltered($filter, \Tk\Db\Tool::create('name'));
+        $this->appendField(new Field\Select('coordinatorId', $list))->prependOption('-- Select --', '');
         $this->appendField(new Field\Input('code'));
         $this->appendField(new Field\Input('name'));
         $this->appendField(new Field\Input('email'));

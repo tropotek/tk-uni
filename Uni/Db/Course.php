@@ -265,7 +265,7 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             $errors['name'] = 'Invalid value: name';
         }
 
-        if (!$this->email) {
+        if (!$this->getCoordinatorId() && !$this->email) {
             $errors['email'] = 'Invalid value: email';
         }
 

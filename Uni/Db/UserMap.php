@@ -149,7 +149,6 @@ class UserMap extends \Bs\Db\UserMap
     public function makeQuery(\Tk\Db\Filter $filter)
     {
         parent::makeQuery($filter);
-
         if (isset($filter['institutionId'])) {
             if ($filter['institutionId'] > 0)
                 $filter->appendWhere('a.institution_id = %d AND ', (int)$filter['institutionId']);

@@ -117,6 +117,15 @@ class CourseMap extends Mapper
             $filter->appendWhere('a.email = %s AND ', $this->quote($filter['email']));
         }
 
+        // TODO: Filters to add to ensure beter security
+        if (!empty($filter['userId'])) {        // With user enrolled, coordinator, etc????
+
+        }
+        if (!empty($filter['active'])) {        // Only with active subjects????
+
+        }
+
+
         if (!empty($filter['exclude'])) {
             $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
             if ($w) $filter->appendWhere('(%s) AND ', $w);

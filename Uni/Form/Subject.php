@@ -36,14 +36,16 @@ class Subject extends \Uni\FormIface
         $tab = 'Details';
         $this->appendField(new Field\Input('name'))->setTabGroup($tab)->setRequired(true);
         $this->appendField(new Field\Input('code'))->setTabGroup($tab)->setRequired(true);
+        $list = $this->getConfig()->getCourseMapper()->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId()), \Tk\Db\Tool::create('name'));
+        $this->appendField(new Field\Select('courseId', $list))->prependOption('-- Select --', '')->setTabGroup($tab)->setRequired(true)->setNotes('Select a course group. <a href="/staff/courseEdit.html">Click here to create a new Course.</a>');
         $this->appendField(new Field\Input('email'))->setTabGroup($tab)->setRequired(true);
         $this->appendField(new Field\DateRange('date'))->setTabGroup($tab)->setRequired(true)->setLabel('Dates')
-            ->setNotes('The start and end dates of the subject. Student actions will be restricted outside these dates.');
+            ->setNotes('The start and end dates of the subject. Student submission functionality may be restricted outside these dates.');
 
         $this->appendField(new Field\Checkbox('publish'))->setTabGroup($tab)
-            ->setCheckboxLabel('If not set, students will not be able to access this subject and its data.');
+            ->setCheckboxLabel('Allow students access to this subject and its data.');
         $this->appendField(new Field\Checkbox('notify'))->setTabGroup($tab)
-            ->setCheckboxLabel('Use this setting to disable email notifications for the entire subject.');
+            ->setCheckboxLabel('Enable all email notifications for this subject.');
 
         $this->appendField(new Field\Textarea('description'))->setTabGroup($tab)->addCss('tkTextareaTool');
 

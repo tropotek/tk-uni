@@ -84,6 +84,9 @@ $routes->add('staff-user-edit', Route::create('/staff/{targetRole}UserEdit.html'
 $routes->add('staff-user-profile', Route::create('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 $routes->add('staff-subject-user-profile', Route::create('/staff/{subjectCode}/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
+$routes->add('staff-course-manager', Route::create('/staff/courseManager.html', 'Uni\Controller\Course\Manager::doDefault'));
+$routes->add('staff-course-edit', Route::create('/staff/courseEdit.html', 'Uni\Controller\Course\Edit::doDefault'));
+
 $routes->add('staff-subject-manager', Route::create('/staff/subjectManager.html', 'Uni\Controller\Subject\StudentManager::doDefault'));
 $routes->add('staff-subject-add', Route::create('/staff/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('staff-subject-add-enrollment', Route::create('/staff/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
