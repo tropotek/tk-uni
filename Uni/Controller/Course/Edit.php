@@ -101,7 +101,7 @@ class Edit extends AdminEditIface
     {
         if ($this->getUser()->isClient() || $this->getUser()->isStaff()) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Subjects',
-                \Uni\Uri::createHomeUrl('/subjectManager.html'), 'fa fa-graduation-cap'));
+                \Uni\Uri::createHomeUrl('/subjectManager.html')->set('courseId', $this->course->getId()), 'fa fa-graduation-cap'));
         }
     }
 

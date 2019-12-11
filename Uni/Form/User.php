@@ -63,22 +63,22 @@ class User extends \Bs\Form\User
         }
 
 
-        if ($this->getUser()->isStaff() || $this->getUser()->isStudent()) {
-            // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
-            // TODO: This needs to be replaced with a dialog box and search feature so it works for a large number of subjects
-            // TODO: done it twice so it is becoming something that needs to be looked at soon..... ;-)
-            if ($this->getUser()->getId()) {
-                $tab = 'Subjects';
-                $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
-                if ($list->count()) {
-                    $this->appendField(new Field\Select('selSubject[]', $list), 'active')->setLabel('Subject Selection')
-                        ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
-                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
-                    $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->getUser()->getId())->toArray('id');
-                    $this->setFieldValue('selSubject', $arr);
-                }
-            }
-        }
+//        if ($this->getUser()->isStaff() || $this->getUser()->isStudent()) {
+//            // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
+//            // TODO: This needs to be replaced with a dialog box and search feature so it works for a large number of subjects
+//            // TODO: done it twice so it is becoming something that needs to be looked at soon..... ;-)
+//            if ($this->getUser()->getId()) {
+//                $tab = 'Subjects';
+//                $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
+//                if ($list->count()) {
+//                    $this->appendField(new Field\Select('selSubject[]', $list), 'active')->setLabel('Subject Selection')
+//                        ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
+//                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
+//                    $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->getUser()->getId())->toArray('id');
+//                    $this->setFieldValue('selSubject', $arr);
+//                }
+//            }
+//        }
     }
 
     /**

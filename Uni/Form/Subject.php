@@ -48,7 +48,7 @@ class Subject extends \Uni\FormIface
             ->setCheckboxLabel('Enable all email notifications for this subject.');
 
         $this->appendField(new Field\Textarea('description'))->setTabGroup($tab)
-            ->addCss('mce')->setAttr('data-elfinder-path', $this->getSubject()->getDataPath().'/media');
+            ->addCss('mce-med')->setAttr('data-elfinder-path', $this->getSubject()->getDataPath().'/media');
 
 
         if ($this->getSubject()->getId())
