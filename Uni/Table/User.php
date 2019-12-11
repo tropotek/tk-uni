@@ -97,8 +97,6 @@ class User extends \Bs\Table\User
             }
         });
 
-vd();
-
         return $this;
     }
 
