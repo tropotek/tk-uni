@@ -46,7 +46,12 @@ trait SubjectTrait
      */
     public function getSubject()
     {
-        return $this->getSubjectObj();
+        if (!$this->_subject) {
+            try {
+                $this->_subject = Config::getInstance()->getSubjectMapper()->find($this->getSubjectId());
+            } catch (\Exception $e) {}
+        }
+        return $this->_subject;
     }
 
     /**
@@ -56,15 +61,11 @@ trait SubjectTrait
      *   is already used in the main object for another reason
      *
      * @return Subject|SubjectIface|null
+     * @deprecated Use getSubject()
      */
     public function getSubjectObj()
     {
-        if (!$this->_subject) {
-            try {
-                $this->_subject = Config::getInstance()->getSubjectMapper()->find($this->getSubjectId());
-            } catch (\Exception $e) {}
-        }
-        return $this->_subject;
+        return $this->getSubject();
     }
 
     /**

@@ -96,11 +96,6 @@ class CourseMap extends Mapper
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
-        if (!empty($filter['id'])) {
-            $w = $this->makeMultiQuery($filter['id'], 'a.id');
-            if ($w) $filter->appendWhere('(%s) AND ', $w);
-        }
-
         if (!empty($filter['institutionId'])) {
             $filter->appendWhere('a.institution_id = %s AND ', (int)$filter['institutionId']);
         }
@@ -116,12 +111,16 @@ class CourseMap extends Mapper
         if (!empty($filter['email'])) {
             $filter->appendWhere('a.email = %s AND ', $this->quote($filter['email']));
         }
-
-        // TODO: Filters to add to ensure beter security
-        if (!empty($filter['userId'])) {        // With user enrolled, coordinator, etc????
-
+        if (!empty($filter['subjectId'])) {
+            $filter->appendFrom(' ,%s c', $this->quoteTable('subject'));
+            $filter->appendWhere('a.id = c.course_id AND c.subject_id = %s AND ', (int)$filter['subjectId']);
         }
-        if (!empty($filter['active'])) {        // Only with active courses????
+        if (!empty($filter['userId'])) {
+            $filter->appendFrom(' ,%s b', $this->quoteTable('course_has_user'));
+            $filter->appendWhere('a.id = b.course_id AND b.user_id = %s AND ', (int)$filter['userId']);
+        }
+        // TODO
+        if (!empty($filter['active'])) {        // Only with active courses???? (see SubjectMap)
 
         }
 

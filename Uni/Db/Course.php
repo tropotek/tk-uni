@@ -109,6 +109,9 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         return sprintf('%s/course/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
     }
 
+    /**
+     * @throws \Exception
+     */
     public function save()
     {
         parent::save();
@@ -125,7 +128,6 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     public function getUsers()
     {
         $ids = CourseMap::create()->findUsers($this->getId());
-        vd($ids);
         return UserMap::create()->findFiltered(array('id' => $ids));
     }
 
