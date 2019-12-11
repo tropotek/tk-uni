@@ -121,7 +121,7 @@ class CourseMap extends Mapper
         if (!empty($filter['userId'])) {        // With user enrolled, coordinator, etc????
 
         }
-        if (!empty($filter['active'])) {        // Only with active subjects????
+        if (!empty($filter['active'])) {        // Only with active courses????
 
         }
 
@@ -134,4 +134,67 @@ class CourseMap extends Mapper
         return $filter;
     }
 
+
+    // course_has_user holds the staff users who instruct the course
+
+    /**
+     * @param int $courseId
+     * @return array
+     * @throws \Exception
+     */
+    public function findUsers($courseId)
+    {
+        $stm = $this->getDb()->prepare('SELECT user_id as \'id\' FROM course_has_user WHERE course_id = ?');
+        $stm->execute(array($courseId));
+        return $stm->fetchAll(\PDO::FETCH_COLUMN, 0);
+    }
+
+    /**
+     * @param int $courseId
+     * @param int $userId
+     * @return boolean
+     * @throws \Exception
+     */
+    public function hasUser($courseId, $userId)
+    {
+        $stm = $this->getDb()->prepare('SELECT * FROM course_has_user WHERE course_id = ? AND user_id = ?');
+        $stm->execute(array($courseId, $userId));
+        return ($stm->rowCount() > 0);
+    }
+
+    /**
+     * @param int $courseId
+     * @param int $userId
+     * @throws \Exception
+     */
+    public function addUser($courseId, $userId)
+    {
+        if ($this->hasUser($courseId, $userId)) return;
+        $stm = $this->getDb()->prepare('INSERT INTO course_has_user (course_id, user_id)  VALUES (?, ?)');
+        $stm->execute(array($courseId, $userId));
+    }
+
+    /**
+     * depending on the combination of parameters:
+     *  o remove a user from a course
+     *  o remove all users from a course
+     *  o remove all courses from a user
+     *
+     * @param int $courseId
+     * @param int $userId
+     * @throws \Exception
+     */
+    public function removeUser($courseId = null, $userId = null)
+    {
+        if ($courseId && $userId) {
+            $stm = $this->getDb()->prepare('DELETE FROM course_has_user WHERE course_id = ? AND user_id = ?');
+            $stm->execute(array($courseId, $userId));
+        } else if(!$courseId && $userId) {
+            $stm = $this->getDb()->prepare('DELETE FROM course_has_user WHERE user_id = ?');
+            $stm->execute(array($userId));
+        } else if ($courseId && !$userId) {
+            $stm = $this->getDb()->prepare('DELETE FROM course_has_user WHERE course_id = ?');
+            $stm->execute(array($courseId));
+        }
+    }
 }

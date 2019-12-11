@@ -31,11 +31,17 @@ class Course extends \Bs\TableIface
     {
     
         $this->appendCell(new Cell\Checkbox('id'));
-        $this->appendCell(new Cell\Text('institutionId'));
-        $this->appendCell(new Cell\Text('coordinatorId'));
-        $this->appendCell(new Cell\Text('code'));
         $this->appendCell(new Cell\Text('name'))->addCss('key')->setUrl($this->getEditUrl());
+        $this->appendCell(new Cell\Text('code'));
         $this->appendCell(new Cell\Text('email'));
+
+        $this->appendCell(new Cell\Text('coordinatorId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+            /** @var $obj \Uni\Db\Course */
+            $value = '';
+            if ($obj->getCoordinator())
+                $value = $obj->getCoordinator()->getName();
+            return $value;
+        });
         $this->appendCell(new Cell\Date('modified'));
         $this->appendCell(new Cell\Date('created'));
 
@@ -44,7 +50,7 @@ class Course extends \Bs\TableIface
 
         // Actions
         //$this->appendAction(\Tk\Table\Action\Link::createLink('New Course', \Bs\Uri::createHomeUrl('/courseEdit.html'), 'fa fa-plus'));
-        //$this->appendAction(\Tk\Table\Action\ColumnSelect::create()->setUnselected(array('modified', 'created')));
+        $this->appendAction(\Tk\Table\Action\ColumnSelect::create()->setUnselected(array('modified', 'created')));
         $this->appendAction(\Tk\Table\Action\Delete::create());
         $this->appendAction(\Tk\Table\Action\Csv::create());
 

@@ -39,13 +39,18 @@ trait InstitutionTrait
     }
 
     /**
-     * Get the institution related to this user
+     * Get the Institution object
      *
      * @return InstitutionIface|null
      */
     public function getInstitution()
     {
-        return $this->getInstitutionObj();
+        if (!$this->_institution) {
+            try {
+                $this->_institution = Config::getInstance()->getInstitutionMapper()->find($this->getInstitutionId());
+            } catch (\Exception $e) {}
+        }
+        return $this->_institution;
     }
 
     /**
@@ -55,15 +60,11 @@ trait InstitutionTrait
      *   is already used in the main object for another reason
      *
      * @return InstitutionIface|null
+     * @deprecated use getInstitution()
      */
     public function getInstitutionObj()
     {
-        if (!$this->_institution) {
-            try {
-                $this->_institution = Config::getInstance()->getInstitutionMapper()->find($this->getInstitutionId());
-            } catch (\Exception $e) {}
-        }
-        return $this->_institution;
+        return $this->getInstitution();
     }
 
     /**

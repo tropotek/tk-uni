@@ -31,24 +31,27 @@ class Institution extends \Uni\FormIface
 
         $tab = 'Details';
         $this->appendField(new Field\Input('name'))->setRequired(true)->setTabGroup($tab);
-        $field = $this->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup($tab);
-        if (!$this->getUser()->isAdmin()) {
-            $field->setDisabled(true);
-        }
-        $field = $this->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
-        if (!$this->getUser()->isAdmin()) {
-            $field->setDisabled(true);
+
+
+        if ($this->getUser()->isAdmin() || $this->getUser()->isClient()) {
+            $field = $this->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup($tab);
+            if (!$this->getUser()->isAdmin()) {
+                $field->setDisabled(true);
+            }
+            $field = $this->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
+            if (!$this->getUser()->isAdmin()) {
+                $field->setDisabled(true);
+            }
+
+            $insUrl = \Tk\Uri::create('/inst/'.$this->getInstitution()->getHash().'/login.html');
+            if ($this->getInstitution()->domain)
+                $insUrl = \Tk\Uri::create('/login.html')->setHost($this->getInstitution()->domain);
+            $insUrlStr = $insUrl->setScheme('https')->toString();
+            $this->appendField(new Field\Input('domain'))->setTabGroup($tab)
+                ->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>')
+                ->setAttr('placeholder', $insUrl->getHost());
         }
         $this->appendField(new Field\Input('phone'))->setTabGroup($tab);
-
-        $insUrl = \Tk\Uri::create('/inst/'.$this->getInstitution()->getHash().'/login.html');
-        if ($this->getInstitution()->domain)
-            $insUrl = \Tk\Uri::create('/login.html')->setHost($this->getInstitution()->domain);
-        $insUrlStr = $insUrl->setScheme('https')->toString();
-
-        $this->appendField(new Field\Input('domain'))->setTabGroup($tab)
-            ->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>')
-            ->setAttr('placeholder', $insUrl->getHost());
 
         if ($this->getUser()->isAdmin()) {
             $this->appendField(new Field\Checkbox('active'))->setTabGroup($tab)->setCheckboxLabel('Institution login accounts enabled/disabled.');

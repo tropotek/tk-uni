@@ -235,6 +235,19 @@ class SubjectMap extends Mapper
 
     // Enrolment direct queries - subject_has_user holds the currently enrolled users
 
+
+    /**
+     * @param int $subjectId
+     * @return array
+     * @throws \Exception
+     */
+    public function findUsers($subjectId)
+    {
+        $stm = $this->getDb()->prepare('SELECT user_id FROM subject_has_user WHERE subject_id = ?');
+        $stm->execute(array($subjectId));
+        return $stm->fetchAll(\PDO::FETCH_COLUMN, 0);
+    }
+
     /**
      * @param int $subjectId
      * @param int $userId

@@ -14,6 +14,10 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     protected $subject = null;
 
+    /**
+     * @var null|\Uni\Table\UserList
+     */
+    protected $userTable = null;
 
     /**
      * Edit constructor.
@@ -61,8 +65,41 @@ class Edit extends \Uni\Controller\AdminEditIface
         $this->initForm($request);
         $this->getForm()->execute($request);
 
-        //$this->initActionPanel();
 
+        if ($this->subject->getId()) {
+            $this->userTable = \Uni\Table\UserList::create();
+            $this->userTable->setEditUrl(\Uni\Uri::createHomeUrl('/userEdit.html'));
+            $this->userTable->setAjaxParams(array(
+                'institutionId' => $this->getConfig()->getInstitutionId(),
+                'active' => 1,
+                'permission' => \Uni\Db\Permission::TYPE_STUDENT
+            ));
+            $this->userTable->setOnSelect(function (\Tk\Request $request) {
+                /** @var \Uni\Db\User $user */
+                $config = \Uni\Config::getInstance();
+                $data = $request->all();
+                $subject = $config->getSubject();
+                $user = $config->getUserMapper()->find($data['selectedId']);
+                if (!$user) {
+                    \Tk\Alert::addWarning('User not found!');
+                } else if (!$subject) {
+                    \Tk\Alert::addWarning('Subject not found!');
+                } else if (!$config->getSubjectMapper()->hasUser($subject->getId(), $user->getId())) {
+                    $config->getSubjectMapper()->addUser($subject->getId(), $user->getId());
+                    \Tk\Alert::addSuccess($user->getName() . ' has been linked to this Subject.');
+                } else {
+                    \Tk\Alert::addInfo($user->getName() . ' is already linked to this Subject.');
+                }
+                return \Uni\Uri::create();
+            });
+            $this->userTable->init();
+            $filter = array(
+                'id' => \Uni\Db\SubjectMap::create()->findUsers($this->subject->getId()),
+                'permission' => \Uni\Db\Permission::TYPE_STUDENT
+            );
+            if (count($filter['id']))
+                $this->userTable->setList($this->userTable->findList($filter));
+        }
     }
 
     /**
@@ -81,19 +118,20 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function initActionPanel()
     {
         if ($this->subject->getId() && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
-                \Uni\Uri::createHomeUrl('/subject/'.$this->subject->getId().'/plugins.html')->set('subjectId', $this->subject->getId()), 'fa fa-plug'));
-
+            if ($this->getUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
+                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
+                    \Uni\Uri::createHomeUrl('/subject/' . $this->subject->getId() . '/plugins.html')->set('subjectId', $this->subject->getId()), 'fa fa-plug'));
+            }
             if(!$this->getConfig()->isSubjectUrl()) {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
                     \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->getId()), 'fa fa-list'));
-                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Students',
-                    \Uni\Uri::createHomeUrl('/studentUserManager.html')->set('subjectId', $this->subject->getId()), 'fa fa-group'));
+//                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Students',
+//                    \Uni\Uri::createHomeUrl('/studentUserManager.html')->set('subjectId', $this->subject->getId()), 'fa fa-group'));
             } else {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
                     \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
-                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Students',
-                    \Uni\Uri::createSubjectUrl('/studentUserManager.html'), 'fa fa-group'));
+//                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Students',
+//                    \Uni\Uri::createSubjectUrl('/studentUserManager.html'), 'fa fa-group'));
             }
         }
     }
@@ -113,11 +151,19 @@ class Edit extends \Uni\Controller\AdminEditIface
             $template->setAttr('panel', 'data-panel-title', "'" . $this->subject->getName() . "' [ID: "  . $this->subject->getId() . ']');
         }
 
+        if (!$this->subject->getId()) {
+            $template->setVisible('right-panel', false);
+            $template->removeCss('left-panel', 'col-8')->addCss('left-panel', 'col-12');
+        } else {
+            if ($this->userTable)
+                $template->appendTemplate('right-panel-01', $this->userTable->show());
+        }
+
         return $template;
     }
 
     /**
-     * @return \App\Db\Subject|null|\Uni\Db\Subject
+     * @return \Uni\Db\Subject|null|\Uni\Db\Subject
      */
     public function getSubject()
     {
@@ -132,7 +178,14 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="tk-panel" data-panel-title="Subject Edit" data-panel-icon="fa fa-graduation-cap" var="panel"></div>
+<div class="row">
+  <div class="col-8" var="left-panel">
+    <div class="tk-panel" data-panel-icon="fa fa-graduation-cap" var="panel"></div>
+  </div>
+  <div class="col-4" var="right-panel">
+    <div class="tk-panel" data-panel-title="Students" data-panel-icon="fa fa-group" var="right-panel-01"></div>
+  </div>
+</div>
 HTML;
 
         return \Dom\Loader::load($xhtml);

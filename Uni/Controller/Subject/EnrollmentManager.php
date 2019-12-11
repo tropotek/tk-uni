@@ -64,7 +64,7 @@ class EnrollmentManager extends AdminIface
      */
     public function __construct()
     {
-        $this->setPageTitle('Subject Enrolments');
+        $this->setPageTitle('Subject Enrollments');
     }
 
     /**
@@ -201,15 +201,11 @@ class EnrollmentManager extends AdminIface
         return $this;
     }
 
-    /**
-     * @return \Dom\Template
-     * @throws Exception
-     */
-    public function show()
+    public function initActionPanel()
     {
-        $this->getActionPanel()->append(Link::createBtn('Enrol','#', 'fa fa-user-plus'))
-            ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->enrolStudentDialog->getId())
-            ->setAttr('title', 'Add an existing student to this subject');
+//        $this->getActionPanel()->append(Link::createBtn('Enrol','#', 'fa fa-user-plus'))
+//            ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->enrolStudentDialog->getId())
+//            ->setAttr('title', 'Add an existing student to this subject');
 
         $this->getActionPanel()->append(Link::createBtn('Pre-Enrol','#', 'fa fa-user-plus'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->preEnrolDialog->getId())
@@ -218,7 +214,15 @@ class EnrollmentManager extends AdminIface
         $this->getActionPanel()->append(Link::createBtn('Enrol Into...', '#', 'fa fa-copy'))
             ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->enrolClassDialog->getId())
             ->setAttr('title', 'Copy this enrollment list into another subject.');
+    }
 
+    /**
+     * @return \Dom\Template
+     * @throws Exception
+     */
+    public function show()
+    {
+        $this->initActionPanel();
         $template = parent::show();
 
         // Enrolled Table

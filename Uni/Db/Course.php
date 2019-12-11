@@ -71,6 +71,11 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     private $_coordinator = null;
 
+    /**
+     * @var null|\Tk\Db\Data
+     */
+    private $data = null;
+
 
     /**
      * Course
@@ -79,6 +84,62 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     {
         $this->_TimestampTrait();
 
+    }
+
+    /**
+     * Get the data object
+     *
+     * @return \Tk\Db\Data
+     */
+    public function getData()
+    {
+        if (!$this->data)
+            $this->data = \Tk\Db\Data::create(get_class($this), $this->getVolatileId());
+        return $this->data;
+    }
+
+    /**
+     * Get the path for all file associated to this object
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function getDataPath()
+    {
+        return sprintf('%s/course/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
+    }
+
+    public function save()
+    {
+        parent::save();
+        if ($this->getCoordinator())
+            $this->addUser($this->getCoordinator());
+    }
+
+    /**
+     * Get all the staff assigned to this course
+     *
+     * @return \Uni\Db\User[]|\Tk\Db\Map\ArrayObject
+     * @throws \Exception
+     */
+    public function getUsers()
+    {
+        $ids = CourseMap::create()->findUsers($this->getId());
+        vd($ids);
+        return UserMap::create()->findFiltered(array('id' => $ids));
+    }
+
+    /**
+     * @param \Uni\Db\UserIface $user
+     * @return Course
+     * @throws \Exception
+     */
+    public function addUser($user)
+    {
+        if (!$user || !$this->getId() || !$user->getRole()->hasPermission(\Uni\Db\Permission::TYPE_STAFF))
+            throw new \Tk\Exception('Only add staff users to a saved record!');
+        CourseMap::create()->addUser($this->getId(), $user->getId());
+        return $this;
     }
 
     /**
@@ -92,6 +153,18 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             } catch (\Exception $e) {}
         }
         return $this->_coordinator;
+    }
+
+    /**
+     * @param \Uni\Db\UserIface $user
+     * @return Course
+     * @throws \Exception
+     */
+    public function setCoordinator($user)
+    {
+        $this->setCoordinatorId($user->getId());
+        $this->addUser($user);
+        return $this;
     }
 
     /**
@@ -253,9 +326,9 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             $errors['institutionId'] = 'Invalid value: institutionId';
         }
 
-        if (!$this->coordinatorId) {
-            $errors['coordinatorId'] = 'Invalid value: coordinatorId';
-        }
+//        if (!$this->coordinatorId) {
+//            $errors['coordinatorId'] = 'Invalid value: coordinatorId';
+//        }
 
         if (!$this->code) {
             $errors['code'] = 'Invalid value: code';
@@ -266,7 +339,7 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         }
 
         if (!$this->getCoordinatorId() && !$this->email) {
-            $errors['email'] = 'Invalid value: email';
+            $errors['email'] = 'Please select a course coordinator or enter an email address for this course';
         }
 
         return $errors;

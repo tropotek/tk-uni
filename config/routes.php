@@ -78,6 +78,8 @@ $routes->add('staff-user-profile', Route::create('/staff/profile.html', 'Uni\Con
 $routes->add('staff-subject-plugin-manager', Route::create('/staff/{zoneName}/{zoneId}/plugins.html', 'Uni\Controller\PluginZoneManager::doDefault',
     array('zoneName' => 'subject', 'zoneId' => '0') ));
 
+$routes->add('staff-institution-edit', Route::create('/staff/settings.html', 'Uni\Controller\Institution\Edit::doDefault'));
+
 $routes->add('staff-user-manager', Route::create('/staff/{targetRole}UserManager.html', 'Uni\Controller\User\Manager::doDefaultRole'));
 $routes->add('staff-user-edit', Route::create('/staff/{targetRole}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultRole'));
 
@@ -87,7 +89,7 @@ $routes->add('staff-subject-user-profile', Route::create('/staff/{subjectCode}/p
 $routes->add('staff-course-manager', Route::create('/staff/courseManager.html', 'Uni\Controller\Course\Manager::doDefault'));
 $routes->add('staff-course-edit', Route::create('/staff/courseEdit.html', 'Uni\Controller\Course\Edit::doDefault'));
 
-$routes->add('staff-subject-manager', Route::create('/staff/subjectManager.html', 'Uni\Controller\Subject\StudentManager::doDefault'));
+$routes->add('staff-subject-manager', Route::create('/staff/subjectManager.html', 'Uni\Controller\Subject\Manager::doDefault'));
 $routes->add('staff-subject-add', Route::create('/staff/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('staff-subject-add-enrollment', Route::create('/staff/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
 

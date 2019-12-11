@@ -28,14 +28,26 @@ class Course extends \Uni\FormIface
      */
     public function init()
     {
+        $layout = $this->getRenderer()->getLayout();
+
+        $layout->removeRow('code', 'col');
+
+        $tab = 'Details';
+        $this->appendField(new Field\Input('name'))->setTabGroup($tab);
+        $this->appendField(new Field\Input('code'))->setTabGroup($tab);
         $filter = array('institutionId' => $this->getConfig()->getInstitutionId(), 'permission' => Permission::TYPE_COORDINATOR);
         $list = $this->getConfig()->getUserMapper()->findFiltered($filter, \Tk\Db\Tool::create('name'));
-        $this->appendField(new Field\Select('coordinatorId', $list))->prependOption('-- Select --', '');
-        $this->appendField(new Field\Input('code'));
-        $this->appendField(new Field\Input('name'));
-        $this->appendField(new Field\Input('email'));
-        $this->appendField(new Field\Textarea('emailSignature'));
-        $this->appendField(new Field\Textarea('description'));
+        $this->appendField(new Field\Select('coordinatorId', $list))->setTabGroup($tab)->prependOption('-- Select --', '');
+        $this->appendField(new Field\Input('email'))->setTabGroup($tab);
+        $this->appendField(new Field\Textarea('emailSignature'))->setTabGroup($tab)
+            ->addCss('mce-min')->setAttr('data-elfinder-path', $this->getCourse()->getDataPath().'/media');
+        $tab = 'Description';
+        $this->appendField(new Field\Textarea('description'))->setTabGroup($tab)
+            ->addCss('mce')->setAttr('data-elfinder-path', $this->getCourse()->getDataPath().'/media');
+
+
+
+
 
         $this->appendField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->appendField(new Event\Submit('save', array($this, 'doSubmit')));

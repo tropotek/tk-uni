@@ -34,6 +34,9 @@ class Enrolled extends \Uni\TableIface
      */
     public function init()
     {
+        $this->addCss('tk-enrolled-users');
+
+
         $this->findSubjectDialog = new \Tk\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
         //$params = array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId());
         $params = array('subjectId' => $this->getConfig()->getSubject()->getId());
@@ -41,7 +44,7 @@ class Enrolled extends \Uni\TableIface
             $params = $this->ajaxDialogParams;
         $this->findSubjectDialog->setAjaxParams($params);
         $this->findSubjectDialog->setNotes('Select the subject to migrate the student to...');
-        $this->findSubjectDialog->setOnSelect(function ($request) {
+        $this->findSubjectDialog->setOnSelect(function (\Tk\Request $request) {
             $config = \Uni\Config::getInstance();
             $dispatcher = $config->getEventDispatcher();
             $data = $request->all();
@@ -74,12 +77,9 @@ class Enrolled extends \Uni\TableIface
         $template->appendBodyTemplate($this->findSubjectDialog->show());
 
 
-        $this->addCss('tk-enrolled-users');
-
-
         $this->appendCell(new \Tk\Table\Cell\Checkbox('id'));
-        $actionsCell = new \Tk\Table\Cell\Actions();
-        $btn = $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Migrate', null, 'fa fa-exchange'));
+
+        $btn = $this->getActionCell()->addButton(\Tk\Table\Cell\ActionButton::create('Migrate', null, 'fa fa-exchange'));
         $btn->setAttr('data-target','#' . $this->findSubjectDialog->getId());
         $btn->setAttr('data-toggle','modal');
         $btn->setOnShow(function ($cell, $obj, $btn) use ($params) {
@@ -87,7 +87,6 @@ class Enrolled extends \Uni\TableIface
             /** @var \Uni\Db\User $obj */
             /** @var \Tk\Table\Cell\ActionButton $btn */
             if ($btn->getTitle() != 'Migrate') return;
-
             $config = \Uni\Config::getInstance();
             if ($btn) {
                 $params['exclude'] = $config->getSubject()->getId();
@@ -98,9 +97,8 @@ class Enrolled extends \Uni\TableIface
                     $btn->setVisible(false);
                 }
             }
-
         });
-        $this->appendCell($actionsCell);
+        $this->appendCell($this->getActionCell());
         $this->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key');
         $this->appendCell(new \Tk\Table\Cell\Text('username'));
         $this->appendCell(new \Tk\Table\Cell\Email('email'));

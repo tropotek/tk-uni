@@ -128,7 +128,9 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function getDataPath()
     {
-        return sprintf('%s/subject/%s', $this->getInstitutionObj()->getDataPath(), $this->getVolatileId());
+        // TODO: Use this path, but we will have to move existing subject files to the new location first..
+        //return sprintf('%s/subject/%s', $this->getCourse()->getDataPath(), $this->getVolatileId());
+        return sprintf('%s/subject/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
     }
 
     /**
@@ -143,17 +145,42 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
-     * Enroll a user
+     * Enroll a student. Staff should be attached to the course not the subject at this time.
      *
-     * @param $user
+     * @param UserIface $user
      * @return $this
      * @throws \Exception
+     * @deprecated Use addUser()
      */
     public function enrollUser($user)
     {
-        if (!$this->isUserEnrolled($user)) {
-            $this->getConfig()->getSubjectMapper()->addUser($this->getId(), $user->getId());
-        }
+        $this->getConfig()->getSubjectMapper()->addUser($this->getId(), $user->getId());
+        return $this;
+    }
+
+    /**
+     * Get all the students fully enrolled to this course
+     *
+     * @return \Uni\Db\UserIface[]|\Tk\Db\Map\ArrayObject
+     * @throws \Exception
+     */
+    public function getUsers()
+    {
+        $ids = SubjectMap::create()->findUsers($this->getId());
+        vd($ids);
+        return UserMap::create()->findFiltered(array('id' => $ids));
+    }
+
+    /**
+     * @param \Uni\Db\UserIface $user
+     * @return Subject
+     * @throws \Exception
+     */
+    public function addUser($user)
+    {
+        if (!$user || !$this->getId() || !$user->getRole()->hasPermission(\Uni\Db\Permission::TYPE_STUDENT))
+            throw new \Tk\Exception('Only add staff users to a saved record!');
+        CourseMap::create()->addUser($this->getId(), $user->getId());
         return $this;
     }
 
@@ -178,7 +205,6 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public static function incrementString($str)
     {
         // increment years
-
         $s = preg_replace_callback('/(.*)(20[0-9]{2})(.*)/', function ($regs) {
             if (count($regs) == 4) {
                 return $regs[1] . ($regs[2]+1) . $regs[3];

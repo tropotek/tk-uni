@@ -33,6 +33,7 @@ class Edit extends \Uni\Controller\AdminEditIface
                 $this->institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getUser()->getId());
             }
             if ($this->getUser()->isStaff()) {
+                $this->setPageTitle('Settings');
                 $this->institution = $this->getUser()->getInstitution();
             }
         }
@@ -72,11 +73,14 @@ class Edit extends \Uni\Controller\AdminEditIface
 
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Staff',
                 \Uni\Uri::createHomeUrl('/staffUserManager.html'), 'fa fa-users'));
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Student',
-                \Uni\Uri::createHomeUrl('/studentUserManager.html'), 'fa fa-users'));
+//            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Student',
+//                \Uni\Uri::createHomeUrl('/studentUserManager.html'), 'fa fa-users'));
 
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Subjects',
-                \Uni\Uri::createHomeUrl('/subjectManager.html'), 'fa fa-graduation-cap'));
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Courses',
+                \Uni\Uri::createHomeUrl('/courseManager.html'), 'fa fa-book'));
+
+//            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Subjects',
+//                \Uni\Uri::createHomeUrl('/subjectManager.html'), 'fa fa-graduation-cap'));
 
         }
     }
