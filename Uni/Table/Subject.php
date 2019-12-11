@@ -1,7 +1,6 @@
 <?php
 namespace Uni\Table;
 
-
 use Exception;
 use Tk\Db\Map\ArrayObject;
 use Tk\Db\Tool;
@@ -24,7 +23,6 @@ use Uni\TableIface;
 class Subject extends TableIface
 {
 
-
     /**
      * @return $this
      * @throws Exception
@@ -33,6 +31,22 @@ class Subject extends TableIface
     {
 
         $this->appendCell(new Checkbox('id'));
+
+        $this->getActionCell()->addButton(\Tk\Table\Cell\ActionButton::create('Subject Dashboard', \Uni\Uri::createSubjectUrl('/index.html'), 'fa fa-dashboard'))
+            ->setOnShow(function ($cell, $obj, $btn) {
+                /** @var $btn \Tk\Table\Cell\ActionButton */
+                /** @var $obj \Uni\Db\Subject */
+                $btn->setUrl(\Uni\Uri::createSubjectUrl('/index.html', $obj));
+            });
+        if ($this->getUser()->hasPermission(\UNi\Db\Permission::MANAGE_SUBJECT)) {
+            $this->getActionCell()->addButton(\Tk\Table\Cell\ActionButton::create('Edit', \Uni\Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-edit'))
+                ->setOnShow(function ($cell, $obj, $btn) {
+                    /** @var $btn \Tk\Table\Cell\ActionButton */
+                    /** @var $obj \Uni\Db\Subject */
+                    $btn->setUrl(\Uni\Uri::createHomeUrl('/subjectEdit.html')->set('subjectId', $obj->getId()));
+                });
+        }
+        $this->appendCell($this->getActionCell());
         $this->appendCell(new Text('name'))->addCss('key')->setUrl($this->getEditUrl());
         $this->appendCell(new Text('code'));
         $this->appendCell(new Text('courseId'))->setOnPropertyValue(function ($cell, $obj, $value) {
@@ -54,6 +68,7 @@ class Subject extends TableIface
         $this->appendFilter(new Input('keywords'))->setLabel('')->setAttr('placeholder', 'Search');
 
         // Actions
+        $this->appendAction(\Tk\Table\Action\ColumnSelect::create()->setUnselected(array('notify', 'publish', 'active', 'created')));
         $this->appendAction(Delete::create());
         $this->appendAction(Csv::create());
 
