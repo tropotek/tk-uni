@@ -42,7 +42,7 @@ trait CourseTrait
     /**
      * Get the course related to this object
      *
-     * @return Course|null
+     * @return Course|\App\Db\Course|null
      */
     public function getCourse()
     {

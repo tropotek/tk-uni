@@ -1,6 +1,7 @@
 <?php
 namespace Uni\Db;
 
+use Tk\Db\Filter;
 use Tk\Db\Tool;
 use Tk\Db\Map\ArrayObject;
 use Tk\DataMap\Db;
@@ -131,7 +132,7 @@ class InstitutionMap extends Mapper
     /**
      * @param array|Filter $filter
      * @param Tool $tool
-     * @return ArrayObject|Role[]
+     * @return ArrayObject|Institution[]
      * @throws \Exception
      */
     public function findFiltered($filter, $tool = null)
