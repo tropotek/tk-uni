@@ -102,7 +102,6 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      * Get the path for all file associated to this object
      *
      * @return string
-     * @throws \Exception
      */
     public function getDataPath()
     {
@@ -242,6 +241,8 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             return $this->email;
         if ($this->getCoordinator() && $this->getCoordinator()->getEmail())
             return $this->getCoordinator()->getEmail();
+        if ($this->getInstitution() && $this->getInstitution()->getEmail())
+            return $this->getInstitution()->getEmail();
         return '';
     }
 

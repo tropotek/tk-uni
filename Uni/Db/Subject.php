@@ -82,7 +82,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     /**
      * @var Data
      */
-    protected $data = null;
+    protected $_data = null;
 
 
     /**
@@ -115,9 +115,9 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function getData()
     {
-        if (!$this->data)
-            $this->data = \Tk\Db\Data::create(get_class($this), $this->getVolatileId());
-        return $this->data;
+        if (!$this->_data)
+            $this->_data = \Tk\Db\Data::create(get_class($this), $this->getVolatileId());
+        return $this->_data;
     }
 
     /**
