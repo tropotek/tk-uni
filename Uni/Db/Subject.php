@@ -319,10 +319,13 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
-     * @return \DateTime
+     * @param null|string $format   If supplied then a string of the formatted date is returned
+     * @return \DateTime|string
      */
-    public function getDateStart(): \DateTime
+    public function getDateStart($format = null)
     {
+        if ($format && $this->dateStart)
+            return $this->dateStart->format($format);
         return $this->dateStart;
     }
 
@@ -337,10 +340,13 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
+     * @param null|string $format   If supplied then a string of the formatted date is returned
      * @return \DateTime
      */
-    public function getDateEnd(): \DateTime
+    public function getDateEnd($format = null)
     {
+        if ($format && $this->dateEnd)
+            return $this->dateEnd->format($format);
         return $this->dateEnd;
     }
 

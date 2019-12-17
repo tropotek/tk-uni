@@ -110,7 +110,7 @@ class Config extends \Bs\Config
     /**
      * Get the current course, or null if no course selected
      *
-     * @return mixed
+     * @return \Uni\Db\CourseIface|\Uni\Db\Course|\App\Db\Course
      */
     public function getCourse()
     {
