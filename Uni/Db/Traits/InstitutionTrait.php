@@ -41,7 +41,7 @@ trait InstitutionTrait
     /**
      * Get the Institution object
      *
-     * @return InstitutionIface|null
+     * @return Institution|null
      */
     public function getInstitution()
     {

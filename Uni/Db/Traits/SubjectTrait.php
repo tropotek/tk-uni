@@ -31,7 +31,7 @@ trait SubjectTrait
 
     /**
      * @param int $subjectId
-     * @return SubjectTrait
+     * @return $this
      */
     public function setSubjectId($subjectId)
     {
