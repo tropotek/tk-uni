@@ -435,12 +435,4 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
         
         return $errors;
     }
-
-    /**
-     * @return \Uni\Config|\Tk\Config
-     */
-    public function getConfig()
-    {
-        return parent::getConfig();
-    }
 }

@@ -9,23 +9,53 @@ namespace Uni\Controller;
 abstract class Iface extends \Bs\Controller\Iface
 {
 
+
     /**
-     * Get the currently logged in user
-     *
-     * @return \Uni\Db\User
+     * @return \App\Db\Course|\Uni\Db\Course|\Uni\Db\CourseIface
      */
-    public function getUser()
+    public function getCourse()
     {
-        return $this->getConfig()->getUser();
+        return $this->getConfig()->getCourse();
     }
 
     /**
-     * @return \Tk\Config|\Uni\Config|\App\Config
+     * @return int
      */
-    public function getConfig()
+    public function getCourseId()
     {
-        return parent::getConfig();
+        return $this->getConfig()->getCourseId();
     }
 
+    /**
+     * @return \Uni\Db\Institution|\Uni\Db\InstitutionIface|null
+     */
+    public function getInstitution()
+    {
+        return $this->getConfig()->getInstitution();
+    }
+
+    /**
+     * @return int
+     */
+    public function getInstitutionId()
+    {
+        return $this->getConfig()->getInstitutionId();
+    }
+
+    /**
+     * @return \App\Db\Subject|\Uni\Db\Subject|\Uni\Db\SubjectIface|null
+     */
+    public function getSubject()
+    {
+        return $this->getConfig()->getSubject();
+    }
+
+    /**
+     * @return int|void
+     */
+    public function getSubjectId()
+    {
+        $this->getConfig()->getSubjectId();
+    }
 
 }

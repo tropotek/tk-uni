@@ -100,20 +100,4 @@ class User extends \Bs\Table\User
         return $this;
     }
 
-    /**
-     * @return \Uni\Config
-     */
-    public function getConfig()
-    {
-        return \Uni\Config::getInstance();
-    }
-
-    /**
-     * @return \Uni\Db\User
-     */
-    public function getUser()
-    {
-        return $this->getConfig()->getUser();
-    }
-
 }

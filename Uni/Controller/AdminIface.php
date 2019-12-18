@@ -10,9 +10,23 @@ class AdminIface extends \Bs\Controller\AdminIface
 {
 
     /**
-     * Get the currently logged in users institution object
-     *
-     * @return \Uni\Db\Institution|null|\Uni\Db\InstitutionIface
+     * @return \App\Db\Course|\Uni\Db\Course|\Uni\Db\CourseIface
+     */
+    public function getCourse()
+    {
+        return $this->getConfig()->getCourse();
+    }
+
+    /**
+     * @return int
+     */
+    public function getCourseId()
+    {
+        return $this->getConfig()->getCourseId();
+    }
+
+    /**
+     * @return \Uni\Db\Institution|\Uni\Db\InstitutionIface|null
      */
     public function getInstitution()
     {
@@ -28,10 +42,7 @@ class AdminIface extends \Bs\Controller\AdminIface
     }
 
     /**
-     * If the the current page is a subject page this wi;ll return the subject object
-     * based on the subject code in the URI: /staff/VETS50001_2014_SM1/index.html
-     *
-     * @return \App\Db\Subject|\Uni\Db\Subject|null
+     * @return \App\Db\Subject|\Uni\Db\Subject|\Uni\Db\SubjectIface|null
      */
     public function getSubject()
     {
@@ -39,31 +50,11 @@ class AdminIface extends \Bs\Controller\AdminIface
     }
 
     /**
-     * Returns the subject ID or 0 if none
-     *
-     * @return int
+     * @return int|void
      */
     public function getSubjectId()
     {
-        return $this->getConfig()->getSubjectId();
-    }
-
-    /**
-     * Get the currently logged in user
-     *
-     * @return \Uni\Db\User
-     */
-    public function getUser()
-    {
-        return $this->getConfig()->getUser();
-    }
-
-    /**
-     * @return \Tk\Config|\Uni\Config|\App\Config
-     */
-    public function getConfig()
-    {
-        return parent::getConfig();
+        $this->getConfig()->getSubjectId();
     }
 
 }
