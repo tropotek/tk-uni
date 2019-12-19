@@ -47,7 +47,6 @@ trait StatusTrait
      * return the status list for a select field
      * @param null|string $status
      * @return array
-     * @throws Exception
      */
     public static function getStatusList($status = null)
     {
