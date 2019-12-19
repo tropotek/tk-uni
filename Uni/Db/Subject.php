@@ -341,7 +341,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
     /**
      * @param null|string $format   If supplied then a string of the formatted date is returned
-     * @return \DateTime
+     * @return \DateTime|string
      */
     public function getDateEnd($format = null)
     {

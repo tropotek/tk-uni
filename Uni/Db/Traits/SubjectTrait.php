@@ -42,7 +42,7 @@ trait SubjectTrait
     /**
      * Get the subject related to this object
      *
-     * @return Subject|null
+     * @return Subject|null|\App\Db\Subject
      */
     public function getSubject()
     {

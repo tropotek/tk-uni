@@ -144,6 +144,15 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     }
 
     /**
+     * @return \Tk\Db\Map\Model|Subject|\App\Db\Subject
+     * @throws \Exception
+     */
+    public function getCurrentSubject()
+    {
+        return $this->getConfig()->getSubjectMapper()->findFiltered(array('courseId' => $this->getId()), \Tk\Db\Tool::create('date_start DESC', 1))->current();
+    }
+
+    /**
      * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|User|null
      */
     public function getCoordinator()
