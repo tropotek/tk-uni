@@ -37,7 +37,8 @@ class Subject extends \Uni\FormIface
         $this->appendField(new Field\Input('name'))->setTabGroup($tab)->setRequired(true);
         $this->appendField(new Field\Input('code'))->setTabGroup($tab)->setRequired(true);
         $list = $this->getConfig()->getCourseMapper()->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId()), \Tk\Db\Tool::create('name'));
-        $this->appendField(new Field\Select('courseId', $list))->prependOption('-- Select --', '')->setTabGroup($tab)->setRequired(true)->setNotes('Select a course group. <a href="/staff/courseEdit.html">Click here to create a new Course.</a>');
+        $this->appendField(new Field\Select('courseId', $list))->prependOption('-- Select --', '')
+            ->setTabGroup($tab)->setRequired(true)->setNotes('Select a course group. <a href="/staff/courseEdit.html">Click here to create a new Course.</a>');
         $this->appendField(new Field\Input('email'))->setTabGroup($tab)->setRequired(true);
         $this->appendField(new Field\DateRange('date'))->setTabGroup($tab)->setRequired(true)->setLabel('Dates')
             ->setNotes('The start and end dates of the subject. Student submission functionality may be restricted outside these dates.');
