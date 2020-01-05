@@ -55,6 +55,7 @@ INSERT INTO course (institution_id, coordinator_id, code, name, email, modified,
 */
 
 alter table subject add course_id int(10) UNSIGNED default 0 not null after institution_id;
+create index subject_course_id_index on subject (course_id);
 
 UPDATE subject SET course_id = 1 WHERE 1;
 
