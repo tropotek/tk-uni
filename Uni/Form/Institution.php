@@ -59,12 +59,12 @@ class Institution extends \Uni\FormIface
 
         // Fully implement this
         $this->appendField(new Field\File('logo', $this->getInstitution()->getDataPath()))
-            ->setMaxFileSize($this->getConfig()->get('upload.profile.imagesize'))->setAttr('accept', '.png,.jpg,.jpeg,.gif')
+            ->setMaxFileSize($this->getConfig()->get('upload.course.imagesize'))->setAttr('accept', '.png,.jpg,.jpeg,.gif')
             ->setTabGroup($tab)->addCss('tk-imageinput')
             ->setNotes('Upload your institutions logo (recommended size: 100x300)');
 
         $this->appendField(new Field\File('feature', $this->getInstitution()->getDataPath()))
-            ->setMaxFileSize($this->getConfig()->get('upload.profile.imagesize'))->setAttr('accept', '.png,.jpg,.jpeg,.gif')
+            ->setMaxFileSize($this->getConfig()->get('upload.course.imagesize'))->setAttr('accept', '.png,.jpg,.jpeg,.gif')
             ->setTabGroup('Details')->addCss('tk-imageinput')
             ->setNotes('Upload an image to be used for backgrounds and features within the institutions site (recommended size: 512x512)');
 

@@ -120,12 +120,5 @@ class User extends \Bs\Form\User
         return $this->setModel($user);
     }
 
-    /**
-     * @return \Uni\Config
-     */
-    public function getConfig()
-    {
-        return \Uni\Config::getInstance();
-    }
 
 }

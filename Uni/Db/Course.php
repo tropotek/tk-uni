@@ -102,13 +102,15 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      * Get the path for all file associated to this object
      *
      * @return string
-     * @throws \Exception
      */
     public function getDataPath()
     {
         return sprintf('%s/course/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
     }
 
+    /**
+     * @throws \Exception
+     */
     public function save()
     {
         parent::save();
@@ -125,7 +127,6 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     public function getUsers()
     {
         $ids = CourseMap::create()->findUsers($this->getId());
-        vd($ids);
         return UserMap::create()->findFiltered(array('id' => $ids));
     }
 
@@ -140,6 +141,15 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             throw new \Tk\Exception('Only add staff users to a saved record!');
         CourseMap::create()->addUser($this->getId(), $user->getId());
         return $this;
+    }
+
+    /**
+     * @return \Tk\Db\Map\Model|Subject|\App\Db\Subject
+     * @throws \Exception
+     */
+    public function getCurrentSubject()
+    {
+        return $this->getConfig()->getSubjectMapper()->findFiltered(array('courseId' => $this->getId()), \Tk\Db\Tool::create('date_start DESC', 1))->current();
     }
 
     /**
@@ -240,6 +250,8 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             return $this->email;
         if ($this->getCoordinator() && $this->getCoordinator()->getEmail())
             return $this->getCoordinator()->getEmail();
+        if ($this->getInstitution() && $this->getInstitution()->getEmail())
+            return $this->getInstitution()->getEmail();
         return '';
     }
 

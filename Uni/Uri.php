@@ -15,7 +15,7 @@ class Uri extends \Bs\Uri
      *
      * @param null|string|\Tk\Uri $spec
      * @param null|Db\SubjectIface $subject
-     * @param null|\Uni\Db\UserIface $user
+     * @param null|\Bs\Db\UserIface $user
      * @return string|\Tk\Uri|static
      */
     public static function createSubjectUrl($spec = null, $subject = null, $user = null)

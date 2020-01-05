@@ -82,7 +82,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     /**
      * @var Data
      */
-    protected $data = null;
+    protected $_data = null;
 
 
     /**
@@ -115,9 +115,9 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function getData()
     {
-        if (!$this->data)
-            $this->data = \Tk\Db\Data::create(get_class($this), $this->getVolatileId());
-        return $this->data;
+        if (!$this->_data)
+            $this->_data = \Tk\Db\Data::create(get_class($this), $this->getVolatileId());
+        return $this->_data;
     }
 
     /**
@@ -319,10 +319,13 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
-     * @return \DateTime
+     * @param null|string $format   If supplied then a string of the formatted date is returned
+     * @return \DateTime|string
      */
-    public function getDateStart(): \DateTime
+    public function getDateStart($format = null)
     {
+        if ($format && $this->dateStart)
+            return $this->dateStart->format($format);
         return $this->dateStart;
     }
 
@@ -337,10 +340,13 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     }
 
     /**
-     * @return \DateTime
+     * @param null|string $format   If supplied then a string of the formatted date is returned
+     * @return \DateTime|string
      */
-    public function getDateEnd(): \DateTime
+    public function getDateEnd($format = null)
     {
+        if ($format && $this->dateEnd)
+            return $this->dateEnd->format($format);
         return $this->dateEnd;
     }
 
@@ -428,13 +434,5 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
         }
         
         return $errors;
-    }
-
-    /**
-     * @return \Uni\Config|\Tk\Config
-     */
-    public function getConfig()
-    {
-        return parent::getConfig();
     }
 }

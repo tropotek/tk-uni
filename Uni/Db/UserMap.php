@@ -156,6 +156,11 @@ class UserMap extends \Bs\Db\UserMap
                 $filter->appendWhere('(a.institution_id IS NULL OR a.institution_id = 0) AND ');
         }
 
+        if (!empty($filter['courseId'])) {
+            $filter->appendFrom(', %s e', $this->quoteTable('course_has_user'));
+            $filter->appendWhere('a.id = e.user_id AND e.course_id = %d AND ', (int)$filter['courseId']);
+        }
+
         if (!empty($filter['subjectId'])) {
             $filter->appendFrom(', subject_has_user c');
             $filter->appendWhere('a.id = c.user_id AND c.subject_id = %d AND ', (int)$filter['subjectId']);

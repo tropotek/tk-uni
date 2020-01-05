@@ -1,6 +1,8 @@
 <?php
 namespace Uni;
 
+use Bs\Config;
+
 /**
  * @author Tropotek <info@tropotek.com>
  * @created: 22/07/18
@@ -11,20 +13,5 @@ abstract class FormIface extends \Bs\FormIface
 {
 
 
-    /**
-     * @return Config
-     */
-    public function getConfig()
-    {
-        return Config::getInstance();
-    }
-
-    /**
-     * @return Db\User
-     */
-    public function getUser()
-    {
-        return $this->getConfig()->getUser();
-    }
 
 }

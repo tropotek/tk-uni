@@ -209,12 +209,4 @@ class User extends \Bs\Db\User implements UserIface
     }
 
 
-    /**
-     * @return \Uni\Config|\Tk\Config
-     */
-    public function getConfig()
-    {
-        return parent::getConfig();
-    }
-
 }

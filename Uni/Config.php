@@ -2,6 +2,8 @@
 namespace Uni;
 
 
+use Uni\Db\Course;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -103,6 +105,42 @@ class Config extends \Bs\Config
             $institutionId = $this->getInstitution()->getId();
         }
         return (int)$institutionId;
+    }
+
+    /**
+     * Get the current course, or null if no course selected
+     *
+     * @return \Uni\Db\CourseIface|\Uni\Db\Course|\App\Db\Course
+     */
+    public function getCourse()
+    {
+        if (!$this->get('course')) {
+            if ($this->getSubject()) {
+                $this->set('course', $this->getSubject()->getCourse());
+            } else if ($this->getRequest()->has('courseId')) {
+                /** @var Course $course */
+                try {
+                    $course = $this->getCourseMapper()->find($this->getRequest()->get('courseId'));
+                    $this->set('course', $course);
+                } catch (\Exception $e) {}
+            }
+        }
+        return $this->get('course');
+    }
+
+    /**
+     * Get the current course ID or 0 if no course selected
+     *
+     * @return int
+     */
+    public function getCourseId()
+    {
+        $courseId = 0;
+        if ($this->getCourse()) {
+            $courseId = $this->getCourse()->getId();
+        }
+        return (int)$courseId;
+
     }
 
     /**

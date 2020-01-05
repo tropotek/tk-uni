@@ -10,21 +10,4 @@ namespace Uni;
 class TableIface extends \Bs\TableIface
 {
 
-
-    /**
-     * @return Config
-     */
-    public function getConfig()
-    {
-        return Config::getInstance();
-    }
-
-    /**
-     * @return Db\User
-     */
-    public function getUser()
-    {
-        return $this->getConfig()->getUser();
-    }
-
 }

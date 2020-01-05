@@ -78,12 +78,13 @@ class UserList extends User
         $this->appendAction(\Tk\Table\Action\Delete::create()
             ->setConfirmStr('Are you sure you want to remove the user`s access from this course.')
             ->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+                $config = \Uni\Config::getInstance();
                 /** @var $obj \Uni\Db\User */
-                $course = \Uni\Db\CourseMap::create()->find(\Uni\Config::getInstance()->getRequest()->get('courseId'));
+                $course = $config->getCourseMapper()->find(\Uni\Config::getInstance()->getRequest()->get('courseId'));
                 if (!$course) {
                     \Tk\Alert::addError('Cannot locate course object.');
                 }
-                \Uni\Db\CourseMap::create()->removeUser($course->getId(), $obj->getId());
+                $config->getCourseMapper()->removeUser($course->getId(), $obj->getId());
                 return false;
             }));
 

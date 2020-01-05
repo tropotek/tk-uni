@@ -61,7 +61,7 @@ class Course extends \Uni\FormIface
      */
     public function execute($request = null)
     {
-        $this->load(\Uni\Db\CourseMap::create()->unmapForm($this->getCourse()));
+        $this->load($this->getConfig()->getCourseMapper()->unmapForm($this->getCourse()));
         parent::execute($request);
     }
 
@@ -73,7 +73,7 @@ class Course extends \Uni\FormIface
     public function doSubmit($form, $event)
     {
         // Load the object with form data
-        \Uni\Db\CourseMap::create()->mapForm($form->getValues(), $this->getCourse());
+        $this->getConfig()->getCourseMapper()->mapForm($form->getValues(), $this->getCourse());
 
         // Do Custom Validations
 

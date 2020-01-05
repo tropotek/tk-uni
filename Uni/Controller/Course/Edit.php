@@ -39,25 +39,37 @@ class Edit extends AdminEditIface
     }
 
     /**
+     * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|\Uni\Db\Course|null|\App\Db\Course
+     * @throws \Exception
+     */
+    public function getCourse()
+    {
+        if (!$this->course) {
+            $this->course = new \Uni\Db\Course();
+            $this->course->setInstitutionId($this->getConfig()->getInstitutionId());
+            if ($this->getConfig()->getRequest()->get('courseId')) {
+                $this->course = $this->getConfig()->getCourseMapper()->find($this->getConfig()->getRequest()->get('courseId'));
+            }
+        }
+        return $this->course;
+    }
+
+    /**
      * @param Request $request
      * @throws \Exception
      */
     public function doDefault(Request $request)
     {
-        $this->course = new \Uni\Db\Course();
-        $this->course->setInstitutionId($this->getConfig()->getInstitutionId());
-        if ($request->get('courseId')) {
-            $this->course = \Uni\Db\CourseMap::create()->find($request->get('courseId'));
-        }
+        $this->getCourse();
 
-        $this->setForm(\Uni\Form\Course::create()->setModel($this->course));
-        if (!$this->course->getId()) {
+        $this->setForm(\Uni\Form\Course::create()->setModel($this->getCourse()));
+        if (!$this->getCourse()->getId()) {
             $this->getForm()->removeField('update');
         }
         $this->initForm($request);
         $this->getForm()->execute();
 
-        if ($this->course->getId()) {
+        if ($this->getCourse()->getId()) {
             $this->userTable = \Uni\Table\UserList::create();
             $this->userTable->setEditUrl(\Uni\Uri::createHomeUrl('/userEdit.html'));
             $this->userTable->setAjaxParams(array(
@@ -67,16 +79,15 @@ class Edit extends AdminEditIface
             ));
             $this->userTable->setOnSelect(function (\Tk\Request $request) {
                 /** @var User $user */
-                $config = \Uni\Config::getInstance();
                 $data = $request->all();
-                $course = \Uni\Db\CourseMap::create()->find($request->get('courseId'));
-                $user = $config->getUserMapper()->find($data['selectedId']);
+                $course = $this->getConfig()->getCourseMapper()->find($request->get('courseId'));
+                $user = $this->getConfig()->getUserMapper()->find($data['selectedId']);
                 if (!$user) {
                     \Tk\Alert::addWarning('User not found!');
                 } else if (!$course) {
                     \Tk\Alert::addWarning('Course not found!');
-                } else if (!$config->getCourseMapper()->hasUser($course->getId(), $user->getId())) {
-                    $config->getCourseMapper()->addUser($course->getId(), $user->getId());
+                } else if (!$this->getConfig()->getCourseMapper()->hasUser($course->getId(), $user->getId())) {
+                    $this->getConfig()->getCourseMapper()->addUser($course->getId(), $user->getId());
                     \Tk\Alert::addSuccess($user->getName() . ' has been linked to this Course.');
                 } else {
                     \Tk\Alert::addInfo($user->getName() . ' is already linked to this Course.');
@@ -86,7 +97,7 @@ class Edit extends AdminEditIface
 
             $this->userTable->init();
             $filter = array(
-                'id' => \Uni\Db\CourseMap::create()->findUsers($this->course->getId()),
+                'id' => $this->getConfig()->getCourseMapper()->findUsers($this->getCourse()->getId()),
                 'permission' => \Uni\Db\Permission::TYPE_STAFF
             );
             if (count($filter['id']))

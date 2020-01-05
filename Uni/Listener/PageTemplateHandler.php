@@ -56,12 +56,5 @@ JS;
         }
     }
 
-    /**
-     * @return \Uni\Config|\Tk\Config
-     */
-    public function getConfig()
-    {
-        return \Uni\Config::getInstance();
-    }
 
 }

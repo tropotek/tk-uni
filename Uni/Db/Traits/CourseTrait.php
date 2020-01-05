@@ -42,11 +42,16 @@ trait CourseTrait
     /**
      * Get the course related to this object
      *
-     * @return Course|null
+     * @return Course|\App\Db\Course|null
      */
     public function getCourse()
     {
-        return $this->getCourseObj();
+        if (!$this->_course) {
+            try {
+                $this->_course = Config::getInstance()->getCourseMapper()->find($this->getCourseId());
+            } catch (\Exception $e) {}
+        }
+        return $this->_course;
     }
 
     /**
@@ -56,15 +61,11 @@ trait CourseTrait
      *   is already used in the main object for another reason
      *
      * @return Course|CourseIface|null
+     * @deprecated Use getCourse()
      */
     public function getCourseObj()
     {
-        if (!$this->_course) {
-            try {
-                $this->_course = Config::getInstance()->getCourseMapper()->find($this->getCourseId());
-            } catch (\Exception $e) {}
-        }
-        return $this->_course;
+        return $this->getCourse();
     }
 
     /**

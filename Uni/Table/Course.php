@@ -70,7 +70,7 @@ class Course extends \Bs\TableIface
     {
         if (!$tool) $tool = $this->getTool();
         $filter = array_merge($this->getFilterValues(), $filter);
-        $list = \Uni\Db\CourseMap::create()->findFiltered($filter, $tool);
+        $list = $this->getConfig()->getCourseMapper()->findFiltered($filter, $tool);
         return $list;
     }
 

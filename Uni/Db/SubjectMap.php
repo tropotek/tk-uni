@@ -167,6 +167,10 @@ class SubjectMap extends Mapper
             $filter->appendWhere('a.course_id = %s AND ', (int)$filter['courseId']);
         }
 
+        if (!empty($filter['excludeCourseId'])) {
+            $filter->appendWhere('a.course_id != %s AND ', (int)$filter['excludeCourseId']);
+        }
+
         if (!empty($filter['userId'])) {
             $filter->appendFrom(', subject_has_user k');
             $filter->appendWhere('a.id = k.subject_id AND k.user_id = %s AND ', (int)$filter['userId']);
