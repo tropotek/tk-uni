@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 3.2.0 [2020-01-07]:
+-------------------------------
+  - Merge branch 'master' of ssh://github.com/tropotek/tk-uni
+  - Added CA buttons to student placement list as requested.
+  - Added new course record to the tk-unk lib for ver 3.2
+
+
 Ver 3.1.18 [2019-12-05]:
 -------------------------------
 
