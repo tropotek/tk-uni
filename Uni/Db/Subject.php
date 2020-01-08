@@ -166,12 +166,14 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
      */
     public function getUsers()
     {
-        $ids = SubjectMap::create()->findUsers($this->getId());
-        vd($ids);
-        return UserMap::create()->findFiltered(array('id' => $ids));
+        $ids = $this->getConfig()->getSubjectMapper()->findUsers($this->getId());
+        return $this->getConfig()->getUserMapper()->findFiltered(array('id' => $ids));
     }
 
     /**
+     * Enroll/Add students to a subject
+     *
+     *
      * @param \Uni\Db\UserIface $user
      * @return Subject
      * @throws \Exception
@@ -179,8 +181,9 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function addUser($user)
     {
         if (!$user || !$this->getId() || !$user->getRole()->hasPermission(\Uni\Db\Permission::TYPE_STUDENT))
-            throw new \Tk\Exception('Only add staff users to a saved record!');
-        CourseMap::create()->addUser($this->getId(), $user->getId());
+            throw new \Tk\Exception('Only add Students to a saved subject!');
+        $this->getConfig()->getSubjectMapper()->addUser($this->getId(), $user->getId());
+        //CourseMap::create()->addUser($this->getId(), $user->getId());
         return $this;
     }
 

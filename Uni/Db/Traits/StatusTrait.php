@@ -27,7 +27,7 @@ trait StatusTrait
      */
     public function setStatus($status)
     {
-        $this->status = (int)$status;
+        $this->status = $status;
         return $this;
     }
 
