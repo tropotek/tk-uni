@@ -47,6 +47,9 @@ abstract class StatusStrategyInterface
 
     /**
      * Format a message with the information related to the status and the model using the CurlyMessage syntax.
+     * 
+     * This should be called before you send the status emails, here you can add the correct recipiants, and 
+     *    add template parames to fill in your mail CurlyMessage boty template.  
      *
      * @param Status $status
      * @param CurlyMessage $message
