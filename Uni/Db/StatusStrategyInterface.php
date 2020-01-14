@@ -46,11 +46,12 @@ abstract class StatusStrategyInterface
     public abstract function triggerStatusChange($status);
 
     /**
+     * Format a message with the information related to the status and the model using the CurlyMessage syntax.
+     *
      * @param Status $status
-     * @param MailTemplate $mailTemplate
-     * @return null|CurlyMessage
+     * @param CurlyMessage $message
      */
-    public abstract function makeStatusMessage($status, $mailTemplate);
+    public abstract function formatStatusMessage($status, $message);
 
 
     // pending notification system calls
