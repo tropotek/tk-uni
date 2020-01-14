@@ -12,6 +12,7 @@ use Bs\Db\Traits\CreatedTrait;
 use Bs\Db\Traits\ForegnModelTrait;
 use Bs\Db\Traits\UserTrait;
 use DateTime;
+use Uni\Db\Traits\StatusTrait;
 use Uni\Event\StatusEvent;
 use Uni\Form\Field\CheckSelect;
 use Uni\Form\Field\StatusSelect;
@@ -99,7 +100,7 @@ class Status extends Model
      * Should this status trigger the mail notification handler
      * @var bool
      */
-    public $notify = false;
+    public $notify = true;
 
     /**
      * @var string
@@ -138,56 +139,57 @@ class Status extends Model
     }
 
     /**
-     * @param ModelInterface $model
+     * @param ModelInterface|StatusTrait $model
      * @param StatusSelect|Iface $field
-     * @param int $courseId
-     * @param int $subjectId
      * @param string $event
+     * @param boolean $execute          (True) Execute the status after creation
      * @return Status
      * @throws Exception
      */
-    public static function createFromField($model, StatusSelect $field, $courseId = null, $subjectId = null, $event = '')
+    public static function createFromStatusSelect($model, StatusSelect $field, $event = '', $execute = true)
     {
-        return self::create($model, $field->getValue(), $field->isChecked(), $field->getNotesValue(), $courseId, $subjectId, $event);
-    }
-
-    /**
-     * @param ModelInterface $model
-     * @param string $statusName
-     * @param bool $notify
-     * @param string $message
-     * @param null|int $courseId
-     * @param null|int $subjectId
-     * @param string $event
-     * @return Status
-     * @throws Exception
-     */
-    public static function create($model, $statusName, $notify = false, $message = '', $courseId = null, $subjectId = null, $event = '')
-    {
-        $obj = static::createDetached($model, $statusName, $notify, $message, $courseId, $subjectId, $event);
-        // This is needed so the getPreviousStatus method works as expected???? <----- UPDATE: I do not think this statement is true!!
-        $obj->execute();
+        $obj = self::create($model, $field->getValue());
+        $obj->setNotify($field->isChecked());
+        $obj->setMessage($field->getNotesValue());
+        $obj->setEvent($event);
+        if ($execute)
+            $obj->execute();
         return $obj;
     }
 
     /**
-     * Same as create but does not execute the status or save it to the DB
-     *
-     * @param ModelInterface $model
-     * @param string $statusName
-     * @param bool $notify
+     * @param ModelInterface|StatusTrait $model
      * @param string $message
-     * @param null $courseId
-     * @param null $subjectId
+     * @param boolean $notify
      * @param string $event
-     * @return static
+     * @param boolean $execute          (True) Execute the status after creation
+     * @return Status
      * @throws Exception
      */
-    public static function createDetached($model, $statusName, $notify = false, $message = '', $courseId = null, $subjectId = null, $event = '')
+    public static function createFromTrait($model, $message = '', $notify = true, $event = '', $execute = true)
+    {
+        $obj = self::create($model, $model->getStatus());
+        $obj->setMessage($message);
+        $obj->setNotify($notify);
+        $obj->setEvent($event);
+        if ($execute)
+            $obj->execute();
+        return $obj;
+    }
+
+    /**
+     * @param ModelInterface|StatusTrait $model
+     * @param string $name
+     * @return Status
+     * @throws Exception
+     */
+    public static function create($model, $name)
     {
         $obj = new static();
-        $config = $obj->getConfig();
         $obj->setModel($model);
+        $obj->setName($model->getStatus());
+
+        $config = $obj->getConfig();
         if ($config->getUser()) {
             $obj->setUserId($config->getUser()->getId());
             if ($config->getMasqueradeHandler()->isMasquerading()) {
@@ -197,35 +199,30 @@ class Status extends Model
                 }
             }
         }
-        $obj->setName($statusName);
-        $obj->setEvent($event);
-        $obj->setNotify($notify);
-        $obj->setMessage($message);
-
-        if ($subjectId) {
-            if ($subjectId instanceof Subject) {
-                if (!$courseId) {
-                    $obj->setCourseId($subjectId->getCourseId());
-                }
-                $subjectId = $subjectId->getId();
-            }
-            $obj->setSubjectId($subjectId);
+        // Auto set the subject and Course ID's if possible, when not possible execute should be set to false and set manually
+        if (method_exists($model, 'getCourseId')) {
+            $obj->setCourseId($model->getCourseId());
+        } else if ($obj->getConfig()->getCourseId()) {
+            $obj->setCourseId($obj->getConfig()->getCourseId());
         }
-        if ($courseId) {
-            if ($courseId instanceof Course) {
-                $courseId = $courseId->getId();
+        if (method_exists($model, 'getSubjectId')) {
+            $obj->setSubjectId($model->getSubjectId());
+            if (!$obj->getCourseId() && method_exists($model, 'getSubject')) {
+                $obj->setCourseId($model->getSubject()->getCourseId());
             }
-            $obj->setCourseId($courseId);
+        } else if ($obj->getConfig()->getSubjectId()) {
+            $obj->setSubjectId($obj->getConfig()->getSubjectId());
         }
-
         return $obj;
     }
 
 
+
     /**
+     * Trigger status change events and save the status object.
      * @throws Exception
      */
-    protected function execute()
+    public function execute()
     {
         if (!$this->getName() || $this->getName() == $this->getPreviousName()) {
             Log::debug('Status skipped');
@@ -235,7 +232,7 @@ class Status extends Model
 
         $modelStrat = $this->getModelStrategy();
         if (!$modelStrat instanceof StatusStrategyInterface) {
-            Log::warning('Status model does not implement StatusStrategyInterface');
+            Log::warning(get_class($modelStrat) . ' does not implement StatusStrategyInterface');
             return;
         }
 
@@ -430,18 +427,18 @@ class Status extends Model
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function isNotify(): string
+    public function isNotify()
     {
         return $this->notify;
     }
 
     /**
-     * @param string $notify
+     * @param bool $notify
      * @return Status
      */
-    public function setNotify(string $notify): Status
+    public function setNotify($notify): Status
     {
         $this->notify = $notify;
         return $this;

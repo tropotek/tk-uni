@@ -46,7 +46,7 @@ class Status extends \App\TableIface
 //        if ($this->isShowLogUrl())
 //            $logUrl = \Uni\Uri::createSubjectUrl('/mailLogManager.html');
 
-        
+
         $this->appendCell(new \Tk\Table\Cell\Text('event'));
 //            ->setOnPropertyValue(function ($cell, $obj, $value) {
 //                /** @var $cell \Tk\Table\Cell\Text */
