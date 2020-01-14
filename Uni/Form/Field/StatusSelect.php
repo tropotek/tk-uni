@@ -119,6 +119,14 @@ class StatusSelect extends \Tk\Form\Field\Select
     public function show()
     {
         $t = parent::show();
+        $t->appendJsUrl(\Uni\Uri::create('/vendor/ttek/tk-uni/Uni/Form/Field/jquery.statusSelect.js'));
+        $js = <<<JS
+jQuery(function ($) {
+    $('.form-group.tk-statusselect').statusSelect();
+});
+JS;
+        $t->appendJs($js);
+
 
         $t->setAttr('checkbox', 'name', $this->getCheckboxName());
         $t->setAttr('checkbox', 'value', $this->getCheckboxName());
