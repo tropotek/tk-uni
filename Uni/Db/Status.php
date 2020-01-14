@@ -14,6 +14,7 @@ use Bs\Db\Traits\UserTrait;
 use DateTime;
 use Uni\Event\StatusEvent;
 use Uni\Form\Field\CheckSelect;
+use Uni\Form\Field\StatusSelect;
 use Uni\StatusEvents;
 use Uni\Db\Traits\CourseTrait;
 use Uni\Db\Traits\SubjectTrait;
@@ -138,14 +139,14 @@ class Status extends Model
 
     /**
      * @param ModelInterface $model
-     * @param CheckSelect|Iface $field
+     * @param StatusSelect|Iface $field
      * @param int $courseId
      * @param int $subjectId
      * @param string $event
      * @return Status
      * @throws Exception
      */
-    public static function createFromField($model, CheckSelect $field, $courseId = null, $subjectId = null, $event = '')
+    public static function createFromField($model, StatusSelect $field, $courseId = null, $subjectId = null, $event = '')
     {
         return self::create($model, $field->getValue(), $field->isChecked(), $field->getNotesValue(), $courseId, $subjectId, $event);
     }

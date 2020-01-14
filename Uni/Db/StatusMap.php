@@ -13,6 +13,7 @@ use Tk\Db\Map\Model;
 use Tk\Db\Pdo;
 use Tk\Db\Tool;
 use Tk\ObjectUtil;
+use \Bs\Db\Mapper;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -29,7 +30,7 @@ class StatusMap extends Mapper
     public function __construct($db = null)
     {
         parent::__construct($db);
-        $this->initTable($db);
+        $this->initTable($this->getDb());
     }
 
     /**
@@ -39,7 +40,7 @@ class StatusMap extends Mapper
      */
     public function initTable($db)
     {
-        if (!$db->hasTable($status)) {
+        if (!$db->hasTable('status')) {
             $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS `status` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
