@@ -77,17 +77,14 @@ trait StatusTrait
         return $errors;
     }
 
-    // TODO: We can look into implementing the following one the Status system is moved into the Uni lib
+    /**
+     * @return Status|null|ModelInterface
+     * @throws Exception
+     */
+    public function getCurrentStatus()
+    {
+        $status = StatusMap::create()->findFiltered(array('model' => $this), Tool::create('created DESC', 1))->current();
+        return $status;
+    }
 
-
-//    /**
-//     * @return Status|null|ModelInterface
-//     * @throws Exception
-//     */
-//    public function getCurrentStatus()
-//    {
-//        $status = StatusMap::create()->findFiltered(array('model' => $this), Tool::create('created DESC', 1))->current();
-//        return $status;
-//    }
-//
 }
