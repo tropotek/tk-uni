@@ -146,13 +146,15 @@ JS;
         $xhtml = <<<HTML
 <div>
   <div class="input-group">
-    <span class="input-group-addon">
-      <input type="checkbox" var="checkbox" title="Send Status Change Notification Email" />
-    </span>
+    <div class="input-group-prepend">
+      <div class="input-group-text">
+        <input type="checkbox" var="checkbox" title="Send Status Change Notification Email" />
+      </div>
+    </div>
     <select var="element" type="text" aria-label="Status" class="form-control"><option repeat="option" var="option"></option></select>
   </div>
-  <div class="" style="margin-top: 10px;position:relative;">
-    <textarea name="statusNotes" class="form-control" placeholder="Status Update Comment..." var="notes"></textarea>
+  <div class="" style="margin-top: -2px;position:relative;">
+    <textarea name="statusNotes" class="form-control" style="min-height: 80px;" placeholder="Status Update Message." var="notes"></textarea>
   </div>
 </div>
 HTML;
