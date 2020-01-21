@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 3.2.4 [2020-01-21]:
+-------------------------------
+  - Merge branch 'master' of ssh://github.com/tropotek/tk-uni
+  - Moved Status system to tk-uni lib updated files
+  - Moved Status system to tk-uni lib
+
+
 Ver 3.2.2 [2020-01-08]:
 -------------------------------
 
