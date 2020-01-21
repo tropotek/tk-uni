@@ -27,7 +27,9 @@ class UserMap extends \Bs\Db\UserMap
             $this->dbMap->addPropertyMap(new Db\Text('uid'));
             $this->dbMap->addPropertyMap(new Db\Text('username'));
             $this->dbMap->addPropertyMap(new Db\Text('password'));
-            $this->dbMap->addPropertyMap(new Db\Text('name'));
+            //$this->dbMap->addPropertyMap(new Db\Text('name'));
+            $this->dbMap->addPropertyMap(new Db\Text('nameFirst', 'name_first'));
+            $this->dbMap->addPropertyMap(new Db\Text('nameLast', 'name_last'));
             $this->dbMap->addPropertyMap(new Db\Text('email'));
             $this->dbMap->addPropertyMap(new Db\Text('phone'));
             $this->dbMap->addPropertyMap(new Db\Text('image'));
@@ -55,7 +57,9 @@ class UserMap extends \Bs\Db\UserMap
             $this->formMap->addPropertyMap(new Form\Text('uid'));
             $this->formMap->addPropertyMap(new Form\Text('username'));
             $this->formMap->addPropertyMap(new Form\Text('password'));
-            $this->formMap->addPropertyMap(new Form\Text('name'));
+            //$this->formMap->addPropertyMap(new Form\Text('name'));
+            $this->formMap->addPropertyMap(new Form\Text('nameFirst'));
+            $this->formMap->addPropertyMap(new Form\Text('nameLast'));
             $this->formMap->addPropertyMap(new Form\Text('email'));
             $this->formMap->addPropertyMap(new Form\Text('phone'));
             $this->formMap->addPropertyMap(new Form\Text('image'));
@@ -107,6 +111,22 @@ class UserMap extends \Bs\Db\UserMap
         return $this->findFiltered(array(
             'institutionId' => $institutionId,
             'email' => $email,
+            'type' => $role
+        ))->current();
+    }
+
+    /**
+     * @param string $uid
+     * @param int $institutionId
+     * @param string|array $role
+     * @return null|Model|User
+     * @throws \Exception
+     */
+    public function findByUid($uid, $institutionId = null, $role = null)
+    {
+        return $this->findFiltered(array(
+            'institutionId' => $institutionId,
+            'uid' => $uid,
             'type' => $role
         ))->current();
     }

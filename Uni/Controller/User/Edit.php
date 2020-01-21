@@ -58,18 +58,17 @@ class Edit extends \Uni\Controller\AdminEditIface
                 break;
         }
 
-
         $this->user = $this->getConfig()->createUser();
         if ($this->targetRole != \Uni\Db\Role::TYPE_ADMIN && $this->targetRole != \Uni\Db\Role::TYPE_CLIENT) {
-            $this->user->institutionId = $this->getConfig()->getInstitutionId();
+            $this->user->setInstitutionId($this->getConfig()->getInstitutionId());
         }
-        $this->user->roleId = \Uni\Db\Role::getDefaultRoleId($this->targetRole);
+        $this->user->setRoleId(\Uni\Db\Role::getDefaultRoleId($this->targetRole));
 
         if ($request->has('userId')) {
             $this->user = $this->getConfig()->getUserMapper()->find($request->get('userId'));
             if (!$this->user)
                 throw new \Tk\Exception('Invalid user account.');
-            if ($this->getUser()->isStaff() && $this->getUser()->institutionId != $this->user->institutionId)
+            if ($this->getUser()->isStaff() && $this->getUser()->getInstitutionId() != $this->user->getInstitutionId())
                 throw new \Tk\Exception('Invalid system details');
         }
 
@@ -79,16 +78,22 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     }
 
+    /**
+     * @return \Bs\Form\User
+     */
     protected function createForm()
     {
         return \Uni\Form\User::create()->setTargetRole($this->targetRole)->setModel($this->user);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function initActionPanel()
     {
         if ($this->user->getId() && $this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->user)) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
-                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->hash), 'fa fa-user-secret'))
+                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->getHash()), 'fa fa-user-secret'))
                 ->setAttr('data-confirm', 'You are about to masquerade as the selected user?')->addCss('tk-masquerade');
         }
     }
@@ -105,8 +110,8 @@ class Edit extends \Uni\Controller\AdminEditIface
         // Render the form
         $template->appendTemplate('panel', $this->getForm()->show());
         
-        if ($this->user->id) {
-            $template->setAttr('panel', 'data-panel-title', $this->user->name . ' - [UID ' . $this->user->getId() . ']');
+        if ($this->user->getId()) {
+            $template->setAttr('panel', 'data-panel-title', $this->user->getName() . ' - [UID ' . $this->user->getId() . ']');
         } else {
             $template->setAttr('panel', 'data-panel-title', 'Create User');
         }

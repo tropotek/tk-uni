@@ -153,7 +153,7 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         if (!$this->subject->getId()) {
             $template->setVisible('right-panel', false);
-            $template->removeCss('left-panel', 'col-8')->addCss('left-panel', 'col-12');
+            $template->removeCss('left-panel', 'col-8')->addCss('left-panel', 'col-md-12 col-12');
         } else {
             if ($this->userTable)
                 $template->appendTemplate('right-panel-01', $this->userTable->show());

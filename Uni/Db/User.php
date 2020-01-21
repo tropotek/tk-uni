@@ -1,7 +1,7 @@
 <?php
 namespace Uni\Db;
 
-use Tk\Db\Data;
+use Uni\Db\Traits\InstitutionTrait;
 
 
 /**
@@ -11,18 +11,13 @@ use Tk\Db\Data;
  */
 class User extends \Bs\Db\User implements UserIface
 {
+    use InstitutionTrait;
 
 
     /**
      * @var int
      */
     public $institutionId = 0;
-
-
-    /**
-     * @var \Uni\Db\Institution
-     */
-    private $institution = null;
 
 
 
@@ -34,7 +29,6 @@ class User extends \Bs\Db\User implements UserIface
         parent::__construct();
     }
 
-
     /**
      * Get the path for all file associated to this object
      *
@@ -42,7 +36,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function getDataPath()
     {
-        if ($this->institutionId) {
+        if ($this->getInstitutionId()) {
             return sprintf('%s/user/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
         }
         return sprintf('user/%s', $this->getVolatileId());
@@ -56,11 +50,11 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function generateHash($isTemp = false)
     {
-        $key = sprintf('%s%s%s', $this->getVolatileId(), $this->institutionId, $this->username);
+        $key = sprintf('%s%s%s', $this->getVolatileId(), $this->getInstitutionId(), $this->getUsername());
         if ($isTemp) {
             $key .= date('-YmdHis');
         }
-        return \Uni\Config::getInstance()->hash($key);
+        return $this->getConfig()->hash($key);
     }
 
     /**
@@ -68,16 +62,16 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function getInstitution()
     {
-        if (!$this->institution) {
+        if (!$this->_institution) {
             try {
-                $this->institution = \Uni\Config::getInstance()->getInstitutionMapper()->find($this->institutionId);
-                if (!$this->institution && $this->isClient()) {
-                    $this->institution = \Uni\Config::getInstance()->getInstitutionMapper()->findByUserId($this->id);
+                $this->_institution = $this->getConfig()->getInstitutionMapper()->find($this->getInstitutionId());
+                if (!$this->_institution && $this->isClient()) {
+                    $this->_institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getId());
                 }
             } catch (\Exception $e) {
             }
         }
-        return $this->institution;
+        return $this->_institution;
     }
 
 
@@ -135,7 +129,6 @@ class User extends \Bs\Db\User implements UserIface
         if ($subject) {
             return $subject->isUserEnrolled($this);
         }
-        //return $this->getConfig()->getSubjectMapper()->hasUser($subjectId, $this->getVolatileId());
         return false;
     }
 
@@ -148,11 +141,10 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function canChangePassword()
     {
-        $config = \App\Config::getInstance();
-        if ($config->getMasqueradeHandler()->isMasquerading()) {
+        if ($this->getConfig()->getMasqueradeHandler()->isMasquerading()) {
             return false;
         }
-        return $config->getSession()->get('auth.password.access');
+        return $this->getConfig()->getSession()->get('auth.password.access');
     }
 
     /**
@@ -166,12 +158,13 @@ class User extends \Bs\Db\User implements UserIface
     public function validate()
     {
         $errors = array();
+        $usermap = $this->getConfig()->getUserMapper();
 
-        if (!$this->institutionId && !$this->getRole()->hasPermission(array(Permission::TYPE_ADMIN, Permission::TYPE_CLIENT))) {
+        if (!$this->getInstitutionId() && !$this->getRole()->hasPermission(array(Permission::TYPE_ADMIN, Permission::TYPE_CLIENT))) {
             $errors['institutionId'] = 'Invalid field institutionId value';
         }
 
-        if (!$this->roleId) {
+        if (!$this->getRoleId()) {
             $errors['roleId'] = 'Invalid field role value';
         } else {
             try {
@@ -182,26 +175,32 @@ class User extends \Bs\Db\User implements UserIface
             }
         }
 
-        if (!$this->username) {
+        if (!$this->getUsername()) {
             $errors['username'] = 'Invalid field username value';
         } else {
-            $dup = UserMap::create()->findByUsername($this->username, $this->institutionId);
+            $dup = $usermap->findByUsername($this->getUsername(), $this->getInstitutionId());
             if ($dup && $dup->getId() != $this->getId()) {
                 $errors['username'] = 'This username is already in use';
             }
         }
 
         if ($this->getConfig()->get('system.auth.email.require')) {
-            if (!filter_var($this->email, FILTER_VALIDATE_EMAIL))
+            if (!filter_var($this->getEmail(), FILTER_VALIDATE_EMAIL))
                 $errors['email'] = 'Please enter a valid email address';
         } else {
-            if ($this->email && !filter_var($this->email, FILTER_VALIDATE_EMAIL))
+            if ($this->getEmail() && !filter_var($this->getEmail(), FILTER_VALIDATE_EMAIL))
                 $errors['email'] = 'Please enter a valid email address';
         }
-        if ($this->getConfig()->get('system.auth.email.unique') && $this->email) {
-            $dup = UserMap::create()->findByEmail($this->email, $this->institutionId);
+        if ($this->getConfig()->get('system.auth.email.unique') && $this->getEmail()) {
+            $dup = $usermap->findByEmail($this->getEmail(), $this->getInstitutionId());
             if ($dup && $dup->getId() != $this->getId()) {
                 $errors['email'] = 'This email is already in use';
+            }
+        }
+        if ($this->getUid()) {
+            $dup = $usermap->findByUid($this->getUid(), $this->getInstitutionId());
+            if ($dup && $dup->getId() != $this->getId()) {
+                $errors['uid'] = 'This UID is already in use';
             }
         }
 

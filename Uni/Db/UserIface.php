@@ -12,9 +12,9 @@ interface UserIface extends \Bs\Db\UserIface
 
 
     /**
-     * @return null|InstitutionIface
+     * @return int
      */
-    public function getInstitution();
+    public function getInstitutionId();
 
     /**
      * Returns true if the user is enrolled fully into the subject
