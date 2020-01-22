@@ -61,6 +61,36 @@ class CourseMap extends Mapper
         return $this->formMap;
     }
 
+
+    /**
+     * @param string $code
+     * @param int $institutionId
+     * @return Course|\Tk\Db\ModelInterface
+     * @throws \Exception
+     */
+    public function findByCode($code, $institutionId)
+    {
+        return $this->findFiltered(array('code' => $code, 'institutionId' => $institutionId))->current();
+    }
+
+    /**
+     * @param int $userId
+     * @param int $institutionId
+     * @param Tool $tool
+     * @return ArrayObject|Course[]
+     * @throws \Exception
+     */
+    public function findByUserId($userId, $institutionId = 0, $tool = null)
+    {
+        $from = sprintf('%s a, course_has_user b', $this->getDb()->quoteParameter($this->getTable()));
+        $where = sprintf('a.id = b.course_id AND b.user_id = %d', (int)$userId);
+        if ($institutionId) {
+            $where .= sprintf(' AND a.institution_id = %d', (int)$institutionId);
+        }
+        $arr = $this->selectFrom($from, $where, $tool);
+        return $arr;
+    }
+
     /**
      * @param array|Filter $filter
      * @param Tool $tool

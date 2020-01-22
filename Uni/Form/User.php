@@ -37,12 +37,6 @@ class User extends \Bs\Form\User
         if (!$this->getConfig()->canChangePassword()) {
             $this->removeField('newPassword');
             $this->removeField('confPassword');
-        } else {
-            if ($this->getUser()->getId() == 1 && !$this->getConfig()->getUser()->hasPermission(Permission::MANAGE_SUBJECT))
-            {
-                $this->appendField(new Field\Html('username'))->setAttr('disabled')
-                    ->addCss('form-control disabled')->setTabGroup($tab);
-            }
         }
 
         if ($this->getTargetRole() == \Uni\Db\Role::TYPE_STAFF) {
@@ -65,23 +59,37 @@ class User extends \Bs\Form\User
             $this->removeField('active');
         }
 
+        // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
+        // TODO: This needs to be replaced with a dialog box and search feature so it works for a large number of subjects
+        // TODO: done it twice so it is becoming something that needs to be looked at soon..... ;-)
+        if ($this->getUser()->getId()) {
+            if ($this->getUser()->isStaff()) {
+                $tab = 'Course';
+                $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getCourseMapper()
+                    ->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
+                if ($list->count()) {
+                    $this->appendField(new Field\Select('selCourse[]', $list), 'active')->setLabel('Course Selection')
+                        ->setNotes('Select the courses this staff member is allowed to access.')
+                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
+                    $arr = $this->getConfig()->getCourseMapper()->findByUserId($this->getUser()->getId())->toArray('id');
+                    $this->setFieldValue('selCourse', $arr);
+                }
+            } else if ($this->getUser()->isStudent()) {
+                $tab = 'Subject';
+                $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()
+                    ->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
+                if ($list->count()) {
+                    $this->appendField(new Field\Select('selSubject[]', $list), 'active')->setLabel('Subject Selection')
+                        ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
+                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
+                    $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->getUser()->getId())->toArray('id');
+                    $this->setFieldValue('selSubject', $arr);
+                }
+            }
+        }
 
-//        if ($this->getUser()->isStaff() || $this->getUser()->isStudent()) {
-//            // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
-//            // TODO: This needs to be replaced with a dialog box and search feature so it works for a large number of subjects
-//            // TODO: done it twice so it is becoming something that needs to be looked at soon..... ;-)
-//            if ($this->getUser()->getId()) {
-//                $tab = 'Subjects';
-//                $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
-//                if ($list->count()) {
-//                    $this->appendField(new Field\Select('selSubject[]', $list), 'active')->setLabel('Subject Selection')
-//                        ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
-//                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
-//                    $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->getUser()->getId())->toArray('id');
-//                    $this->setFieldValue('selSubject', $arr);
-//                }
-//            }
-//        }
+
+
     }
 
     /**
@@ -92,18 +100,30 @@ class User extends \Bs\Form\User
     public function doSubjectUpdate($form, $event)
     {
         if ($form->hasErrors()) return;
-        if (!$form->getField('selSubject')) return;
 
-        // Add user to subjects
-        $selected = $form->getFieldValue('selSubject');
-        if ($this->getUser()->getId() && is_array($selected)) {
-            $this->getConfig()->getSubjectMapper()->removeUser(null, $this->getUser()->getId());
-            foreach ($selected as $subjectId) {
-                $this->getConfig()->getSubjectMapper()->addUser($subjectId, $this->getUser()->getId());
+        if ($form->getField('selCourse')) {
+            // Add user to Courses
+            $selected = $form->getFieldValue('selCourse');
+            if ($this->getUser()->getId() && is_array($selected)) {
+                $this->getConfig()->getCourseMapper()->removeUser(null, $this->getUser()->getId());
+                foreach ($selected as $courseId) {
+                    $this->getConfig()->getCourseMapper()->addUser($courseId, $this->getUser()->getId());
+                }
             }
         }
-        $this->getUser()->save();
 
+        if ($form->getField('selSubject')) {
+            // Add user to subjects
+            $selected = $form->getFieldValue('selSubject');
+            if ($this->getUser()->getId() && is_array($selected)) {
+                $this->getConfig()->getSubjectMapper()->removeUser(null, $this->getUser()->getId());
+                foreach ($selected as $subjectId) {
+                    $this->getConfig()->getSubjectMapper()->addUser($subjectId, $this->getUser()->getId());
+                }
+            }
+        }
+        
+        $this->getUser()->save();
     }
 
     /**

@@ -5,6 +5,7 @@ use Tk\Db\Map\Model;
 use Tk\Db\Map\ArrayObject;
 use Tk\DataMap\Db;
 use Tk\DataMap\Form;
+use Tk\Db\Tool;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
