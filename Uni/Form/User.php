@@ -4,6 +4,7 @@ namespace Uni\Form;
 use Tk\Form\Field;
 use Tk\Form\Event;
 use Tk\Form;
+use Uni\Db\Permission;
 
 /**
  * Example:
@@ -37,8 +38,10 @@ class User extends \Bs\Form\User
             $this->removeField('newPassword');
             $this->removeField('confPassword');
         } else {
-            if ($this->getUser()->getId() && $this->getUser()->getId() > 1) {
-                $this->appendField(new Field\Html('username'))->setAttr('disabled')->addCss('form-control disabled')->setTabGroup($tab);
+            if ($this->getUser()->getId() == 1 && !$this->getConfig()->getUser()->hasPermission(Permission::MANAGE_SUBJECT))
+            {
+                $this->appendField(new Field\Html('username'))->setAttr('disabled')
+                    ->addCss('form-control disabled')->setTabGroup($tab);
             }
         }
 
