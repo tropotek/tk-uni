@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.2.8 [2020-01-23]:
+-------------------------------
+
+
 Ver 3.2.6 [2020-01-23]:
 -------------------------------
   - Fixed Data object fid issue when using an object instead of a class for creation
