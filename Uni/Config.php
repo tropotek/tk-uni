@@ -1,7 +1,6 @@
 <?php
 namespace Uni;
 
-
 use Uni\Db\Course;
 
 /**

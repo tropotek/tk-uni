@@ -1,9 +1,13 @@
 <?php
 namespace Uni\Db\Traits;
 
+use Tk\Db\ModelInterface;
+use Tk\Db\Tool;
 use Uni\Config;
 use Uni\Db\CourseIface;
 use Uni\Db\Course;
+use Uni\Db\Status;
+use Uni\Db\StatusMap;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -79,7 +83,7 @@ trait StatusTrait
 
     /**
      * @return Status|null|ModelInterface
-     * @throws Exception
+     * @throws /Exception
      */
     public function getCurrentStatus()
     {
