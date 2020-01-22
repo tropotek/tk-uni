@@ -51,7 +51,6 @@ $config['template.login']       = $config['system.theme.admin'] . '/login.html';
 $config['css.framework']         = 'bs4';
 
 
-
 /*
  * ---- AUTH CONFIG ----
  */
