@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.2.6 [2020-01-23]:
+-------------------------------
+  - Fixed Data object fid issue when using an object instead of a class for creation
+
+
 Ver 3.2.4 [2020-01-21]:
 -------------------------------
   - Merge branch 'master' of ssh://github.com/tropotek/tk-uni
