@@ -77,7 +77,7 @@ class UserList extends User
 
         $this->appendAction(\Tk\Table\Action\Delete::create()
             ->setConfirmStr('Are you sure you want to remove the user`s access from this course.')
-            ->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+            ->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
                 $config = \Uni\Config::getInstance();
                 /** @var $obj \Uni\Db\User */
                 $course = $config->getCourseMapper()->find(\Uni\Config::getInstance()->getRequest()->get('courseId'));
@@ -92,7 +92,7 @@ class UserList extends User
         $this->userDialog = \Tk\Ui\Dialog\AjaxSelect::create('Add User');
         $this->userDialog->setAjaxUrl(Uri::create('/ajax/user/findFiltered.html'));
         $this->userDialog->setAjaxParams($this->getAjaxParams());
-        $this->userDialog->setOnSelect($this->getOnSelect());
+        $this->userDialog->addOnSelect($this->getOnSelect());
         $this->userDialog->execute();
         $template->appendBodyTemplate($this->userDialog->show());
 
