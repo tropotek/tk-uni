@@ -73,14 +73,14 @@ class User extends \Bs\Table\User
             }
             return \Tk\Uri::create()->reset()->set('subjectId', $config->getSubject()->getId());
         });
-        $this->findSubjectDialog->execute(\Uni\Config::getInstance()->getRequest());
+        $this->findSubjectDialog->execute();
         $template = $this->getRenderer()->getTemplate();
         $template->appendBodyTemplate($this->findSubjectDialog->show());
 
         $btn = $this->getActionCell()->addButton(\Tk\Table\Cell\ActionButton::create('Migrate', null, 'fa fa-exchange'));
         $btn->setAttr('data-target','#' . $this->findSubjectDialog->getId());
         $btn->setAttr('data-toggle','modal');
-        $btn->setOnShow(function ($cell, $obj, $btn) use ($params) {
+        $btn->addOnShow(function ($cell, $obj, $btn) use ($params) {
             /** @var \Tk\Table\Cell\Actions $cell */
             /** @var \Uni\Db\User $obj */
             /** @var \Tk\Table\Cell\ActionButton $btn */

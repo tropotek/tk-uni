@@ -37,11 +37,11 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
     /**
      * Process the enrolments as submitted from the dialog
      *
-     * @param Request $request
      * @throws \Exception
      */
-    public function execute(Request $request)
+    public function execute()
     {
+        $request = $this->getRequest();
         if (!$request->has('enroll')) {
             return;
         }
@@ -161,7 +161,6 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
 
     /**
      * @return \Dom\Template
-     * @throws \Exception
      */
     public function show()
     {

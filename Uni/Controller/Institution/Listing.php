@@ -36,7 +36,7 @@ class Listing extends \Uni\Controller\AdminIface
 
         $actionsCell = new \Tk\Table\Cell\Actions();
         $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Login', \Tk\Uri::create(), 'fa  fa-sign-in', 'button-small soft')->setAttr('title', 'Institution Login'))
-            ->setOnShow(function ($cell, $obj, $button) {
+            ->addOnShow(function ($cell, $obj, $button) {
                 /* @var $obj \Uni\Db\Institution */
                 /* @var $button \Tk\Table\Cell\ActionButton */
                 $button->setUrl($obj->getLoginUrl());
@@ -44,7 +44,7 @@ class Listing extends \Uni\Controller\AdminIface
 
         $this->table->appendCell($actionsCell);
         $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->setUrl(\Tk\Uri::create('/institutionEdit.html'))
-            ->setOnPropertyValue(function ($cell, $obj, $value) {
+            ->addOnPropertyValue(function ($cell, $obj, $value) {
                 /* @var $obj \Uni\Db\Institution */
                 /* @var $cell \Tk\Table\Cell\Text */
                 $cell->setUrl($obj->getLoginUrl());

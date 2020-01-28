@@ -93,7 +93,7 @@ class UserList extends User
         $this->userDialog->setAjaxUrl(Uri::create('/ajax/user/findFiltered.html'));
         $this->userDialog->setAjaxParams($this->getAjaxParams());
         $this->userDialog->setOnSelect($this->getOnSelect());
-        $this->userDialog->execute($this->getConfig()->getRequest());
+        $this->userDialog->execute();
         $template->appendBodyTemplate($this->userDialog->show());
 
         $this->appendAction(\Tk\Table\Action\Link::createLink('Add User', '#', 'fa fa-plus'))->setAttr('data-toggle', 'modal')

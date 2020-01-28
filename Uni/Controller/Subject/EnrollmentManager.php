@@ -91,7 +91,7 @@ class EnrollmentManager extends AdminIface
 
         // Pre-Enroll Csv import dialog
         $this->preEnrolDialog = new \Uni\Ui\Dialog\PreEnrollment('Pre-Enroll User');
-        $this->preEnrolDialog->execute($request);
+        $this->preEnrolDialog->execute();
 
 
         $filter = array();
@@ -104,10 +104,11 @@ class EnrollmentManager extends AdminIface
         $this->enrolClassDialog = new AjaxSelect('Enroll Class', Uri::create('/ajax/subject/findFiltered.html'));
         $this->enrolClassDialog->setAjaxParams($filter);
         $this->enrolClassDialog->setNotes('Select the subject to enroll all the students into.');
-        $this->enrolClassDialog->setOnSelect(function ($request) use ($subject) {
+        $this->enrolClassDialog->addOnSelect(function ($dialog) use ($subject) {
+            /** @var AjaxSelect $dialog */
             /** @var Subject $destSubject */
             $config = Config::getInstance();
-            $data = $request->all();
+            $data = $dialog->getRequest()->all();
             $destSubject = $config->getSubjectMapper()->find($data['selectedId']);
             if (!$destSubject)
                 throw new \Tk\Exception('Invalid destination subject');
@@ -129,7 +130,7 @@ class EnrollmentManager extends AdminIface
             }
             return Uri::create();
         });
-        $this->enrolClassDialog->execute($request);
+        $this->enrolClassDialog->execute();
 
 
         // Enrol A single student dialog
@@ -161,7 +162,7 @@ class EnrollmentManager extends AdminIface
             }
             return Uri::create();
         });
-        $this->enrolStudentDialog->execute($request);
+        $this->enrolStudentDialog->execute();
 
 
         // Enrolled Table

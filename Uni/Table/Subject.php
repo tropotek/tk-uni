@@ -33,14 +33,14 @@ class Subject extends TableIface
         $this->appendCell(new Checkbox('id'));
 
         $this->getActionCell()->addButton(\Tk\Table\Cell\ActionButton::create('Subject Dashboard', \Uni\Uri::createSubjectUrl('/index.html'), 'fa fa-dashboard'))
-            ->setOnShow(function ($cell, $obj, $btn) {
+            ->addOnShow(function ($cell, $obj, $btn) {
                 /** @var $btn \Tk\Table\Cell\ActionButton */
                 /** @var $obj \Uni\Db\Subject */
                 $btn->setUrl(\Uni\Uri::createSubjectUrl('/index.html', $obj));
             });
         if ($this->getUser()->hasPermission(\UNi\Db\Permission::MANAGE_SUBJECT)) {
             $this->getActionCell()->addButton(\Tk\Table\Cell\ActionButton::create('Edit', \Uni\Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-edit'))
-                ->setOnShow(function ($cell, $obj, $btn) {
+                ->addOnShow(function ($cell, $obj, $btn) {
                     /** @var $btn \Tk\Table\Cell\ActionButton */
                     /** @var $obj \Uni\Db\Subject */
                     $btn->setUrl(\Uni\Uri::createHomeUrl('/subjectEdit.html')->set('subjectId', $obj->getId()));
