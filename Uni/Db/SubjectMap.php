@@ -176,6 +176,11 @@ class SubjectMap extends Mapper
             $filter->appendWhere('a.id = k.subject_id AND k.user_id = %s AND ', (int)$filter['userId']);
         }
 
+        if (!empty($filter['staffId'])) {
+            $filter->appendFrom(', course_has_user l');
+            $filter->appendWhere('a.course_id = l.course_id AND l.user_id = %s AND ', (int)$filter['staffId']);
+        }
+
         if (isset($filter['publish']) && $filter['publish'] !== '' && $filter['publish'] !== null) {
             $filter->appendWhere('a.publish = %s AND ', (int)$filter['publish']);
         }
