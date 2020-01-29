@@ -10,6 +10,10 @@ namespace Uni\Db;
 interface UserIface extends \Bs\Db\UserIface
 {
 
+    /**
+     * @return \Uni\Db\InstitutionIface
+     */
+    public function getInstitution();
 
     /**
      * @return int

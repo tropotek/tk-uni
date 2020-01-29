@@ -34,7 +34,7 @@ class PageTemplateHandler extends \Bs\Listener\PageTemplateHandler
                 $subjectId = $this->getConfig()->getSubjectId();
                 $js = <<<JS
 config.subjectId = $subjectId;
-config.institutionId = $institutionId; 
+config.institutionId = $institutionId;
 JS;
                 $template->appendJs($js, array('data-jsl-priority' => -1000));
             }

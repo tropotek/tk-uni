@@ -58,7 +58,7 @@ class User extends \Bs\Db\User implements UserIface
     }
 
     /**
-     * Get the institution related to this user
+     * @return \Tk\Db\Map\Model|\Tk\Db\ModelInterface|Institution|InstitutionIface|null
      */
     public function getInstitution()
     {
@@ -118,13 +118,13 @@ class User extends \Bs\Db\User implements UserIface
     /**
      * Returns true if the user is enrolled fully into the subject
      *
-     * @param $subjectId
+     * @param int $subjectId
      * @return bool
      * @throws \Exception
      */
     public function isEnrolled($subjectId)
     {
-        /** @var \Uni\Db\Subject $subject */
+        /** @var \Uni\Db\SubjectIface $subject */
         $subject = $this->getConfig()->getSubjectMapper()->find($subjectId);
         if ($subject) {
             return $subject->isUserEnrolled($this);
