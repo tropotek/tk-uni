@@ -21,7 +21,6 @@ $config['site.email'] = 'user@example.com';
  * Setup what paths to check when migrating SQL
  */
 $config['sql.migrate.list'] = array(
-    \Tk\Composer\SetupEvent::MIGRATE_PREPEND => $config->getSrcPath() . '/config/sql-pre',
     'Lib Sql' => $config->getVendorPath() . '/ttek/tk-uni',
     'Plugin Sql' => $config->getPluginPath(),
     'App Sql' => $config->getSrcPath() . '/config'
