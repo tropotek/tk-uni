@@ -65,10 +65,9 @@ class Edit extends \Uni\Controller\AdminEditIface
         $this->initForm($request);
         $this->getForm()->execute($request);
 
-
         if ($this->subject->getId()) {
             $this->userTable = \Uni\Table\UserList::create();
-            $this->userTable->setEditUrl(\Uni\Uri::createHomeUrl('/userEdit.html'));
+            $this->userTable->setEditUrl(\Uni\Uri::createSubjectUrl('/studentUserEdit.html'));
             $this->userTable->setAjaxParams(array(
                 'institutionId' => $this->getConfig()->getInstitutionId(),
                 'active' => 1,
@@ -103,16 +102,6 @@ class Edit extends \Uni\Controller\AdminEditIface
     }
 
     /**
-     * @param \Tk\Request $request
-     *
-     * @deprecated use initForm()
-     */
-    protected function postInitForm(\Tk\Request $request) {
-        $this->initForm($request);
-        \Tk\Log::warning('Using Deprecated Method: ' . \Tk\Debug\StackTrace::dumpLine());
-    }
-
-    /**
      *
      */
     public function initActionPanel()
@@ -125,13 +114,9 @@ class Edit extends \Uni\Controller\AdminEditIface
             if(!$this->getConfig()->isSubjectUrl()) {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
                     \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->getId()), 'fa fa-list'));
-//                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Students',
-//                    \Uni\Uri::createHomeUrl('/studentUserManager.html')->set('subjectId', $this->subject->getId()), 'fa fa-group'));
             } else {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
                     \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
-//                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Students',
-//                    \Uni\Uri::createSubjectUrl('/studentUserManager.html'), 'fa fa-group'));
             }
         }
     }
