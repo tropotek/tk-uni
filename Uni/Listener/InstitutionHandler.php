@@ -25,7 +25,7 @@ class InstitutionHandler implements Subscriber
     {
         $config = \Uni\Config::getInstance();
         /** @var \Uni\Db\User $user */
-        $user = $config->getUser();
+        $user = $config->getAuthUser();
         if ($user && $user->getInstitution()) {
             $config->set('institution', $user->getInstitution());
         }

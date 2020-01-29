@@ -233,7 +233,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $config = \Uni\Config::getInstance();
         parent::updateUser($event);
         if ($config->getMasqueradeHandler()->isMasquerading()) return;
-        $user = $config->getUser();
+        $user = $config->getAuthUser();
         if ($user) {
             if (property_exists($user, 'sessionId') && $user->sessionId != $config->getSession()->getId()) {
                 $user->sessionId = $config->getSession()->getId();
@@ -252,7 +252,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         $config = \Uni\Config::getInstance();
         $auth = $config->getAuth();
         /** @var \Uni\Db\User $user */
-        $user = $config->getUser();
+        $user = $config->getAuthUser();
 
         if (!$event->getRedirect()) {
             $url = \Tk\Uri::create('/');

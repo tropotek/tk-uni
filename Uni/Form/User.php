@@ -55,7 +55,7 @@ class User extends \Bs\Form\User
         $this->appendField(new Field\Input('uid'), 'username')->setLabel('UID')->addCss('tk-input-lock')->setTabGroup($tab)
             ->setNotes('The student or staff number assigned by the institution (if Applicable).');
 
-        if ($this->getUser()->getId() == $this->getConfig()->getUser()->getId()) {
+        if ($this->getUser()->getId() == $this->getConfig()->getAuthUser()->getId()) {
             $this->removeField('active');
         }
 

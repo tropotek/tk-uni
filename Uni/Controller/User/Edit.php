@@ -81,7 +81,7 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function initForm(\Tk\Request $request)
     {
 
-        if ($this->getUser()->getId() == 1 || !$this->getConfig()->getUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
+        if ($this->getUser()->getId() == 1 || !$this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
             $this->getForm()->appendField(new \Tk\Form\Field\Html('username'))->setAttr('disabled')
                 ->addCss('form-control disabled')->setTabGroup('Details');
         }

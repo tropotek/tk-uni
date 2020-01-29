@@ -71,8 +71,8 @@ class Config extends \Bs\Config
         if (!$this->get('institution')) {
             $obj = null;
             try {
-                if ($this->getUser()) {
-                    $obj = $this->getUser()->getInstitution();          // TODO: This should be all we need???
+                if ($this->getAuthUser()) {
+                    $obj = $this->getAuthUser()->getInstitution();          // TODO: This should be all we need???
                     // TODO: In cases of public pages there should be an institution url that
                     // TODO: uses the domain or the has path of that institution....
                     // OH! What about Client with institution_id = 0
@@ -151,7 +151,7 @@ class Config extends \Bs\Config
     public function getSubject()
     {
         // TODO: this needs to be refactored and made simpler same as getInstitution()
-        if (!$this->get('subject') && $this->getUser()) {
+        if (!$this->get('subject') && $this->getAuthUser()) {
             try {
                 $subject = null;
                 if ($this->getInstitution() && $this->getRequest()->attributes->get('subjectCode')) {
@@ -488,7 +488,7 @@ class Config extends \Bs\Config
      */
     public function getUserHomeUrl($user = null)
     {
-        if (!$user) $user = $this->getUser();
+        if (!$user) $user = $this->getAuthUser();
         return \Uni\Uri::createHomeUrl('/index.html', $user);
     }
 
@@ -496,7 +496,7 @@ class Config extends \Bs\Config
      * Get the current logged in user
      * @return Db\User|Db\UserIface
      */
-    public function getUser()
+    public function getAuthUser()
     {
         return $this->get('user');
     }
@@ -506,7 +506,7 @@ class Config extends \Bs\Config
      * @param Db\User|Db\UserIface $user
      * @return $this
      */
-    public function setUser($user)
+    public function setAuthUser($user)
     {
         $this->set('user', $user);
         return $this;

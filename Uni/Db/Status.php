@@ -190,8 +190,8 @@ class Status extends Model
         $obj->setName($model->getStatus());
 
         $config = $obj->getConfig();
-        if ($config->getUser()) {
-            $obj->setUserId($config->getUser()->getId());
+        if ($config->getAuthUser()) {
+            $obj->setUserId($config->getAuthUser()->getId());
             if ($config->getMasqueradeHandler()->isMasquerading()) {
                 $msqUser = $config->getMasqueradeHandler()->getMasqueradingUser();
                 if ($msqUser) {

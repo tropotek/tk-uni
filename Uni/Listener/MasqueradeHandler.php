@@ -39,7 +39,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
         try {
             $config = \Uni\Config::getInstance();
             /** @var User $user */
-            $user = $config->getUser();
+            $user = $config->getAuthUser();
             if (!$user) {
                 throw new \Tk\Exception('Unknown User');
             }
