@@ -68,7 +68,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             $this->user = $this->getConfig()->getUserMapper()->find($request->get('userId'));
             if (!$this->user)
                 throw new \Tk\Exception('Invalid user account.');
-            if ($this->getUser()->isStaff() && $this->getUser()->getInstitutionId() != $this->user->getInstitutionId())
+            if ($this->getAuthUser()->isStaff() && $this->getAuthUser()->getInstitutionId() != $this->user->getInstitutionId())
                 throw new \Tk\Exception('Invalid system details');
         }
 
@@ -81,7 +81,7 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function initForm(\Tk\Request $request)
     {
 
-        if ($this->getUser()->getId() == 1 || !$this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
+        if ($this->getAuthUser()->getId() == 1 || !$this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
             $this->getForm()->appendField(new \Tk\Form\Field\Html('username'))->setAttr('disabled')
                 ->addCss('form-control disabled')->setTabGroup('Details');
         }
@@ -101,7 +101,7 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function initActionPanel()
     {
-        if ($this->user->getId() && $this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->user)) {
+        if ($this->user->getId() && $this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getAuthUser(), $this->user)) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
                 \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->getHash()), 'fa fa-user-secret'))
                 ->setAttr('data-confirm', 'You are about to masquerade as the selected user?')->addCss('tk-masquerade');

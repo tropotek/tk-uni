@@ -110,7 +110,7 @@ class Edit extends AdminEditIface
      */
     public function initActionPanel()
     {
-        if ($this->getUser()->isClient() || $this->getUser()->isStaff()) {
+        if ($this->getAuthUser()->isClient() || $this->getAuthUser()->isStaff()) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Subjects',
                 \Uni\Uri::createHomeUrl('/subjectManager.html')->set('courseId', $this->course->getId()), 'fa fa-graduation-cap'));
         }

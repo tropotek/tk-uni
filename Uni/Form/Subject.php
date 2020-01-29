@@ -90,8 +90,8 @@ class Subject extends \Uni\FormIface
         $this->getSubject()->save();
 
         // If this is a staff member add them to the subject
-        if ($this->getUser()->isStaff()) {
-            $this->getConfig()->getSubjectMapper()->addUser($this->getSubject()->getId(), $this->getUser()->getId());
+        if ($this->getAuthUser()->isStaff()) {
+            $this->getConfig()->getSubjectMapper()->addUser($this->getSubject()->getId(), $this->getAuthUser()->getId());
         }
 
         // Do Custom data saving

@@ -24,17 +24,17 @@ class Edit extends \Uni\Controller\AdminEditIface
     protected function findInstitution(\Tk\Request $request)
     {
         if (!$this->institution) {
-            if ($this->getUser()->isAdmin())
+            if ($this->getAuthUser()->isAdmin())
                 $this->institution = $this->getConfig()->createInstitution();
             if ($request->get('institutionId')) {
                 $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->get('institutionId'));
             }
-            if ($this->getUser()->isClient()) {
-                $this->institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getUser()->getId());
+            if ($this->getAuthUser()->isClient()) {
+                $this->institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getAuthUser()->getId());
             }
-            if ($this->getUser()->isStaff()) {
+            if ($this->getAuthUser()->isStaff()) {
                 $this->setPageTitle('Settings');
-                $this->institution = $this->getUser()->getInstitution();
+                $this->institution = $this->getAuthUser()->getInstitution();
             }
         }
         return $this->institution;
@@ -61,13 +61,13 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function initActionPanel()
     {
-        if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getUser(), $this->getInstitution()->getUser())) {
+        if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getAuthUser(), $this->getInstitution()->getUser())) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
                 \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->getInstitution()->getUser()->getHash()),
                 'fa fa-user-secret'))->addCss('tk-masquerade')->setAttr('data-confirm', 'You are about to masquerade as the selected user?');
         }
 
-        if ($this->getUser()->isClient() || $this->getUser()->isStaff()) {
+        if ($this->getAuthUser()->isClient() || $this->getAuthUser()->isStaff()) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
                 \Uni\Uri::createHomeUrl('/institution/'.$this->getInstitution()->getId().'/plugins.html'), 'fa fa-plug'));
 

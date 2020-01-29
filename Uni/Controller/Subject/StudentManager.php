@@ -60,7 +60,7 @@ class StudentManager extends \Uni\Controller\AdminIface
         $filter = $this->table->getFilterValues();
         $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         if (!empty($filter['userId'])) {
-            $filter['userId'] = $this->getUser()->id;
+            $filter['userId'] = $this->getAuthUser()->id;
         }
         
         $users = $this->getConfig()->getSubjectMapper()->findFiltered($filter, $this->table->getTool());

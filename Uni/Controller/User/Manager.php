@@ -68,15 +68,15 @@ class Manager extends \Uni\Controller\AdminManagerIface
         }
 
         $this->setTable(\Uni\Table\User::create()->setEditUrl($this->editUrl));
-        if (!$this->getUser()->isStudent())
+        if (!$this->getAuthUser()->isStudent())
             $this->getTable()->getActionCell()->removeButton('Masquerade');
         $this->getTable()->init();
 
 
         $filter = array();
-        if ($this->getUser()->institutionId) {
-            $filter['institutionId'] = $this->getUser()->institutionId;
-        } else if ($this->getUser()->isClient()) {
+        if ($this->getAuthUser()->institutionId) {
+            $filter['institutionId'] = $this->getAuthUser()->institutionId;
+        } else if ($this->getAuthUser()->isClient()) {
             $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         }
         if (empty($filter['type'])) {

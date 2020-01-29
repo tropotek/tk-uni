@@ -106,8 +106,8 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function initActionPanel()
     {
-        if ($this->subject->getId() && ($this->getUser()->isStaff() || $this->getUser()->isClient())) {
-            if ($this->getUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
+        if ($this->subject->getId() && ($this->getAuthUser()->isStaff() || $this->getAuthUser()->isClient())) {
+            if ($this->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
                     \Uni\Uri::createHomeUrl('/subject/' . $this->subject->getId() . '/plugins.html')->set('subjectId', $this->subject->getId()), 'fa fa-plug'));
             }

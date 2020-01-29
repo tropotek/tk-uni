@@ -40,8 +40,8 @@ class Manager extends AdminManagerIface
         $filter = array();
         $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         $filter['courseId'] = $request->get('courseId', 0);
-        if ($this->getUser()->isStudent())
-            $filter['userId'] = $this->getUser()->getId();
+        if ($this->getAuthUser()->isStudent())
+            $filter['userId'] = $this->getAuthUser()->getId();
 
         $this->getTable()->setList($this->getTable()->findList($filter));
 

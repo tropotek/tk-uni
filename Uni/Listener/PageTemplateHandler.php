@@ -26,7 +26,7 @@ class PageTemplateHandler extends \Bs\Listener\PageTemplateHandler
 
             $template = $page->getTemplate();
             /** @var \Uni\Db\User $user */
-            $user = $controller->getUser();
+            $user = $controller->getAuthUser();
 
             // Add anything to the page template here ...
             if ($user) {

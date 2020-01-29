@@ -33,13 +33,13 @@ class Institution extends \Uni\FormIface
         $this->appendField(new Field\Input('name'))->setRequired(true)->setTabGroup($tab);
 
 
-        if ($this->getUser()->isAdmin() || $this->getUser()->isClient()) {
+        if ($this->getAuthUser()->isAdmin() || $this->getAuthUser()->isClient()) {
             $field = $this->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup($tab);
-            if (!$this->getUser()->isAdmin()) {
+            if (!$this->getAuthUser()->isAdmin()) {
                 $field->setDisabled(true);
             }
             $field = $this->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
-            if (!$this->getUser()->isAdmin()) {
+            if (!$this->getAuthUser()->isAdmin()) {
                 $field->setDisabled(true);
             }
 
@@ -53,7 +53,7 @@ class Institution extends \Uni\FormIface
         }
         $this->appendField(new Field\Input('phone'))->setTabGroup($tab);
 
-        if ($this->getUser()->isAdmin()) {
+        if ($this->getAuthUser()->isAdmin()) {
             $this->appendField(new Field\Checkbox('active'))->setTabGroup($tab)->setCheckboxLabel('Institution login accounts enabled/disabled.');
         }
 
@@ -86,7 +86,7 @@ class Institution extends \Uni\FormIface
 
 
         $tab = 'Account';
-        if ($this->getUser()->isAdmin()) {
+        if ($this->getAuthUser()->isAdmin()) {
 
             $this->setAttr('autocomplete', 'off');
             $f = $this->appendField(new Field\Password('newPassword'))->setAttr('placeholder', 'Click to edit')

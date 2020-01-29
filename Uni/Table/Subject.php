@@ -38,7 +38,7 @@ class Subject extends TableIface
                 /** @var $obj \Uni\Db\Subject */
                 $btn->setUrl(\Uni\Uri::createSubjectUrl('/index.html', $obj));
             });
-        if ($this->getUser()->hasPermission(\UNi\Db\Permission::MANAGE_SUBJECT)) {
+        if ($this->getAuthUser()->hasPermission(\UNi\Db\Permission::MANAGE_SUBJECT)) {
             $this->getActionCell()->addButton(\Tk\Table\Cell\ActionButton::create('Edit', \Uni\Uri::createHomeUrl('/subjectEdit.html'), 'fa fa-edit'))
                 ->addOnShow(function ($cell, $obj, $btn) {
                     /** @var $btn \Tk\Table\Cell\ActionButton */
