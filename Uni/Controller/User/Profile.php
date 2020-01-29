@@ -6,6 +6,7 @@ use Dom\Template;
 use Tk\Form;
 use Tk\Form\Field;
 use Tk\Form\Event;
+use Uni\Db\Permission;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -25,11 +26,15 @@ class Profile extends \Bs\Controller\Admin\User\Profile
         $this->init($request);
 
         $this->setForm(\Uni\Form\User::create()->setModel($this->user));
-        $this->getForm()->removeField('selSubject');
-        $this->getForm()->removeField('active');
-        $this->getForm()->removeField('uid');
-        $this->getForm()->removeField('roleId');
-        $this->getForm()->getField('email')->setAttr('disabled')->addCss('form-control disabled');
+        if ($this->getForm()->getField('active'))
+            $this->getForm()->removeField('active');
+        if ($this->getForm()->getField('username'))
+            $this->getForm()->getField('username')->setAttr('disabled')->addCss('form-control disabled')->removeCss('tk-input-lock');
+        if ($this->getForm()->getField('uid'))
+            $this->getForm()->getField('uid')->setAttr('disabled')->addCss('form-control disabled')->removeCss('tk-input-lock');
+        if ($this->getForm()->getField('email'))
+            $this->getForm()->getField('email')->setAttr('disabled')->addCss('form-control disabled')->removeCss('tk-input-lock');
+
         $this->getForm()->execute();
     }
 
