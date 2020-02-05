@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.2.14 [2020-02-05]:
+-------------------------------
+
+
 Ver 3.2.12 [2020-01-30]:
 -------------------------------
   - Merge branch 'master' of ssh://github.com/tropotek/tk-uni
