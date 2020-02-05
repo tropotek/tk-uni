@@ -18,7 +18,7 @@ class InstitutionHandler implements Subscriber
      * Set the global institution into the config as a central data access point
      * If no institution is set then we know we are either an admin or public user...
      *
-     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
+     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
      * @throws \Exception
      */
     public function onRequest($event)

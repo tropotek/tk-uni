@@ -142,12 +142,12 @@ class EnrollmentManager extends AdminIface
         $this->enrolStudentDialog = new AjaxSelect('Enrol Student', Uri::create('/ajax/user/findFiltered.html'));
         $this->enrolStudentDialog->setAjaxParams($filter);
         //$this->enrolStudentDialog->setNotes('');
-        $this->enrolStudentDialog->setOnSelect(function ($request) {
+        $this->enrolStudentDialog->addOnSelect(function ($dialog) {
             /** @var User $user */
             $config = Config::getInstance();
-            $data = $request->all();
+            $data = $config->$this->getRequest()->all();
             $subject = $config->getSubject();
-            $user = $config->getUserMapper()->find($data['selectedId'], $subject->institutionId);
+            $user = $config->getUserMapper()->find($data['selectedId'], $subject->getInstitutionId());
             if (!$user)
                 throw new \Tk\Exception('Invalid user selected');
             if (!$user || (!$user->hasPermission(\Uni\Db\Permission::TYPE_STAFF) && !$user->hasPermission(\Uni\Db\Permission::TYPE_STUDENT))) {
@@ -155,9 +155,9 @@ class EnrollmentManager extends AdminIface
             } else {
                 if (!$user->isEnrolled($subject->getId())) {
                     $config->getSubjectMapper()->addUser($subject->getId(), $user->getId());
-                    Alert::addSuccess($user->getName() . ' added to the subject ' . $subject->name);
+                    Alert::addSuccess($user->getName() . ' added to the subject ' . $subject->getName());
                 } else {
-                    Alert::addWarning($user->getName() . ' already enrolled in the subject ' . $subject->name);
+                    Alert::addWarning($user->getName() . ' already enrolled in the subject ' . $subject->getName());
                 }
             }
             return Uri::create();

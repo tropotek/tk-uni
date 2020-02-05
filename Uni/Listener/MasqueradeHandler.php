@@ -29,7 +29,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
     /**
      * Add any headers to the final response.
      *
-     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
+     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
      */
     public function onMasquerade($event)
     {
