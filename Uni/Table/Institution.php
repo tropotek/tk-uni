@@ -28,7 +28,11 @@ class Institution extends \Uni\TableIface
                 /* @var $button \Tk\Table\Cell\ActionButton */
                 $config = \Uni\Config::getInstance();
                 if ($config->getMasqueradeHandler()->canMasqueradeAs($config->getAuthUser(), $obj->getUser())) {
-                    $button->setUrl(\Uni\Uri::create()->set(\Uni\Listener\MasqueradeHandler::MSQ, $obj->getUser()->getHash()));
+                    $button->setUrl(
+                        \Uni\Uri::create()
+                            ->set(\Uni\Listener\MasqueradeHandler::MSQ, $obj->getUser()->getHash())
+                            ->set('institutionId', '0')
+                    );
                 } else {
                     $button->setAttr('disabled', 'disabled')->addCss('disabled');
                     //$button->setVisible(false);

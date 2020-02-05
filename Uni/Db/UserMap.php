@@ -134,18 +134,20 @@ class UserMap extends \Bs\Db\UserMap
 
     /**
      * @param $hash
-     * @param int $institutionId
+     * @param int $institutionId (default 0 = admin and institution users)
      * @param string|array $role
      * @return null|Model|User
      * @throws \Exception
      */
     public function findByHash($hash, $institutionId = 0, $role = null)
     {
-        return $this->findFiltered(array(
+        $filter = array(
             'institutionId' => $institutionId,
             'hash' => $hash,
-            'role' => $role
-        ))->current();
+            'type' => $role
+        );
+        $r = $this->findFiltered($filter)->current();
+        return $r;
     }
 
     /**

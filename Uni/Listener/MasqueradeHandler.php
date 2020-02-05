@@ -44,7 +44,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
                 throw new \Tk\Exception('Unknown User');
             }
             $iid = $config->getInstitutionId();
-            if (!$iid)
+            if (!$iid || $request->has('institutionId'))
                 $iid = (int)$request->get('institutionId');
 
             /** @var User $msqUser */
@@ -55,7 +55,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
             $this->masqueradeLogin($user, $msqUser);
         } catch (\Exception $e) {
             \Tk\Alert::addWarning($e->getMessage());
-            \Tk\Uri::create()->remove(static::MSQ)->redirect();
+            \Tk\Uri::create()->remove(static::MSQ)->remove('institutionId')->redirect();
         }
     }
 
