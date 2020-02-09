@@ -37,7 +37,7 @@ class User extends \Bs\Table\User
         parent::init();
 
         if (!$this->getConfig()->getSubject()) return $this;
-        if (!$this->getAuthUser()->isAdmin())
+        if (!$this->getAuthUser()->isAdmin() && !$this->getAuthUser()->isClient())
             $this->removeAction('delete');
 
         $this->findSubjectDialog = new \Tk\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
