@@ -75,7 +75,7 @@ class UserList extends User
         $this->removeAction('delete');
         $this->removeAction('csv');
 
-        $this->appendAction(\Tk\Table\Action\Delete::create()
+        $this->appendAction(\Tk\Table\Action\Delete::create()->setLabel('Remove')
             ->setConfirmStr('Are you sure you want to remove the user`s access from this course.')
             ->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
                 $config = \Uni\Config::getInstance();
