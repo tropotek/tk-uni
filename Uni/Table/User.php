@@ -37,18 +37,20 @@ class User extends \Bs\Table\User
         parent::init();
 
         if (!$this->getConfig()->getSubject()) return $this;
+        if (!$this->getAuthUser()->isAdmin())
+            $this->removeAction('delete');
 
         $this->findSubjectDialog = new \Tk\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
         //$params = array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId());
-        $params = array('subjectId' => $this->getConfig()->getSubject()->getId());
+        $params = array('institutionId'=> $this->getConfig()->getInstitutionId(), 'subjectId' => $this->getConfig()->getSubject()->getId());
         if ($this->ajaxDialogParams)
             $params = $this->ajaxDialogParams;
         $this->findSubjectDialog->setAjaxParams($params);
         $this->findSubjectDialog->setNotes('Select the subject to migrate the student to...');
-        $this->findSubjectDialog->setOnSelect(function (\Tk\Request $request) {
+        $this->findSubjectDialog->addOnSelect(function ($dialog) {
             $config = \Uni\Config::getInstance();
             $dispatcher = $config->getEventDispatcher();
-            $data = $request->all();
+            $data = $config->getRequest()->all();
 
             // Migrate the user to the new subject
             $event = new \Tk\Event\Event();
@@ -64,7 +66,7 @@ class User extends \Bs\Table\User
                     if ($config->getSubjectMapper()->hasUser($event->get('subjectFromId'), $user->getId())) {
                         $config->getSubjectMapper()->removeUser($event->get('subjectFromId'), $user->getId());
                         // delete user from the pre-enrolment list if exists
-                        $config->getSubjectMapper()->removePreEnrollment($event->get('subjectFromId'), $user->email);
+                        $config->getSubjectMapper()->removePreEnrollment($event->get('subjectFromId'), $user->getEmail());
                     }
                     if (!$config->getSubjectMapper()->hasUser($event->get('subjectToId'), $user->getId())) {
                         $config->getSubjectMapper()->addUser($event->get('subjectToId'), $user->getId());
@@ -96,6 +98,11 @@ class User extends \Bs\Table\User
                 }
             }
         });
+
+        $html = <<<HTML
+<p><small><em>NOTE: To remove users, mark users as in-active or migrate students to a holding subject. To delete a user please contact the site administrator.</em></small></p>
+HTML;
+        $this->getRenderer()->getTemplate()->prependHtml('table', $html);
 
         return $this;
     }

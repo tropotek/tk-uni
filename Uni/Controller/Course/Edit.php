@@ -77,17 +77,17 @@ class Edit extends AdminEditIface
                 'active' => 1,
                 'permission' => \Uni\Db\Permission::TYPE_STAFF
             ));
-            $this->userTable->setOnSelect(function (\Tk\Request $request) {
+            $this->userTable->setOnSelect(function (\Uni\Table\UserList $dialog) {
                 /** @var User $user */
-                $data = $request->all();
-                $course = $this->getConfig()->getCourseMapper()->find($request->get('courseId'));
-                $user = $this->getConfig()->getUserMapper()->find($data['selectedId']);
+                $data = $dialog->getConfig()->getRequest()->all();
+                $course = $dialog->getConfig()->getCourseMapper()->find($dialog->getConfig()->getRequest()->get('courseId'));
+                $user = $dialog->getConfig()->getUserMapper()->find($data['selectedId']);
                 if (!$user) {
                     \Tk\Alert::addWarning('User not found!');
                 } else if (!$course) {
                     \Tk\Alert::addWarning('Course not found!');
-                } else if (!$this->getConfig()->getCourseMapper()->hasUser($course->getId(), $user->getId())) {
-                    $this->getConfig()->getCourseMapper()->addUser($course->getId(), $user->getId());
+                } else if (!$dialog->getConfig()->getCourseMapper()->hasUser($course->getId(), $user->getId())) {
+                    $dialog->getConfig()->getCourseMapper()->addUser($course->getId(), $user->getId());
                     \Tk\Alert::addSuccess($user->getName() . ' has been linked to this Course.');
                 } else {
                     \Tk\Alert::addInfo($user->getName() . ' is already linked to this Course.');

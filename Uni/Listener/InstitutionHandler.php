@@ -29,8 +29,8 @@ class InstitutionHandler implements Subscriber
         if ($user && $user->getInstitution()) {
             $config->set('institution', $user->getInstitution());
         }
-        if ($event->getRequest()->getAttribute('instHash')) {
-            $institution = $config->getInstitutionMapper()->findByHash($event->getRequest()->getAttribute('instHash'));
+        if ($event->getRequest()->attributes->get('instHash')) {
+            $institution = $config->getInstitutionMapper()->findByHash($event->getRequest()->attributes->get('instHash'));
             $config->set('institution', $institution);
         }
 

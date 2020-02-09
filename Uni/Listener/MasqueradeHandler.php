@@ -75,7 +75,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
     {
         $b = parent::canMasqueradeAs($user, $msqUser);
         // If not admins they must be of the same institution
-        if ($user->institutionId != 0 && $user->institutionId != $msqUser->institutionId) {
+        if ($user->getInstitutionId() != 0 && $user->getInstitutionId() != $msqUser->getInstitutionId()) {
             $b = false;
         }
         return $b;

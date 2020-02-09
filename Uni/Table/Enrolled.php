@@ -36,7 +36,6 @@ class Enrolled extends \Uni\TableIface
     {
         $this->addCss('tk-enrolled-users');
 
-
         $this->findSubjectDialog = new \Tk\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
         //$params = array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId());
         $params = array('subjectId' => $this->getConfig()->getSubject()->getId());
@@ -44,10 +43,10 @@ class Enrolled extends \Uni\TableIface
             $params = $this->ajaxDialogParams;
         $this->findSubjectDialog->setAjaxParams($params);
         $this->findSubjectDialog->setNotes('Select the subject to migrate the student to...');
-        $this->findSubjectDialog->setOnSelect(function (\Tk\Request $request) {
+        $this->findSubjectDialog->addOnSelect(function ($dialog) {
             $config = \Uni\Config::getInstance();
             $dispatcher = $config->getEventDispatcher();
-            $data = $request->all();
+            $data = $config->getRequest()->all();
 
             // Migrate the user to the new subject
             $event = new \Tk\Event\Event();
@@ -63,7 +62,7 @@ class Enrolled extends \Uni\TableIface
                     if ($config->getSubjectMapper()->hasUser($event->get('subjectFromId'), $user->getId())) {
                         $config->getSubjectMapper()->removeUser($event->get('subjectFromId'), $user->getId());
                         // delete user from the pre-enrolment list if exists
-                        $config->getSubjectMapper()->removePreEnrollment($event->get('subjectFromId'), $user->email);
+                        $config->getSubjectMapper()->removePreEnrollment($event->get('subjectFromId'), $user->getEmail());
                     }
                     if (!$config->getSubjectMapper()->hasUser($event->get('subjectToId'), $user->getId())) {
                         $config->getSubjectMapper()->addUser($event->get('subjectToId'), $user->getId());
@@ -103,7 +102,7 @@ class Enrolled extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Text('username'));
         $this->appendCell(new \Tk\Table\Cell\Email('email'));
         $this->appendCell(new \Tk\Table\Cell\Text('uid'));
-        $this->appendCell(new \Tk\Table\Cell\Text('roleId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+        $this->appendCell(new \Tk\Table\Cell\Text('roleId'))->addOnPropertyValue(function ($cell, $obj, $value) {
             /** @var \Uni\Db\User $obj */
             if ($obj->getRole())
                 $value = $obj->getRole()->getName();
@@ -113,7 +112,7 @@ class Enrolled extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Date('created'));
 
         // Actions
-        $this->appendAction(\Tk\Table\Action\Delete::create('delete')->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+        $this->appendAction(\Tk\Table\Action\Delete::create('delete')->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
             /** @var \Uni\Db\User $obj */
             $config = \Uni\Config::getInstance();
             $subject = $config->getSubject();

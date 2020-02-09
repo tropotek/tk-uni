@@ -103,14 +103,14 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                        }
 //                    }
 
-                    if ($user && $user->active) {
-                        if (!$user->uid && !empty($ldapData[0]['auedupersonid'][0]))
-                            $user->uid = $ldapData[0]['auedupersonid'][0];
-                        if (!$user->name && !empty($ldapData[0]['displayname'][0]))
-                            $user->name = $ldapData[0]['displayname'][0];
+                    if ($user && $user->isActive()) {
+                        if (!$user->getUid() && !empty($ldapData[0]['auedupersonid'][0]))
+                            $user->setUid($ldapData[0]['auedupersonid'][0]);
+                        if (!$user->getName() && !empty($ldapData[0]['displayname'][0]))
+                            $user->setName($ldapData[0]['displayname'][0]);
                         // TODO: update this to if !$user->email later once all emails are changed over
                         if ($email)
-                            $user->email = $email;
+                            $user->setEmail($email);
                         $user->setNewPassword($adapter->get('password'));
                         $user->save();
 
@@ -160,9 +160,9 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                    return;
 //                }
 //                $user = $config->createUser();
-//                $user->roleId = \Uni\Db\Role::DEFAULT_TYPE_STUDENT;
+//                $user->setRoleId(\Uni\Db\Role::DEFAULT_TYPE_STUDENT);
 //                if ($userData['role'] == 'staff') {
-//                    $user->roleId = \Uni\Db\Role::DEFAULT_TYPE_STAFF;
+//                    $user->setRoleId(\Uni\Db\Role::DEFAULT_TYPE_STAFF);
 //                }
 //                $config->getUserMapper()->mapForm($userData, $user);
 //                $user->save();
@@ -235,8 +235,8 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         if ($config->getMasqueradeHandler()->isMasquerading()) return;
         $user = $config->getAuthUser();
         if ($user) {
-            if (property_exists($user, 'sessionId') && $user->sessionId != $config->getSession()->getId()) {
-                $user->sessionId = $config->getSession()->getId();
+            if (property_exists($user, 'sessionId') && $user->getSessionId() != $config->getSession()->getId()) {
+                $user->setSessionId($config->getSession()->getId());
             }
             $user->save();
 
@@ -263,7 +263,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         }
 
         if ($user && $user->getId() && property_exists($user, 'sessionId')) {
-            $user->sessionId = '';
+            $user->setSessionId('');
             $user->save();
         }
 

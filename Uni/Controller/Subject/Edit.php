@@ -73,10 +73,10 @@ class Edit extends \Uni\Controller\AdminEditIface
                 'active' => 1,
                 'permission' => \Uni\Db\Permission::TYPE_STUDENT
             ));
-            $this->userTable->setOnSelect(function (\Tk\Request $request) {
+            $this->userTable->setOnSelect(function (\Uni\Table\UserList $dialog) {
                 /** @var \Uni\Db\User $user */
-                $config = \Uni\Config::getInstance();
-                $data = $request->all();
+                $config = $dialog->getConfig();
+                $data = $config->getRequest()->all();
                 $subject = $config->getSubject();
                 $user = $config->getUserMapper()->find($data['selectedId']);
                 if (!$user) {
