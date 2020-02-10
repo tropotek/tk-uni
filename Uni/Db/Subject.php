@@ -135,7 +135,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
 
     /**
      *
-     * @param UserIface $user
+     * @param UserIface|User $user
      * @return mixed
      * @throws \Exception
      */
