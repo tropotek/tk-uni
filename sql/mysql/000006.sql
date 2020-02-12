@@ -16,6 +16,8 @@ alter table user
 UPDATE user SET name_first = SUBSTRING(name, 1, LOCATE(' ', name) - 1);
 UPDATE user SET name_last = SUBSTRING(name, LOCATE(' ', name) + 1);
 
+UPDATE user SET name_first = username WHERE name_first = '';
+
 -- Move the display name field as I think we may keep this. (Uni only)
 -- alter table user modify display_name varchar(255) default '' not null after name_last;
 
