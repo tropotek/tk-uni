@@ -35,7 +35,7 @@ class Course extends \Bs\TableIface
         $this->appendCell(new Cell\Text('code'));
         $this->appendCell(new Cell\Text('email'));
 
-        $this->appendCell(new Cell\Text('coordinatorId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+        $this->appendCell(new Cell\Text('coordinatorId'))->addOnPropertyValue(function ($cell, $obj, $value) {
             /** @var $obj \Uni\Db\Course */
             $value = '';
             if ($obj->getCoordinator())

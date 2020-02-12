@@ -25,7 +25,7 @@ class PreEnrollment extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Text('username'));
         $this->appendCell(new \Tk\Table\Cell\Text('email'));
         $this->appendCell(new \Tk\Table\Cell\Boolean('enrolled'))->setOrderProperty('IF(c.subject_id IS NULL,0,1)')
-            ->setLabel('E')->setOnCellHtml(function ($cell, $obj, $html) {
+            ->setLabel('E')->addOnCellHtml(function ($cell, $obj, $html) {
             /** @var $cell \Tk\Table\Cell\Boolean */
             /** @var $obj \StdClass */
             $config = \Uni\Config::getInstance();
@@ -44,7 +44,7 @@ class PreEnrollment extends \Uni\TableIface
         });
 
         // Actions
-        $this->appendAction(\Tk\Table\Action\Delete::create('delete', 'email')->setOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+        $this->appendAction(\Tk\Table\Action\Delete::create('delete', 'email')->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
             $config = \Uni\Config::getInstance();
             $subjectMap = $config->getSubjectMapper();
             $subjectMap->removePreEnrollment($obj->subject_id, $obj->email, $obj->uid, $obj->username);

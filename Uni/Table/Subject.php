@@ -49,7 +49,7 @@ class Subject extends TableIface
         $this->appendCell($this->getActionCell());
         $this->appendCell(new Text('name'))->addCss('key')->setUrl($this->getEditUrl());
         $this->appendCell(new Text('code'));
-        $this->appendCell(new Text('courseId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+        $this->appendCell(new Text('courseId'))->addOnPropertyValue(function ($cell, $obj, $value) {
             $course = \Uni\Config::getInstance()->getCourseMapper()->find($value);
             if ($course)
                 $value = $course->getName();

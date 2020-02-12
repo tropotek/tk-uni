@@ -82,8 +82,8 @@ class Status extends \App\TableIface
         $this->appendCell(new Cell\Text('userId'))->setOnPropertyValue(function ($cell, $obj, $value) {
                 /** @var $obj \Uni\Db\Status */
                 $value = '';
-                if ($obj->getUserObj())
-                    $value = $obj->getUserObj()->getName();
+                if ($obj->getUser())
+                    $value = $obj->getUser()->getName();
                 return $value;
             });
 

@@ -41,7 +41,7 @@ class StudentManager extends \Uni\Controller\AdminIface
         $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
 
         $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(\Uni\Uri::createSubjectUrl('/index.html'))
-            ->setOnPropertyValue(function ($cell, $obj, $value) {
+            ->addOnPropertyValue(function ($cell, $obj, $value) {
                 /** @var \Tk\Table\Cell\Text $cell */
                 $cell->setUrl(\Uni\Uri::createSubjectUrl('/index.html', $obj));
                 return $value;

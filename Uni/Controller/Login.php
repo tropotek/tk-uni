@@ -59,8 +59,8 @@ class Login extends \Bs\Controller\Login
     {
         if (!$this->institution) {
             $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getTkUri()->getHost());
-            if (!$this->institution && $request->hasAttribute('institutionId')) {
-                $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->getAttribute('institutionId'));
+            if (!$this->institution && $request->attributes->has('institutionId')) {
+                $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->attributes->get('institutionId'));
             }
         }
 
@@ -112,7 +112,7 @@ class Login extends \Bs\Controller\Login
             }
             $template->insertText('instName', $this->institution->name);
             $template->setVisible('inst');
-            $this->getPage()->getTemplate()->show('has-inst');
+            $this->getPage()->getTemplate()->setVisible('has-inst');
         } else {
             $template->setVisible('noinst');
             $template->setVisible('recover');
