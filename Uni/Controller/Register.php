@@ -127,10 +127,10 @@ class Register extends Iface
             $form->addFieldError('password', 'Passwords do not match.');
             $form->addFieldError('passwordConf');
         }
-        
+
         $form->addFieldErrors($this->user->validate());
         $form->addFieldErrors($this->institution->validate());
-        
+
         if ($form->hasErrors()) {
             return;
         }
@@ -196,13 +196,13 @@ class Register extends Iface
 
         $institution->active = true;
         $institution->save();
-        
+
         $e = new \Tk\Event\Event();
         $e->set('request', $request);
         $e->set('user', $user);
         $e->set('institution', $institution);
         \Uni\Config::getInstance()->getEventDispatcher()->dispatch(AuthEvents::REGISTER_CONFIRM, $e);
-        
+
         \Tk\Alert::addSuccess('Account Activation Successful.');
         \Tk\Uri::create('/login.html')->redirect();
     }
@@ -254,4 +254,5 @@ HTML;
 
         return \Dom\Loader::load($xhtml);
     }
+    
 }
