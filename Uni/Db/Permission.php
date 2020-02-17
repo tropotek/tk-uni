@@ -14,6 +14,7 @@ class Permission extends \Bs\Db\Permission
     const TYPE_CLIENT           = 'type.client';
     const TYPE_STAFF            = 'type.staff';             // Default staff role. Has basic staff permissions.
     const TYPE_STUDENT          = 'type.student';
+
     const TYPE_COORDINATOR      = 'type.coordinator';       // Coordinator: Manage settings/students/staff for linked subjects.
     const TYPE_LECTURER         = 'type.lecturer';          // Lecturer: Manage student submissions/communications for linked subjects
 
