@@ -254,5 +254,5 @@ HTML;
 
         return \Dom\Loader::load($xhtml);
     }
-    
+
 }
