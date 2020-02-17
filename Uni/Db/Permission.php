@@ -19,6 +19,11 @@ class Permission extends \Bs\Db\Permission
     const TYPE_LECTURER         = 'type.lecturer';          // Lecturer: Manage student submissions/communications for linked subjects
 
     /**
+     * Mentor Privileges
+     */
+    const STUDENT_MENTOR             = 'perm.student.mentor';
+
+    /**
      * Add/Edit Staff user accounts
      */
     const MANAGE_STAFF          = 'perm.manage.staff';
