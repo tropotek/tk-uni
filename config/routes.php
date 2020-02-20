@@ -56,7 +56,7 @@ $routes->add('admin-user-profile', Route::create('/admin/profile.html', 'Uni\Con
 $routes->add('client-institution-plugin-manager', Route::create('/client/{zoneName}/{zoneId}/plugins.html', 'Uni\Controller\PluginZoneManager::doDefault',
     array('zoneName' => 'institution', 'zoneId' => '0') ));
 
-$routes->add('client-institution-edit', Route::create('/client/settings.html', 'Uni\Controller\Institution\Edit::doDefault'));
+$routes->add('client-settings', Route::create('/client/settings.html', 'Uni\Controller\Institution\Edit::doDefault'));
 $routes->add('client-user-profile', Route::create('/client/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 
 $routes->add('client-user-manager', Route::create('/client/{targetType}UserManager.html', 'Uni\Controller\User\Manager::doDefaultType'));

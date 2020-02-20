@@ -17,10 +17,6 @@ class Permission extends \Bs\Db\Permission
     const TYPE_STAFF            = 'type.staff';
     const TYPE_STUDENT          = 'type.student';
 
-//    const IS_COORDINATOR      = 'type.coordinator';       // Coordinator: Manage settings/students/staff for linked subjects.
-//    const IS_LECTURER         = 'type.lecturer';          // Lecturer: Manage student submissions/communications for linked subjects
-
-
     /**
      * Coordinator: Manage settings/students/staff for linked subjects.
      * @target staff
@@ -70,14 +66,22 @@ class Permission extends \Bs\Db\Permission
      * @param string $type
      * @return array
      */
-    public static function getTypePermissionList($type = 'admin')
+    public static function getTypePermissionList($type = null)
     {
         switch ($type) {
             case User::TYPE_ADMIN;
+                return array(
+                    'Type Is Administrator' => self::TYPE_ADMIN,
+                    'Can Masquerade' => self::CAN_MASQUERADE
+                );
             case User::TYPE_CLIENT:
-                return array('Can Masquerade' => self::CAN_MASQUERADE);
+                return array(
+                    'Type Is Institution Client' => self::TYPE_CLIENT,
+                    'Can Masquerade' => self::CAN_MASQUERADE
+                );
             case User::TYPE_STAFF:
                 return array(
+                    'Type Is Staff' => self::TYPE_STAFF,
                     'Add/Edit Staff Records' => self::MANAGE_STAFF,
                     'Add/Edit Student Records' => self::MANAGE_STUDENT,
                     'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
@@ -86,8 +90,20 @@ class Permission extends \Bs\Db\Permission
                     'Staff Member is a Student Mentor' => self::IS_MENTOR,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
+            case User::TYPE_STUDENT:
+                return array(
+                    'Type Is Student' => self::TYPE_STUDENT
+                );
         }
-        return array();
+        return array(
+            'Add/Edit Staff Records' => self::MANAGE_STAFF,
+            'Add/Edit Student Records' => self::MANAGE_STUDENT,
+            'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
+            'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
+            'Staff Member is a Lecturer' => self::IS_LECTURER,
+            'Staff Member is a Student Mentor' => self::IS_MENTOR,
+            'Can Masquerade' => self::CAN_MASQUERADE
+        );
     }
 
 }
