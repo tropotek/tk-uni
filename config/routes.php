@@ -27,6 +27,7 @@ $routes->add('register', Route::create('/register.html', 'Uni\Controller\Registe
 $routes->add('logout', Route::create('/logout.html', 'Uni\Controller\Logout::doDefault'));
 $routes->add('institution-list', Route::create('/institutions.html', 'Uni\Controller\Institution\Listing::doDefault'));
 
+$routes->add('install', Route::create('/install.html', 'Uni\Controller\Install::doDefault'));
 
 
 // Admin Pages
