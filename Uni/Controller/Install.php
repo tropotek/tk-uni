@@ -129,9 +129,18 @@ HTML;
             'ins-username' => $this->instUser->getUsername(),
             'ins-email' => $this->institution->getEmail(),
             'site.email' => $this->institution->getEmail(),
-            'admin-username' => $this->adminUser->getUsername(),
-            '' => ''
+            'admin-username' => $this->adminUser->getUsername()
         ));
+        if ($this->getConfig()->isDebug()) {
+            $this->form->load(array(
+                'admin-newPassword' => 'password',
+                'admin-confPassword' => 'password',
+                'ins-newPassword' => 'password',
+                'ins-confPassword' => 'password'
+            ));
+        }
+
+
         $this->form->load($this->data->all());
 
         $this->form->appendField(new Form\Event\Submit('save', array($this, 'doSubmit')));
