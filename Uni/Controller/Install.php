@@ -4,6 +4,7 @@ namespace Uni\Controller;
 use Tk\Form;
 use Tk\Form\Field\Input;
 use Tk\Request;
+use Uni\Db\Permission;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -216,11 +217,13 @@ HTML;
             $this->adminUser->setNewPassword($form->getFieldValue('admin-newPassword'));
         }
         $this->adminUser->save();
+        $this->adminUser->addPermission(Permission::getTypePermissionList($this->adminUser->getType()));
 
         if ($form->getFieldValue('ins-newPassword')) {
             $this->instUser->setNewPassword($form->getFieldValue('ins-newPassword'));
         }
         $this->instUser->save();
+        $this->instUser->addPermission(Permission::getTypePermissionList($this->instUser->getType()));
 
         $this->institution->setUserId($this->instUser->getVolatileId());
         $this->institution->save();
