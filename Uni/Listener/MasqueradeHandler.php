@@ -1,7 +1,7 @@
 <?php
 namespace Uni\Listener;
 
-use Uni\Db\Role;
+use Uni\Db\Permission;
 use Uni\Db\User;
 
 /**
@@ -16,14 +16,13 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
     /**
      * The order of role permissions
      * @var array
+     * @deprecated
      */
     public static $roleOrder = array(
-        Role::TYPE_ADMIN,           // Highest
-        Role::TYPE_CLIENT,
-        Role::TYPE_COORDINATOR,
-        Role::TYPE_LECTURER,
-        Role::TYPE_STAFF,
-        Role::TYPE_STUDENT          // Lowest
+        User::TYPE_ADMIN,           // Highest
+        User::TYPE_CLIENT,
+        User::TYPE_STAFF,
+        User::TYPE_STUDENT          // Lowest
     );
 
     /**
@@ -73,6 +72,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      */
     public function canMasqueradeAs($user, $msqUser)
     {
+        if (!$user->hasPermission(Permission::CAN_MASQUERADE)) return false;
         $b = parent::canMasqueradeAs($user, $msqUser);
         // If not admins they must be of the same institution
         if ($user->getInstitutionId() != 0 && $user->getInstitutionId() != $msqUser->getInstitutionId()) {

@@ -13,7 +13,7 @@ class Edit extends \Uni\Controller\AdminEditIface
      * Setup the controller to work with users of this role
      * @var string
      */
-    protected $targetRole = '';
+    protected $targetType = '';
 
     /**
      * @var \Uni\Db\User
@@ -31,12 +31,12 @@ class Edit extends \Uni\Controller\AdminEditIface
 
     /**
      * @param \Tk\Request $request
-     * @param string $targetRole
+     * @param string $targetType
      * @throws \Exception
      */
-    public function doDefaultRole(\Tk\Request $request, $targetRole)
+    public function doDefaultType(\Tk\Request $request, $targetType)
     {
-        $this->targetRole = $targetRole;
+        $this->targetType = $targetType;
         $this->doDefault($request);
     }
 
@@ -46,23 +46,23 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function doDefault(\Tk\Request $request)
     {
-        switch($this->targetRole) {
-            case \Uni\Db\Role::TYPE_ADMIN:
+        switch($this->targetType) {
+            case \Uni\Db\User::TYPE_ADMIN:
                 $this->setPageTitle('Admin Edit');
                 break;
-            case \Uni\Db\Role::TYPE_COORDINATOR:
+            case \Uni\Db\User::TYPE_STAFF:
                 $this->setPageTitle('Staff Edit');
                 break;
-            case \Uni\Db\Role::TYPE_STUDENT:
+            case \Uni\Db\User::TYPE_STUDENT:
                 $this->setPageTitle('Student Edit');
                 break;
         }
 
         $this->user = $this->getConfig()->createUser();
-        if ($this->targetRole != \Uni\Db\Role::TYPE_ADMIN && $this->targetRole != \Uni\Db\Role::TYPE_CLIENT) {
+        if ($this->targetType != \Uni\Db\User::TYPE_ADMIN && $this->targetType != \Uni\Db\User::TYPE_CLIENT) {
             $this->user->setInstitutionId($this->getConfig()->getInstitutionId());
         }
-        $this->user->setRoleId(\Uni\Db\Role::getDefaultRoleId($this->targetRole));
+        $this->user->setType($this->targetType);
 
         if ($request->has('userId')) {
             $this->user = $this->getConfig()->getUserMapper()->find($request->get('userId'));
@@ -93,7 +93,7 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     protected function createForm()
     {
-        return \Uni\Form\User::create()->setTargetRole($this->targetRole)->setModel($this->user);
+        return \Uni\Form\User::create()->setTargetType($this->targetType)->setModel($this->user);
     }
 
     /**

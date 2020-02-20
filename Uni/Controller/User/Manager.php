@@ -19,7 +19,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
      * Setup the controller to work with users of this role
      * @var string
      */
-    protected $targetRole = '';
+    protected $targetType = '';
 
 
     /**
@@ -38,7 +38,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
      */
     public function doDefaultRole(\Tk\Request $request, $targetRole)
     {
-        $this->targetRole = $targetRole;
+        $this->targetType = $targetRole;
         $this->doDefault($request);
     }
 
@@ -48,22 +48,22 @@ class Manager extends \Uni\Controller\AdminManagerIface
      */
     public function doDefault(\Tk\Request $request)
     {
-        switch($this->targetRole) {
-            case \Uni\Db\Role::TYPE_ADMIN:
+        switch($this->targetType) {
+            case \Uni\Db\User::TYPE_ADMIN:
                 $this->setPageTitle('Admin Users');
                 break;
-            case \Uni\Db\Role::TYPE_COORDINATOR:
+            case \Uni\Db\User::TYPE_STAFF:
                 $this->setPageTitle('Staff Manager');
                 break;
-            case \Uni\Db\Role::TYPE_STUDENT:
+            case \Uni\Db\User::TYPE_STUDENT:
                 $this->setPageTitle('Student Manager');
                 break;
         }
 
         if (!$this->editUrl) {
-            $this->editUrl = \Uni\Uri::createHomeUrl('/'.$this->targetRole.'UserEdit.html');
+            $this->editUrl = \Uni\Uri::createHomeUrl('/'.$this->targetType.'UserEdit.html');
             if ($this->getConfig()->isSubjectUrl()) {
-                $this->editUrl = \Uni\Uri::createSubjectUrl('/'.$this->targetRole.'UserEdit.html');
+                $this->editUrl = \Uni\Uri::createSubjectUrl('/'.$this->targetType.'UserEdit.html');
             }
         }
 
@@ -74,13 +74,13 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
 
         $filter = array();
-        if ($this->getAuthUser()->institutionId) {
-            $filter['institutionId'] = $this->getAuthUser()->institutionId;
+        if ($this->getAuthUser()->getInstitutionId()) {
+            $filter['institutionId'] = $this->getAuthUser()->getInstitutionId();
         } else if ($this->getAuthUser()->isClient()) {
             $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         }
         if (empty($filter['type'])) {
-            $filter['type'] = $this->targetRole;
+            $filter['type'] = $this->targetType;
         }
         if (($this->getConfig()->isSubjectUrl() || $request->has('subjectId')) && $this->getConfig()->getSubjectId()) {
             $filter['subjectId'] = $this->getConfig()->getSubjectId();
@@ -96,8 +96,8 @@ class Manager extends \Uni\Controller\AdminManagerIface
     public function initActionPanel()
     {
         //if (!$this->getConfig()->getSession()->get('auth.password.access')) {
-        if ($this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::TYPE_COORDINATOR) || $this->getConfig()->getAuthUser()->isClient() || $this->getConfig()->getAuthUser()->isAdmin()) {
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Create ' . ucfirst($this->targetRole), $this->getTable()->getEditUrl(), 'fa fa-user-plus'));
+        if ($this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::IS_COORDINATOR) || $this->getConfig()->getAuthUser()->isClient() || $this->getConfig()->getAuthUser()->isAdmin()) {
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Create ' . ucfirst($this->targetType), $this->getTable()->getEditUrl(), 'fa fa-user-plus'));
         }
     }
 

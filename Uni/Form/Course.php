@@ -35,7 +35,7 @@ class Course extends \Uni\FormIface
         $tab = 'Details';
         $this->appendField(new Field\Input('name'))->setTabGroup($tab);
         $this->appendField(new Field\Input('code'))->setTabGroup($tab);
-        $filter = array('institutionId' => $this->getConfig()->getInstitutionId(), 'permission' => Permission::TYPE_COORDINATOR);
+        $filter = array('institutionId' => $this->getConfig()->getInstitutionId(), 'permission' => Permission::IS_COORDINATOR);
         $list = $this->getConfig()->getUserMapper()->findFiltered($filter, \Tk\Db\Tool::create('name'));
         $this->appendField(new Field\Select('coordinatorId', $list))->setTabGroup($tab)->prependOption('-- Select --', '');
         $this->appendField(new Field\Input('email'))->setTabGroup($tab);

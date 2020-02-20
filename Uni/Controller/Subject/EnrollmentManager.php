@@ -137,7 +137,7 @@ class EnrollmentManager extends AdminIface
         $filter = array();
         $filter['institutionId'] = $this->getSubject()->institutionId;
         $filter['active'] = '1';
-        $filter['type'] = array(Role::TYPE_STUDENT, Role::TYPE_COORDINATOR);
+        $filter['type'] = array(User::TYPE_STUDENT, User::TYPE_STAFF);
 
         $this->enrolStudentDialog = new AjaxSelect('Enrol Student', Uri::create('/ajax/user/findFiltered.html'));
         $this->enrolStudentDialog->setAjaxParams($filter);
@@ -170,7 +170,7 @@ class EnrollmentManager extends AdminIface
         $this->enrolledTable->setAjaxDialogParams($this->enrolledAjaxDialogParams);
         $this->enrolledTable->init();
         $filter = array('subjectId' => $this->getSubject()->getId());
-        $filter['type'] = array(Role::TYPE_COORDINATOR, Role::TYPE_STUDENT);
+        $filter['type'] = array(User::TYPE_STAFF, Role::TYPE_STUDENT);
         $this->enrolledTable->setList($this->enrolledTable->findList($filter));
 
         // Pre-Enrol table

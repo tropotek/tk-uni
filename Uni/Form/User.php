@@ -39,18 +39,12 @@ class User extends \Bs\Form\User
             $this->removeField('confPassword');
         }
 
-        if ($this->getTargetRole() == \Uni\Db\Role::TYPE_STAFF) {
-            $list = $this->getConfig()->getRoleMapper()->findFiltered(array(
-                'type' => \Uni\Db\Role::TYPE_COORDINATOR,
-                'institutionId' => $this->getConfig()->getInstitutionId()
-            ));
-            if ($list->count() > 1) {
-                $this->appendField(Field\Select::createSelect('roleId', $list)->setTabGroup($tab)
-                    ->setRequired()->prependOption('-- Select --', ''));
-            }
-        } else {
-            $this->removeField('roleId');
-        }
+//        if ($this->getTargetType() == \Uni\Db\User::TYPE_STAFF) {
+//            $this->appendField(Field\Select::createSelect('type', \uni\Db\User::getUserTypeList($this->getTargetType()))->setTabGroup($tab)
+//                ->setRequired()->prependOption('-- Select --', ''));
+//        } else {
+//            $this->removeField('type');
+//        }
 
         $this->appendField(new Field\Input('uid'), 'username')->setLabel('UID')->addCss('tk-input-lock')->setTabGroup($tab)
             ->setNotes('The student or staff number assigned by the institution (if Applicable).');

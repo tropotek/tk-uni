@@ -92,8 +92,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isCoordinator()
     {
-        return $this->getType() == self::TYPE_STAFF;
-        return $this->hasPermission(Permission::TYPE_COORDINATOR);
+        return $this->hasPermission(Permission::IS_COORDINATOR);
     }
 
     /**
@@ -101,8 +100,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isLecturer()
     {
-        return $this->getType() == self::TYPE_STAFF;
-        //return $this->hasPermission(Permission::TYPE_LECTURER);
+        return $this->hasPermission(Permission::IS_LECTURER);
     }
 
     /**
@@ -110,8 +108,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isMentor()
     {
-        return $this->getType() == self::TYPE_STAFF;
-        //return $this->hasPermission(Permission::TYPE_LECTURER);
+        return $this->hasPermission(Permission::IS_MENTOR);
     }
 
 

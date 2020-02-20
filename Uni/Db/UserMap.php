@@ -23,12 +23,11 @@ class UserMap extends \Bs\Db\UserMap
         if (!$this->dbMap) {
             $this->dbMap = new \Tk\DataMap\DataMap();
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
-            $this->dbMap->addPropertyMap(new Db\Integer('roleId', 'role_id'));
             $this->dbMap->addPropertyMap(new Db\Integer('institutionId', 'institution_id'));
             $this->dbMap->addPropertyMap(new Db\Text('uid'));
+            $this->dbMap->addPropertyMap(new Db\Text('type'));
             $this->dbMap->addPropertyMap(new Db\Text('username'));
             $this->dbMap->addPropertyMap(new Db\Text('password'));
-            //$this->dbMap->addPropertyMap(new Db\Text('name'));
             $this->dbMap->addPropertyMap(new Db\Text('nameFirst', 'name_first'));
             $this->dbMap->addPropertyMap(new Db\Text('nameLast', 'name_last'));
             $this->dbMap->addPropertyMap(new Db\Text('email'));
@@ -54,11 +53,10 @@ class UserMap extends \Bs\Db\UserMap
             $this->formMap = new \Tk\DataMap\DataMap();
             $this->formMap->addPropertyMap(new Form\Integer('id'), 'key');
             $this->formMap->addPropertyMap(new Form\Integer('institutionId'));
-            $this->formMap->addPropertyMap(new Form\Integer('roleId'));
             $this->formMap->addPropertyMap(new Form\Text('uid'));
+            $this->formMap->addPropertyMap(new Form\Text('type'));
             $this->formMap->addPropertyMap(new Form\Text('username'));
             $this->formMap->addPropertyMap(new Form\Text('password'));
-            //$this->formMap->addPropertyMap(new Form\Text('name'));
             $this->formMap->addPropertyMap(new Form\Text('nameFirst'));
             $this->formMap->addPropertyMap(new Form\Text('nameLast'));
             $this->formMap->addPropertyMap(new Form\Text('email'));
@@ -83,27 +81,27 @@ class UserMap extends \Bs\Db\UserMap
     /**
      * @param $username
      * @param int $institutionId
-     * @param string|array $role
+     * @param string|array $type
      * @return null|Model|User
      * @throws \Exception
      */
-    public function findByUsername($username, $institutionId = 0, $role = null)
+    public function findByUsername($username, $institutionId = 0, $type = null)
     {
         return $this->findFiltered(array(
             'institutionId' => $institutionId,
             'username' => $username,
-            'type' => $role
+            'type' => $type
         ))->current();
     }
 
     /**
      * @param string $email
      * @param int $institutionId
-     * @param string|array $role
+     * @param string|array $type
      * @return null|Model|User
      * @throws \Exception
      */
-    public function findByEmail($email, $institutionId = null, $role = null)
+    public function findByEmail($email, $institutionId = null, $type = null)
     {
         // TODO: I think we have a logic issue here?????
         if (!$this->getConfig()->get('system.auth.email.unique') && !$this->getConfig()->get('system.auth.email.require')) {
@@ -112,39 +110,39 @@ class UserMap extends \Bs\Db\UserMap
         return $this->findFiltered(array(
             'institutionId' => $institutionId,
             'email' => $email,
-            'type' => $role
+            'type' => $type
         ))->current();
     }
 
     /**
      * @param string $uid
      * @param int $institutionId
-     * @param string|array $role
+     * @param string|array $type
      * @return null|Model|User
      * @throws \Exception
      */
-    public function findByUid($uid, $institutionId = null, $role = null)
+    public function findByUid($uid, $institutionId = null, $type = null)
     {
         return $this->findFiltered(array(
             'institutionId' => $institutionId,
             'uid' => $uid,
-            'type' => $role
+            'type' => $type
         ))->current();
     }
 
     /**
      * @param $hash
      * @param int $institutionId (default 0 = admin and institution users)
-     * @param string|array $role
+     * @param string|array $type
      * @return null|Model|User
      * @throws \Exception
      */
-    public function findByHash($hash, $institutionId = 0, $role = null)
+    public function findByHash($hash, $institutionId = 0, $type = null)
     {
         $filter = array(
             'institutionId' => $institutionId,
             'hash' => $hash,
-            'type' => $role
+            'type' => $type
         );
         $r = $this->findFiltered($filter)->current();
         return $r;
@@ -152,16 +150,16 @@ class UserMap extends \Bs\Db\UserMap
 
     /**
      * @param int $institutionId
-     * @param string|array $role
+     * @param string|array $type
      * @param \Tk\Db\Tool|null $tool
      * @return ArrayObject|User[]
      * @throws \Exception
      */
-    public function findByInstitutionId($institutionId, $role = null, $tool = null)
+    public function findByInstitutionId($institutionId, $type = null, $tool = null)
     {
         return $this->findFiltered(array(
             'institutionId' => $institutionId,
-            'type' => $role
+            'type' => $type
         ));
     }
 
