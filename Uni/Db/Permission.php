@@ -62,6 +62,7 @@ class Permission extends \Bs\Db\Permission
 
     /**
      * Get all available permissions for a user type
+     * If type is null then all available permissions should be returns, excluding the type permisions
      *
      * @param string $type
      * @return array
