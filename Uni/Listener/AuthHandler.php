@@ -49,12 +49,12 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                            $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID, $adapter->get('username'), $msg));
 //                        }
 //
-//                        $role = 'student';
+//                        $type = 'student';
 //                        if (preg_match('/(staff|student)/', strtolower($ldapData[0]['auedupersontype'][0]), $reg)) {
-//                            if ($reg[1] == 'staff') $role = 'staff';
+//                            if ($reg[1] == 'staff') $type = 'staff';
 //                        }
 //
-//                        if ($role == 'student') {
+//                        if ($type == 'student') {
 //                            // To check if a user is pre-enrolled get an array of uid and emails for a user
 //                            $isPreEnrolled = $config->getSubjectMapper()->isPreEnrolled($config->getInstitutionId(),
 //                                array_merge($ldapData[0]['mail'], $ldapData[0]['mailalternateaddress']),
@@ -69,11 +69,10 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                            }
 //
 //                            $userData = array(
-//                                'type' => 'ldap',
-//                                //'roleId' => \Uni\Db\Role::getDefaultRoleId($role),
+//                                'authType' => 'ldap',
 //                                'institutionId' => $config->getInstitutionId(),
 //                                'username' => $adapter->get('username'),
-//                                'role' => $role,
+//                                'type' => $type,
 //                                'active' => true,
 //                                'email' => $email,
 //                                'name' => $ldapData[0]['displayname'][0],
@@ -153,6 +152,8 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                     $userData['username'], 'Invalid username. Please contact your administrator to setup an account.'));
                 return;
             }
+
+//            // TODO: Test that this will work since the role changes 3.2
 //            if (!$user) {   // Create the new user account
 //                // optional to check the pre-enrollment list before creation
 //                $isPreEnrolled = \Uni\Db\Subject::isPreEnrolled($adapter->getInstitution()->getId(), array($userData['email']) );
@@ -160,16 +161,17 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                    return;
 //                }
 //                $user = $config->createUser();
-//                $user->setRoleId(\Uni\Db\Role::DEFAULT_TYPE_STUDENT);
-//                if ($userData['role'] == 'staff') {
-//                    $user->setRoleId(\Uni\Db\Role::DEFAULT_TYPE_STAFF);
+//                $user->setType(\Uni\Db\User::TYPE_STUDENT);
+//                if ($userData['type'] == 'staff') {
+//                    $user->setType(\Uni\Db\User::TYPE_STAFF);
+//                    // TODO: setup default permissions for staff
 //                }
 //                $config->getUserMapper()->mapForm($userData, $user);
 //                $user->save();
 //                $adapter->setUser($user);
 //            }
 
-            vd($ltiData);
+            //vd($ltiData);
 
             $subjectData = $adapter->get('subjectData');
             $subject = $config->getSubjectMapper()->find($subjectData['id']);
