@@ -48,6 +48,7 @@ INSERT INTO user_permission (user_id, name)
 -- RENAME TABLE migration TO _migration;
 -- RENAME TABLE data TO _data;
 -- RENAME TABLE session TO _session;
+-- RENAME TABLE plugin TO _plugin;
 
 
 
