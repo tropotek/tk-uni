@@ -23,9 +23,21 @@ class Install extends Iface
     protected $data = null;
 
     /**
-     * @var null|\Bs\Db\User
+     * @var null|\Uni\Db\Institution
      */
-    protected $user = null;
+    protected $institution = null;
+
+    /**
+     * @var null|\Uni\Db\User
+     */
+    protected $instUser = null;
+
+    /**
+     * @var null|\Uni\Db\User
+     */
+    protected $adminUser = null;
+
+
 
     /**
      * Install constructor.
@@ -42,10 +54,38 @@ class Install extends Iface
     public function doDefault(Request $request)
     {
         $this->data = \Tk\Db\Data::create();
-        $this->user = $this->getConfig()->createUser();
-        $this->user->setType(\Bs\Db\User::TYPE_ADMIN);
-        $this->user->setUsername('admin');
-        $this->user->setName('Administrator');
+
+        $this->adminUser = $this->getConfig()->createUser();
+        $this->adminUser->setType(\Uni\Db\User::TYPE_ADMIN);
+        $this->adminUser->setName('Administrator');
+        $this->adminUser->setEmail('info@unimelb.edu.au');
+        $this->adminUser->setUsername('admin');
+
+
+        $this->institution = $this->getConfig()->createInstitution();
+        $this->institution->setName('The University Of Melbourne');
+        $this->institution->setEmail('fvas-elearning@unimelb.edu.au');
+        $this->institution->setDescription('<p>The University Of Melbourne</p>');
+        $this->institution->setStreet('250 Princes Highway');
+        $this->institution->setCity('Werribee');
+        $this->institution->setState('Victoria');
+        $this->institution->setPostcode('3030');
+        $this->institution->setCountry('Australia');
+        $this->institution->setAddress('250 Princes Hwy, Werribee VIC 3030, Australia');
+        $this->institution->setMapLat('-37.88916600');
+        $this->institution->setMapLng('144.69314774');
+        $this->institution->setMapZoom(18.00);
+
+
+        $this->instUser = $this->getConfig()->createUser();
+        $this->instUser->setType(\Uni\Db\User::TYPE_CLIENT);
+        $this->instUser->setUsername('unimelb');
+        $this->adminUser->setEmail('fvas-elearning@unimelb.edu.au');
+        $this->instUser->setName('The University Of Melbourne');
+
+
+
+
 
         $this->form = $this->getConfig()->createForm('install');
         $this->form->setDispatcher($this->getConfig()->getEventDispatcher());

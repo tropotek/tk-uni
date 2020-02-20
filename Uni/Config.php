@@ -534,6 +534,17 @@ class Config extends \Bs\Config
     }
 
     /**
+     * @return \Bs\Listener\InstallHandler
+     */
+    public function getInstallHandler()
+    {
+        if (!$this->get('handler.crumbs')) {
+            $this->set('handler.crumbs', new \Uni\Listener\InstallHandler());
+        }
+        return $this->get('handler.crumbs');
+    }
+
+    /**
      * @param string $homeTitle
      * @param string $homeUrl
      * @return \Tk\Crumbs
