@@ -13,13 +13,25 @@ class User extends \Bs\Db\User implements UserIface
 {
     use InstitutionTrait;
 
+    /**
+     *
+     */
+    const TYPE_CLIENT           = 'client';
+    /**
+     *
+     */
+    const TYPE_STAFF            = 'staff';
+    /**
+     *
+     */
+    const TYPE_STUDENT          = 'student';
 
     /**
      * @var int
      */
     public $institutionId = 0;
 
-    
+
     /**
      * User constructor.
      */
@@ -74,19 +86,13 @@ class User extends \Bs\Db\User implements UserIface
     }
 
 
-    /**
-     * @return boolean
-     */
-    public function isClient()
-    {
-        return $this->hasPermission(Permission::TYPE_CLIENT);
-    }
 
     /**
      * @return boolean
      */
     public function isCoordinator()
     {
+        return $this->getType() == self::TYPE_STAFF;
         return $this->hasPermission(Permission::TYPE_COORDINATOR);
     }
 
@@ -95,7 +101,26 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isLecturer()
     {
-        return $this->hasPermission(Permission::TYPE_LECTURER);
+        return $this->getType() == self::TYPE_STAFF;
+        //return $this->hasPermission(Permission::TYPE_LECTURER);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMentor()
+    {
+        return $this->getType() == self::TYPE_STAFF;
+        //return $this->hasPermission(Permission::TYPE_LECTURER);
+    }
+
+
+    /**
+     * @return boolean
+     */
+    public function isClient()
+    {
+        return $this->getType() == self::TYPE_CLIENT;
     }
 
     /**
@@ -103,7 +128,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isStaff()
     {
-        return $this->hasPermission(Permission::TYPE_STAFF);
+        return $this->getType() == self::TYPE_STAFF;
     }
 
     /**
@@ -111,7 +136,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function isStudent()
     {
-        return $this->hasPermission(Permission::TYPE_STUDENT);
+        return $this->getType() == self::TYPE_STUDENT;
     }
 
     /**
