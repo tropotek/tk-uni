@@ -129,6 +129,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
         }
 
 
+        // TODO: Since Canvas we need to re-visit this issue and update to ver 3.0 of the LTI driver
         // TODO: This may need further work, getting a nested session save issue..
         // There is an issue here with going from LDAP and LTI
         //  LTI we only have their name email, however with LDAP the email is their username one GGGRRRR!!
