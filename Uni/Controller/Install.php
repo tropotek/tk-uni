@@ -65,7 +65,7 @@ class Install extends Iface
         $this->institution = $this->getConfig()->createInstitution();
         $this->institution->setName('The University Of Melbourne');
         $this->institution->setEmail('fvas-elearning@unimelb.edu.au');
-        $this->institution->setDescription('<p>The University Of Melbourne</p>');
+        //$this->institution->setDescription('<p>The University Of Melbourne</p>');
         $this->institution->setStreet('250 Princes Highway');
         $this->institution->setCity('Werribee');
         $this->institution->setState('Victoria');
@@ -99,14 +99,42 @@ class Install extends Iface
         $this->form->appendField(new Input('site.short.title'))->setLabel('Short Title')->setRequired(true);
         $this->form->appendField(new Input('site.email'))->setLabel('Site Email')->setRequired(true);
 
-        $this->form->setFieldset('Admin User');
-        //$this->form->appendField(new Input('name'))->setRequired(true);
-        $this->form->appendField(new Input('username'))->setRequired(true);
-        $this->form->appendField(new Form\Field\Password('newPassword'))->setRequired(true);
-        $this->form->appendField(new Form\Field\Password('confPassword'))->setRequired(true);
 
-        $this->form->load($this->getConfig()->getUserMapper()->unmapForm($this->user));
+        $xhtml = <<<HTML
+<div class="inline" var="checkbox">
+  <input type="hidden" var="hidden" value="" />
+  <input type="checkbox" var="element" /> 
+  <label var="checkbox-label">
+    <span var="label" class="cb-label">&nbsp;</span>
+  </label>
+</div>
+HTML;
+        $this->form->appendField(new Form\Field\Checkbox('exampleData'))->setTemplate(\Dom\Loader::load($xhtml))->setRequired(true)
+            ->setCheckboxLabel('Populate the database with sample staff/student and subject data.');
+
+        $this->form->setFieldset('Admin Setup');
+        $this->form->appendField(new Input('admin-username'))->setLabel('Admin Username')->setReadonly()->setDisabled();
+        $this->form->appendField(new Form\Field\Password('admin-newPassword'))->setLabel('Admin Password')->setRequired(true);
+        $this->form->appendField(new Form\Field\Password('admin-confPassword'))->setLabel('Admin Password Confirm')->setRequired(true);
+
+        $this->form->setFieldset('Institution Setup');
+        $this->form->appendField(new Input('ins-name'))->setLabel('Institution Name')->setRequired(true);
+        $this->form->appendField(new Input('ins-username'))->setLabel('Institution Username')->setRequired(true);
+        $this->form->appendField(new Form\Field\Password('ins-newPassword'))->setLabel('Institution Password')->setRequired(true);
+        $this->form->appendField(new Form\Field\Password('ins-confPassword'))->setLabel('Institution Password Confirm')->setRequired(true);
+
+
+        // Load form data
+        $this->form->load(array(
+            'ins-name' => $this->institution->getName(),
+            'ins-username' => $this->instUser->getUsername(),
+            'ins-email' => $this->institution->getEmail(),
+            'site.email' => $this->institution->getEmail(),
+            'admin-username' => $this->adminUser->getUsername(),
+            '' => ''
+        ));
         $this->form->load($this->data->all());
+
         $this->form->appendField(new Form\Event\Submit('save', array($this, 'doSubmit')));
 
         $this->form->execute($request);
@@ -122,46 +150,89 @@ class Install extends Iface
      */
     public function doSubmit($form, $event)
     {
-        // Load the object with form data
-        $this->getConfig()->getUserMapper()->mapForm($form->getValues(), array());
-        $values = $form->getValues('/^site\./');
-        $this->data->replace($values);
 
-        if (empty($values['site.title']) || strlen($values['site.title']) < 3) {
+        // Load Admin
+        $this->getConfig()->getUserMapper()->mapForm(array(
+            'email' => $form->getFieldValue('site.email'),
+            'institutionId' => 0
+        ), $this->adminUser);
+        // load Institution
+        $this->getConfig()->getUserMapper()->mapForm(array(
+            'email' => $form->getFieldValue('site.email'),
+            'name' => $form->getFieldValue('ins-name')
+        ), $this->institution);
+        // load Institution User
+        $this->getConfig()->getUserMapper()->mapForm(array(
+            'email' => $form->getFieldValue('site.email'),
+            'institutionId' => 0,
+            'username' => $form->getFieldValue('ins-name')
+        ), $this->instUser);
+
+        $this->data->replace( $form->getValues('/^site\./'));
+
+        if (!$form->getFieldValue('site.title') || strlen($form->getFieldValue('site.title')) < 3) {
             $form->addFieldError('site.title', 'Please enter a valid site name');
         }
-        if (empty($values['site.short.title']) || strlen($values['site.title']) < 1) {
+        if (!$form->getFieldValue('site.short.title') || strlen($form->getFieldValue('site.short.title')) < 1) {
             $form->addFieldError('site.short.title', 'Please enter short name for the site');
         }
-        if (empty($values['site.email']) || !filter_var($values['site.email'], \FILTER_VALIDATE_EMAIL)) {
+        if (!$form->getFieldValue('site.email') || !filter_var($form->getFieldValue('site.email'), \FILTER_VALIDATE_EMAIL)) {
             $form->addFieldError('site.email', 'Please enter a valid site email address');
         }
-        $this->user->setEmail($values['site.email']);
 
         // Password validation needs to be here
-        if ($form->getField('newPassword')) {
-            if ($form->getFieldValue('newPassword')) {
-                if ($form->getFieldValue('newPassword') != $form->getFieldValue('confPassword')) {
-                    $form->addFieldError('newPassword', 'Passwords do not match.');
-                    $form->addFieldError('confPassword');
+        if ($form->getField('admin-newPassword')) {
+            if ($form->getFieldValue('admin-newPassword')) {
+                if ($form->getFieldValue('admin-newPassword') != $form->getFieldValue('admin-confPassword')) {
+                    $form->addFieldError('admin-newPassword', 'Passwords do not match.');
+                    $form->addFieldError('admin-confPassword');
                 }
             } else {
-                $form->addFieldError('newPassword', 'Please enter a password for the administrator user.');
+                $form->addFieldError('admin-newPassword', 'Please enter a password for the administrator account.');
+            }
+        }
+        if ($form->getField('ins-newPassword')) {
+            if ($form->getFieldValue('ins-newPassword')) {
+                if ($form->getFieldValue('ins-newPassword') != $form->getFieldValue('ins-confPassword')) {
+                    $form->addFieldError('ins-newPassword', 'Passwords do not match.');
+                    $form->addFieldError('ins-confPassword');
+                }
+            } else {
+                $form->addFieldError('ins-newPassword', 'Please enter a password for the Institution account.');
             }
         }
 
-        $form->addFieldErrors($this->user->validate());
+        $form->addFieldErrors($this->adminUser->validate());
+        $form->addFieldErrors($this->instUser->validate());
+        $form->addFieldErrors($this->institution->validate());
         if ($form->hasErrors()) {
             return;
         }
 
 
-        if ($form->getFieldValue('newPassword')) {
-            $this->user->setNewPassword($form->getFieldValue('newPassword'));
+        $this->data->save();
+
+        if ($form->getFieldValue('admin-newPassword')) {
+            $this->adminUser->setNewPassword($form->getFieldValue('admin-newPassword'));
+        }
+        $this->adminUser->save();
+
+        if ($form->getFieldValue('ins-newPassword')) {
+            $this->instUser->setNewPassword($form->getFieldValue('ins-newPassword'));
+        }
+        $this->instUser->save();
+
+        $this->institution->setUserId($this->instUser->getVolatileId());
+        $this->institution->save();
+
+
+        if ($form->getFieldValue('exampleData') === true) {
+            // TODO: Implement the example data code
+            \Tk\Alert::addWarning('TODO: Implement the example data code');
         }
 
-        $this->user->save();
-        $this->data->save();
+
+
 
         \Tk\Alert::addSuccess('Site Setup Successfully!');
         $event->setRedirect(\Tk\Uri::create());
@@ -177,8 +248,14 @@ class Install extends Iface
     {
         $template = parent::show();
         $css = <<<CSS
-nav.navbar {
-  display: none;
+body {
+  background-color: #FFF;
+}
+.page-header, header.image , .page-footer {
+  display: none !important;
+}
+.page-inner {
+    padding-top: 10px;
 }
 CSS;
         $template->appendCss($css);

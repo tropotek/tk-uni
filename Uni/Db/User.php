@@ -181,7 +181,7 @@ class User extends \Bs\Db\User implements UserIface
         $errors = array();
         $usermap = $this->getConfig()->getUserMapper();
 
-        if (!$this->getInstitutionId() && !$this->hasPermission(array(Permission::TYPE_ADMIN, Permission::TYPE_CLIENT))) {
+        if (!$this->getInstitutionId() && !$this->isAdmin() && !$this->isClient()) {
             $errors['institutionId'] = 'Invalid field institutionId value';
         }
 
