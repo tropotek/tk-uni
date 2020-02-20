@@ -33,12 +33,12 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
     /**
      * @param \Tk\Request $request
-     * @param string $targetRole
+     * @param string $targetType
      * @throws \Exception
      */
-    public function doDefaultRole(\Tk\Request $request, $targetRole)
+    public function doDefaultType(\Tk\Request $request, $targetType)
     {
-        $this->targetType = $targetRole;
+        $this->targetType = $targetType;
         $this->doDefault($request);
     }
 

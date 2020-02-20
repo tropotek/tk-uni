@@ -372,27 +372,6 @@ class Config extends \Bs\Config
         return $user->getId();
     }
 
-
-
-    /**
-     * @return Db\RoleMap
-     */
-    public function getRoleMapper()
-    {
-        if (!$this->get('obj.mapper.role')) {
-            $this->set('obj.mapper.role', Db\RoleMap::create());
-        }
-        return $this->get('obj.mapper.role');
-    }
-
-    /**
-     * @return Db\Role|Db\RoleIface
-     */
-    public function createRole()
-    {
-        return new Db\Role();
-    }
-
     /**
      * @return Db\InstitutionMap
      */
@@ -489,6 +468,7 @@ class Config extends \Bs\Config
     public function getUserHomeUrl($user = null)
     {
         if (!$user) $user = $this->getAuthUser();
+        if (!$user) return \Uni\Uri::create('/login.html');
         return \Uni\Uri::createHomeUrl('/index.html', $user);
     }
 

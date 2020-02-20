@@ -68,10 +68,10 @@ class UserList extends User
         $this->removeCell('actions');
         $this->removeCell('phone');
         $this->removeCell('uid');
+        $this->removeCell('type');
         $this->removeCell('active');
         $this->removeCell('lastLogin');
         $this->removeCell('created');
-        $this->removeCell('roleId');
         $this->removeAction('delete');
         $this->removeAction('csv');
 

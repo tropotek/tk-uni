@@ -70,7 +70,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //
 //                            $userData = array(
 //                                'type' => 'ldap',
-//                                'roleId' => \Uni\Db\Role::getDefaultRoleId($role),
+//                                //'roleId' => \Uni\Db\Role::getDefaultRoleId($role),
 //                                'institutionId' => $config->getInstitutionId(),
 //                                'username' => $adapter->get('username'),
 //                                'role' => $role,

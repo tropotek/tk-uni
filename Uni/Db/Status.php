@@ -1,6 +1,7 @@
 <?php
 namespace Uni\Db;
 
+use Bs\Db\Traits\ForeignKeyTrait;
 use Exception;
 use Tk\Db\Map\Model;
 use Tk\Db\ModelInterface;
@@ -9,12 +10,10 @@ use Tk\Form\Field\Iface;
 use Tk\Log;
 use Tk\ObjectUtil;
 use Bs\Db\Traits\CreatedTrait;
-use Bs\Db\Traits\ForegnModelTrait;
 use Bs\Db\Traits\UserTrait;
 use DateTime;
 use Uni\Db\Traits\StatusTrait;
 use Uni\Event\StatusEvent;
-use Uni\Form\Field\CheckSelect;
 use Uni\Form\Field\StatusSelect;
 use Uni\StatusEvents;
 use Uni\Db\Traits\CourseTrait;
@@ -30,7 +29,7 @@ class Status extends Model
     use UserTrait;
     use CourseTrait;
     use SubjectTrait;
-    use ForegnModelTrait;
+    use ForeignKeyTrait;
     use CreatedTrait;
 
     // Status type templates (use these in your own objects)
@@ -186,7 +185,7 @@ class Status extends Model
     public static function create($model, $name)
     {
         $obj = new static();
-        $obj->setModel($model);
+        $obj->setForeignModel($model);
         $obj->setName($model->getStatus());
 
         $config = $obj->getConfig();
@@ -208,7 +207,9 @@ class Status extends Model
         if (method_exists($model, 'getSubjectId')) {
             $obj->setSubjectId($model->getSubjectId());
             if (!$obj->getCourseId() && method_exists($model, 'getSubject')) {
-                $obj->setCourseId($model->getSubject()->getCourseId());
+                /** @var Subject $subject */
+                $subject = $model->getSubject();
+                $obj->setCourseId($subject->getCourseId());
             }
         } else if ($obj->getConfig()->getSubjectId()) {
             $obj->setSubjectId($obj->getConfig()->getSubjectId());
@@ -325,7 +326,7 @@ class Status extends Model
      */
     public function findLastStudent()
     {
-        $s = self::findLastByUserRole($this, Permission::TYPE_STUDENT);
+        $s = self::findLastByUserType($this, Permission::TYPE_STUDENT);
         if ($s)
             return $s->getUser();
         return null;
@@ -337,7 +338,7 @@ class Status extends Model
      */
     public function findLastStaff()
     {
-        $s = self::findLastByUserRole($this, Permission::TYPE_STAFF);
+        $s = self::findLastByUserType($this, Permission::TYPE_STAFF);
         if ($s)
             return $s->getUser();
         return null;
@@ -359,17 +360,17 @@ class Status extends Model
 
     /**
      * @param Status|null $status
-     * @param string $roleType
+     * @param string $userType
      * @return Status|null
      * @throws Exception
      */
-    public static function findLastByUserRole($status, $roleType)
+    public static function findLastByUserType($status, $userType)
     {
         if (!$status) return $status;
-        if ($status->getUser() && $status->getUser()->hasPermission($roleType)) {
+        if ($status->getUser() && $status->getUser()->hasPermission($userType)) {
             return $status;
         }
-        return self::findLastByUserRole($status->getPrevious(), $roleType);
+        return self::findLastByUserType($status->getPrevious(), $userType);
     }
 
     /**

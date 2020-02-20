@@ -19,10 +19,6 @@ class Settings extends \Bs\Controller\Admin\Settings
         $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Institutions',
             \Uni\Uri::createHomeUrl('/institutionManager.html'), 'fa fa-institution'));
 
-        if ($this->getConfig()->isDebug()) {
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Roles {D}',
-                \Bs\Uri::createHomeUrl('/roleManager.html'), 'fa fa-group'));
-        }
     }
 
 }

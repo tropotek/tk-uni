@@ -102,12 +102,7 @@ class Enrolled extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Text('username'));
         $this->appendCell(new \Tk\Table\Cell\Email('email'));
         $this->appendCell(new \Tk\Table\Cell\Text('uid'));
-        $this->appendCell(new \Tk\Table\Cell\Text('roleId'))->addOnPropertyValue(function ($cell, $obj, $value) {
-            /** @var \Uni\Db\User $obj */
-            if ($obj->getRole())
-                $value = $obj->getRole()->getName();
-            return $value;
-        });
+        $this->appendCell(new \Tk\Table\Cell\Text('type'));
         $this->appendCell(new \Tk\Table\Cell\Boolean('active'));
         $this->appendCell(new \Tk\Table\Cell\Date('created'));
 

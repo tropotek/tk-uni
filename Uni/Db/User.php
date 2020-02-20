@@ -181,20 +181,24 @@ class User extends \Bs\Db\User implements UserIface
         $errors = array();
         $usermap = $this->getConfig()->getUserMapper();
 
-        if (!$this->getInstitutionId() && !$this->getRole()->hasPermission(array(Permission::TYPE_ADMIN, Permission::TYPE_CLIENT))) {
+        if (!$this->getInstitutionId() && !$this->hasPermission(array(Permission::TYPE_ADMIN, Permission::TYPE_CLIENT))) {
             $errors['institutionId'] = 'Invalid field institutionId value';
         }
 
-        if (!$this->getRoleId()) {
-            $errors['roleId'] = 'Invalid field role value';
-        } else {
-            try {
-                $role = $this->getRole();
-                if (!$role) throw new \Tk\Exception('Please select a valid role.');
-            } catch (\Exception $e) {
-                $errors['roleId'] = $e->getMessage();
-            }
+        if (!$this->getType()) {
+            $errors['type'] = 'Cannot save a Guest user record.';
         }
+
+//        if (!$this->getRoleId()) {
+//            $errors['roleId'] = 'Invalid field role value';
+//        } else {
+//            try {
+//                $role = $this->getRole();
+//                if (!$role) throw new \Tk\Exception('Please select a valid role.');
+//            } catch (\Exception $e) {
+//                $errors['roleId'] = $e->getMessage();
+//            }
+//        }
 
         if (!$this->getUsername()) {
             $errors['username'] = 'Invalid field username value';

@@ -2,6 +2,8 @@
 namespace Uni\Listener;
 
 
+use Tk\ConfigTrait;
+
 /**
  * This object helps cleanup the structure of the controller code
  *
@@ -11,6 +13,7 @@ namespace Uni\Listener;
  */
 class PageTemplateHandler extends \Bs\Listener\PageTemplateHandler
 {
+    use ConfigTrait;
 
     /**
      * @param \Tk\Event\Event $event

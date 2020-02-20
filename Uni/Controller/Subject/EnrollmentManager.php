@@ -170,7 +170,7 @@ class EnrollmentManager extends AdminIface
         $this->enrolledTable->setAjaxDialogParams($this->enrolledAjaxDialogParams);
         $this->enrolledTable->init();
         $filter = array('subjectId' => $this->getSubject()->getId());
-        $filter['type'] = array(User::TYPE_STAFF, Role::TYPE_STUDENT);
+        $filter['type'] = array(User::TYPE_STAFF, User::TYPE_STUDENT);
         $this->enrolledTable->setList($this->enrolledTable->findList($filter));
 
         // Pre-Enrol table
