@@ -44,7 +44,10 @@ INSERT INTO user_permission (user_id, name)
 -- DROP TABLE _user_role_institution
 
 
-
+-- NOTE: This has to be run manually before upgrading to ver 3.2
+-- RENAME TABLE migration TO _migration;
+-- RENAME TABLE data TO _data;
+-- RENAME TABLE session TO _session;
 
 
 
