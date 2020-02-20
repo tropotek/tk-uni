@@ -10,7 +10,7 @@ namespace Uni\Controller\User;
 class Edit extends \Uni\Controller\AdminEditIface
 {
     /**
-     * Setup the controller to work with users of this role
+     * Setup the controller to work with users of this type
      * @var string
      */
     protected $targetType = '';

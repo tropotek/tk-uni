@@ -16,7 +16,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
     protected $editUrl = null;
 
     /**
-     * Setup the controller to work with users of this role
+     * Setup the controller to work with users of this type
      * @var string
      */
     protected $targetType = '';

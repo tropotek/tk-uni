@@ -9,7 +9,6 @@ use Dom\Template;
 use Tk\Ui\Link;
 use Uni\Config;
 use Uni\Controller\AdminIface;
-use Uni\Db\Role;
 use Uni\Db\Subject;
 use Uni\Db\SubjectIface;
 use Uni\Db\User;

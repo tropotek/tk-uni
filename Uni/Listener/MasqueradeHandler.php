@@ -14,18 +14,6 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
 {
 
     /**
-     * The order of role permissions
-     * @var array
-     * @deprecated
-     */
-    public static $roleOrder = array(
-        User::TYPE_ADMIN,           // Highest
-        User::TYPE_CLIENT,
-        User::TYPE_STAFF,
-        User::TYPE_STUDENT          // Lowest
-    );
-
-    /**
      * Add any headers to the final response.
      *
      * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
