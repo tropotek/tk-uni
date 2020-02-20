@@ -19,8 +19,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public $institutionId = 0;
 
-
-
+    
     /**
      * User constructor.
      */
