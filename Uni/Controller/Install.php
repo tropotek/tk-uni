@@ -86,8 +86,6 @@ class Install extends Iface
 
 
 
-
-
         $this->form = $this->getConfig()->createForm('install');
         $this->form->setDispatcher($this->getConfig()->getEventDispatcher());
         $this->form->setRenderer($this->getConfig()->createFormRenderer($this->form));
@@ -140,8 +138,6 @@ HTML;
 
         $this->form->execute($request);
 
-
-
     }
 
     /**
@@ -160,7 +156,8 @@ HTML;
         // load Institution
         $this->getConfig()->getUserMapper()->mapForm(array(
             'email' => $form->getFieldValue('site.email'),
-            'name' => $form->getFieldValue('ins-name')
+            'name' => $form->getFieldValue('ins-name'),
+            'description' => sprintf('<p>%s</p>', $form->getFieldValue('ins-name'))
         ), $this->institution);
         // load Institution User
         $this->getConfig()->getUserMapper()->mapForm(array(
@@ -210,7 +207,6 @@ HTML;
             return;
         }
 
-
         $this->data->save();
 
         if ($form->getFieldValue('admin-newPassword')) {
@@ -233,9 +229,6 @@ HTML;
             // TODO: Implement the example data code
             \Tk\Alert::addWarning('TODO: Implement the example data code');
         }
-
-
-
 
         \Tk\Alert::addSuccess('Site Setup Successfully!');
         $event->setRedirect(\Tk\Uri::create());
