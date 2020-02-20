@@ -22,12 +22,11 @@
         }
     },
     "require": {
-        "ttek/tk-base": "~3.0.0",
-        "ttek/tk-mvc": "~3.0.0"
+        "ttek/tk-base": "~3.2.0"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0.x-dev"
+            "dev-master": "3.2.x-dev"
         }
     }
 }
