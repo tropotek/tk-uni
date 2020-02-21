@@ -72,6 +72,7 @@ class Edit extends AdminEditIface
 
         if ($this->getCourse()->getId()) {
             $this->userTable = \Uni\Table\UserList::create();
+            $this->userTable->setUserType(\Uni\Db\User::TYPE_STAFF);
             $this->userTable->setEditUrl(\Uni\Uri::createHomeUrl('/userEdit.html'));
             $this->userTable->setAjaxParams(array(
                 'institutionId' => $this->getConfig()->getInstitutionId(),

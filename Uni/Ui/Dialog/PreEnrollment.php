@@ -108,7 +108,11 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
                 if (!$user) $user = $config->getUserMapper()->findByUsername($username, $this->subject->institutionId);
                 if (!$user) $user = $config->getUserMapper()->findFiltered(array('institutionId' => $this->subject->institutionId, 'uid' => $uid))->current();
                 if ($user) {
-                    $config->getSubjectMapper()->addUser($this->subject->getId(), $user->getId());
+                    if ($user->isStudent()) {
+                        $config->getSubjectMapper()->addUser($this->subject->getId(), $user->getId());
+                    } else if ($user->isStaff()) {
+                        $config->getCourseMapper()->addUser($this->subject->getCourseId(), $user->getId());
+                    }
                 }
                 $success[] = $i . ' - Added ' . $email . ' to the subject enrollment list';
             } else {

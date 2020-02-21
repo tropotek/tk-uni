@@ -200,9 +200,13 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             $config->getSession()->set('auth.password.access', false);
 
             // Add user to the subject if not already enrolled as they must be enrolled as LMS says so.... ;-p
-            if (!$config->getSubjectMapper()->hasUser($subject->getId(), $user->getId())) {
+            if ($user->isStaff()) {
+                $config->getCourseMapper()->addUser($subject->getCourseId(), $user->getId());
+            } else if ($user->isStudent()) {
                 $config->getSubjectMapper()->addUser($subject->getId(), $user->getId());
             }
+
+
 
             $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $config->getUserIdentity($user)));
         }

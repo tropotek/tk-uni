@@ -89,9 +89,9 @@ class Subject extends \Uni\FormIface
         $isNew = !(bool)$this->getSubject()->getId();
         $this->getSubject()->save();
 
-        // If this is a staff member add them to the subject
+        // If this is a staff member add them to the course
         if ($this->getAuthUser()->isStaff()) {
-            $this->getConfig()->getSubjectMapper()->addUser($this->getSubject()->getId(), $this->getAuthUser()->getId());
+            $this->getConfig()->getCourseMapper()->addUser($this->getSubject()->getCourseId(), $this->getAuthUser()->getId());
         }
 
         // Do Custom data saving

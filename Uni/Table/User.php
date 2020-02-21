@@ -98,9 +98,9 @@ class User extends \Bs\Table\User
                 }
             }
         });
-
+        $eUrl = \Uni\Uri::createSubjectUrl('/')->toString();
         $html = <<<HTML
-<p><small><em>NOTE: To remove users, mark users as in-active or migrate students to a holding subject. To delete a user please contact the site administrator.</em></small></p>
+<p><small><em>NOTE: To remove users, unenroll the user from the subject from the <a href="$eUrl">Enrollment Manager</a>.</em></small></p>
 HTML;
         $this->getRenderer()->getTemplate()->prependHtml('table', $html);
 

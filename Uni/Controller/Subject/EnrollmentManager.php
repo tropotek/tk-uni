@@ -119,7 +119,7 @@ class EnrollmentManager extends AdminIface
             $i = 0;
             /** @var \Uni\Db\User $user */
             foreach ($userList as $user) {
-                if (!$user->isEnrolled($destSubject->getId())) {
+                if (!$user->isEnrolled($destSubject->getId()) && $user->isStudent()) {
                     $config->getSubjectMapper()->addUser($destSubject->getId(), $user->getId());
                     $i++;
                 }
@@ -149,7 +149,7 @@ class EnrollmentManager extends AdminIface
             $user = $config->getUserMapper()->find($data['selectedId'], $subject->getInstitutionId());
             if (!$user)
                 throw new \Tk\Exception('Invalid user selected');
-            if (!$user || (!$user->hasPermission(\Uni\Db\Permission::TYPE_STAFF) && !$user->hasPermission(\Uni\Db\Permission::TYPE_STUDENT))) {
+            if (!$user || !$user->isStudent()) {
                 Alert::addWarning('Invalid user.');
             } else {
                 if (!$user->isEnrolled($subject->getId())) {

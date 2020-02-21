@@ -67,11 +67,12 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         if ($this->subject->getId()) {
             $this->userTable = \Uni\Table\UserList::create();
+            $this->userTable->setUserType(\Uni\Db\User::TYPE_STUDENT);
             $this->userTable->setEditUrl(\Uni\Uri::createSubjectUrl('/studentUserEdit.html'));
             $this->userTable->setAjaxParams(array(
                 'institutionId' => $this->getConfig()->getInstitutionId(),
                 'active' => 1,
-                'permission' => \Uni\Db\Permission::TYPE_STUDENT
+                'type' => \Uni\Db\User::TYPE_STUDENT
             ));
             $this->userTable->setOnSelect(function (\Uni\Table\UserList $dialog) {
                 /** @var \Uni\Db\User $user */
@@ -79,8 +80,11 @@ class Edit extends \Uni\Controller\AdminEditIface
                 $data = $config->getRequest()->all();
                 $subject = $config->getSubject();
                 $user = $config->getUserMapper()->find($data['selectedId']);
+
                 if (!$user) {
                     \Tk\Alert::addWarning('User not found!');
+                } else if (!$user->isStudent()) {
+                    \Tk\Alert::addWarning('User is not a student!');
                 } else if (!$subject) {
                     \Tk\Alert::addWarning('Subject not found!');
                 } else if (!$config->getSubjectMapper()->hasUser($subject->getId(), $user->getId())) {
@@ -94,7 +98,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             $this->userTable->init();
             $filter = array(
                 'id' => \Uni\Db\SubjectMap::create()->findUsers($this->subject->getId()),
-                'permission' => \Uni\Db\Permission::TYPE_STUDENT
+                'type' => \Uni\Db\User::TYPE_STUDENT
             );
             if (count($filter['id']))
                 $this->userTable->setList($this->userTable->findList($filter));
