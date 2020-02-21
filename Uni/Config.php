@@ -2,6 +2,7 @@
 namespace Uni;
 
 use Uni\Db\Course;
+use Uni\Db\Permission;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -493,6 +494,15 @@ class Config extends \Bs\Config
     }
 
     /**
+     * @param string $type (optional) If set returns only the permissions for that user type otherwise returns all permissions
+     * @return array
+     */
+    public function getPermissionList($type = '')
+    {
+         return Permission::getPermissionList($type);
+    }
+
+    /**
      * @param \Tk\EventDispatcher\EventDispatcher $dispatcher
      */
     public function setupDispatcher($dispatcher)
@@ -538,10 +548,10 @@ class Config extends \Bs\Config
      */
     public function getInstallHandler()
     {
-        if (!$this->get('handler.crumbs')) {
-            $this->set('handler.crumbs', new \Uni\Listener\InstallHandler());
+        if (!$this->get('handler.installer')) {
+            $this->set('handler.installer', new \Uni\Listener\InstallHandler());
         }
-        return $this->get('handler.crumbs');
+        return $this->get('handler.installer');
     }
 
     /**

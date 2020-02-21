@@ -207,6 +207,11 @@ class User extends \Bs\Db\User implements UserIface
         }
         if ($this->getConfig()->get('system.auth.email.unique') && $this->getEmail()) {
             $dup = $usermap->findByEmail($this->getEmail(), $this->getInstitutionId());
+            $dup = $usermap->findFiltered(array(
+                'email' => $this->getEmail(),
+                'institutionId' => $this->getInstitutionId(),
+                'type' => $this->getType()
+            ))->current();
             if ($dup && $dup->getId() != $this->getId()) {
                 $errors['email'] = 'This email is already in use';
             }

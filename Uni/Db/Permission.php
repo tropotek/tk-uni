@@ -67,7 +67,7 @@ class Permission extends \Bs\Db\Permission
      * @param string $type
      * @return array
      */
-    public static function getTypePermissionList($type = null)
+    public static function getPermissionList($type = null)
     {
         switch ($type) {
             case User::TYPE_ADMIN;
