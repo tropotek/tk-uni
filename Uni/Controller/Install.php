@@ -236,7 +236,7 @@ HTML;
 
         if ($form->getFieldValue('exampleData') === true) {
             // TODO: Implement the example data code
-            \Tk\Alert::addWarning('TODO: Implement the example data code');
+            //\Tk\Alert::addWarning('TODO: Implement the example data code');
         }
 
         // remove default course records from install
