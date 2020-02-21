@@ -137,7 +137,7 @@ class Course extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     public function addUser($user)
     {
-        if (!$user || !$this->getId() || !$user->hasPermission(\Uni\Db\Permission::TYPE_STAFF))
+        if (!$this->getId() || !$user->hasPermission(\Uni\Db\Permission::IS_COORDINATOR))
             throw new \Tk\Exception('Only add staff users to a saved record!');
         CourseMap::create()->addUser($this->getId(), $user->getId());
         return $this;

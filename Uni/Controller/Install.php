@@ -222,13 +222,13 @@ HTML;
             $this->adminUser->setNewPassword($form->getFieldValue('admin-newPassword'));
         }
         $this->adminUser->save();
-        $this->adminUser->addPermission(Permission::getPermissionList($this->adminUser->getType(), false));
+        $this->adminUser->addPermission(Permission::getPermissionList($this->adminUser->getType()));
 
         if ($form->getFieldValue('ins-newPassword')) {
             $this->instUser->setNewPassword($form->getFieldValue('ins-newPassword'));
         }
         $this->instUser->save();
-        $this->instUser->addPermission(Permission::getPermissionList($this->instUser->getType(), false));
+        $this->instUser->addPermission(Permission::getPermissionList($this->instUser->getType()));
 
         $this->institution->setUserId($this->instUser->getVolatileId());
         $this->institution->save();

@@ -9,13 +9,28 @@ namespace Uni\Db;
  */
 class Permission extends \Bs\Db\Permission
 {
-
-
-    // @deprecated constansts
+    /**
+     * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
+     * @remove 4.0.0
+     */
     const TYPE_ADMIN            = 'type.admin';
+    /**
+     * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
+     * @remove 4.0.0
+     */
     const TYPE_CLIENT           = 'type.client';
+    /**
+     * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
+     * @remove 4.0.0
+     */
     const TYPE_STAFF            = 'type.staff';
+    /**
+     * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
+     * @remove 4.0.0
+     */
     const TYPE_STUDENT          = 'type.student';
+
+
 
     /**
      * Coordinator: Manage settings/students/staff for linked subjects.
@@ -65,10 +80,9 @@ class Permission extends \Bs\Db\Permission
      * If type is null then all available permissions should be returns, excluding the type permissions
      *
      * @param string $type
-     * @param bool $removeTypes This removes any type permissions as they are deprecated for ver 4.0
      * @return array
      */
-    public static function getPermissionList($type = '', $removeTypes = true)
+    public static function getPermissionList($type = '')
     {
         $arr = array(
             'Add/Edit Staff Records' => self::MANAGE_STAFF,
@@ -110,7 +124,9 @@ class Permission extends \Bs\Db\Permission
                 );
                 break;
         }
-        if ($removeTypes) {
+
+        // TODO: @remove 4.0.0
+        if (true) { // This removes any type permissions as they are deprecated for v4.0
             $a = array();
             foreach ($arr as $k => $v) {
                 if (!preg_match('/^type\./', $v))

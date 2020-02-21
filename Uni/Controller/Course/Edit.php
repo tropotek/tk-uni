@@ -4,6 +4,7 @@ namespace Uni\Controller\Course;
 use Bs\Controller\AdminEditIface;
 use Dom\Template;
 use Tk\Request;
+use Tk\Ui\Dialog\AjaxSelect;
 use Uni\Table\User;
 use Uni\Uri;
 
@@ -75,9 +76,9 @@ class Edit extends AdminEditIface
             $this->userTable->setAjaxParams(array(
                 'institutionId' => $this->getConfig()->getInstitutionId(),
                 'active' => 1,
-                'permission' => \Uni\Db\Permission::TYPE_STAFF
+                'permission' => \Uni\Db\Permission::IS_COORDINATOR
             ));
-            $this->userTable->setOnSelect(function (\Uni\Table\UserList $dialog) {
+            $this->userTable->setOnSelect(function (AjaxSelect $dialog) {
                 /** @var User $user */
                 $data = $dialog->getConfig()->getRequest()->all();
                 $course = $dialog->getConfig()->getCourseMapper()->find($dialog->getConfig()->getRequest()->get('courseId'));
@@ -98,7 +99,7 @@ class Edit extends AdminEditIface
             $this->userTable->init();
             $filter = array(
                 'id' => $this->getConfig()->getCourseMapper()->findUsers($this->getCourse()->getId()),
-                'permission' => \Uni\Db\Permission::TYPE_STAFF
+                'permission' => \Uni\Db\Permission::IS_COORDINATOR
             );
             if (count($filter['id']))
                 $this->userTable->setList($this->userTable->findList($filter));
@@ -110,7 +111,7 @@ class Edit extends AdminEditIface
      */
     public function initActionPanel()
     {
-        if ($this->getAuthUser()->isClient() || $this->getAuthUser()->isStaff()) {
+        if ($this->course->getId() && ($this->getAuthUser()->isClient() || $this->getAuthUser()->isStaff())) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Subjects',
                 \Uni\Uri::createHomeUrl('/subjectManager.html')->set('courseId', $this->course->getId()), 'fa fa-graduation-cap'));
         }
