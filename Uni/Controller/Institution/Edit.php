@@ -2,6 +2,8 @@
 namespace Uni\Controller\Institution;
 
 
+use Uni\Db\Permission;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -73,14 +75,11 @@ class Edit extends \Uni\Controller\AdminEditIface
 
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Staff',
                 \Uni\Uri::createHomeUrl('/staffUserManager.html'), 'fa fa-users'));
-//            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Student',
-//                \Uni\Uri::createHomeUrl('/studentUserManager.html'), 'fa fa-users'));
 
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Courses',
-                \Uni\Uri::createHomeUrl('/courseManager.html'), 'fa fa-book'));
-
-//            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Subjects',
-//                \Uni\Uri::createHomeUrl('/subjectManager.html'), 'fa fa-graduation-cap'));
+            if ($this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT)) {
+                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Courses',
+                    \Uni\Uri::createHomeUrl('/courseManager.html'), 'fa fa-book'));
+            }
 
         }
     }

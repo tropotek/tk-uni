@@ -62,26 +62,38 @@ class Permission extends \Bs\Db\Permission
 
     /**
      * Get all available permissions for a user type
-     * If type is null then all available permissions should be returns, excluding the type permisions
+     * If type is null then all available permissions should be returns, excluding the type permissions
      *
      * @param string $type
+     * @param bool $removeTypes This removes any type permissions as they are deprecated for ver 4.0
      * @return array
      */
-    public static function getPermissionList($type = null)
+    public static function getPermissionList($type = '', $removeTypes = true)
     {
+        $arr = array(
+            'Add/Edit Staff Records' => self::MANAGE_STAFF,
+            'Add/Edit Student Records' => self::MANAGE_STUDENT,
+            'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
+            'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
+            'Staff Member is a Lecturer' => self::IS_LECTURER,
+            'Staff Member is a Student Mentor' => self::IS_MENTOR,
+            'Can Masquerade' => self::CAN_MASQUERADE
+        );
         switch ($type) {
             case User::TYPE_ADMIN;
-                return array(
+                $arr = array(
                     'Type Is Administrator' => self::TYPE_ADMIN,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
+                break;
             case User::TYPE_CLIENT:
-                return array(
+                $arr = array(
                     'Type Is Institution Client' => self::TYPE_CLIENT,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
+                break;
             case User::TYPE_STAFF:
-                return array(
+                $arr = array(
                     'Type Is Staff' => self::TYPE_STAFF,
                     'Add/Edit Staff Records' => self::MANAGE_STAFF,
                     'Add/Edit Student Records' => self::MANAGE_STUDENT,
@@ -91,20 +103,22 @@ class Permission extends \Bs\Db\Permission
                     'Staff Member is a Student Mentor' => self::IS_MENTOR,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
+                break;
             case User::TYPE_STUDENT:
-                return array(
+                $arr = array(
                     'Type Is Student' => self::TYPE_STUDENT
                 );
+                break;
         }
-        return array(
-            'Add/Edit Staff Records' => self::MANAGE_STAFF,
-            'Add/Edit Student Records' => self::MANAGE_STUDENT,
-            'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
-            'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
-            'Staff Member is a Lecturer' => self::IS_LECTURER,
-            'Staff Member is a Student Mentor' => self::IS_MENTOR,
-            'Can Masquerade' => self::CAN_MASQUERADE
-        );
+        if ($removeTypes) {
+            $a = array();
+            foreach ($arr as $k => $v) {
+                if (!preg_match('/^type\./', $v))
+                    $a[$k] = $v;
+            }
+            $arr = $a;
+        }
+        return $arr;
     }
 
 }

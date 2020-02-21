@@ -222,13 +222,13 @@ HTML;
             $this->adminUser->setNewPassword($form->getFieldValue('admin-newPassword'));
         }
         $this->adminUser->save();
-        $this->adminUser->addPermission(Permission::getTypePermissionList($this->adminUser->getType()));
+        $this->adminUser->addPermission(Permission::getPermissionList($this->adminUser->getType(), false));
 
         if ($form->getFieldValue('ins-newPassword')) {
             $this->instUser->setNewPassword($form->getFieldValue('ins-newPassword'));
         }
         $this->instUser->save();
-        $this->instUser->addPermission(Permission::getTypePermissionList($this->instUser->getType()));
+        $this->instUser->addPermission(Permission::getPermissionList($this->instUser->getType(), false));
 
         $this->institution->setUserId($this->instUser->getVolatileId());
         $this->institution->save();
@@ -238,6 +238,10 @@ HTML;
             // TODO: Implement the example data code
             \Tk\Alert::addWarning('TODO: Implement the example data code');
         }
+
+        // remove default course records from install
+        $this->getConfig()->getDb()->exec('TRUNCATE course;');
+
 
         \Tk\Alert::addSuccess('Site Setup Successfully!');
         $event->setRedirect(\Tk\Uri::create());

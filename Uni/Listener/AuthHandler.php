@@ -90,6 +90,8 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                                }
 //                            } else {
 //                                $user->save();
+//                                $user->addPermission(\uni\Db\Permission::getPermissionList($user->getType(), false));
+//
 //                                // Save the last ldap data for reference
 //                                $user->getData()->set('ldap.data', json_encode($ldapData, \JSON_PRETTY_PRINT));
 //                                $user->getData()->save();
@@ -169,6 +171,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                }
 //                $config->getUserMapper()->mapForm($userData, $user);
 //                $user->save();
+//                $user->addPermission(\uni\Db\Permission::getPermissionList($user->getType(), false));
 //                $adapter->setUser($user);
 //            }
 

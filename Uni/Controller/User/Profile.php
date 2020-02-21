@@ -13,7 +13,7 @@ use Uni\Db\Permission;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Profile extends \Bs\Controller\Admin\User\Profile
+class Profile extends \Bs\Controller\User\Profile
 {
 
 
