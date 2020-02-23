@@ -5,6 +5,7 @@ use Bs\Controller\AdminEditIface;
 use Dom\Template;
 use Tk\Request;
 use Tk\Ui\Dialog\AjaxSelect;
+use Uni\Db\Permission;
 use Uni\Table\User;
 use Uni\Uri;
 
@@ -61,6 +62,10 @@ class Edit extends AdminEditIface
      */
     public function doDefault(Request $request)
     {
+        if (!$this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT)) {
+            \Tk\Alert::addWarning('You do not have permission to edit this resource.');
+            $this->getConfig()->getBackUrl()->redirect();
+        }
         $this->getCourse();
 
         $this->setForm(\Uni\Form\Course::create()->setModel($this->getCourse()));

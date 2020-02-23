@@ -2,6 +2,8 @@
 namespace Uni\Controller\Subject;
 
 
+use Uni\Db\Permission;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -59,6 +61,11 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function doDefault(\Tk\Request $request)
     {
+        if (!$this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT)) {
+            \Tk\Alert::addWarning('You do not have permission to edit this resource.');
+            $this->getConfig()->getBackUrl()->redirect();
+        }
+
         $this->subject = $this->findSubject($request);
 
         $this->setForm(\Uni\Form\Subject::create()->setModel($this->subject));
@@ -115,10 +122,7 @@ class Edit extends \Uni\Controller\AdminEditIface
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
                     \Uni\Uri::createHomeUrl('/subject/' . $this->subject->getId() . '/plugins.html')->set('subjectId', $this->subject->getId()), 'fa fa-plug'));
             }
-            if(!$this->getConfig()->isSubjectUrl()) {
-                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
-                    \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->getId()), 'fa fa-list'));
-            } else {
+            if($this->getConfig()->isSubjectUrl() && $this->getAuthUser()->hasPermission(Permission::MANAGE_STUDENT)) {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
                     \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
             }

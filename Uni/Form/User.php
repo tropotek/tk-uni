@@ -32,19 +32,11 @@ class User extends \Bs\Form\User
         $this->getField('update')->appendCallback(array($this, 'doSubjectUpdate'));
         $this->getField('save')->appendCallback(array($this, 'doSubjectUpdate'));
 
-
         $tab = 'Details';
         if (!$this->getConfig()->canChangePassword()) {
             $this->removeField('newPassword');
             $this->removeField('confPassword');
         }
-
-//        if ($this->getTargetType() == \Uni\Db\User::TYPE_STAFF) {
-//            $this->appendField(Field\Select::createSelect('type', \uni\Db\User::getUserTypeList($this->getTargetType()))->setTabGroup($tab)
-//                ->setRequired()->prependOption('-- Select --', ''));
-//        } else {
-//            $this->removeField('type');
-//        }
 
         $this->appendField(new Field\Input('uid'), 'username')->setLabel('UID')->addCss('tk-input-lock')->setTabGroup($tab)
             ->setNotes('The student or staff number assigned by the institution (if Applicable).');

@@ -9,6 +9,7 @@ use Dom\Template;
 use Tk\Ui\Link;
 use Uni\Config;
 use Uni\Controller\AdminIface;
+use Uni\Db\Permission;
 use Uni\Db\Subject;
 use Uni\Db\SubjectIface;
 use Uni\Db\User;
@@ -82,6 +83,11 @@ class EnrollmentManager extends AdminIface
      */
     public function doDefault(Request $request)
     {
+        if (!$this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT)) {
+            \Tk\Alert::addWarning('You do not have permission to edit this resource.');
+            $this->getConfig()->getBackUrl()->redirect();
+        }
+
         $subject = $this->getSubject();
         if (!$subject) {
             throw new \Tk\Exception('Invalid subject details');

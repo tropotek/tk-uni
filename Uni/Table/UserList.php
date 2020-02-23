@@ -3,6 +3,7 @@ namespace Uni\Table;
 
 
 
+use Uni\Db\Permission;
 use Uni\Uri;
 
 /**
@@ -51,8 +52,6 @@ class UserList extends User
         return $this;
     }
 
-
-
     /**
      * @return null
      */
@@ -89,9 +88,6 @@ class UserList extends User
         return $this;
     }
 
-
-
-
     public function init()
     {
         parent::init();
@@ -106,46 +102,51 @@ class UserList extends User
         $this->removeAction('delete');
         $this->removeAction('csv');
 
-        if ($this->getUserType() == \Uni\Db\User::TYPE_STAFF) {
-            $this->appendAction(\Tk\Table\Action\Delete::create()->setLabel('Remove')
-                ->setConfirmStr('Are you sure you want to remove the user`s access from this course.')
-                ->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
-                    $config = \Uni\Config::getInstance();
-                    /** @var $obj \Uni\Db\User */
-                    $course = $config->getCourseMapper()->find(\Uni\Config::getInstance()->getRequest()->get('courseId'));
-                    if (!$course) {
-                        \Tk\Alert::addError('Cannot locate course object.');
-                    }
-                    $config->getCourseMapper()->removeUser($course->getId(), $obj->getId());
-                    return false;
-                }));
-        } else if ($this->getUserType() == \Uni\Db\User::TYPE_STUDENT) {
-            $this->appendAction(\Tk\Table\Action\Delete::create()->setLabel('Un-Enroll')
-                ->setConfirmStr('Are you sure you want to remove the user`s access from this subject.')
-                ->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
-                    $config = \Uni\Config::getInstance();
-                    /** @var $obj \Uni\Db\User */
-                    $subject = $config->getSubjectMapper()->find(\Uni\Config::getInstance()->getRequest()->get('subjectId'));
-                    if (!$subject) {
-                        \Tk\Alert::addError('Cannot locate subject.');
-                    }
-                    $config->getSubjectMapper()->removeUser($subject->getId(), $obj->getId());
-                    return false;
-                }));
+        if ($this->getAuthUser()->hasPermission(Permission::MANAGE_STUDENT)) {
+            if ($this->getUserType() == \Uni\Db\User::TYPE_STAFF) {
+                $this->appendAction(\Tk\Table\Action\Delete::create()->setLabel('Remove')
+                    ->setConfirmStr('Are you sure you want to remove the user`s access from this course.')
+                    ->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+                        $config = \Uni\Config::getInstance();
+                        /** @var $obj \Uni\Db\User */
+                        $course = $config->getCourseMapper()->find(\Uni\Config::getInstance()->getRequest()->get('courseId'));
+                        if (!$course) {
+                            \Tk\Alert::addError('Cannot locate course object.');
+                        }
+                        $config->getCourseMapper()->removeUser($course->getId(), $obj->getId());
+                        return false;
+                    }));
+            } else if ($this->getUserType() == \Uni\Db\User::TYPE_STUDENT) {
+                $this->appendAction(\Tk\Table\Action\Delete::create()->setLabel('Un-Enroll')
+                    ->setConfirmStr('Are you sure you want to remove the user`s access from this subject.')
+                    ->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+                        $config = \Uni\Config::getInstance();
+                        /** @var $obj \Uni\Db\User */
+                        $subject = $config->getSubjectMapper()->find(\Uni\Config::getInstance()->getRequest()->get('subjectId'));
+                        if (!$subject) {
+                            \Tk\Alert::addError('Cannot locate subject.');
+                        }
+                        $config->getSubjectMapper()->removeUser($subject->getId(), $obj->getId());
+                        return false;
+                    }));
+            }
+
+            $template = $this->getRenderer()->getTemplate();
+            $this->userDialog = \Tk\Ui\Dialog\AjaxSelect::create('Add User');
+            $this->userDialog->setAjaxUrl(Uri::create('/ajax/user/findFiltered.html'));
+            $this->userDialog->setAjaxParams($this->getAjaxParams());
+            $this->userDialog->addOnSelect($this->getOnSelect());
+            $this->userDialog->execute();
+            $template->appendBodyTemplate($this->userDialog->show());
+
+            $this->appendAction(\Tk\Table\Action\Link::createLink('Add User', '#', 'fa fa-plus'))->setAttr('data-toggle', 'modal')
+                ->setAttr('data-target', '#' . $this->userDialog->getId());
+            $this->appendAction(\Tk\Table\Action\Csv::create());
+        } else {
+
+            $this->setEditUrl(null);
+
         }
-
-        $template = $this->getRenderer()->getTemplate();
-        $this->userDialog = \Tk\Ui\Dialog\AjaxSelect::create('Add User');
-        $this->userDialog->setAjaxUrl(Uri::create('/ajax/user/findFiltered.html'));
-        $this->userDialog->setAjaxParams($this->getAjaxParams());
-        $this->userDialog->addOnSelect($this->getOnSelect());
-        $this->userDialog->execute();
-        $template->appendBodyTemplate($this->userDialog->show());
-
-        $this->appendAction(\Tk\Table\Action\Link::createLink('Add User', '#', 'fa fa-plus'))->setAttr('data-toggle', 'modal')
-            ->setAttr('data-target', '#'.$this->userDialog->getId());
-        $this->appendAction(\Tk\Table\Action\Csv::create());
-
         return $this;
     }
 

@@ -34,6 +34,8 @@ class Profile extends \Bs\Controller\User\Profile
             $this->getForm()->getField('uid')->setAttr('disabled')->addCss('form-control disabled')->removeCss('tk-input-lock');
         if ($this->getForm()->getField('email'))
             $this->getForm()->getField('email')->setAttr('disabled')->addCss('form-control disabled')->removeCss('tk-input-lock');
+        if ($this->getForm()->getField('permission'))
+            $this->getForm()->removeField('permission');
         $this->getForm()->removeField('selCourse');
         $this->getForm()->removeField('selSubject');
 
