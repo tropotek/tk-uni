@@ -244,11 +244,17 @@ HTML;
 
 
         \Tk\Alert::addSuccess('Site Setup Successfully!');
-        $event->setRedirect(\Tk\Uri::create());
-        //$event->setRedirect(\Tk\Uri::create('/index.html'));
-        //$event->setRedirect(\Tk\Uri::create('/login.html'));
+        $event->setRedirect($this->getRedirectUrl());
     }
 
+
+    /**
+     * @return \Tk\Uri
+     */
+    public function getRedirectUrl()
+    {
+        return \Tk\Uri::create();
+    }
 
     /**
      * @return \Dom\Template
