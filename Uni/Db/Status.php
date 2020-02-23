@@ -326,7 +326,7 @@ class Status extends Model
      */
     public function findLastStudent()
     {
-        $s = self::findLastByUserType($this, Permission::TYPE_STUDENT);
+        $s = self::findLastByUserType($this, User::TYPE_STUDENT);
         if ($s)
             return $s->getUser();
         return null;
@@ -338,7 +338,7 @@ class Status extends Model
      */
     public function findLastStaff()
     {
-        $s = self::findLastByUserType($this, Permission::TYPE_STAFF);
+        $s = self::findLastByUserType($this, User::TYPE_STAFF);
         if ($s)
             return $s->getUser();
         return null;
@@ -367,7 +367,7 @@ class Status extends Model
     public static function findLastByUserType($status, $userType)
     {
         if (!$status) return $status;
-        if ($status->getUser() && $status->getUser()->hasPermission($userType)) {
+        if ($status->getUser() && $status->getUser()->hasType($userType)) {
             return $status;
         }
         return self::findLastByUserType($status->getPrevious(), $userType);

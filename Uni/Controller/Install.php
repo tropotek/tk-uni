@@ -224,6 +224,7 @@ HTML;
         $this->adminUser->save();
         $this->adminUser->addPermission(Permission::getPermissionList($this->adminUser->getType()));
 
+
         if ($form->getFieldValue('ins-newPassword')) {
             $this->instUser->setNewPassword($form->getFieldValue('ins-newPassword'));
         }

@@ -11,22 +11,18 @@ class Permission extends \Bs\Db\Permission
 {
     /**
      * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
-     * @remove 4.0.0
      */
     const TYPE_ADMIN            = 'type.admin';
     /**
      * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
-     * @remove 4.0.0
      */
     const TYPE_CLIENT           = 'type.client';
     /**
      * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
-     * @remove 4.0.0
      */
     const TYPE_STAFF            = 'type.staff';
     /**
      * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
-     * @remove 4.0.0
      */
     const TYPE_STUDENT          = 'type.student';
 
@@ -96,19 +92,19 @@ class Permission extends \Bs\Db\Permission
         switch ($type) {
             case User::TYPE_ADMIN;
                 $arr = array(
-                    'Type Is Administrator' => self::TYPE_ADMIN,
+                    //'Type Is Administrator' => self::TYPE_ADMIN,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
                 break;
             case User::TYPE_CLIENT:
                 $arr = array(
-                    'Type Is Institution Client' => self::TYPE_CLIENT,
+                    //'Type Is Institution Client' => self::TYPE_CLIENT,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
                 break;
             case User::TYPE_STAFF:
                 $arr = array(
-                    'Type Is Staff' => self::TYPE_STAFF,
+                    //'Type Is Staff' => self::TYPE_STAFF,
                     'Add/Edit Staff Records' => self::MANAGE_STAFF,
                     'Add/Edit Student Records' => self::MANAGE_STUDENT,
                     'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
@@ -120,19 +116,9 @@ class Permission extends \Bs\Db\Permission
                 break;
             case User::TYPE_STUDENT:
                 $arr = array(
-                    'Type Is Student' => self::TYPE_STUDENT
+                    //'Type Is Student' => self::TYPE_STUDENT
                 );
                 break;
-        }
-
-        // TODO: @remove 4.0.0
-        if (true) { // This removes any type permissions as they are deprecated for v4.0
-            $a = array();
-            foreach ($arr as $k => $v) {
-                if (!preg_match('/^type\./', $v))
-                    $a[$k] = $v;
-            }
-            $arr = $a;
         }
         return $arr;
     }
