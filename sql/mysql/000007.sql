@@ -25,14 +25,11 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
 UPDATE user a, _user_role b SET a.type = b.type
     WHERE a.role_id = b.id;
 
-
-UPDATE _user_role_permission SET name = REPLACE(name, 'type.', 'perm.is.');
-
 INSERT INTO user_permission (user_id, name)
   (
     SELECT a.id, c.name
     FROM user a, _user_role b, _user_role_permission c
-    WHERE a.role_id = b.id AND b.id = c.role_id
+    WHERE a.role_id = b.id AND b.id = c.role_id AND c.name NOT LIKE 'type.%'
   )
 ;
 
