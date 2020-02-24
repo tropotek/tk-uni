@@ -9,42 +9,6 @@ namespace Uni\Db;
  */
 class Permission extends \Bs\Db\Permission
 {
-    /**
-     * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
-     */
-    const TYPE_ADMIN            = 'type.admin';
-    /**
-     * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
-     */
-    const TYPE_CLIENT           = 'type.client';
-    /**
-     * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
-     */
-    const TYPE_STAFF            = 'type.staff';
-    /**
-     * @deprecated use $user->isAdmin() or $user->hasType(User::TYPE_ADMIN)
-     */
-    const TYPE_STUDENT          = 'type.student';
-
-
-
-    /**
-     * Coordinator: Manage settings/students/staff for linked subjects.
-     * @target staff
-     */
-    const IS_COORDINATOR        = 'perm.is.coordinator';
-
-    /**
-     * Lecturer: Manage student submissions/communications for linked subjects
-     * @target staff
-     */
-    const IS_LECTURER           = 'perm.is.lecturer';
-
-    /**
-     * Staff member is a mentor to students
-     * @target staff
-     */
-    const IS_MENTOR             = 'perm.is.mentor';
 
     /**
      * Add/Edit Staff user accounts
@@ -65,10 +29,36 @@ class Permission extends \Bs\Db\Permission
     const MANAGE_SUBJECT        = 'perm.manage.subject';
 
     /**
+     * Manage plugins
+     * @target staff,client,admin
+     */
+    const MANAGE_PLUGINS        = 'perm.manage.plugins';
+
+    /**
      * Can masquerade as other lower tier users
      * @target staff,client,admin
      */
     const CAN_MASQUERADE        = 'perm.masquerade';
+
+
+    /**
+     * Coordinator: Manage settings/students/staff for linked subjects.
+     * @target staff
+     */
+    const IS_COORDINATOR        = 'perm.is.coordinator';
+
+    /**
+     * Lecturer: Manage student submissions/communications for linked subjects
+     * @target staff
+     */
+    const IS_LECTURER           = 'perm.is.lecturer';
+
+    /**
+     * Staff member is a mentor to students
+     * @target staff
+     */
+    const IS_MENTOR             = 'perm.is.mentor';
+
 
 
     /**
@@ -87,37 +77,38 @@ class Permission extends \Bs\Db\Permission
             'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
             'Staff Member is a Lecturer' => self::IS_LECTURER,
             'Staff Member is a Student Mentor' => self::IS_MENTOR,
+
+            'Manage Site Plugins' => self::MANAGE_PLUGINS,
             'Can Masquerade' => self::CAN_MASQUERADE
         );
         switch ($type) {
             case User::TYPE_ADMIN;
                 $arr = array(
-                    //'Type Is Administrator' => self::TYPE_ADMIN,
+                    'Manage Site Plugins' => self::MANAGE_PLUGINS,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
                 break;
             case User::TYPE_CLIENT:
                 $arr = array(
-                    //'Type Is Institution Client' => self::TYPE_CLIENT,
+                    'Manage Site Plugins' => self::MANAGE_PLUGINS,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
                 break;
             case User::TYPE_STAFF:
                 $arr = array(
-                    //'Type Is Staff' => self::TYPE_STAFF,
                     'Add/Edit Staff Records' => self::MANAGE_STAFF,
                     'Add/Edit Student Records' => self::MANAGE_STUDENT,
                     'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
                     'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
                     'Staff Member is a Lecturer' => self::IS_LECTURER,
                     'Staff Member is a Student Mentor' => self::IS_MENTOR,
+
+                    'Manage Site Plugins' => self::MANAGE_PLUGINS,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
                 break;
             case User::TYPE_STUDENT:
-                $arr = array(
-                    //'Type Is Student' => self::TYPE_STUDENT
-                );
+                $arr = array();
                 break;
         }
         return $arr;
