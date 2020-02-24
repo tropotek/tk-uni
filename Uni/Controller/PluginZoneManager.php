@@ -1,9 +1,20 @@
 <?php
 namespace Uni\Controller;
 
+use Dom\Loader;
+use StdClass;
+use Tk\Alert;
 use Tk\Db\Exception;
+use Tk\Log;
 use Tk\Request;
 use Dom\Template;
+use Tk\Table;
+use Tk\Table\Cell\ButtonCollection;
+use Tk\Table\Cell\Date;
+use Tk\Table\Cell\Text;
+use Tk\Table\Ui\ActionButton;
+use Uni\Uri;
+use Uni\Config;
 
 /**
  *
@@ -16,7 +27,7 @@ class PluginZoneManager extends AdminIface
 {
 
     /**
-     * @var \Tk\Table
+     * @var Table
      */
     protected $table = null;
 
@@ -54,18 +65,134 @@ class PluginZoneManager extends AdminIface
         if (!$this->zoneName || !$this->zoneId) {
             throw new \Tk\Exception('Invalid zone plugin information?');
         }
+
+        if ($request->has('enable')) {
+            $this->doEnablePlugin($request);
+        } else if ($request->has('disable')) {
+            $this->doDisablePlugin($request);
+        }
+
+
         $this->setPageTitle($this->makeTitleFromZone($this->zoneName) . ' Plugin Manager');
 
-        $this->pluginFactory = \Uni\Config::getInstance()->getPluginFactory();
+        $this->pluginFactory = Config::getInstance()->getPluginFactory();
         // Plugin manager table
-        $this->table = \Uni\Config::getInstance()->createTable('PluginList');
-        $this->table->setRenderer(\Uni\Config::getInstance()->createTableRenderer($this->table));
+        $this->table = Config::getInstance()->createTable('PluginList');
+        $this->table->setRenderer(Config::getInstance()->createTableRenderer($this->table));
 
-        $this->table->appendCell(new IconCell('icon'))->setLabel('');
-        $this->table->appendCell(new ActionsCell($this->zoneName, $this->zoneId));
-        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setOrderProperty('');
-        $this->table->appendCell(new \Tk\Table\Cell\Text('version'))->setOrderProperty('');
-        $this->table->appendCell(new \Tk\Table\Cell\Date('time'))->setLabel('Created')->setOrderProperty('');
+        //$this->table->appendCell(new IconCell('icon'))->setLabel('');
+        $this->table->appendCell(new Text('icon'))->setOrderProperty('')->setLabel('#')
+            ->addOnCellHtml(function (\Tk\Table\Cell\Iface $cell, $obj, $html) {
+                /** @var $obj stdClass */
+                $html = <<<HTML
+        <div>
+          <img class="media-object" src="#" var="icon" style="width: 20px;" choice="icon" />
+        </div>
+HTML;
+                $template = Loader::load($html);
+                try {
+                    $pluginName = Config::getInstance()->getPluginFactory()->cleanPluginName($obj->name);
+                } catch (\Exception $e) { Log::error($e->__toString());}
+
+                if (is_file(Config::getInstance()->getPluginPath() . '/' . $pluginName . '/icon.png')) {
+                    $template->setAttr('icon', 'src', Config::getInstance()->getPluginUrl() . '/' . $pluginName . '/icon.png');
+                    $template->setVisible('icon');
+                }
+                return $template;
+            });
+
+
+
+
+        //$this->table->appendCell(new ActionsCell($this->zoneName, $this->zoneId));
+
+        $zoneName = $this->zoneName;
+        $zoneId = $this->zoneId;
+        $actionsCell = ButtonCollection::create('actions');
+        $actionsCell->append(ActionButton::createBtn('Enable Plugin ', '#', 'fa fa-sign-in'))
+            ->addCss('btn-success btn-xs noblock act')
+            ->addOnShow(function (ButtonCollection $cell, $obj, ActionButton $button) use ($zoneName, $zoneId) {
+                /* @var $obj stdClass */
+                $pluginFactory = Config::getInstance()->getPluginFactory();
+                $pluginName = $pluginFactory->cleanPluginName($obj->name);
+                /** @var \Tk\Plugin\Iface $plugin */
+                $plugin = $pluginFactory->getPlugin($pluginName);
+                if ($plugin->isZonePluginEnabled($zoneName, $zoneId)) {
+                    $cell->getRow()->addCss('plugin-active');
+                    $button->setVisible(false);
+                } else {
+                    $cell->getRow()->addCss('plugin-inactive');
+                    $button->setUrl(Uri::create()->set('enable', $plugin->getName()));
+                }
+            });
+        $actionsCell->append(ActionButton::createBtn('Configure Plugin ', '#', 'fa fa-cog'))
+            ->addCss('btn-primary btn-xs noblock setup')
+            ->addOnShow(function (ButtonCollection $cell, $obj, ActionButton $button) use ($zoneName, $zoneId) {
+                /* @var $obj stdClass */
+                $pluginFactory = Config::getInstance()->getPluginFactory();
+                $pluginName = $pluginFactory->cleanPluginName($obj->name);
+                /** @var \Tk\Plugin\Iface $plugin */
+                $plugin = $pluginFactory->getPlugin($pluginName);
+                if ($plugin->isZonePluginEnabled($zoneName, $zoneId)) {
+                    $cell->getRow()->addCss('plugin-active');
+                    $settingsUrl = $plugin->getZoneSettingsUrl($this->zoneName, $this->zoneId);
+                    $button->setUrl($settingsUrl->set('zoneId', $this->zoneId));
+                } else {
+                    $cell->getRow()->addCss('plugin-inactive');
+                    $button->setVisible(false);
+                }
+            });
+        $actionsCell->append(ActionButton::createBtn('Disable Plugin ', '#', 'fa fa-remove'))
+            ->addCss('btn-danger btn-xs noblock deact')
+            ->addOnShow(function (ButtonCollection $cell, $obj, ActionButton $button) use ($zoneName, $zoneId) {
+                /* @var $obj stdClass */
+                $pluginFactory = Config::getInstance()->getPluginFactory();
+                $pluginName = $pluginFactory->cleanPluginName($obj->name);
+                /** @var \Tk\Plugin\Iface $plugin */
+                $plugin = $pluginFactory->getPlugin($pluginName);
+                if ($plugin->isZonePluginEnabled($zoneName, $zoneId)) {
+                    $cell->getRow()->addCss('plugin-active');
+                    $button->setUrl(Uri::create()->set('disable', $plugin->getName()));
+                } else {
+                    $cell->getRow()->addCss('plugin-inactive');
+                    $button->setVisible(false);
+                }
+            });
+
+        $this->table->appendCell($actionsCell)->addOnCellHtml(function (\Tk\Table\Cell\Iface $cell, $obj, $html) {
+            /** @var $obj stdClass */
+            $template = $cell->getTable()->getRenderer()->getTemplate();
+
+            $js = <<<JS
+jQuery(function ($) {
+    $('a.act').click(function (e) {
+        return confirm('Are you sure you want to enable this plugin?');
+    });
+    $('a.deact').click(function (e) {
+        return confirm('Are you sure you want to disable this plugin?');
+    });
+});
+JS;
+            $template->appendJs($js);
+
+            $css = <<<CSS
+#PluginList .plugin-inactive td {
+  opacity: 0.5;
+}
+#PluginList .plugin-inactive td.mActions {
+  opacity: 1;  
+}
+CSS;
+            $template->appendCss($css);
+
+            return $html;
+        });
+
+
+
+        $this->table->appendCell(new Text('name'))->addCss('key')->setOrderProperty('');
+        $this->table->appendCell(new Text('version'))->setOrderProperty('');
+        $this->table->appendCell(new Date('time'))->setLabel('Created')->setOrderProperty('');
         
         $this->table->setList($this->getPluginList());
 
@@ -77,10 +204,8 @@ class PluginZoneManager extends AdminIface
     private function getPluginList()
     {
         try {
-            $pluginFactory = \Uni\Config::getInstance()->getPluginFactory();
-        } catch (Exception $e) {
-        } catch (\Tk\Plugin\Exception $e) {
-        }
+            $pluginFactory = Config::getInstance()->getPluginFactory();
+        } catch (\Exception $e) { Log::error($e->__toString()); }
         $plugins = $pluginFactory->getZonePluginList($this->zoneName);
         $list = array();
         /** @var \Tk\Plugin\Iface $plugin */
@@ -92,8 +217,40 @@ class PluginZoneManager extends AdminIface
         return $list;
     }
 
+    protected function doEnablePlugin(Request $request)
+    {
+        $pluginName = strip_tags(trim($request->get('enable')));
+        if (!$pluginName) {
+            Alert::addWarning('Cannot locate Plugin: ' . $pluginName);
+            return;
+        }
+        try {
+            Config::getInstance()->getPluginFactory()->enableZonePlugin($pluginName, $this->zoneName, $this->zoneId);
+            Alert::addSuccess('Plugin `' . $pluginName . '` enabled.');
+        }catch (\Exception $e) {
+            Alert::addError('Plugin `' . $pluginName . '` cannot be enabled.');
+        }
+        Uri::create()->remove('enable')->redirect();
+    }
+
+    protected function doDisablePlugin(Request $request)
+    {
+        $pluginName = strip_tags(trim($request->get('disable')));
+        if (!$pluginName) {
+            Alert::addWarning('Cannot locate Plugin: ' . $pluginName);
+            return;
+        }
+        try {
+            Config::getInstance()->getPluginFactory()->disableZonePlugin($pluginName, $this->zoneName, $this->zoneId);
+        } catch (\Exception $e) {
+            Alert::addError('Plugin `' . $pluginName . '` cannot be disabled.');
+        }
+        Alert::addSuccess('Plugin `' . $pluginName . '` disabled');
+        Uri::create()->remove('disable')->redirect();
+    }
+
     /**
-     * @return \Dom\Template
+     * @return Template
      */
     public function show()
     {
@@ -134,65 +291,13 @@ class PluginZoneManager extends AdminIface
   
 </div>
 HTML;
-        return \Dom\Loader::load($xhtml);
+        return Loader::load($xhtml);
     }
 
 }
 
-class IconCell extends \Tk\Table\Cell\Text
-{
 
-    /**
-     * OwnerCell constructor.
-     *
-     * @param string $property
-     * @param null $label
-     */
-    public function __construct($property, $label = null)
-    {
-        parent::__construct($property, $label);
-        $this->setOrderProperty('');
-    }
-
-    /**
-     * @param \StdClass $info
-     * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
-     * @return string|\Dom\Template
-     */
-    public function getCellHtml($info, $rowIdx = null)
-    {
-        $template = $this->__makeTemplate();
-
-        try {
-            $pluginName = \Uni\Config::getInstance()->getPluginFactory()->cleanPluginName($info->name);
-        } catch (Exception $e) {
-        } catch (\Tk\Plugin\Exception $e) {
-        }
-        if (is_file(\Uni\Config::getInstance()->getPluginPath() . '/' . $pluginName . '/icon.png')) {
-            $template->setAttr('icon', 'src', \Uni\Config::getInstance()->getPluginUrl() . '/' . $pluginName . '/icon.png');
-            $template->setVisible('icon');
-        }
-
-        return $template;
-    }
-
-    /**
-     * makeTemplate
-     *
-     * @return \Dom\Template
-     */
-    public function __makeTemplate()
-    {
-        $html = <<<HTML
-<div>
-  <img class="media-object" src="#" var="icon" style="width: 20px;" choice="icon"/>
-</div>
-HTML;
-        return \Dom\Loader::load($html);
-    }
-}
-
-class ActionsCell extends \Tk\Table\Cell\Text
+class ActionsCell extends Text
 {
 
     /**
@@ -223,8 +328,8 @@ class ActionsCell extends \Tk\Table\Cell\Text
      * Called when the Table::execute is called
      */
     public function execute() {
-        /** @var \Tk\Request $request */
-        $request = \Uni\Config::getInstance()->getRequest();
+        /** @var Request $request */
+        $request = Config::getInstance()->getRequest();
 
         if ($request->has('enable')) {
             $this->doEnablePlugin($request);
@@ -235,9 +340,9 @@ class ActionsCell extends \Tk\Table\Cell\Text
     }
 
     /**
-     * @param \StdClass $info
+     * @param StdClass $info
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
-     * @return string|\Dom\Template
+     * @return string|Template
      * @throws \Exception
      */
     public function getCellHtml($info, $rowIdx = null)
@@ -245,7 +350,7 @@ class ActionsCell extends \Tk\Table\Cell\Text
         $template = $this->__makeTemplate();
 
         try {
-            $pluginFactory = \Uni\Config::getInstance()->getPluginFactory();
+            $pluginFactory = Config::getInstance()->getPluginFactory();
         } catch (Exception $e) { }
 
         $pluginName = $pluginFactory->cleanPluginName($info->name);
@@ -255,7 +360,7 @@ class ActionsCell extends \Tk\Table\Cell\Text
         if ($plugin->isZonePluginEnabled($this->zoneName, $this->zoneId)) {
             $this->getRow()->addCss('plugin-active');
             $template->setVisible('disable');
-            $template->setAttr('disable', 'href', \Tk\Uri::create()->set('disable', $plugin->getName()));
+            $template->setAttr('disable', 'href', Uri::create()->set('disable', $plugin->getName()));
             $settingsUrl = $plugin->getZoneSettingsUrl($this->zoneName, $this->zoneId);
             if ($settingsUrl) {
                 $template->setAttr('title', 'href', $settingsUrl);
@@ -265,7 +370,7 @@ class ActionsCell extends \Tk\Table\Cell\Text
         } else {
             $this->getRow()->addCss('plugin-inactive');
             $template->setVisible('enable');
-            $template->setAttr('enable', 'href', \Tk\Uri::create()->set('enable', $plugin->getName()));
+            $template->setAttr('enable', 'href', Uri::create()->set('enable', $plugin->getName()));
         }
 
         $js = <<<JS
@@ -296,7 +401,7 @@ CSS;
     /**
      * makeTemplate
      *
-     * @return \Dom\Template
+     * @return Template
      */
     public function __makeTemplate()
     {
@@ -307,39 +412,39 @@ CSS;
   <a href="#" class="btn btn-danger btn-xs noblock deact" choice="disable" var="disable" title="Disable Plugin"><i class="fa fa-remove"></i></a>
 </div>
 HTML;
-        return \Dom\Loader::load($html);
+        return Loader::load($html);
     }
 
     protected function doEnablePlugin(Request $request)
     {
         $pluginName = strip_tags(trim($request->get('enable')));
         if (!$pluginName) {
-            \Tk\Alert::addWarning('Cannot locate Plugin: ' . $pluginName);
+            Alert::addWarning('Cannot locate Plugin: ' . $pluginName);
             return;
         }
         try {
-            \Uni\Config::getInstance()->getPluginFactory()->enableZonePlugin($pluginName, $this->zoneName, $this->zoneId);
-            \Tk\Alert::addSuccess('Plugin `' . $pluginName . '` enabled.');
+            Config::getInstance()->getPluginFactory()->enableZonePlugin($pluginName, $this->zoneName, $this->zoneId);
+            Alert::addSuccess('Plugin `' . $pluginName . '` enabled.');
         }catch (\Exception $e) {
-            \Tk\Alert::addError('Plugin `' . $pluginName . '` cannot be enabled.');
+            Alert::addError('Plugin `' . $pluginName . '` cannot be enabled.');
         }
-        \Tk\Uri::create()->remove('enable')->redirect();
+        Uri::create()->remove('enable')->redirect();
     }
 
     protected function doDisablePlugin(Request $request)
     {
         $pluginName = strip_tags(trim($request->get('disable')));
         if (!$pluginName) {
-            \Tk\Alert::addWarning('Cannot locate Plugin: ' . $pluginName);
+            Alert::addWarning('Cannot locate Plugin: ' . $pluginName);
             return;
         }
         try {
-            \Uni\Config::getInstance()->getPluginFactory()->disableZonePlugin($pluginName, $this->zoneName, $this->zoneId);
-        } catch (Exception $e) {
-        } catch (\Tk\Plugin\Exception $e) {
+            Config::getInstance()->getPluginFactory()->disableZonePlugin($pluginName, $this->zoneName, $this->zoneId);
+        } catch (\Exception $e) {
+            Alert::addError('Plugin `' . $pluginName . '` cannot be disabled.');
         }
-        \Tk\Alert::addSuccess('Plugin `' . $pluginName . '` disabled');
-        \Tk\Uri::create()->remove('disable')->redirect();
+        Alert::addSuccess('Plugin `' . $pluginName . '` disabled');
+        Uri::create()->remove('disable')->redirect();
     }
 
 }

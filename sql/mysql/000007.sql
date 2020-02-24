@@ -62,8 +62,9 @@ alter table user drop column name;
 -- NOTE: This has to be run manually before upgrading to ver 3.2
 -- RENAME TABLE migration TO _migration;
 -- RENAME TABLE data TO _data;
--- RENAME TABLE session TO _session;
 -- RENAME TABLE plugin TO _plugin;
+-- # Do this for live sites only
+-- RENAME TABLE session TO _session;
 
 
 
