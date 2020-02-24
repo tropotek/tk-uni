@@ -35,10 +35,10 @@ interface UserIface extends \Bs\Db\UserIface
      */
     public function isCoordinator();
 
-    /**
-     * @return boolean
-     */
-    public function isLecturer();
+//    /**
+//     * @return boolean
+//     */
+//    public function isLecturer();
 
     /**
      * @return boolean
