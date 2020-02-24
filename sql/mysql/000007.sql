@@ -22,6 +22,22 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
   PRIMARY KEY `user_id_name` (`user_id`, `name`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS `_user_role_id` (
+  `user_id` int(10) unsigned NOT NULL,
+  `role_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY `user_id_role` (`user_id`, `role_id`)
+) ENGINE=InnoDB;
+
+INSERT INTO _user_role_id (user_id, role_id)
+  (
+    SELECT a.id, a.role_id
+    FROM user a
+    WHERE 1
+  )
+;
+
+
+
 UPDATE user a, _user_role b SET a.type = b.type
     WHERE a.role_id = b.id;
 
