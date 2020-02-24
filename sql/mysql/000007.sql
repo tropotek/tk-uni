@@ -49,6 +49,14 @@ INSERT INTO user_permission (user_id, name)
   )
 ;
 
+INSERT INTO user_permission (user_id, name)
+    (
+        SELECT a.id, 'perm.masquerade'
+        FROM user a
+        WHERE a.type = 'client' OR a.type = 'admin'
+    )
+;
+
 
 alter table user drop column role_id;
 alter table user drop column name;
