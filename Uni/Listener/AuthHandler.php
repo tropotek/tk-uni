@@ -206,7 +206,11 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                 $config->getSubjectMapper()->addUser($subject->getId(), $user->getId());
             }
 
-
+            if ($user && $ltiData && method_exists($user, 'getData')) {
+                $data = $user->getData();
+                $data->set('lti.last.login', json_encode($ltiData));
+                $data->save();
+            }
 
             $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $config->getUserIdentity($user)));
         }

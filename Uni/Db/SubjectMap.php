@@ -114,7 +114,7 @@ class SubjectMap extends Mapper
     /**
      * @param array|Filter $filter
      * @param Tool $tool
-     * @return ArrayObject|Subject[]
+     * @return ArrayObject|Subject[]|\Uni\Db\Subject[]
      * @throws \Exception
      */
     public function findFiltered($filter, $tool = null)
