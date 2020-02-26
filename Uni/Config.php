@@ -596,11 +596,7 @@ class Config extends \Bs\Config
      */
     public function isLti()
     {
-        // TODO: should this be in the LTI plugin?
-        if ($this->get('force.lti.template') || $this->getSession()->has('lti_launch')) {
-            return true;
-        }
-        return false;
+        return $this->getSession()->get('isLti', false);
     }
 
     /**
@@ -610,8 +606,7 @@ class Config extends \Bs\Config
     public function getPage($templatePath = '')
     {
         if (!$this->get('controller.page')) {
-            // TODO: Look into a way to move this somehow into the LTI plugin
-            if ($this->isLti() && $this->has('template.lti') && $this->isSubjectUrl()) {
+            if (($this->isLti() || $this->get('force.lti.template')) && $this->has('template.lti') && $this->isSubjectUrl()) {
                 $templatePath = $this->getSitePath() . $this->get('template.lti');
             }
         }
