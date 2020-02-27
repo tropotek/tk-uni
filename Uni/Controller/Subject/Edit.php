@@ -2,6 +2,7 @@
 namespace Uni\Controller\Subject;
 
 
+use Tk\Ui\Dialog\AjaxSelect;
 use Uni\Db\Permission;
 
 /**
@@ -81,7 +82,7 @@ class Edit extends \Uni\Controller\AdminEditIface
                 'active' => 1,
                 'type' => \Uni\Db\User::TYPE_STUDENT
             ));
-            $this->userTable->setOnSelect(function (\Uni\Table\UserList $dialog) {
+            $this->userTable->setOnSelect(function (AjaxSelect $dialog) {
                 /** @var \Uni\Db\User $user */
                 $config = $dialog->getConfig();
                 $data = $config->getRequest()->all();

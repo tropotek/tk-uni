@@ -34,8 +34,22 @@ class Profile extends \Bs\Controller\User\Profile
             $this->getForm()->getField('uid')->setAttr('disabled')->addCss('form-control disabled')->removeCss('tk-input-lock');
         if ($this->getForm()->getField('email'))
             $this->getForm()->getField('email')->setAttr('disabled')->addCss('form-control disabled')->removeCss('tk-input-lock');
-        if ($this->getForm()->getField('permission'))
+
+        if ($this->getForm()->getField('permission')) {
             $this->getForm()->removeField('permission');
+
+            $tab = 'Permissions';
+            $list = $this->getConfig()->getPermissionList($this->getUser()->getType());
+            if (count($list)) {
+                $this->getForm()->appendField(\Tk\Form\Field\CheckboxGroup::createSelect('permission_ro', $list))
+                    ->setLabel('Permission List')->setTabGroup($tab)
+                    ->setValue(array_values($list))->setReadonly()->setDisabled();
+            }
+            if ($this->getUser()->getId()) {
+                $this->getForm()->load(array('permission_ro' => $this->getUser()->getPermissions()));
+            }
+        }
+
         $this->getForm()->removeField('selCourse');
         $this->getForm()->removeField('selSubject');
 

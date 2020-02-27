@@ -12,6 +12,7 @@ use Tk\Table\Cell\Checkbox;
 use Tk\Table\Cell\Date;
 use Tk\Table\Cell\Email;
 use Tk\Table\Cell\Text;
+use Uni\Db\Permission;
 use Uni\TableIface;
 
 /**
@@ -69,7 +70,9 @@ class Subject extends TableIface
 
         // Actions
         $this->appendAction(\Tk\Table\Action\ColumnSelect::create()->setUnselected(array('notify', 'publish', 'active', 'created')));
-        $this->appendAction(Delete::create());
+        if ($this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT))
+            $this->appendAction(Delete::create());
+
         $this->appendAction(Csv::create());
 
         return $this;
