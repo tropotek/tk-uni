@@ -84,7 +84,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
 
         if ($this->getTargetType() == User::TYPE_STAFF) {
-            $this->getTable()->appendCell(new \Tk\Table\Cell\Text('role'), 'type')
+            $this->getTable()->appendCell(new \Tk\Table\Cell\Text('role'), 'uid')
                 ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
                     /** @var $obj \Uni\Db\User */
                     $value = '';

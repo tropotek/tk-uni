@@ -40,23 +40,6 @@ class User extends \Bs\Table\User
         if (!$this->getAuthUser()->isAdmin() && !$this->getAuthUser()->isClient())
             $this->removeAction('delete');
 
-        if ($this->getAuthUser()->hasType(\Uni\Db\User::TYPE_STAFF, \Uni\Db\User::TYPE_CLIENT)) {
-            $this->appendCell(new \Tk\Table\Cell\Text('role'), 'type')->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
-                /** @var $obj \Uni\Db\User */
-                $value = '';
-                if ($obj->isCoordinator()) {
-                    $value .= 'Coordinator, ';
-                }
-                if ($obj->isMentor()) {
-                    $value .= 'Mentor, ';
-                }
-                if (!$value) {
-                    $value = 'Staff';
-                }
-                return trim($value, ', ');
-            });
-        }
-
         $this->findSubjectDialog = new \Tk\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
         //$params = array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId());
         $params = array('institutionId'=> $this->getConfig()->getInstitutionId(), 'subjectId' => $this->getConfig()->getSubject()->getId());
