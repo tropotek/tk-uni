@@ -2,6 +2,8 @@
 namespace Uni\Controller\User;
 
 
+use Uni\Db\User;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -32,6 +34,14 @@ class Manager extends \Uni\Controller\AdminManagerIface
     }
 
     /**
+     * @return string
+     */
+    public function getTargetType(): string
+    {
+        return $this->targetType;
+    }
+
+    /**
      * @param \Tk\Request $request
      * @param string $targetType
      * @throws \Exception
@@ -48,7 +58,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
      */
     public function doDefault(\Tk\Request $request)
     {
-        switch($this->targetType) {
+        switch($this->getTargetType()) {
             case \Uni\Db\User::TYPE_ADMIN:
                 $this->setPageTitle('Admin Users');
                 break;
@@ -61,9 +71,9 @@ class Manager extends \Uni\Controller\AdminManagerIface
         }
 
         if (!$this->editUrl) {
-            $this->editUrl = \Uni\Uri::createHomeUrl('/'.$this->targetType.'UserEdit.html');
+            $this->editUrl = \Uni\Uri::createHomeUrl('/'.$this->getTargetType().'UserEdit.html');
             if ($this->getConfig()->isSubjectUrl()) {
-                $this->editUrl = \Uni\Uri::createSubjectUrl('/'.$this->targetType.'UserEdit.html');
+                $this->editUrl = \Uni\Uri::createSubjectUrl('/'.$this->getTargetType().'UserEdit.html');
             }
         }
 
@@ -73,6 +83,24 @@ class Manager extends \Uni\Controller\AdminManagerIface
         $this->getTable()->init();
 
 
+        if ($this->getTargetType() == User::TYPE_STAFF) {
+            $this->getTable()->appendCell(new \Tk\Table\Cell\Text('role'), 'type')
+                ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
+                    /** @var $obj \Uni\Db\User */
+                    $value = '';
+                    if ($obj->isCoordinator()) {
+                        $value .= 'Coordinator, ';
+                    }
+                    if ($obj->isMentor()) {
+                        $value .= 'Mentor, ';
+                    }
+                    if (!$value) {
+                        $value = 'Staff';
+                    }
+                    return trim($value, ', ');
+                });
+        }
+
         $filter = array();
         if ($this->getAuthUser()->getInstitutionId()) {
             $filter['institutionId'] = $this->getAuthUser()->getInstitutionId();
@@ -80,7 +108,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
             $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         }
         if (empty($filter['type'])) {
-            $filter['type'] = $this->targetType;
+            $filter['type'] = $this->getTargetType();
         }
         if (($this->getConfig()->isSubjectUrl() || $request->has('subjectId')) && $this->getConfig()->getSubjectId()) {
             $filter['subjectId'] = $this->getConfig()->getSubjectId();
@@ -97,7 +125,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
     {
         //if (!$this->getConfig()->getSession()->get('auth.password.access')) {
         if ($this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::IS_COORDINATOR) || $this->getConfig()->getAuthUser()->isClient() || $this->getConfig()->getAuthUser()->isAdmin()) {
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Create ' . ucfirst($this->targetType), $this->getTable()->getEditUrl(), 'fa fa-user-plus'));
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Create ' . ucfirst($this->getTargetType()), $this->getTable()->getEditUrl(), 'fa fa-user-plus'));
         }
     }
 

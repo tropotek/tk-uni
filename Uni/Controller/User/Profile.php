@@ -37,7 +37,7 @@ class Profile extends \Bs\Controller\User\Profile
 
         if ($this->getForm()->getField('permission')) {
             $this->getForm()->removeField('permission');
-
+vd();
             $tab = 'Permissions';
             $list = $this->getConfig()->getPermissionList($this->getUser()->getType());
             if (count($list)) {
@@ -53,6 +53,7 @@ class Profile extends \Bs\Controller\User\Profile
         $this->getForm()->removeField('selCourse');
         $this->getForm()->removeField('selSubject');
 
+        $this->initForm($request);
         $this->getForm()->execute();
     }
 
