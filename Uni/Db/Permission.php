@@ -47,11 +47,11 @@ class Permission extends \Bs\Db\Permission
      */
     const IS_COORDINATOR        = 'perm.is.coordinator';
 
-//    /**
-//     * Lecturer: Manage student submissions/communications for linked subjects
-//     * @target staff
-//     */
-//    const IS_LECTURER           = 'perm.is.lecturer';
+    /**
+     * Lecturer: Manage student submissions/communications for linked subjects
+     * @target staff
+     */
+    const IS_LECTURER           = 'perm.is.lecturer';
 
     /**
      * Staff member is a mentor to students
@@ -75,7 +75,7 @@ class Permission extends \Bs\Db\Permission
             'Add/Edit Student Records' => self::MANAGE_STUDENT,
             'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
             'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
-            //'Staff Member is a Lecturer' => self::IS_LECTURER,
+            'Staff Member is a Lecturer' => self::IS_LECTURER,
             'Staff Member is a Student Mentor' => self::IS_MENTOR,
 
             'Manage Site Plugins' => self::MANAGE_PLUGINS,
@@ -100,7 +100,7 @@ class Permission extends \Bs\Db\Permission
                     'Add/Edit Student Records' => self::MANAGE_STUDENT,
                     'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
                     'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
-                    //'Staff Member is a Lecturer' => self::IS_LECTURER,
+                    'Staff Member is a Lecturer' => self::IS_LECTURER,
                     'Staff Member is a Student Mentor' => self::IS_MENTOR,
 
                     'Manage Site Plugins' => self::MANAGE_PLUGINS,
@@ -114,4 +114,23 @@ class Permission extends \Bs\Db\Permission
         return $arr;
     }
 
+    /**
+     * Return the default permission set for creating new user types.
+     *
+     * @param string $type
+     * @return array
+     */
+    public static function getDefaultPermissionList($type = '')
+    {
+        $list = self::getPermissionList($type);
+        if ($type = User::TYPE_STAFF) {
+            $list = array(
+                'Add/Edit Student Records' => self::MANAGE_STUDENT,
+                'Staff Member is a Lecturer' => self::IS_LECTURER,
+                'Manage Site Plugins' => self::MANAGE_PLUGINS,
+                'Can Masquerade' => self::CAN_MASQUERADE
+            );
+        }
+        return $list;
+    }
 }

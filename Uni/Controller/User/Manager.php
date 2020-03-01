@@ -100,7 +100,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
                     return trim($value, ', ');
                 });
         }
-        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'type')
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
             ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
                 /** @var $obj \Uni\Db\User */
                 $value = '';

@@ -155,7 +155,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                 $user = $config->createUser();
                 $config->getUserMapper()->mapForm($userData, $user);
                 $user->save();
-                $user->addPermission(\Uni\Db\Permission::getPermissionList($user->getType()));
+                $user->addPermission(\Uni\Db\Permission::getDefaultPermissionList($user->getType()));
                 $adapter->set('user', $user);
             }
             if ($user) {
