@@ -2,6 +2,7 @@
 namespace Uni\Db;
 
 use Bs\Db\Traits\ForeignKeyTrait;
+use Bs\Db\Traits\ForeignModelTrait;
 use Exception;
 use Tk\Db\Map\Model;
 use Tk\Db\ModelInterface;
@@ -29,7 +30,7 @@ class Status extends Model
     use UserTrait;
     use CourseTrait;
     use SubjectTrait;
-    use ForeignKeyTrait;
+    use ForeignModelTrait;
     use CreatedTrait;
 
     // Status type templates (use these in your own objects)

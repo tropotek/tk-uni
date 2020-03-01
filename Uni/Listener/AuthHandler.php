@@ -89,13 +89,6 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                                } catch (\Exception $e) {
 //                                    \Tk\Log::info($e->__toString());
 //                                }
-//                            } else {
-//                                $user->save();
-//                                $user->addPermission(\uni\Db\Permission::getPermissionList($user->getType(), false));
-//
-//                                // Save the last ldap data for reference
-//                                $user->getData()->set('ldap.data', json_encode($ldapData, \JSON_PRETTY_PRINT));
-//                                $user->getData()->save();
 //                            }
 //                        } else {
 //                            $msg = sprintf('Staff members can contact the site administrator to request access');
@@ -110,10 +103,15 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                             $user->setUid($ldapData[0]['auedupersonid'][0]);
                         if (!$user->getName() && !empty($ldapData[0]['displayname'][0]))
                             $user->setName($ldapData[0]['displayname'][0]);
-                        // TODO: update this to if !$user->email later once all emails are changed over
                         if ($email)
                             $user->setEmail($email);
+
+                        // TODO: should we bother doing this, is a small security risk???
                         $user->setNewPassword($adapter->get('password'));
+
+                        if (!empty($ldapData[0]['auedupersonlibrarybarcodenumber'][0])) {
+                            $user->getData()->set('barcode', $ldapData[0]['auedupersonlibrarybarcodenumber'][0]);
+                        }
                         $user->save();
 
                         if (method_exists($user, 'getData')) {

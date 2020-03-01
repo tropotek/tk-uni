@@ -100,6 +100,15 @@ class Manager extends \Uni\Controller\AdminManagerIface
                     return trim($value, ', ');
                 });
         }
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'type')
+            ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
+                /** @var $obj \Uni\Db\User */
+                $value = '';
+                if ($obj->getData()->has('barcode')) {
+                    $value .= $obj->getData()->get('barcode');
+                }
+                return $value;
+            });
 
         $filter = array();
         if ($this->getAuthUser()->getInstitutionId()) {

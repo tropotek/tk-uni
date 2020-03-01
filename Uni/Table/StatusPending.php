@@ -38,7 +38,7 @@ class StatusPending extends \App\TableIface
     {
         $this->addCss('status-table');
 
-        $this->appendCell(new \Tk\Table\Cell\Text('id'))->setLabel('ID')->setOnCellHtml(function ($cell, $obj, $html) {
+        $this->appendCell(new \Tk\Table\Cell\Text('id'))->setLabel('ID')->addOnCellHtml(function ($cell, $obj, $html) {
             /** @var \Tk\Table\Cell\Iface $cell */
             /** @var \Uni\Db\Status $obj */
             $strat = $obj->getModelStrategy();
@@ -49,7 +49,7 @@ class StatusPending extends \App\TableIface
             return '';
         });
 
-        $this->appendCell(new \Tk\Table\Cell\Text('name'))->setOnCellHtml(function ($cell, $obj, $html) {
+        $this->appendCell(new \Tk\Table\Cell\Text('name'))->addOnCellHtml(function ($cell, $obj, $html) {
             /** @var \Tk\Table\Cell\Iface $cell */
             /** @var \Uni\Db\Status $obj */
             $strat = $obj->getModelStrategy();
@@ -63,7 +63,7 @@ class StatusPending extends \App\TableIface
         // Actions
         $this->appendCell($this->getActionCell());
 
-        $this->appendCell(\Tk\Table\Cell\Date::createDate('created'))->setOnCellHtml(function ($cell, $obj, $html) {
+        $this->appendCell(\Tk\Table\Cell\Date::createDate('created'))->addOnCellHtml(function ($cell, $obj, $html) {
             /** @var \Tk\Table\Cell\Iface $cell */
             /** @var \Uni\Db\Status $obj */
             $cell->removeAttr('title');
