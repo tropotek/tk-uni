@@ -203,7 +203,7 @@ class UserMap extends \Bs\Db\UserMap
      * @return array
      * @throws \Exception
      */
-    public function findMentees($mentorId)
+    public function findByMentorId($mentorId)
     {
         $stm = $this->getDb()->prepare('SELECT user_id FROM user_mentor WHERE mentor_id = ?');
         $stm->execute(array($mentorId));
@@ -216,7 +216,7 @@ class UserMap extends \Bs\Db\UserMap
      * @return boolean
      * @throws \Exception
      */
-    public function hasMentee($mentorId, $userId)
+    public function hasMentor($mentorId, $userId)
     {
         $stm = $this->getDb()->prepare('SELECT * FROM user_mentor WHERE mentor_id = ? AND user_id = ?');
         $stm->execute(array($mentorId, $userId));
@@ -228,9 +228,9 @@ class UserMap extends \Bs\Db\UserMap
      * @param int $userId
      * @throws \Exception
      */
-    public function addMentee($mentorId, $userId)
+    public function addMentor($mentorId, $userId)
     {
-        if ($this->hasMentee($mentorId, $userId)) return;
+        if ($this->hasMentor($mentorId, $userId)) return;
         $stm = $this->getDb()->prepare('INSERT INTO user_mentor (mentor_id, user_id)  VALUES (?, ?)');
         $stm->execute(array($mentorId, $userId));
     }
@@ -245,7 +245,7 @@ class UserMap extends \Bs\Db\UserMap
      * @param int $userId
      * @throws \Exception
      */
-    public function removeMentee($mentorId = null, $userId = null)
+    public function removeMentor($mentorId = null, $userId = null)
     {
         if ($mentorId && $userId) {
             $stm = $this->getDb()->prepare('DELETE FROM user_mentor WHERE mentor_id = ? AND user_id = ?');
