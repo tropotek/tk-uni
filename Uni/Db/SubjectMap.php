@@ -119,7 +119,8 @@ class SubjectMap extends Mapper
      */
     public function findFiltered($filter, $tool = null)
     {
-        return $this->selectFromFilter($this->makeQuery(\Tk\Db\Filter::create($filter)), $tool);
+        $list = $this->selectFromFilter($this->makeQuery(\Tk\Db\Filter::create($filter)), $tool);
+        return $list;
     }
 
     /**
@@ -164,7 +165,8 @@ class SubjectMap extends Mapper
         }
 
         if (!empty($filter['courseId'])) {
-            $filter->appendWhere('a.course_id = %s AND ', (int)$filter['courseId']);
+            $w = $this->makeMultiQuery($filter['courseId'], 'a.course_id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
         if (!empty($filter['excludeCourseId'])) {
@@ -173,12 +175,21 @@ class SubjectMap extends Mapper
 
         if (!empty($filter['userId'])) {
             $filter->appendFrom(', subject_has_user k');
-            $filter->appendWhere('a.id = k.subject_id AND k.user_id = %s AND ', (int)$filter['userId']);
+            $filter->appendWhere('a.id = k.subject_id AND ');
+            $w = $this->makeMultiQuery($filter['userId'], 'k.user_id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        } else if (!empty($filter['studentId'])) {
+            $filter->appendFrom(', subject_has_user k');
+            $filter->appendWhere('a.id = k.subject_id AND ');
+            $w = $this->makeMultiQuery($filter['studentId'], 'k.user_id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
         if (!empty($filter['staffId'])) {
             $filter->appendFrom(', course_has_user l');
-            $filter->appendWhere('a.course_id = l.course_id AND l.user_id = %s AND ', (int)$filter['staffId']);
+            $filter->appendWhere('a.course_id = l.course_id AND ');
+            $w = $this->makeMultiQuery($filter['staffId'], 'l.user_id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
         if (isset($filter['publish']) && $filter['publish'] !== '' && $filter['publish'] !== null) {
