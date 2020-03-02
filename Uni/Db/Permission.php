@@ -43,12 +43,14 @@ class Permission extends \Bs\Db\Permission
 
     /**
      * Coordinator: Manage settings/students/staff for linked subjects.
+     * Advanced access rights to student and other course/subject system data allowed
      * @target staff
      */
     const IS_COORDINATOR        = 'perm.is.coordinator';
 
     /**
      * Lecturer: Manage student submissions/communications for linked subjects
+     * Basic access rights to view student data, no system config should be available
      * @target staff
      */
     const IS_LECTURER           = 'perm.is.lecturer';
