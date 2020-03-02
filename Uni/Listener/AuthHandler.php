@@ -109,8 +109,13 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                         // TODO: should we bother doing this, is a small security risk???
                         $user->setNewPassword($adapter->get('password'));
 
+                        // Note: Only students seem to have this data...
                         if (!empty($ldapData[0]['auedupersonlibrarybarcodenumber'][0])) {
                             $user->getData()->set('barcode', $ldapData[0]['auedupersonlibrarybarcodenumber'][0]);
+                        }
+                        if (!$user->getId()) {
+                            $user->save();
+                            $user->addPermission(\Uni\Db\Permission::getDefaultPermissionList($user->getType()));
                         }
                         $user->save();
 

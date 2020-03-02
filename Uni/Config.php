@@ -3,6 +3,7 @@ namespace Uni;
 
 use Uni\Db\Course;
 use Uni\Db\Permission;
+use Uni\Db\User;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -235,6 +236,22 @@ class Config extends \Bs\Config
             }
         }
         return $this;
+    }
+
+    /**
+     * @return \Tk\Crumbs
+     */
+    public function getCrumbs()
+    {
+        $crumbs = parent::getCrumbs();
+        if ($this->isLti()) {
+            $list = $crumbs->getList();
+            if (isset($list[$crumbs->getHomeTitle()])) {
+                unset($list[$crumbs->getHomeTitle()]);
+                $crumbs->setList($list);
+            }
+        }
+        return $this->get('crumbs');
     }
 
     /**
@@ -555,48 +572,17 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @param string $homeTitle
-     * @param string $homeUrl
-     * @return \Tk\Crumbs
-     */
-    public function getCrumbs($homeTitle = null, $homeUrl = null)
-    {
-        // TODO: should this be in the LTI plugin?
-        $crumbs = parent::getCrumbs($homeTitle, $homeUrl);
-        if ($this->isLti()) {
-            $list = $crumbs->getList();
-            if (isset($list['Dashboard'])) {
-                unset($list['Dashboard']);
-                $crumbs->setList($list);
-            }
-        }
-//        if (!$this->get('crumbs')) {
-////            if ($homeTitle)
-////                \Tk\Crumbs::$homeTitle = $homeTitle;
-////            if ($homeUrl)
-////                \Tk\Crumbs::$homeUrl = $homeUrl;
-////            $obj = \Tk\Crumbs::getInstance();
-////            $this->set('crumbs', $obj);
-//            $crumbs = parent::getCrumbs($homeTitle, $homeUrl);
-//            if ($this->isLti()) {
-//                $list = $crumbs->getList();
-//                if (isset($list['Dashboard'])) {
-//                    unset($list['Dashboard']);
-//                    $crumbs->setList($list);
-//                }
-//            }
-//        }
-        return $this->get('crumbs');
-    }
-
-    /**
      * Is this request within an LTI session
      *
      * @return bool
      */
     public function isLti()
     {
-        return $this->getSession()->get('isLti', false);
+        if ($this->getAuthUser() && $this->getAuthUser()->hasType(User::TYPE_STAFF, User::TYPE_STUDENT)) {
+            return $this->getSession()->get('isLti', false);
+        }
+        $this->getSession()->remove('isLti');
+        return false;
     }
 
     /**

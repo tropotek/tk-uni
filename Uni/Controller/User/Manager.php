@@ -31,6 +31,10 @@ class Manager extends \Uni\Controller\AdminManagerIface
     public function __construct()
     {
         $this->setPageTitle('User Manager');
+
+        if ($this->getAuthUser()->isClient()) {
+            $this->getConfig()->resetCrumbs();
+        }
     }
 
     /**
@@ -99,16 +103,17 @@ class Manager extends \Uni\Controller\AdminManagerIface
                     }
                     return trim($value, ', ');
                 });
+        } else {
+            $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
+                ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
+                    /** @var $obj \Uni\Db\User */
+                    $value = '';
+                    if ($obj->getData()->has('barcode')) {
+                        $value .= $obj->getData()->get('barcode');
+                    }
+                    return $value;
+                });
         }
-        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
-            ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
-                /** @var $obj \Uni\Db\User */
-                $value = '';
-                if ($obj->getData()->has('barcode')) {
-                    $value .= $obj->getData()->get('barcode');
-                }
-                return $value;
-            });
 
         $filter = array();
         if ($this->getAuthUser()->getInstitutionId()) {

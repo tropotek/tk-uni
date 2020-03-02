@@ -36,7 +36,6 @@ $config['user.type.list'] = array(
     'Student' => 'student'
 );
 
-
 /*
  * Template folders for pages
  */
