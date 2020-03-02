@@ -17,16 +17,11 @@ class Permission extends \Bs\Db\Permission
     const MANAGE_STAFF          = 'perm.manage.staff';
 
     /**
-     * Add/Edit Student user accounts
-     * @target staff
-     */
-    const MANAGE_STUDENT        = 'perm.manage.student';
-
-    /**
      * Add/Edit subject and student enrollments
      * @target staff
      */
     const MANAGE_SUBJECT        = 'perm.manage.subject';
+
 
     /**
      * Manage plugins
@@ -72,39 +67,11 @@ class Permission extends \Bs\Db\Permission
      */
     public static function getPermissionList($type = '')
     {
-        $arr = array(
-            'Add/Edit Staff Records' => self::MANAGE_STAFF,
-            'Add/Edit Student Records' => self::MANAGE_STUDENT,
-            'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
-            'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
-            'Staff Member is a Lecturer' => self::IS_LECTURER,
-            'Staff Member is a Student Mentor' => self::IS_MENTOR,
-
-            'Manage Site Plugins' => self::MANAGE_PLUGINS,
-            'Can Masquerade' => self::CAN_MASQUERADE
-        );
+        $arr = array();
         switch ($type) {
             case User::TYPE_ADMIN;
-                $arr = array(
-                    'Manage Site Plugins' => self::MANAGE_PLUGINS,
-                    'Can Masquerade' => self::CAN_MASQUERADE
-                );
-                break;
             case User::TYPE_CLIENT:
                 $arr = array(
-                    'Manage Site Plugins' => self::MANAGE_PLUGINS,
-                    'Can Masquerade' => self::CAN_MASQUERADE
-                );
-                break;
-            case User::TYPE_STAFF:
-                $arr = array(
-                    'Add/Edit Staff Records' => self::MANAGE_STAFF,
-                    'Add/Edit Student Records' => self::MANAGE_STUDENT,
-                    'Add/Edit Course And Subject Settings' => self::MANAGE_SUBJECT,
-                    'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
-                    'Staff Member is a Lecturer' => self::IS_LECTURER,
-                    'Staff Member is a Student Mentor' => self::IS_MENTOR,
-
                     'Manage Site Plugins' => self::MANAGE_PLUGINS,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
@@ -112,6 +79,17 @@ class Permission extends \Bs\Db\Permission
             case User::TYPE_STUDENT:
                 $arr = array();
                 break;
+            default:          // TYPE_STAFF
+                $arr = array(
+                    'Manage Staff Records' => self::MANAGE_STAFF,
+                    'Course, Subject And Enrollment Settings' => self::MANAGE_SUBJECT,
+                    'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
+                    'Staff Member is a Lecturer' => self::IS_LECTURER,
+                    'Staff Member is a Student Mentor' => self::IS_MENTOR,
+
+                    'Manage Site Plugins' => self::MANAGE_PLUGINS,
+                    'Can Masquerade' => self::CAN_MASQUERADE
+                );
         }
         return $arr;
     }
@@ -127,7 +105,6 @@ class Permission extends \Bs\Db\Permission
         $list = self::getPermissionList($type);
         if ($type = User::TYPE_STAFF) {
             $list = array(
-                'Add/Edit Student Records' => self::MANAGE_STUDENT,
                 'Staff Member is a Lecturer' => self::IS_LECTURER,
                 'Manage Site Plugins' => self::MANAGE_PLUGINS,
                 'Can Masquerade' => self::CAN_MASQUERADE

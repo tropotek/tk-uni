@@ -95,13 +95,13 @@ class User extends \Bs\Db\User implements UserIface
         return $this->hasPermission(Permission::IS_COORDINATOR);
     }
 
-//    /**
-//     * @return boolean
-//     */
-//    public function isLecturer()
-//    {
-//        return $this->hasPermission(Permission::IS_LECTURER);
-//    }
+    /**
+     * @return boolean
+     */
+    public function isLecturer()
+    {
+        return $this->hasPermission(Permission::IS_LECTURER);
+    }
 
     /**
      * @return boolean

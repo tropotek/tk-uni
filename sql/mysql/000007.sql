@@ -1,5 +1,5 @@
 -- ---------------------------------
--- Update SQL
+-- Update SQL v3.4.0
 --
 -- Author: Michael Mifsud <info@tropotek.com>
 -- ---------------------------------
@@ -75,8 +75,13 @@ alter table user drop column name;
 -- RENAME TABLE session TO _session;
 
 
+-- MENTOR SETUP
 
-
+CREATE TABLE IF NOT EXISTS `user_mentor` (
+  `user_id` int(10) unsigned NOT NULL,
+  `mentor_id` int(10) unsigned NOT NULL,            -- staff user.id
+  PRIMARY KEY `user_mentor` (`user_id`, `mentor_id`)
+) ENGINE=InnoDB;
 
 
 

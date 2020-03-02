@@ -70,9 +70,10 @@ class Edit extends \Uni\Controller\AdminEditIface
         }
 
         if ($this->getAuthUser()->isClient() || $this->getAuthUser()->isStaff()) {
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
-                \Uni\Uri::createHomeUrl('/institution/'.$this->getInstitution()->getId().'/plugins.html'), 'fa fa-plug'));
-
+            if ($this->getAuthUser()->hasPermission(Permission::MANAGE_PLUGINS) || $this->getAuthUser()->isClient()) {
+                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
+                    \Uni\Uri::createHomeUrl('/institution/' . $this->getInstitution()->getId() . '/plugins.html'), 'fa fa-plug'));
+            }
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Staff',
                 \Uni\Uri::createHomeUrl('/staffUserManager.html'), 'fa fa-users'));
 

@@ -122,10 +122,10 @@ class Edit extends \Uni\Controller\AdminEditIface
             if ($this->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
                     \Uni\Uri::createHomeUrl('/subject/' . $this->subject->getId() . '/plugins.html')->set('subjectId', $this->subject->getId()), 'fa fa-plug'));
-            }
-            if($this->getConfig()->isSubjectUrl() && $this->getAuthUser()->hasPermission(Permission::MANAGE_STUDENT)) {
-                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
-                    \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
+                if($this->getConfig()->isSubjectUrl()) {
+                    $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
+                        \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
+                }
             }
         }
     }

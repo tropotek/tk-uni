@@ -192,6 +192,13 @@ class SubjectMap extends Mapper
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
+        if (!empty($filter['mentorId'])) {
+            $filter->appendFrom(', subject_has_user m, user_mentor n');
+            $filter->appendWhere('a.id = m.subjectId AND m.user_id = n.user_id AND ');
+            $w = $this->makeMultiQuery($filter['mentorId'], 'o.mentor_id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        }
+
         if (isset($filter['publish']) && $filter['publish'] !== '' && $filter['publish'] !== null) {
             $filter->appendWhere('a.publish = %s AND ', (int)$filter['publish']);
         }

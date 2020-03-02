@@ -194,4 +194,68 @@ class UserMap extends \Bs\Db\UserMap
         return $filter;
     }
 
+
+
+    // Mentor functions
+
+    /**
+     * @param int $mentorId
+     * @return array
+     * @throws \Exception
+     */
+    public function findMentees($mentorId)
+    {
+        $stm = $this->getDb()->prepare('SELECT user_id FROM user_mentor WHERE mentor_id = ?');
+        $stm->execute(array($mentorId));
+        return $stm->fetchAll(\PDO::FETCH_COLUMN, 0);
+    }
+
+    /**
+     * @param int $mentorId
+     * @param int $userId
+     * @return boolean
+     * @throws \Exception
+     */
+    public function hasMentee($mentorId, $userId)
+    {
+        $stm = $this->getDb()->prepare('SELECT * FROM user_mentor WHERE mentor_id = ? AND user_id = ?');
+        $stm->execute(array($mentorId, $userId));
+        return ($stm->rowCount() > 0);
+    }
+
+    /**
+     * @param int $mentorId
+     * @param int $userId
+     * @throws \Exception
+     */
+    public function addMentee($mentorId, $userId)
+    {
+        if ($this->hasMentee($mentorId, $userId)) return;
+        $stm = $this->getDb()->prepare('INSERT INTO user_mentor (mentor_id, user_id)  VALUES (?, ?)');
+        $stm->execute(array($mentorId, $userId));
+    }
+
+    /**
+     * depending on the combination of parameters:
+     *  o remove a user from a mentor
+     *  o remove all users from a mentor
+     *  o remove all mentors from a user
+     *
+     * @param int $mentorId
+     * @param int $userId
+     * @throws \Exception
+     */
+    public function removeMentee($mentorId = null, $userId = null)
+    {
+        if ($mentorId && $userId) {
+            $stm = $this->getDb()->prepare('DELETE FROM user_mentor WHERE mentor_id = ? AND user_id = ?');
+            $stm->execute(array($mentorId, $userId));
+        } else if(!$mentorId && $userId) {
+            $stm = $this->getDb()->prepare('DELETE FROM user_mentor WHERE user_id = ?');
+            $stm->execute(array($userId));
+        } else if ($mentorId && !$userId) {
+            $stm = $this->getDb()->prepare('DELETE FROM user_mentor WHERE mentor_id = ?');
+            $stm->execute(array($mentorId));
+        }
+    }
 }

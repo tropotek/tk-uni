@@ -102,7 +102,7 @@ class UserList extends User
         $this->removeAction('delete');
         $this->removeAction('csv');
 
-        if ($this->getAuthUser()->hasPermission(Permission::MANAGE_STUDENT)) {
+        if ($this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT)) {
             if ($this->getUserType() == \Uni\Db\User::TYPE_STAFF) {
                 $this->appendAction(\Tk\Table\Action\Delete::create()->setLabel('Remove')
                     ->setConfirmStr('Are you sure you want to remove the user`s access from this course.')

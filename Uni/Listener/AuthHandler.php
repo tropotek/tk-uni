@@ -193,7 +193,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                             $course->setName($subjectData['name']);
                             $course->setEmail($subjectData['email']);
                             $course->setCode($subjectData['courseCode']);
-                            if ($user->hasPermission(Permission::IS_COORDINATOR))
+                            if ($user->isCoordinator())
                                 $course->setCoordinatorId($user->getId());
                             $course->save();
                             $subjectData['isNewCourse'] = true;
