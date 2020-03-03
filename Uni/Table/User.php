@@ -35,10 +35,14 @@ class User extends \Bs\Table\User
     public function init()
     {
         parent::init();
-
-        if (!$this->getConfig()->getSubject()) return $this;
         if (!$this->getAuthUser()->isAdmin() && !$this->getAuthUser()->isClient())
             $this->removeAction('delete');
+
+
+
+
+        // For subject urls only
+        if (!$this->getConfig()->isSubjectUrl()) return $this;
 
         $this->findSubjectDialog = new \Tk\Ui\Dialog\AjaxSelect('Migrate Student', \Tk\Uri::create('/ajax/subject/findFiltered.html'));
         //$params = array('ignoreUser' => '1', 'subjectId' => $this->getConfig()->getSubject()->getId());
