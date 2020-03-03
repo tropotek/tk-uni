@@ -191,6 +191,13 @@ class UserMap extends \Bs\Db\UserMap
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
+        if (!empty($filter['mentorId'])) {
+            $filter->appendFrom(', user_mentor n');
+            $filter->appendWhere('a.id = n.user_id AND ');
+            $w = $this->makeMultiQuery($filter['mentorId'], 'n.mentor_id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        }
+
         return $filter;
     }
 
