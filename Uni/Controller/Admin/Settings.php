@@ -14,10 +14,9 @@ class Settings extends \Bs\Controller\Admin\Settings
 
     public function initActionPanel()
     {
-        if ($this->getAuthUser()->hasPermission(Permission::MANAGE_PLUGINS)) {
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
-                \Uni\Uri::createHomeUrl('/plugins.html'), 'fa fa-plug'));
-        }
+
+        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
+            \Uni\Uri::createHomeUrl('/plugins.html'), 'fa fa-plug'));
 
         $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Admin Users',
             \Uni\Uri::createHomeUrl('/adminUserManager.html'), 'fa fa-users'));
