@@ -98,6 +98,9 @@ class Manager extends \Uni\Controller\AdminManagerIface
                     if ($obj->isMentor()) {
                         $value .= 'Mentor, ';
                     }
+                    if ($obj->isLecturer()) {
+                        $value .= 'Lecturer, ';
+                    }
                     if (!$value) {
                         $value = 'Staff';
                     }
