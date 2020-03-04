@@ -66,6 +66,10 @@ $routes->add('client-subject-manager', Route::create('/client/subjectManager.htm
 $routes->add('client-subject-edit', Route::create('/client/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('client-subject-enrollment', Route::create('/client/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
 
+// Mentor Pages
+$routes->add('mentor-student-list', new \Tk\Routing\Route('/staff/mentorList.html', 'Uni\Controller\Mentor\StudentList::doDefault'));
+$routes->add('mentor-student-import', new \Tk\Routing\Route('/staff/mentorImport.html', 'Uni\Controller\Mentor\Import::doDefault'));
+
 
 
 // Staff Pages

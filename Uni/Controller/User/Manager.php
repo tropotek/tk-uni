@@ -175,6 +175,9 @@ class Manager extends \Uni\Controller\AdminManagerIface
             $this->getConfig()->getAuthUser()->isClient() || $this->getConfig()->getAuthUser()->isAdmin()) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Create ' . ucfirst($this->getTargetType()), $this->getTable()->getEditUrl(), 'fa fa-user-plus'));
         }
+        if (!$this->getConfig()->isSubjectUrl() && ($this->getTargetType() == User::TYPE_STAFF && $this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_STAFF))) {
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Import Mentor List', \Uni\Uri::createHomeUrl('/mentorImport.html'), 'fa fa-users'));
+        }
     }
 
     /**
