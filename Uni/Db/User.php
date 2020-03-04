@@ -88,6 +88,15 @@ class User extends \Bs\Db\User implements UserIface
 
 
     /**
+     * return true if the user is a lecturer OR a coordinator
+     * @return boolean
+     */
+    public function isLearner()
+    {
+        return $this->hasPermission(array(Permission::IS_LECTURER, Permission::IS_COORDINATOR));
+    }
+
+    /**
      * @return boolean
      */
     public function isCoordinator()
