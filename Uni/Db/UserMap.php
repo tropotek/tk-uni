@@ -218,6 +218,18 @@ class UserMap extends \Bs\Db\UserMap
     }
 
     /**
+     * @param int $studentId
+     * @return array
+     * @throws \Exception
+     */
+    public function findMentor($studentId)
+    {
+        $stm = $this->getDb()->prepare('SELECT mentor_id FROM user_mentor WHERE user_id = ?');
+        $stm->execute(array($studentId));
+        return $stm->fetchAll(\PDO::FETCH_COLUMN, 0);
+    }
+
+    /**
      * @param int $mentorId
      * @param int $userId
      * @return boolean

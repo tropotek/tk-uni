@@ -174,11 +174,9 @@ class SubjectMap extends Mapper
         }
 
         if (!empty($filter['userId'])) {
-            $filter->appendFrom(', subject_has_user k');
-            $filter->appendWhere('a.id = k.subject_id AND ');
-            $w = $this->makeMultiQuery($filter['userId'], 'k.user_id');
-            if ($w) $filter->appendWhere('(%s) AND ', $w);
-        } else if (!empty($filter['studentId'])) {
+            $filter['studentId'] = $filter['userId'];
+        }
+        if (!empty($filter['studentId'])) {
             $filter->appendFrom(', subject_has_user k');
             $filter->appendWhere('a.id = k.subject_id AND ');
             $w = $this->makeMultiQuery($filter['studentId'], 'k.user_id');
