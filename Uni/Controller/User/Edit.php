@@ -86,6 +86,7 @@ class Edit extends \Uni\Controller\AdminEditIface
                 ->addCss('form-control disabled')->setTabGroup('Details');
         }
 
+
     }
 
     /**
@@ -101,10 +102,16 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function initActionPanel()
     {
-        if ($this->user->getId() && $this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getAuthUser(), $this->user)) {
-            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
-                \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->getHash()), 'fa fa-user-secret'))
-                ->setAttr('data-confirm', 'You are about to masquerade as the selected user?')->addCss('tk-masquerade');
+        if ($this->user->getId()) {
+            if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getAuthUser(), $this->user)) {
+                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
+                    \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->getHash()), 'fa fa-user-secret'))
+                    ->setAttr('data-confirm', 'You are about to masquerade as the selected user?')->addCss('tk-masquerade');
+            }
+            if ($this->user->isMentor()) {
+                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Mentee`s',
+                    \Uni\Uri::createHomeUrl('/mentorList.html')->set('userId', $this->user->getId()), 'fa fa-users'));
+            }
         }
     }
 
