@@ -2,6 +2,7 @@
 namespace Uni\Controller\User;
 
 
+use Uni\Db\Permission;
 use Uni\Db\User;
 
 /**
@@ -88,6 +89,14 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
 
         if ($this->getTargetType() == User::TYPE_STAFF) {
+
+            $list = array(
+                'Coordinator' => Permission::IS_COORDINATOR,
+                'Lecturer' => Permission::IS_LECTURER,
+                'Mentor' => Permission::IS_MENTOR
+            );
+            $this->getTable()->appendFilter(new \Tk\Form\Field\CheckboxSelect('permission', $list));
+
             $this->getTable()->appendCell(new \Tk\Table\Cell\Text('role'), 'uid')
                 ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
                     /** @var $obj \Uni\Db\User */
@@ -105,16 +114,34 @@ class Manager extends \Uni\Controller\AdminManagerIface
                     }
                     return trim($value, ', ');
                 });
+
+//        $actionsCell = $this->getTable()->getActionCell();
+//        $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade', \Tk\Uri::create(),
+//            'fa fa-user-secret', 'tk-masquerade'))->setAttr('data-confirm', 'You are about to masquerade as the selected user?')
+//            ->addOnShow(function ($cell, $obj, $button) {
+//                /* @var $obj \Bs\Db\User */
+//                /* @var $button \Tk\Table\Cell\ActionButton */
+//                $config = \Bs\Config::getInstance();
+//                if ($config->getMasqueradeHandler()->canMasqueradeAs($config->getAuthUser(), $obj)) {
+//                    $button->setUrl(\Tk\Uri::create()->set(\Bs\Listener\MasqueradeHandler::MSQ, $obj->getHash()));
+//                } else {
+//                    $button->setAttr('disabled', 'disabled')->addCss('disabled');
+//                }
+//            });
+
+
         } else {
-            $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
-                ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
-                    /** @var $obj \Uni\Db\User */
-                    $value = '';
-                    if ($obj->getData()->has('barcode')) {
-                        $value .= $obj->getData()->get('barcode');
-                    }
-                    return $value;
-                });
+            if ($this->getAuthUser()->isStaff()) {
+                $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
+                    ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
+                        /** @var $obj \Uni\Db\User */
+                        $value = '';
+                        if ($obj->getData()->has('barcode')) {
+                            $value .= $obj->getData()->get('barcode');
+                        }
+                        return $value;
+                    });
+            }
         }
 
         $filter = array();
@@ -127,7 +154,10 @@ class Manager extends \Uni\Controller\AdminManagerIface
             $filter['type'] = $this->getTargetType();
         }
         if (($this->getConfig()->isSubjectUrl() || $request->has('subjectId')) && $this->getConfig()->getSubjectId()) {
-            $filter['subjectId'] = $this->getConfig()->getSubjectId();
+            if ($this->getTargetType() == User::TYPE_STUDENT)
+                $filter['subjectId'] = $this->getConfig()->getSubjectId();
+            else if ($this->getTargetType() == User::TYPE_STAFF)
+                $filter['courseId'] = $this->getConfig()->getCourseId();
         }
         $this->getTable()->setList($this->getTable()->findList($filter));
 

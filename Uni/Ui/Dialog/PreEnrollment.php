@@ -225,7 +225,7 @@ uid,username,email
 123457,staff1,staff2@uni.edu.au
 </pre></p>
 
-  <p><small>NOTE: The uid and username are prefered for LDAP authentication and the email being required for LTI authentication.</small></p>
+  <p><small>NOTE: The uid and username are preffered for LDAP authentication and the email being required for LTI authentication.</small></p>
     
 </form>
 HTML;

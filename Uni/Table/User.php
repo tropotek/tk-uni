@@ -3,6 +3,8 @@ namespace Uni\Table;
 
 
 
+use Uni\Db\Permission;
+
 /**
  * @author Mick Mifsud
  * @created 2018-07-24
@@ -37,9 +39,6 @@ class User extends \Bs\Table\User
         parent::init();
         if (!$this->getAuthUser()->isAdmin() && !$this->getAuthUser()->isClient())
             $this->removeAction('delete');
-
-
-
 
         // For subject urls only
         if (!$this->getConfig()->isSubjectUrl()) return $this;
@@ -104,7 +103,7 @@ class User extends \Bs\Table\User
         });
         $eUrl = \Uni\Uri::createSubjectUrl('/')->toString();
         $html = <<<HTML
-<p><small><em>NOTE: To remove users, unenroll the user from the subject from the <a href="$eUrl">Enrollment Manager</a>.</em></small></p>
+<p><small><em>NOTE: To remove users, un-enroll the user from the subject from the <a href="$eUrl">Enrollment Manager</a>.</em></small></p>
 HTML;
         $this->getRenderer()->getTemplate()->prependHtml('table', $html);
 
