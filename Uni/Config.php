@@ -258,6 +258,7 @@ class Config extends \Bs\Config
      * This function returns true if the url is one that uses the {subjectCode}
      *
      * @return bool
+     * @todo: fix this as stoin this value within the config object is senseless as false is a valid value
      */
     public function isSubjectUrl()
     {
@@ -274,6 +275,14 @@ class Config extends \Bs\Config
         return $this->get('is.subject.url');
     }
 
+    /**
+     * @return boolean
+     */
+    public function isMentorUrl()
+    {
+        $url = \Tk\Uri::create();
+         return (bool)preg_match('|(staff/mentor)|', $url->getRelativePath());
+    }
 
     /**
      * A helper method to create an instance of an Auth adapter
