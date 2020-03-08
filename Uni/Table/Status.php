@@ -54,7 +54,7 @@ class Status extends \App\TableIface
 //
 //                return $value;
 //            });
-//            ->setOnCellHtml(function ($cell, $obj, $html) {
+//            ->addOnCellHtml(function ($cell, $obj, $html) {
 //                /** @var $cell \Tk\Table\Cell\Text */
 //                /** @var $obj \Uni\Db\Status */
 //                $value = $propValue = $cell->getPropertyValue($obj);
@@ -79,7 +79,7 @@ class Status extends \App\TableIface
 //                return $html;
 //            });
 
-        $this->appendCell(new Cell\Text('userId'))->setOnPropertyValue(function ($cell, $obj, $value) {
+        $this->appendCell(new Cell\Text('userId'))->addOnPropertyValue(function ($cell, $obj, $value) {
                 /** @var $obj \Uni\Db\Status */
                 $value = '';
                 if ($obj->getUser())
@@ -88,7 +88,7 @@ class Status extends \App\TableIface
             });
 
         $this->appendCell(new Cell\Text('message'))->addCss('key wrap-normal')
-            ->setOnCellHtml(function ($cell, $obj, $html) {
+            ->addOnCellHtml(function ($cell, $obj, $html) {
                 /** @var $cell \Tk\Table\Cell\Text */
                 /** @var $obj \Uni\Db\Status */
                 $cell->setAttr('title', 'Message');
