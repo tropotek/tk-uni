@@ -74,6 +74,12 @@ class User extends \Bs\Table\User
                     if (!$config->getSubjectMapper()->hasUser($event->get('subjectToId'), $user->getId())) {
                         $config->getSubjectMapper()->addUser($event->get('subjectToId'), $user->getId());
                     }
+                    /** @var \Uni\Db\Subject $subjectTo */
+                    $subjectTo = $config->getSubjectMapper()->find($event->get('subjectToId'));
+                    $sn = '';
+                    if ($subjectTo)
+                        $sn = ' To ' . $subjectTo->getName();
+                    \Tk\Alert::addSuccess($user->getName() . ' Successfully Migrated'.$sn);
                 }
             }
             return \Tk\Uri::create()->reset()->set('subjectId', $config->getSubject()->getId());
