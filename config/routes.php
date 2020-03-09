@@ -66,9 +66,14 @@ $routes->add('client-subject-manager', Route::create('/client/subjectManager.htm
 $routes->add('client-subject-edit', Route::create('/client/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('client-subject-enrollment', Route::create('/client/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
 
+
+$routes->add('client-student-list', new \Tk\Routing\Route('/client/mentorList.html', 'Uni\Controller\Mentor\StudentList::doDefault'));
+$routes->add('client-student-import', new \Tk\Routing\Route('/client/mentorImport.html', 'Uni\Controller\Mentor\Import::doDefault'));
+
 // Mentor Pages
-$routes->add('mentor-student-list', new \Tk\Routing\Route('/staff/mentorList.html', 'Uni\Controller\Mentor\StudentList::doDefault'));
-$routes->add('mentor-student-import', new \Tk\Routing\Route('/staff/mentorImport.html', 'Uni\Controller\Mentor\Import::doDefault'));
+//$routes->add('mentor-dashboard', new \Tk\Routing\Route('/staff/mentor/index.html', 'App\Controller\Mentor\Dashboard::doDefault'));
+//$routes->add('mentor-dashboard-base', new \Tk\Routing\Route('/staff/mentor/', 'App\Controller\Mentor\Dashboard::doDefault'));
+//$routes->add('mentor-student-view', new \Tk\Routing\Route('/staff/mentor/studentView.html', 'App\Controller\Mentor\StudentView::doDefault'));
 
 
 
@@ -87,6 +92,9 @@ $routes->add('staff-institution-edit', Route::create('/staff/settings.html', 'Un
 
 $routes->add('staff-user-manager', Route::create('/staff/{targetType}UserManager.html', 'Uni\Controller\User\Manager::doDefaultType'));
 $routes->add('staff-user-edit', Route::create('/staff/{targetType}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultType'));
+
+$routes->add('staff-student-list', new \Tk\Routing\Route('/staff/mentorList.html', 'Uni\Controller\Mentor\StudentList::doDefault'));
+$routes->add('staff-student-import', new \Tk\Routing\Route('/staff/mentorImport.html', 'Uni\Controller\Mentor\Import::doDefault'));
 
 $routes->add('staff-user-profile', Route::create('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault'));
 $routes->add('staff-subject-user-profile', Route::create('/staff/{subjectCode}/profile.html', 'Uni\Controller\User\Profile::doDefault'));
