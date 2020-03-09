@@ -2,6 +2,8 @@
 namespace Uni\Controller\User;
 
 
+use Uni\Db\User;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -86,7 +88,6 @@ class Edit extends \Uni\Controller\AdminEditIface
                 ->addCss('form-control disabled')->setTabGroup('Details');
         }
 
-
     }
 
     /**
@@ -108,7 +109,8 @@ class Edit extends \Uni\Controller\AdminEditIface
                     \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->getHash()), 'fa fa-user-secret'))
                     ->setAttr('data-confirm', 'You are about to masquerade as the selected user?')->addCss('tk-masquerade');
             }
-            if ($this->user->isMentor() && $this->getAuthUser()->isStaff()) {
+
+            if ($this->user->isMentor() && $this->getAuthUser()->hasType(User::TYPE_STAFF, User::TYPE_CLIENT)) {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Mentee`s',
                     \Uni\Uri::createHomeUrl('/mentorList.html')->set('userId', $this->user->getId()), 'fa fa-users'));
             }
