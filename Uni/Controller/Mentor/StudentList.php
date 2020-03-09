@@ -53,14 +53,14 @@ class StudentList extends AdminIface
         $user = $this->user = $this->getConfig()->getUserMapper()->find($request->get('userId'));
 
 
-        if ($this->getAuthUser()->isCoordinator()) {
+        if ($this->getAuthUser()->isCoordinator() || $this->getAuthUser()->isClient()) {
             $this->userSelect = AjaxSelect::create('Select User');
         }
 
         $this->userTable = User::create()->setEditUrl(Uri::createHomeUrl('/mentor/studentView.html'))->init();
         $this->userTable->removeAction('delete');
 
-        if ($this->getAuthUser()->isCoordinator()) {
+        if ($this->getAuthUser()->isCoordinator() || $this->getAuthUser()->isClient()) {
             $btn = $this->userTable->appendAction(\Tk\Table\Action\Link::createLink('Add Student', '#', 'fa fa-user-plus'));
             $btn->setAttr('data-target', '#' . $this->userSelect->getId());
             $btn->setAttr('data-toggle', 'modal');
