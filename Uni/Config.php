@@ -281,7 +281,8 @@ class Config extends \Bs\Config
     public function isMentorUrl()
     {
         $url = \Tk\Uri::create();
-         return (bool)preg_match('|(staff/mentor)|', $url->getRelativePath());
+        if ($url->basename() == 'mentorImport.html' || $url->basename() == 'mentorList.html') return false;
+        return (bool)preg_match('|(staff/mentor)|', $url->getRelativePath());
     }
 
     /**
