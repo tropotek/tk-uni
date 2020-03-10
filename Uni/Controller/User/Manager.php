@@ -141,6 +141,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
                         }
                         return $value;
                     });
+
             }
         }
 
