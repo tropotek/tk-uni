@@ -253,6 +253,7 @@ SQL;
   ) y');
         $filter->prependWhere('a.id = y.id AND ');
         $r = $this->selectFromFilter($filter, $tool);
+        //vd($this->getDb()->getLastQuery());
         return $r;
     }
 
