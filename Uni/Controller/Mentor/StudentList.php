@@ -75,6 +75,7 @@ class StudentList extends AdminIface
 
         //$this->userTable->removeCell('id');
         $this->userTable->removeCell('actions');
+        $this->userTable->removeCell('username');
         $this->userTable->removeCell('active');
         $this->userTable->removeCell('lastLogin');
         $this->userTable->findCell('nameFirst')->addOnPropertyValue(function ($cell, $obj, $value) {
