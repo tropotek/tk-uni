@@ -40,6 +40,26 @@ class User extends \Bs\Table\User
         if (!$this->getAuthUser()->isAdmin() && !$this->getAuthUser()->isClient())
             $this->removeAction('delete');
 
+
+        if ($this->getTargetType() == \Uni\Db\User::TYPE_STUDENT) {
+            $this->appendCell(\Tk\Table\Cell\Text::create('mentor'))->setOrderProperty('')
+                ->addOnCellHtml(function (\Tk\Table\Cell\Iface $cell, $obj, $html) {
+                    /** @var $obj \Uni\Db\User */
+                    $html = '';
+                    $idList = $this->getConfig()->getUserMapper()->findMentor($obj->getId());
+                    if (count($idList)) {
+                        $mentors = $this->getConfig()->getUserMapper()->findFiltered(array(
+                            'id' => $idList
+                        ), \Tk\Db\Tool::create('name_first', 5));
+                        foreach ($mentors as $mentor) {
+                            $html .= sprintf('<small>%s</small><br/>', htmlspecialchars($mentor->getName()));
+                        }
+                        $html = '<span>' . preg_replace('/<br\\s*?\\/?>\\s*$/', '', $html) . '</span>';
+                    }
+                    return $html;
+                });
+        }
+
         // For subject urls only
         if (!$this->getConfig()->isSubjectUrl()) return $this;
 

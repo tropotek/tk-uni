@@ -82,7 +82,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
             }
         }
 
-        $this->setTable(\Uni\Table\User::create()->setEditUrl($this->editUrl));
+        $this->setTable(\Uni\Table\User::create()->setEditUrl($this->editUrl)->setTargetType($this->getTargetType()));
         if (!$this->getAuthUser()->isStudent())
             $this->getTable()->getActionCell()->removeButton('Masquerade');
         $this->getTable()->init();

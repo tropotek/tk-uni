@@ -57,7 +57,9 @@ class StudentList extends AdminIface
             $this->userSelect = AjaxSelect::create('Select User');
         }
 
-        $this->userTable = User::create()->setEditUrl(Uri::createHomeUrl('/mentor/studentView.html'))->init();
+        $this->userTable = User::create()->setEditUrl(Uri::createHomeUrl('/mentor/studentView.html'));
+        $this->userTable->setTargetType(\Uni\Db\User::TYPE_STUDENT);
+        $this->userTable->init();
         $this->userTable->removeAction('delete');
 
         if ($this->getAuthUser()->isCoordinator() || $this->getAuthUser()->isClient()) {
