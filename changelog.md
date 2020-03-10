@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.0 [2020-03-11]:
+-------------------------------
+  - Added LTI 1.3 plugin
+
+
 Ver 3.2.30 [2020-02-18]:
 -------------------------------
   - Tagging and releasing branch `master` with version `3.2.28`.
