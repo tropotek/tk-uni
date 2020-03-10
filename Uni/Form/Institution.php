@@ -4,6 +4,7 @@ namespace Uni\Form;
 use Tk\Form\Field;
 use Tk\Form\Event;
 use Tk\Form;
+use Tk\Str;
 
 /**
  * Example:
@@ -180,7 +181,8 @@ class Institution extends \Uni\FormIface
             \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
         }
 
-        $this->getInstitution()->name = $this->getInstitution()->getName();
+        $this->getInstitution()->setName($this->getInstitution()->getName());
+        $this->getInstitution()->setDescription(Str::stripStyles($this->getInstitution()->getDescription()));
         $this->getInstitution()->getUser()->save();
 
         // Hash the password correctly

@@ -4,6 +4,7 @@ namespace Uni\Form;
 use Tk\Form\Field;
 use Tk\Form\Event;
 use Tk\Form;
+use Tk\Str;
 use Uni\Db\Permission;
 
 /**
@@ -81,6 +82,7 @@ class Course extends \Uni\FormIface
         }
         
         $isNew = (bool)$this->getCourse()->getId();
+        $this->getCourse()->setDescription(Str::stripStyles($this->getCourse()->getDescription()));
         $this->getCourse()->save();
 
         // Do Custom data saving

@@ -4,6 +4,7 @@ namespace Uni\Form;
 use Tk\Form\Field;
 use Tk\Form\Event;
 use Tk\Form;
+use Tk\Str;
 
 /**
  * Example:
@@ -87,6 +88,8 @@ class Subject extends \Uni\FormIface
         }
         
         $isNew = !(bool)$this->getSubject()->getId();
+
+        $this->getSubject()->setDescription(Str::stripStyles($this->getSubject()->getDescription()));
         $this->getSubject()->save();
 
         // If this is a staff member add them to the course
