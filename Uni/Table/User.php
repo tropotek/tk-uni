@@ -41,7 +41,20 @@ class User extends \Bs\Table\User
             $this->removeAction('delete');
 
 
+
         if ($this->getTargetType() == \Uni\Db\User::TYPE_STUDENT) {
+            if ($this->getAuthUser()->isStaff()) {
+                $this->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
+                    ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
+                        /** @var $obj \Uni\Db\User */
+                        $value = '';
+                        if ($obj->getData()->has('barcode')) {
+                            $value .= $obj->getData()->get('barcode');
+                        }
+                        return $value;
+                    });
+
+            }
             $this->appendCell(\Tk\Table\Cell\Text::create('mentor'))->setOrderProperty('')
                 ->addOnCellHtml(function (\Tk\Table\Cell\Iface $cell, $obj, $html) {
                     /** @var $obj \Uni\Db\User */
@@ -57,6 +70,31 @@ class User extends \Bs\Table\User
                         $html = '<span>' . preg_replace('/<br\\s*?\\/?>\\s*$/', '', $html) . '</span>';
                     }
                     return $html;
+                });
+        } else if ($this->getTargetType() == \Uni\Db\User::TYPE_STAFF) {
+            $list = array(
+                'Coordinator' => Permission::IS_COORDINATOR,
+                'Lecturer' => Permission::IS_LECTURER,
+                'Mentor' => Permission::IS_MENTOR
+            );
+            $this->appendFilter(new \Tk\Form\Field\CheckboxSelect('permission', $list));
+
+            $this->appendCell(new \Tk\Table\Cell\Text('role'), 'uid')
+                ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
+                    /** @var $obj \Uni\Db\User */
+                    $value ='';
+                    if ($obj->isCoordinator()) {
+                        $value .= 'Coordinator, ';
+                    } else if ($obj->isLecturer()) {
+                        $value .= 'Lecturer, ';
+                    }
+                    if ($obj->isMentor()) {
+                        $value .= 'Mentor, ';
+                    }
+                    if (!$value) {
+                        $value = 'Staff';
+                    }
+                    return trim($value, ', ');
                 });
         }
 
