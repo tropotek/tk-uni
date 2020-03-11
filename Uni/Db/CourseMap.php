@@ -22,7 +22,7 @@ class CourseMap extends Mapper
      */
     public function getDbMap()
     {
-        if (!$this->dbMap) { 
+        if (!$this->dbMap) {
             $this->dbMap = new \Tk\DataMap\DataMap();
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
             $this->dbMap->addPropertyMap(new Db\Integer('institutionId', 'institution_id'));
@@ -146,8 +146,11 @@ class CourseMap extends Mapper
             $filter->appendWhere('a.id = c.course_id AND c.subject_id = %s AND ', (int)$filter['subjectId']);
         }
         if (!empty($filter['userId'])) {
+            $filter['staffId'] = $filter['userId'];
+        }
+        if (!empty($filter['staffId'])) {
             $filter->appendFrom(' ,%s b', $this->quoteTable('course_has_user'));
-            $filter->appendWhere('a.id = b.course_id AND b.user_id = %s AND ', (int)$filter['userId']);
+            $filter->appendWhere('a.id = b.course_id AND b.user_id = %s AND ', (int)$filter['staffId']);
         }
         // TODO
         if (!empty($filter['active'])) {        // Only with active courses???? (see SubjectMap)
