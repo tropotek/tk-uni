@@ -3,6 +3,7 @@ namespace Uni\Listener;
 
 use Uni\Db\Permission;
 use Uni\Db\User;
+use Uni\Db\UserIface;
 
 /**
  *
@@ -53,14 +54,14 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
     /**
      * Check if this user can masquerade as the supplied msqUser
      *
-     * @param User $user The current User
-     * @param User $msqUser
+     * @param UserIface $user The current User
+     * @param UserIface $msqUser
      * @return bool
      * @throws \Exception
      */
     public function canMasqueradeAs($user, $msqUser)
     {
-        if (!$user->hasPermission(Permission::CAN_MASQUERADE) && !$user->isAdmin()) return false;
+        if (!$user->hasPermission(Permission::CAN_MASQUERADE) && !$user->hasType(User::TYPE_ADMIN)) return false;
         $b = parent::canMasqueradeAs($user, $msqUser);
         // If not admins they must be of the same institution
         if ($user->getInstitutionId() != 0 && $user->getInstitutionId() != $msqUser->getInstitutionId()) {
