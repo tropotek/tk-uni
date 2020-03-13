@@ -180,13 +180,17 @@ class UserMap extends \Bs\Db\UserMap
         }
 
         if (!empty($filter['courseId'])) {
-            $filter->appendFrom(', %s e', $this->quoteTable('course_has_user'));
-            $filter->appendWhere('a.id = e.user_id AND e.course_id = %d AND ', (int)$filter['courseId']);
+            if(empty($filter['type']) || $filter['type'] == 'staff') {
+                $filter->appendFrom(', %s e', $this->quoteTable('course_has_user'));
+                $filter->appendWhere('a.id = e.user_id AND e.course_id = %d AND ', (int)$filter['courseId']);
+            }
         }
 
         if (!empty($filter['subjectId'])) {
-            $filter->appendFrom(', subject_has_user c');
-            $filter->appendWhere('a.id = c.user_id AND c.subject_id = %d AND ', (int)$filter['subjectId']);
+            if(empty($filter['type']) || $filter['type'] == 'student') {
+                $filter->appendFrom(', subject_has_user c');
+                $filter->appendWhere('a.id = c.user_id AND c.subject_id = %d AND ', (int)$filter['subjectId']);
+            }
         }
 
         return $filter;
