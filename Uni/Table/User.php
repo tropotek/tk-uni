@@ -40,8 +40,6 @@ class User extends \Bs\Table\User
         if (!$this->getAuthUser()->isAdmin() && !$this->getAuthUser()->isClient())
             $this->removeAction('delete');
 
-
-
         if ($this->getTargetType() == \Uni\Db\User::TYPE_STUDENT) {
             if ($this->getAuthUser()->isStaff()) {
                 $this->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
@@ -71,6 +69,24 @@ class User extends \Bs\Table\User
                     }
                     return $html;
                 });
+
+            $this->appendCell(\Tk\Table\Cell\Text::create('subjects'))->setOrderProperty('')
+                ->setLabel('Subject Entries')
+                ->addOnCellHtml(function (\Tk\Table\Cell\Iface $cell, $obj, $html) {
+                    /** @var $obj \Uni\Db\User */
+                    $subjectList = $obj->getConfig()->getSubjectMapper()->findFiltered(array(
+                        'studentId' => $obj->getId(),
+                        'institutionId' => $obj->getInstitutionId()
+                    ), \Tk\Db\Tool::create('dateStart DESC'));
+                    $html = array();
+                    foreach ($subjectList as $subject) {
+                        $html[] = sprintf('<small>%s</small><br/>', htmlspecialchars($subject->getName())
+                        );
+                    }
+                    $html = '<span>'. implode("<br/>\n", $html) . '</span>';
+                    return $html;
+                });
+
         } else if ($this->getTargetType() == \Uni\Db\User::TYPE_STAFF) {
             $list = array(
                 'Coordinator' => Permission::IS_COORDINATOR,
