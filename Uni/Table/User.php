@@ -59,6 +59,15 @@ class User extends \Bs\Table\User
                     return $html;
                 });
         }
+        
+        $arr = array('modified', 'created');
+        if ($this->getAuthUser()->isStaff()) {
+            $arr[] = 'username';
+            $arr[] = 'barcode';
+            $arr[] = 'active';
+        }
+        $this->findAction('columns')->setUnselected($arr);
+
 
         // For subject urls only
         if (!$this->getConfig()->isSubjectUrl()) return $this;
