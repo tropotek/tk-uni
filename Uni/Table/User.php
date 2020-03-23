@@ -59,7 +59,7 @@ class User extends \Bs\Table\User
                     return $html;
                 });
         }
-        
+
         $arr = array('modified', 'created');
         if ($this->getAuthUser()->isStaff()) {
             $arr[] = 'username';
