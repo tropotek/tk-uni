@@ -90,30 +90,30 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
         if ($this->getTargetType() == User::TYPE_STAFF) {
 
-            $list = array(
-                'Coordinator' => Permission::IS_COORDINATOR,
-                'Lecturer' => Permission::IS_LECTURER,
-                'Mentor' => Permission::IS_MENTOR
-            );
-            $this->getTable()->appendFilter(new \Tk\Form\Field\CheckboxSelect('permission', $list));
+//            $list = array(
+//                'Coordinator' => Permission::IS_COORDINATOR,
+//                'Lecturer' => Permission::IS_LECTURER,
+//                'Mentor' => Permission::IS_MENTOR
+//            );
+//            $this->getTable()->appendFilter(new \Tk\Form\Field\CheckboxSelect('permission', $list));
 
-            $this->getTable()->appendCell(new \Tk\Table\Cell\Text('role'), 'uid')
-                ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
-                    /** @var $obj \Uni\Db\User */
-                    $value = '';
-                    if ($obj->isCoordinator()) {
-                        $value .= 'Coordinator, ';
-                    } else if ($obj->isLecturer()) {
-                        $value .= 'Lecturer, ';
-                    }
-                    if ($obj->isMentor()) {
-                        $value .= 'Mentor, ';
-                    }
-                    if (!$value) {
-                        $value = 'Staff';
-                    }
-                    return trim($value, ', ');
-                });
+//            $this->getTable()->appendCell(new \Tk\Table\Cell\Text('role'), 'uid')
+//                ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
+//                    /** @var $obj \Uni\Db\User */
+//                    $value = '';
+//                    if ($obj->isCoordinator()) {
+//                        $value .= 'Coordinator, ';
+//                    } else if ($obj->isLecturer()) {
+//                        $value .= 'Lecturer, ';
+//                    }
+//                    if ($obj->isMentor()) {
+//                        $value .= 'Mentor, ';
+//                    }
+//                    if (!$value) {
+//                        $value = 'Staff';
+//                    }
+//                    return trim($value, ', ');
+//                });
 
 //        $actionsCell = $this->getTable()->getActionCell();
 //        $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade', \Tk\Uri::create(),
@@ -131,18 +131,18 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
 
         } else {
-            if ($this->getAuthUser()->isStaff()) {
-                $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
-                    ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
-                        /** @var $obj \Uni\Db\User */
-                        $value = '';
-                        if ($obj->getData()->has('barcode')) {
-                            $value .= $obj->getData()->get('barcode');
-                        }
-                        return $value;
-                    });
-
-            }
+//            if ($this->getAuthUser()->isStaff()) {
+//                $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
+//                    ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
+//                        /** @var $obj \Uni\Db\User */
+//                        $value = '';
+//                        if ($obj->getData()->has('barcode')) {
+//                            $value .= $obj->getData()->get('barcode');
+//                        }
+//                        return $value;
+//                    });
+//
+//            }
         }
 
         $filter = array();
