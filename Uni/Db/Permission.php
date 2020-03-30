@@ -23,18 +23,6 @@ class Permission extends \Bs\Db\Permission
     const MANAGE_SUBJECT        = 'perm.manage.subject';
 
 
-    /**
-     * Manage plugins
-     * @target staff,client,admin
-     */
-    const MANAGE_PLUGINS        = 'perm.manage.plugins';
-
-    /**
-     * Can masquerade as other lower tier users
-     * @target staff,client,admin
-     */
-    const CAN_MASQUERADE        = 'perm.masquerade';
-
 
     /**
      * Coordinator: Manage settings/students/staff for linked subjects.
