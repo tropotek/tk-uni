@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 3.2.38 [2020-04-06]:
+-------------------------------
+  - Tagging and releasing branch `3.2` with version `3.2.36`.
+  - Tagging and releasing branch `3.2` with version `3.2.34`.
+  - Tagging and releasing branch `M	Uni/Controller/Register.php` with version `3.2.32`.
+
+
 Ver 3.2.36 [2020-03-13]:
 -------------------------------
   - Tagging and releasing branch `3.2` with version `3.2.34`.
