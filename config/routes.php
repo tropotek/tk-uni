@@ -65,6 +65,10 @@ $routes->add('client-subject-manager', Route::create('/client/subjectManager.htm
 $routes->add('client-subject-edit', Route::create('/client/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('client-subject-enrollment', Route::create('/client/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
 
+$routes->add('client-course-manager', Route::create('/client/courseManager.html', 'Uni\Controller\Course\Manager::doDefault'));
+$routes->add('client-course-edit', Route::create('/client/courseEdit.html', 'Uni\Controller\Course\Edit::doDefault'));
+
+
 
 
 // Staff Pages
