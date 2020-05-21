@@ -42,7 +42,7 @@ class Subject extends \Uni\FormIface
             ->setTabGroup($tab)->setRequired(true); //->setNotes('Select a course group. <a href="/staff/courseEdit.html">Click here to create a new Course.</a>');
         $this->appendField(new Field\Input('email'))->setTabGroup($tab)->setRequired(true);
         $this->appendField(new Field\DateRange('date'))->setTabGroup($tab)->setRequired(true)->setLabel('Dates')
-            ->setNotes('The start and end dates of the subject. Student submission functionality may be restricted outside these dates.');
+            ->setNotes('The start and end dates of the subject. Students will not have access to subject after end date');
 
         $this->appendField(new Field\Checkbox('publish'))->setTabGroup($tab)
             ->setCheckboxLabel('Allow students access to this subject and its data.');
