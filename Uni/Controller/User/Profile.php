@@ -23,9 +23,9 @@ class Profile extends \Bs\Controller\User\Profile
      */
     public function doDefault(\Tk\Request $request)
     {
-        $this->init($request);
+        $this->initForm($request);
 
-        $this->setForm(\Uni\Form\User::create()->setModel($this->user));
+        $this->setForm(\Uni\Form\User::create()->setModel($this->getConfig()->getAuthUser()));
         if ($this->getForm()->getField('active'))
             $this->getForm()->removeField('active');
         if ($this->getForm()->getField('username'))
@@ -38,14 +38,14 @@ class Profile extends \Bs\Controller\User\Profile
         if ($this->getForm()->getField('permission')) {
             $this->getForm()->removeField('permission');
             $tab = 'Permissions';
-            $list = $this->getConfig()->getPermissionList($this->getUser()->getType());
+            $list = $this->getConfig()->getPermissionList($this->getConfig()->getAuthUser()->getType());
             if (count($list)) {
                 $this->getForm()->appendField(\Tk\Form\Field\CheckboxGroup::createSelect('permission_ro', $list))
                     ->setLabel('Permission List')->setTabGroup($tab)
                     ->setValue(array_values($list))->setReadonly()->setDisabled();
             }
-            if ($this->getUser()->getId()) {
-                $this->getForm()->load(array('permission_ro' => $this->getUser()->getPermissions()));
+            if ($this->getConfig()->getAuthUser()->getId()) {
+                $this->getForm()->load(array('permission_ro' => $this->getConfig()->getAuthUser()->getPermissions()));
             }
         }
 
