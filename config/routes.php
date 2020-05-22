@@ -62,6 +62,9 @@ $routes->add('client-user-profile', Route::create('/client/profile.html', 'Uni\C
 $routes->add('client-user-manager', Route::create('/client/{targetType}UserManager.html', 'Uni\Controller\User\Manager::doDefaultType'));
 $routes->add('client-user-edit', Route::create('/client/{targetType}UserEdit.html', 'Uni\Controller\User\Edit::doDefaultType'));
 
+$routes->add('client-course-manager', Route::create('/client/courseManager.html', 'Uni\Controller\Course\Manager::doDefault'));
+$routes->add('client-course-edit', Route::create('/client/courseEdit.html', 'Uni\Controller\Course\Edit::doDefault'));
+
 $routes->add('client-subject-manager', Route::create('/client/subjectManager.html', 'Uni\Controller\Subject\Manager::doDefault'));
 $routes->add('client-subject-edit', Route::create('/client/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('client-subject-enrollment', Route::create('/client/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));

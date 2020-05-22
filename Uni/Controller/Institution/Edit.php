@@ -77,7 +77,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Staff',
                 \Uni\Uri::createHomeUrl('/staffUserManager.html'), 'fa fa-users'));
 
-            if ($this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT)) {
+            if ($this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT) || $this->getAuthUser()->isClient()) {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Courses',
                     \Uni\Uri::createHomeUrl('/courseManager.html'), 'fa fa-book'));
             }

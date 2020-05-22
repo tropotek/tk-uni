@@ -9,7 +9,7 @@ namespace Uni;
  */
 class Dispatch extends \Bs\Dispatch
 {
-    
+
     /**
      * @throws \Exception
      */

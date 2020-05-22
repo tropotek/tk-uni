@@ -62,7 +62,7 @@ class Edit extends AdminEditIface
      */
     public function doDefault(Request $request)
     {
-        if (!$this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT)) {
+        if (!$this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT) && !$this->getAuthUser()->isClient()) {
             \Tk\Alert::addWarning('You do not have permission to edit this resource.');
             $this->getConfig()->getBackUrl()->redirect();
         }
