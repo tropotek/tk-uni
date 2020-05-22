@@ -9,8 +9,7 @@ namespace Uni;
  */
 class Dispatch extends \Bs\Dispatch
 {
-
-
+    
     /**
      * @throws \Exception
      */
@@ -21,6 +20,7 @@ class Dispatch extends \Bs\Dispatch
         $dispatcher = $this->getDispatcher();
 
         $dispatcher->addSubscriber(new \Uni\Listener\InstitutionHandler());
+        $dispatcher->addSubscriber(new \Uni\Listener\UserLogHandler());
 
     }
 
