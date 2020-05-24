@@ -55,6 +55,15 @@ class Edit extends \Uni\Controller\AdminEditIface
         return $this->subject;
     }
 
+    protected function createForm(\Tk\Request $request)
+    {
+
+        $this->setForm(\Uni\Form\Subject::create()->setModel($this->subject));
+        $this->initForm($request);
+        $this->getForm()->execute($request);
+
+    }
+
 
     /**
      * @param \Tk\Request $request
@@ -68,10 +77,11 @@ class Edit extends \Uni\Controller\AdminEditIface
         }
 
         $this->subject = $this->findSubject($request);
+        $this->createForm($request);
 
-        $this->setForm(\Uni\Form\Subject::create()->setModel($this->subject));
-        $this->initForm($request);
-        $this->getForm()->execute($request);
+//        $this->setForm(\Uni\Form\Subject::create()->setModel($this->subject));
+//        $this->initForm($request);
+//        $this->getForm()->execute($request);
 
         if ($this->subject->getId()) {
             $this->userTable = \Uni\Table\UserList::create();
@@ -149,8 +159,9 @@ class Edit extends \Uni\Controller\AdminEditIface
             $template->setVisible('right-panel', false);
             $template->removeCss('left-panel', 'col-8')->addCss('left-panel', 'col-md-12 col-12');
         } else {
-            if ($this->userTable)
+            if ($this->userTable) {
                 $template->appendTemplate('right-panel-01', $this->userTable->show());
+            }
         }
 
         return $template;
