@@ -592,7 +592,7 @@ class Config extends \Bs\Config
             return $this->getSession()->get('isLti', false);
         }
         $this->getSession()->remove('isLti');
-        return false;
+        return true;
     }
 
     /**
