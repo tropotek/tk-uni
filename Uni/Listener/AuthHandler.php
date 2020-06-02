@@ -317,6 +317,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 
         if (!$config->getMasqueradeHandler()->isMasquerading()) {
             \Tk\Log::warning('Destroying Session');
+            //$this->getSession()->remove('isLti');
             $config->getSession()->destroy();
         };
     }
