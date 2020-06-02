@@ -588,11 +588,12 @@ class Config extends \Bs\Config
      */
     public function isLti()
     {
-        if ($this->getAuthUser() && $this->getAuthUser()->hasType(User::TYPE_STAFF, User::TYPE_STUDENT)) {
-            return $this->getSession()->get('isLti', false);
-        }
-        $this->getSession()->remove('isLti');
-        return true;
+        return $this->getSession()->get('isLti', false);
+//        if ($this->getAuthUser() && $this->getAuthUser()->hasType(User::TYPE_STAFF, User::TYPE_STUDENT)) {
+//            return $this->getSession()->get('isLti', false);
+//        }
+//        $this->getSession()->remove('isLti');
+//        return true;
     }
 
     /**
