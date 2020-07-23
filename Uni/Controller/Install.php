@@ -159,7 +159,8 @@ HTML;
 
         // Load Admin
         $this->getConfig()->getUserMapper()->mapForm(array(
-            'email' => $form->getFieldValue('site.email'),
+            //'email' => $form->getFieldValue('site.email'),
+            'email' => 'fvas-elearning@unimelb.edu.au',
             'institutionId' => 0
         ), $this->adminUser);
         // load Institution
