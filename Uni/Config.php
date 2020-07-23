@@ -90,6 +90,9 @@ class Config extends \Bs\Config
                 } else {
                     $obj = $this->getInstitutionMapper()->findByDomain(\Tk\Uri::create()->getHost());
                 }
+                if (!$obj && $this->getInstitutionMapper()->findActive()->count() == 1) {
+                    $obj = $this->getInstitutionMapper()->findActive()->current();
+                }
             } catch (\Exception $e) { \Tk\Log::error($e->__toString()); }
             $this->set('institution', $obj);
         }
