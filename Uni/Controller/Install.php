@@ -82,7 +82,7 @@ class Install extends Iface
         $this->instUser->setType(\Uni\Db\User::TYPE_CLIENT);
         $this->instUser->setUsername('unimelb');
         $this->adminUser->setEmail('fvas-elearning@unimelb.edu.au');
-        $this->instUser->setName('The University Of Melbourne');
+        $this->instUser->setNameFirst('The University Of Melbourne');
 
 
 
@@ -172,7 +172,7 @@ HTML;
         $this->getConfig()->getUserMapper()->mapForm(array(
             'email' => $form->getFieldValue('site.email'),
             'institutionId' => 0,
-            'username' => $form->getFieldValue('ins-name')
+            'username' => $form->getFieldValue('ins-username')
         ), $this->instUser);
 
         $this->data->replace( $form->getValues('/^site\./'));
