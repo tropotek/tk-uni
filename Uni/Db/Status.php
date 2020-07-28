@@ -61,6 +61,8 @@ class Status extends Model
 
     /**
      * (Required)
+     * TODO: Can we make this optional or create a base Status class
+     *      So we can use it in non-university applications (IE: the jobsystem)
      * @var int
      */
     public $courseId = 0;
@@ -69,6 +71,9 @@ class Status extends Model
      * (optional) If this is 0 then it is assumed by the system that
      * all subjects have access to change/view the status of this model.
      * See the \App\Ui\Table\StatusPending
+     *
+     * // TODO: see the above comment  ^^^^^^^^^
+     *
      * @var int
      */
     public $subjectId = 0;

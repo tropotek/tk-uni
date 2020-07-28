@@ -244,9 +244,21 @@ HTML;
         // remove default course records from install
         $this->getConfig()->getDb()->exec('TRUNCATE course;');
 
-
         \Tk\Alert::addSuccess('Site Setup Successfully!');
         $event->setRedirect($this->getRedirectUrl());
+
+        // Override or add DB data as needed
+        $this->doInstall($form, $event);
+    }
+
+    /**
+     * @param Form $form
+     * @param Form\Event\Iface $event
+     * @throws \Exception
+     */
+    protected function doInstall($form, $event)
+    {
+
     }
 
 
