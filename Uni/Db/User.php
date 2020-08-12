@@ -79,8 +79,7 @@ class User extends \Bs\Db\User implements UserIface
                 if (!$this->_institution && $this->isClient()) {
                     $this->_institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getId());
                 }
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) { }
         }
         return $this->_institution;
     }
