@@ -102,10 +102,12 @@ class Status extends Model
     public $event = '';
 
     /**
+     * TODO: THIS IS WRONG WRONG WRONG, for a status log it is un-required It must be a configurable call in the app or config???
+     *       Maybe having a setting/method in the config??? It needs to come from a configurable place
      * the callback method to use for testing if a status change triggers an event Eg: 'App\Db\PlacementStrategy::onStatusChange'
      * @var string
      */
-    public $callback = '';
+//    public $callback = '';
 
     /**
      * Should this status trigger the mail notification handler
@@ -282,7 +284,7 @@ class Status extends Model
     }
 
     /**
-     * TODO: we should remove this in favor of having a callable field int he DB 'App\Db\PlacementStrategy::onStatusChange'
+     * TODO: we should remove this in favor of having a setting/method in the config??? It neeeds to come from a configurable place
      * @return null|StatusStrategyInterface
      */
     public function getModelStrategy()
@@ -295,7 +297,7 @@ class Status extends Model
     }
 
     /**
-     * TODO: we should remove this in favor of having a callable field int he DB 'App\Db\PlacementStrategy::onStatusChange'
+     * TODO: we should remove this in favor of having a setting/method in the config??? It neeeds to come from a configurable place
      * @return string
      */
     public function getModelStrategyClass()
@@ -445,21 +447,21 @@ class Status extends Model
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCallback(): string
-    {
-        return $this->callback;
-    }
-
-    /**
-     * @param string $callback
-     */
-    public function setCallback(string $callback): void
-    {
-        $this->callback = $callback;
-    }
+//    /**
+//     * @return string
+//     */
+//    public function getCallback(): string
+//    {
+//        return $this->callback;
+//    }
+//
+//    /**
+//     * @param string $callback
+//     */
+//    public function setCallback(string $callback): void
+//    {
+//        $this->callback = $callback;
+//    }
 
     /**
      * @return bool
