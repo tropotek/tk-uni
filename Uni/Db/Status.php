@@ -102,6 +102,12 @@ class Status extends Model
     public $event = '';
 
     /**
+     * the callback method to use for testing if a status change triggers an event Eg: 'App\Db\PlacementStrategy::onStatusChange'
+     * @var string
+     */
+    public $callback = '';
+
+    /**
      * Should this status trigger the mail notification handler
      * @var bool
      */
@@ -276,25 +282,31 @@ class Status extends Model
     }
 
     /**
-     *
+     * TODO: we should remove this in favor of having a callable field int he DB 'App\Db\PlacementStrategy::onStatusChange'
      * @return null|StatusStrategyInterface
      */
     public function getModelStrategy()
     {
         $class = $this->getModelStrategyClass();
-        if (!$this->_modelStrategy && class_exists($class)) {
+        if ($class && !$this->_modelStrategy) {
             $this->_modelStrategy = new $class($this);
         }
         return $this->_modelStrategy;
     }
 
     /**
-     *
+     * TODO: we should remove this in favor of having a callable field int he DB 'App\Db\PlacementStrategy::onStatusChange'
      * @return string
      */
     public function getModelStrategyClass()
     {
-        return $this->getFkey() . 'StatusStrategy';
+        $class = $this->getFkey() . 'StatusStrategy';
+        if (class_exists($class))
+            return $class;
+        $class = $this->getFkey() . 'Strategy';
+        if (class_exists($class))
+            return $class;
+        return '';
     }
 
     /**
@@ -431,6 +443,22 @@ class Status extends Model
     {
         $this->event = $event;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCallback(): string
+    {
+        return $this->callback;
+    }
+
+    /**
+     * @param string $callback
+     */
+    public function setCallback(string $callback): void
+    {
+        $this->callback = $callback;
     }
 
     /**

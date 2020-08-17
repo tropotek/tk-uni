@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS `status` (
   `fid` INTEGER NOT NULL DEFAULT 0,                       -- foreign_id
   `name` VARCHAR(32) NOT NULL DEFAULT '',                 -- pending|approved|not_approved
   `event` VARCHAR(128) NOT NULL DEFAULT '',               -- the name of the event triggered if any (link status_event.name)
+  `callback` VARCHAR(128) NOT NULL DEFAULT '',            -- the callback method to use for testing if a status change triggers an event Eg: 'App\Db\PlacementStrategy::onStatusChange'
   `notify` BOOL NOT NULL DEFAULT 1,                       -- Was the message email sent
   `message` TEXT,                                         -- A status update log message
   `serial_data` TEXT,                                     -- json/serialized data of any related objects pertaining to this activity
@@ -87,6 +88,7 @@ SQL;
             $this->dbMap->addPropertyMap(new Db\Text('fkey'));
             $this->dbMap->addPropertyMap(new Db\Text('name'));
             $this->dbMap->addPropertyMap(new Db\Text('event'));
+            $this->dbMap->addPropertyMap(new Db\Text('callback'));
             $this->dbMap->addPropertyMap(new Db\Boolean('notify'));
             $this->dbMap->addPropertyMap(new Db\Text('message'));
             $this->dbMap->addPropertyMap(new Db\Json('serialData', 'serial_data'));
@@ -194,6 +196,16 @@ SQL;
 
         if (!empty($filter['name'])) {
             $w = $this->makeMultiQuery($filter['name'], 'a.name');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        }
+
+        if (!empty($filter['event'])) {
+            $w = $this->makeMultiQuery($filter['event'], 'a.event');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        }
+
+        if (!empty($filter['callback'])) {
+            $w = $this->makeMultiQuery($filter['callback'], 'a.callback');
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
