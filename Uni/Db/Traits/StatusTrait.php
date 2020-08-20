@@ -1,13 +1,6 @@
 <?php
 namespace Uni\Db\Traits;
 
-use Tk\Db\ModelInterface;
-use Tk\Db\Tool;
-use Uni\Config;
-use Uni\Db\CourseIface;
-use Uni\Db\Course;
-use Uni\Db\Status;
-use Uni\Db\StatusMap;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -16,79 +9,17 @@ use Uni\Db\StatusMap;
  */
 trait StatusTrait
 {
-
-    /**
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
+    use \Bs\Db\Traits\StatusTrait;
+/*  // exaple override
+    use SoftDeletes {
+        SoftDeletes::saveWithHistory as parentSaveWithHistory;
     }
 
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-        return $this;
-    }
+    public function saveWithHistory() {
+        $this->parentSaveWithHistory();
 
-    /**
-     * Check if this object has a status
-     *
-     * @param string|array $status
-     * @return bool
-     */
-    public function hasStatus($status)
-    {
-        if (!is_array($status)) $status = array($status);
-        return in_array($this->getStatus(), $status);
+        //your implementation
     }
-
-    /**
-     * return the status list for a select field
-     * @param null|string $status
-     * @return array
-     */
-    public static function getStatusList($status = null)
-    {
-        $arr = \Tk\Form\Field\Select::arrayToSelectList(\Tk\ObjectUtil::getClassConstants(__CLASS__, 'STATUS'));
-        if (is_string($status)) {
-            $arr2 = array();
-            foreach ($arr as $k => $v) {
-                if ($v == $status) {
-                    $arr2[$k.' (Current)'] = $v;
-                } else {
-                    $arr2[$k] = $v;
-                }
-            }
-            $arr = $arr2;
-        }
-        return $arr;
-    }
-
-    /**
-     * @param array $errors
-     * @return array
-     */
-    public function validateStatus($errors = [])
-    {
-        if (!$this->getStatus()) {
-            $errors['status'] = 'Invalid value: status';
-        }
-        return $errors;
-    }
-
-    /**
-     * @return Status|null|ModelInterface
-     * @throws /Exception
-     */
-    public function getCurrentStatus()
-    {
-        $status = StatusMap::create()->findFiltered(array('model' => $this), Tool::create('created DESC', 1))->current();
-        return $status;
-    }
+ */
 
 }

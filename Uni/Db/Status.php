@@ -24,6 +24,7 @@ use Uni\Db\Traits\SubjectTrait;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * TODO: Extend the \Bs\Db\Status sometime using the Config to get new instances
  */
 class Status extends Model
 {
@@ -100,14 +101,6 @@ class Status extends Model
      * @var string
      */
     public $event = '';
-
-    /**
-     * TODO: THIS IS WRONG WRONG WRONG, for a status log it is un-required It must be a configurable call in the app or config???
-     *       Maybe having a setting/method in the config??? It needs to come from a configurable place
-     * the callback method to use for testing if a status change triggers an event Eg: 'App\Db\PlacementStrategy::onStatusChange'
-     * @var string
-     */
-//    public $callback = '';
 
     /**
      * Should this status trigger the mail notification handler
@@ -446,22 +439,6 @@ class Status extends Model
         $this->event = $event;
         return $this;
     }
-
-//    /**
-//     * @return string
-//     */
-//    public function getCallback(): string
-//    {
-//        return $this->callback;
-//    }
-//
-//    /**
-//     * @param string $callback
-//     */
-//    public function setCallback(string $callback): void
-//    {
-//        $this->callback = $callback;
-//    }
 
     /**
      * @return bool
