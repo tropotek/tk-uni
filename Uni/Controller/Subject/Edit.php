@@ -71,7 +71,7 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function doDefault(\Tk\Request $request)
     {
-        if (!$this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT)) {
+        if (!$this->getAuthUser()->isClient() && !$this->getAuthUser()->hasPermission(Permission::MANAGE_SUBJECT)) {
             \Tk\Alert::addWarning('You do not have permission to edit this resource.');
             $this->getConfig()->getBackUrl()->redirect();
         }
@@ -129,7 +129,7 @@ class Edit extends \Uni\Controller\AdminEditIface
     public function initActionPanel()
     {
         if ($this->subject->getId() && ($this->getAuthUser()->isStaff() || $this->getAuthUser()->isClient())) {
-            if ($this->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
+            if ($this->getAuthUser()->isClient() || $this->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT)) {
                 $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Plugins',
                     \Uni\Uri::createHomeUrl('/subject/' . $this->subject->getId() . '/plugins.html')->set('subjectId', $this->subject->getId()), 'fa fa-plug'));
                 if($this->getConfig()->isSubjectUrl()) {
