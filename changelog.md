@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.4.26 [2020-09-10]:
+-------------------------------
+  - Added new Mail Tempalate system link to status change events
+  - Removed all Student, course, and subject pages ready for new APD setup.
+
+
 Ver 3.4.24 [2020-06-02]:
 -------------------------------
   - Fixed Masquerading Lti issue
