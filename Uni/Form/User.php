@@ -1,6 +1,7 @@
 <?php
 namespace Uni\Form;
 
+use Tk\Db\Tool;
 use Tk\Form\Field;
 use Tk\Form\Event;
 use Tk\Form;
@@ -52,7 +53,7 @@ class User extends \Bs\Form\User
             if ($this->getUser()->isStaff()) {
                 $tab = 'Course';
                 $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getCourseMapper()
-                    ->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
+                    ->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId()), Tool::create('created DESC')));
                 if ($list->count()) {
                     $this->appendField(new Field\Select('selCourse[]', $list), 'active')->setLabel('Course Selection')
                         ->setNotes('Select the courses this staff member is allowed to access.')
@@ -63,7 +64,7 @@ class User extends \Bs\Form\User
             } else if ($this->getUser()->isStudent()) {
                 $tab = 'Subject';
                 $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()
-                    ->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId())));
+                    ->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId()), Tool::create('created DESC')));
                 if ($list->count()) {
                     $this->appendField(new Field\Select('selSubject[]', $list), 'active')->setLabel('Subject Selection')
                         ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
