@@ -20,6 +20,10 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      */
     public function onLoginProcess(\Tk\Event\AuthEvent $event)
     {
+        $adminEmail = 'your subject coordinator';
+        if ($this->getConfig()->getInstitution() && $this->getConfig()->getInstitution()->getEmail())
+            $adminEmail = sprintf('<a href="mailto:%s">%s</a>.', $this->getConfig()->getInstitution()->getEmail(), $this->getConfig()->getInstitution()->getEmail());
+
         if ($event->getAdapter() instanceof \Tk\Auth\Adapter\Ldap) {
             /** @var \Tk\Auth\Adapter\Ldap $adapter */
             $adapter = $event->getAdapter();
@@ -38,15 +42,16 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 
                     if (!$user) {   // Error out if no user
                         $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID,
-                                $adapter->get('username'), 'Invalid username. Please contact your administrator to setup an account.'));
+                                $adapter->get('username'),
+                            sprintf('Invalid username. Please contact %s to setup an account.', $adminEmail)));
                         return;
                     }
 
 //                    if (!$user) { // Create a user record if none exists
 //
 //                        if (!$config->get('auth.ldap.auto.account')) {
-//                            $msg = sprintf('Please contact your site administrator to enable your user account. Please provide the following details' .
-//                                "\nusername: %s\nUID: %s\nEmail: %s", $adapter->get('username'), $uid, $email);
+//                            $msg = sprintf('Please contact %s to enable your user account. Please provide the following details' .
+//                                "\nusername: %s\nUID: %s\nEmail: %s", $adminEmail, $adapter->get('username'), $uid, $email);
 //                            $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID, $adapter->get('username'), $msg));
 //                        }
 //
@@ -63,7 +68,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                            );
 //
 //                            if (!$isPreEnrolled) {      // Only create users accounts for enrolled students
-//                                $msg = sprintf('We cannot find any enrolled subjects. Please contact your coordinator.' .
+//                                $msg = sprintf(sprintf('We cannot find any enrolled subjects. Please contact %s.', $adminEmail) .
 //                                    "\nusername: %s\nUID: %s\nEmail: %s", $adapter->get('username'), $uid, $email);
 //                                $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID, $adapter->get('username'), $msg));
 //                                return;
@@ -91,7 +96,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                                }
 //                            }
 //                        } else {
-//                            $msg = sprintf('Staff members can contact the site administrator to request access');
+//                            $msg = sprintf('Staff members can contact %s to request access', $adminEmail);
 //                            $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID,
 //                                $adapter->get('username'), $msg));
 //                            return;
@@ -152,7 +157,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //            // Error out if no user
 //            if (!$user) {
 //                $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID,
-//                    $userData['username'], 'Invalid username. Please contact your administrator to setup an account.'));
+//                    $userData['username'], sprintf('Invalid username. Please contact %s to setup an account.', $adminEmail)));
 //                return;
 //            }
             // Create the new user account
@@ -227,7 +232,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 //                    $isPreEnrolled = $config->getSubjectMapper()->isPreEnrolled($adapter->getInstitution()->getId(), array($user->getEmail()) );
 //                    if (!$isPreEnrolled) {  // Only create users accounts for enrolled students
 //                        $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::FAILURE_CREDENTIAL_INVALID,
-//                            $userData['username'], 'You are not enrolled. Please contact your administrator to setup your account.'));
+//                            $userData['username'], sprintf('You are not enrolled. Please contact %s to setup your account.', $adminEmail)));
 //                        return;
 //                    }
                 }
