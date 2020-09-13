@@ -20,9 +20,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
      */
     public function onLoginProcess(\Tk\Event\AuthEvent $event)
     {
-        $adminEmail = 'your subject coordinator';
-        if ($this->getConfig()->getInstitution() && $this->getConfig()->getInstitution()->getEmail())
-            $adminEmail = sprintf('<a href="mailto:%s">%s</a>.', $this->getConfig()->getInstitution()->getEmail(), $this->getConfig()->getInstitution()->getEmail());
+        $adminEmail = $this->getConfig()->getAdminEmailMsg();
 
         if ($event->getAdapter() instanceof \Tk\Auth\Adapter\Ldap) {
             /** @var \Tk\Auth\Adapter\Ldap $adapter */

@@ -652,4 +652,15 @@ class Config extends \Bs\Config
         return array($dataPath, $dataUrl);
     }
 
+    /**
+     * @return string
+     */
+    public function getAdminEmailMsg()
+    {
+        $email = 'your Subject Coordinator';
+        if ($this->getInstitution() && $this->getInstitution()->getEmail())
+            $email = sprintf('<a href="mailto:%s">%s</a>.', $this->getInstitution()->getEmail(), $this->getInstitution()->getEmail());
+        return $email;
+    }
+
 }
