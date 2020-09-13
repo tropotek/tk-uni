@@ -660,6 +660,11 @@ class Config extends \Bs\Config
         $email = 'your Subject Coordinator';
         if ($this->getInstitution() && $this->getInstitution()->getEmail())
             $email = sprintf('<a href="mailto:%s">%s</a>.', $this->getInstitution()->getEmail(), $this->getInstitution()->getEmail());
+        if ($this->getCourse() && $this->getCourse()->getEmail())
+            $email = sprintf('<a href="mailto:%s">%s</a>.', $this->getCourse()->getEmail(), $this->getCourse()->getEmail());
+        if ($this->getSubject() && $this->getSubject()->getEmail())
+            $email = sprintf('<a href="mailto:%s">%s</a>.', $this->getSubject()->getEmail(), $this->getSubject()->getEmail());
+
         return $email;
     }
 
