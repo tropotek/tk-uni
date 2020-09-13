@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.4.28 [2020-09-14]:
+-------------------------------
+
+
 Ver 3.4.26 [2020-09-10]:
 -------------------------------
   - Added new Mail Tempalate system link to status change events
