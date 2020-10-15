@@ -34,14 +34,16 @@ class Institution extends \Uni\FormIface
         $this->appendField(new Field\Input('name'))->setRequired(true)->setTabGroup($tab);
 
 
+        $field = $this->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
+        if (!$this->getAuthUser()->isAdmin()) {
+            $field->setDisabled(true);
+            $field->setNotes('Please contact site administrator to change email.');
+        }
         if ($this->getAuthUser()->isAdmin() || $this->getAuthUser()->isClient()) {
             $field = $this->appendField(new Field\Input('username'))->setRequired(true)->setTabGroup($tab);
             if (!$this->getAuthUser()->isAdmin()) {
                 $field->setDisabled(true);
-            }
-            $field = $this->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
-            if (!$this->getAuthUser()->isAdmin()) {
-                $field->setDisabled(true);
+                $field->setNotes('Please contact site administrator to change username.');
             }
 
             $insUrl = \Tk\Uri::create('/inst/'.$this->getInstitution()->getHash().'/login.html');
@@ -51,6 +53,8 @@ class Institution extends \Uni\FormIface
             $this->appendField(new Field\Input('domain'))->setTabGroup($tab)
                 ->setNotes('Your Institution login URL is: <a href="'.$insUrlStr.'">'.$insUrlStr.'</a>')
                 ->setAttr('placeholder', $insUrl->getHost());
+        } else {
+
         }
         $this->appendField(new Field\Input('phone'))->setTabGroup($tab);
 
