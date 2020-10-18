@@ -42,6 +42,9 @@ class Edit extends \Uni\Controller\AdminEditIface
             if (!$this->subject) {
                 $this->subject = $this->getConfig()->createSubject();
                 $this->subject->setInstitutionId($this->getConfig()->getInstitutionId());
+                if ($this->getRequest()->has('courseId')) {
+                    $this->subject->setCourseId($this->getRequest()->get('courseId'));
+                }
                 $this->subject->setEmail($this->getConfig()->getInstitution()->getEmail());
                 if ($request->get('subjectId')) {
                     $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
@@ -135,6 +138,9 @@ class Edit extends \Uni\Controller\AdminEditIface
                 if($this->getConfig()->isSubjectUrl()) {
                     $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
                         \Uni\Uri::createSubjectUrl('/subjectEnrollment.html'), 'fa fa-list'));
+                } else {
+                    $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Enrollments',
+                        \Uni\Uri::createHomeUrl('/subjectEnrollment.html')->set('subjectId', $this->subject->getId()), 'fa fa-list'));
                 }
             }
         }
