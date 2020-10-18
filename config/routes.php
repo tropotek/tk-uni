@@ -85,9 +85,6 @@ $routes->add('client-student-import', new \Tk\Routing\Route('/client/mentorImpor
 //$routes->add('staff-dashboard-base', Route::create('/staff/', 'Uni\Controller\Staff\Dashboard::doDefault'));
 //$routes->add('staff-subject-dashboard', Route::create('/staff/{subjectCode}/index.html', 'Uni\Controller\Staff\SubjectDashboard::doDefault'));
 
-$routes->add('staff-user-profile', Route::create('/staff/profile.html', 'Uni\Controller\User\Profile::doDefault'));
-
-
 $routes->add('staff-subject-plugin-manager', Route::create('/staff/{zoneName}/{zoneId}/plugins.html', 'Uni\Controller\PluginZoneManager::doDefault',
     array('zoneName' => 'subject', 'zoneId' => '0') ));
 

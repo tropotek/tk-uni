@@ -82,9 +82,10 @@ class Manager extends \Uni\Controller\AdminManagerIface
             }
         }
 
-        $this->setTable(\Uni\Table\User::create()->setEditUrl($this->editUrl)->setTargetType($this->getTargetType()));
+        $this->setTable($this->createTable());
         if (!$this->getAuthUser()->isStudent())
             $this->getTable()->getActionCell()->removeButton('Masquerade');
+        $this->initTable();
         $this->getTable()->init();
 
 
@@ -163,6 +164,20 @@ class Manager extends \Uni\Controller\AdminManagerIface
         $this->getTable()->setList($this->getTable()->findList($filter));
 
 
+    }
+
+    /**
+     * @return \Bs\TableIface|\Tk\Table|\Uni\Table\User
+     */
+    public function createTable()
+    {
+        return \Uni\Table\User::create()->setEditUrl($this->editUrl)->setTargetType($this->getTargetType());
+    }
+
+
+    public function initTable()
+    {
+        // Do any override inits here
     }
 
     /**

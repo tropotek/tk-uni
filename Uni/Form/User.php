@@ -57,7 +57,7 @@ class User extends \Bs\Form\User
                 if ($list->count()) {
                     $this->appendField(new Field\Select('selCourse[]', $list), 'active')->setLabel('Course Selection')
                         ->setNotes('Select the courses this staff member is allowed to access.')
-                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
+                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Courses');
                     $arr = $this->getConfig()->getCourseMapper()->findByUserId($this->getUser()->getId())->toArray('id');
                     $this->setFieldValue('selCourse', $arr);
                 }
