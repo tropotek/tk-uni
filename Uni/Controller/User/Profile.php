@@ -25,7 +25,7 @@ class Profile extends \Bs\Controller\User\Profile
     {
         $this->initForm($request);
 
-        $this->setForm(\Uni\Form\User::create()->setModel($this->getConfig()->getAuthUser()));
+        $this->setForm($this->createForm());
         if ($this->getForm()->getField('active'))
             $this->getForm()->removeField('active');
         if ($this->getForm()->getField('username'))
@@ -56,6 +56,14 @@ class Profile extends \Bs\Controller\User\Profile
         $this->getForm()->execute();
     }
 
+
+    /**
+     * @return \Bs\Form\User
+     */
+    protected function createForm()
+    {
+        return \Uni\Form\User::create()->setModel($this->getConfig()->getAuthUser());
+    }
 
 
 
