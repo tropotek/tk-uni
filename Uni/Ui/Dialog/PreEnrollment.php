@@ -146,6 +146,7 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
         while (($data = fgetcsv($stream, 1000, ',')) !== FALSE) {
             $num = count($data);
             $list[$row] = array('email' => '', 'uid' => '', 'username' => '');
+            // TODO: this line is not working, I think we need to remove whitespaces before checking??
             if (in_array('uid', $data) || in_array('email', $data) || in_array('username', $data)) continue;
             for ($c=0; $c < $num; $c++) {
                 if (filter_var($data[$c], FILTER_VALIDATE_EMAIL)) {
@@ -153,7 +154,8 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
                 } else if (preg_match('/^[0-9]+$/', $data[$c])) {
                     $list[$row]['uid'] = $data[$c];
                 } else if (!preg_match('/.+@.+/', $data[$c])) {
-                    $list[$row]['username'] = $data[$c];
+                    //$list[$row]['username'] = $data[$c];
+                    $list[$row]['username'] = strtolower($data[$c]);
                 }
             }
             $row++;
