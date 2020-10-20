@@ -23,7 +23,7 @@ class Profile extends \Bs\Controller\User\Profile
      */
     public function doDefault(\Tk\Request $request)
     {
-        $this->initForm($request);
+        //$this->initForm($request);
 
         $this->setForm($this->createForm());
         if ($this->getForm()->getField('active'))
