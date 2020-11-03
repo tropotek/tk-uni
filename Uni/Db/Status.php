@@ -189,7 +189,7 @@ class Status extends Model
      * @return Status
      * @throws Exception
      */
-    public static function create($model, $name)
+    public static function create($model, $name = '')
     {
         $obj = new static();
         $obj->setForeignModel($model);
