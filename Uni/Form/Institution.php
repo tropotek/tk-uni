@@ -147,12 +147,12 @@ class Institution extends \Uni\FormIface
 
         /** @var \Tk\Form\Field\File $logo */
         $logo = $form->getField('logo');
-        if ($logo->hasFile() && !preg_match('/\.(gif|jpe?g|png)$/i', $logo->getValue())) {
+        if ($logo && $logo->hasFile() && !preg_match('/\.(gif|jpe?g|png)$/i', $logo->getValue())) {
             $form->addFieldError('logo', 'Please Select a valid image file. (jpg, png, gif only)');
         }
         /** @var \Tk\Form\Field\File $feature */
         $feature = $form->getField('feature');
-        if ($feature->hasFile() && !preg_match('/\.(gif|jpe?g|png)$/i', $feature->getValue())) {
+        if ($feature && $feature->hasFile() && !preg_match('/\.(gif|jpe?g|png)$/i', $feature->getValue())) {
             $form->addFieldError('feature', 'Please Select a valid image file. (jpg, png, gif only)');
         }
 
@@ -171,18 +171,21 @@ class Institution extends \Uni\FormIface
             return;
         }
 
-        $logo->saveFile();
-        // resize the image if needed
-        if ($logo->hasFile()) {
-            $fullPath = $this->getConfig()->getDataPath() . $this->getInstitution()->logo;
-            \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
+        if ($logo) {
+            $logo->saveFile();
+            // resize the image if needed
+            if ($logo->hasFile()) {
+                $fullPath = $this->getConfig()->getDataPath() . $this->getInstitution()->logo;
+                \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
+            }
         }
-
-        $feature->saveFile();
-        // resize the image if needed
-        if ($feature->hasFile()) {
-            $fullPath = $this->getConfig()->getDataPath() . $this->getInstitution()->feature;
-            \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
+        if ($feature) {
+            $feature->saveFile();
+            // resize the image if needed
+            if ($feature->hasFile()) {
+                $fullPath = $this->getConfig()->getDataPath() . $this->getInstitution()->feature;
+                \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
+            }
         }
 
         $this->getInstitution()->setName($this->getInstitution()->getName());

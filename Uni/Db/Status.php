@@ -26,39 +26,10 @@ use Uni\Db\Traits\SubjectTrait;
  * @license Copyright 2015 Michael Mifsud
  * TODO: Extend the \Bs\Db\Status sometime using the Config to get new instances
  */
-class Status extends Model
+class Status extends \Bs\Db\Status
 {
-    use UserTrait;
     use CourseTrait;
     use SubjectTrait;
-    use ForeignModelTrait;
-    use CreatedTrait;
-
-    // Status type templates (use these in your own objects)
-    // const STATUS_PENDING = Status::STATUS_PENDING;       <---- This is valid syntax in you objects.
-    const STATUS_PENDING = 'pending';
-    const STATUS_AMEND = 'amend';
-    const STATUS_APPROVED = 'approved';
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_NOT_APPROVED = 'not approved';
-    const STATUS_CANCELLED = 'cancelled';
-
-    /**
-     * @var int
-     */
-    public $id = 0;
-
-    /**
-     * The user who performed the activity
-     * @var int
-     */
-    public $userId = 0;
-
-    /**
-     * If the user was masquerading who was the root masquerading user
-     * @var int
-     */
-    public $msqUserId = 0;
 
     /**
      * (Required)
@@ -79,70 +50,7 @@ class Status extends Model
      */
     public $subjectId = 0;
 
-    /**
-     * The id of the subject of the activity
-     * @var int
-     */
-    public $fid = 0;
 
-    /**
-     * The object class/key the foreign_id relates to
-     * @var string
-     */
-    public $fkey = '';
-
-    /**
-     * @var string
-     */
-    public $name = '';
-
-    /**
-     * The name of the event if triggered, '' for none
-     * @var string
-     */
-    public $event = '';
-
-    /**
-     * Should this status trigger the mail notification handler
-     * @var bool
-     */
-    public $notify = true;
-
-    /**
-     * @var string
-     */
-    public $message = '';
-
-    /**
-     * objects or array of objects
-     * @var mixed
-     */
-    public $serialData = null;
-
-    /**
-     * @var DateTime
-     */
-    public $created = null;
-
-
-    /**
-     * @var ModelInterface|StatusStrategyInterface
-     */
-    private $_modelStrategy = null;
-
-    /**
-     * @var Status
-     */
-    private $_previous = null;
-
-
-    /**
-     * @throws Exception
-     */
-    public function __construct()
-    {
-        $this->_CreatedTrait();
-    }
 
     /**
      * @param ModelInterface|StatusTrait $model
@@ -232,35 +140,39 @@ class Status extends Model
      */
     public function execute()
     {
-        if (!$this->getName() || $this->getName() == $this->getPreviousName()) {
-            Log::debug('Status skipped');
-            return;
-        }
-        $this->save();
+        parent::execute();
 
-        $modelStrat = $this->getModelStrategy();
-        if (!$modelStrat instanceof StatusStrategyInterface) {
-            Log::warning(get_class($modelStrat) . ' does not implement StatusStrategyInterface');
-            return;
-        }
-
-        // Trigger mail event depending on the model
-        if ($modelStrat->triggerStatusChange($this)) {
-            if (!$this->getEvent()) {
-                $this->setEvent($this->makeEventName());
-                $this->save();
-            }
-            // Trigger Event
-            $e = new StatusEvent($this);
-            if ($this->getConfig()->getEventDispatcher()) {
-                // Fire event to setup status mail messages
-                $this->getConfig()->getEventDispatcher()->dispatch(StatusEvents::STATUS_CHANGE, $e);
-                // Trigger status events for system wide processing. EG: 'status.placement.not approved', status.placementrequest.pending'
-                $this->getConfig()->getEventDispatcher()->dispatch($this->getEvent(), $e);
-                // Fire the event to send those messages
-                $this->getConfig()->getEventDispatcher()->dispatch(StatusEvents::STATUS_SEND_MESSAGES, $e);
-            }
-        }
+//        if (!$this->getName() || $this->getName() == $this->getPreviousName()) {
+//            Log::debug('Status skipped');
+//            return;
+//        }
+//        $this->save();
+//
+////        $model = $this->getModel();
+////        if (!\Tk\ObjectUtil::classUses($model, StatusTrait::class)) {
+//        $modelStrat = $this->getModelStrategy();
+//        if (!$modelStrat instanceof StatusStrategyInterface) {
+//            Log::warning(get_class($modelStrat) . ' does not implement StatusStrategyInterface');
+//            return;
+//        }
+//
+//        // Trigger mail event depending on the model
+//        if ($modelStrat->triggerStatusChange($this)) {
+//            if (!$this->getEvent()) {
+//                $this->setEvent($this->makeEventName());
+//                $this->save();
+//            }
+//            // Trigger Event
+//            $e = new StatusEvent($this);
+//            if ($this->getConfig()->getEventDispatcher()) {
+//                // Fire event to setup status mail messages
+//                $this->getConfig()->getEventDispatcher()->dispatch(StatusEvents::STATUS_CHANGE, $e);
+//                // Trigger status events for system wide processing. EG: 'status.placement.not approved', status.placementrequest.pending'
+//                $this->getConfig()->getEventDispatcher()->dispatch($this->getEvent(), $e);
+//                // Fire the event to send those messages
+//                $this->getConfig()->getEventDispatcher()->dispatch(StatusEvents::STATUS_SEND_MESSAGES, $e);
+//            }
+//        }
     }
 
     /**
@@ -277,7 +189,7 @@ class Status extends Model
     }
 
     /**
-     * TODO: we should remove this in favor of having a setting/method in the config??? It neeeds to come from a configurable place
+     * TODO: we should remove this in favor of having a setting/method in the config??? It needs to come from a configurable place
      * @return null|StatusStrategyInterface
      */
     public function getModelStrategy()
@@ -290,7 +202,7 @@ class Status extends Model
     }
 
     /**
-     * TODO: we should remove this in favor of having a setting/method in the config??? It neeeds to come from a configurable place
+     * TODO: we should remove this in favor of having a setting/method in the config??? It needs to come from a configurable place
      * @return string
      */
     public function getModelStrategyClass()
@@ -320,17 +232,6 @@ class Status extends Model
             $this->_previous = StatusMap::create()->findFiltered($filter, Tool::create('created DESC', 1))->current();
         }
         return $this->_previous;
-    }
-
-    /**
-     * @return string
-     * @throws Exception
-     */
-    public function getPreviousName()
-    {
-        if ($this->getPrevious())
-            return $this->getPrevious()->getName();
-        return '';
     }
 
     /**
@@ -406,112 +307,5 @@ class Status extends Model
         return $userList;
     }
 
-    /**
-     * @return int
-     */
-    public function getMsqUserId(): int
-    {
-        return $this->msqUserId;
-    }
-
-    /**
-     * @param int $msqUserId
-     * @return Status
-     */
-    public function setMsqUserId(int $msqUserId): Status
-    {
-        $this->msqUserId = $msqUserId;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return Status
-     */
-    public function setName(string $name): Status
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEvent(): string
-    {
-        return $this->event;
-    }
-
-    /**
-     * @param string $event
-     * @return Status
-     */
-    public function setEvent(string $event): Status
-    {
-        $this->event = $event;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNotify()
-    {
-        return $this->notify;
-    }
-
-    /**
-     * @param bool $notify
-     * @return Status
-     */
-    public function setNotify($notify): Status
-    {
-        $this->notify = $notify;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    /**
-     * @param string $message
-     * @return Status
-     */
-    public function setMessage(string $message): Status
-    {
-        $this->message = $message;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSerialData()
-    {
-        return $this->serialData;
-    }
-
-    /**
-     * @param mixed $serialData
-     * @return Status
-     */
-    public function setSerialData($serialData)
-    {
-        $this->serialData = $serialData;
-        return $this;
-    }
 
 }
