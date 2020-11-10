@@ -125,7 +125,6 @@ class Login extends \Bs\Controller\Login
             }
             $template->insertText('instName', $this->institution->name);
             $template->setVisible('inst');
-            vd('=====');
             $this->getPage()->getTemplate()->setVisible('hasInst');
         } else {
             $template->setVisible('noInst');
