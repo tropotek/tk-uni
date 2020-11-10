@@ -24,8 +24,8 @@ class Profile extends \Bs\Controller\User\Profile
     public function doDefault(\Tk\Request $request)
     {
         //$this->initForm($request);
-
         $this->setForm($this->createForm());
+
         if ($this->getForm()->getField('active'))
             $this->getForm()->removeField('active');
         if ($this->getForm()->getField('username'))
@@ -58,7 +58,7 @@ class Profile extends \Bs\Controller\User\Profile
 
 
     /**
-     * @return \Bs\Form\User
+     * @return \Uni\Form\User
      */
     protected function createForm()
     {
