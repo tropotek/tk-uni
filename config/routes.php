@@ -19,7 +19,7 @@ if (!$routes) return;
 
 
 // Public Pages
-$routes->add('login', Route::create('/login.html', 'Uni\Controller\Login::doDefault')); // Assumes the first institution is the only institution
+$routes->add('login', Route::create('/login.html', 'Uni\Controller\Login::doInsLogin')); // Assumes the first institution is the only institution
 $routes->add('institution-login', Route::create('/inst/{instHash}/login.html', 'Uni\Controller\Login::doInsLogin'));
 $routes->add('admin-login', Route::create('/xlogin.html', 'Uni\Controller\Login::doDefault'));
 
