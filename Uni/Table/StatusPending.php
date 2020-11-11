@@ -74,7 +74,8 @@ class StatusPending extends \App\TableIface
         $filter = array();
         $filter['courseId'] = $this->getConfig()->getCourseId();
         $list = \Uni\Db\StatusMap::create()->findKeys($filter);
-        $this->appendFilter(new \Tk\Form\Field\Select('fkey', $list))->prependOption('-- Type --', '')->setAttr('placeholder', 'Keywords');
+        $this->appendFilter(new \Tk\Form\Field\Select('fkey', $list))
+            ->prependOption('-- Type --', '')->setAttr('placeholder', 'Keywords');
 
         return $this;
     }
