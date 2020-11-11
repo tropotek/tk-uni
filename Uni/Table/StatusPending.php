@@ -1,7 +1,7 @@
 <?php
 namespace Uni\Table;
 
-use Tk\Table\Renderer\Dom\Ui\Limit;
+use Bs\Db\StatusMap;
 
 /**
  * Example:
@@ -18,83 +18,15 @@ use Tk\Table\Renderer\Dom\Ui\Limit;
  * @created 2019-05-23
  * @link http://tropotek.com.au/
  * @license Copyright 2019 Tropotek
+ * @deprecated use \Bs\Table\StatusPending
  */
-class StatusPending extends \App\TableIface
+class StatusPending extends \Bs\Table\StatusPending
 {
 
-    /**
-     * Supervisor constructor.
-     * @param string $tableId
-     */
-    public function __construct($tableId = '')
+    protected function getSelectList()
     {
-        parent::__construct($tableId);
-        $this->setRenderer(\Tk\Table\Renderer\Dom\Div::create($this));
-    }
-
-    /**
-     * @return $this
-     * @throws \Exception
-     */
-    public function init()
-    {
-        $this->addCss('status-table');
-
-        $this->appendCell(new \Tk\Table\Cell\Text('id'))->setLabel('ID')->addOnCellHtml(function ($cell, $obj, $html) {
-            /** @var \Tk\Table\Cell\Iface $cell */
-            /** @var \Uni\Db\Status $obj */
-            $strat = $obj->getModelStrategy();
-            if ($strat && $obj->getModel()) {
-                $cell->setAttr('title', $strat->getLabel());
-                return $strat->getPendingIcon();
-            }
-            return '';
-        });
-
-        $this->appendCell(new \Tk\Table\Cell\Text('name'))->addOnCellHtml(function ($cell, $obj, $html) {
-            /** @var \Tk\Table\Cell\Iface $cell */
-            /** @var \Uni\Db\Status $obj */
-            $strat = $obj->getModelStrategy();
-            $cell->removeAttr('title');
-            if ($strat && $obj->getModel()) {
-                return $strat->getPendingHtml();
-            }
-            return '';
-        });
-
-        // Actions
-        $this->appendCell($this->getActionCell());
-
-        $this->appendCell(\Tk\Table\Cell\Date::createDate('created'))->addOnCellHtml(function ($cell, $obj, $html) {
-            /** @var \Tk\Table\Cell\Iface $cell */
-            /** @var \Uni\Db\Status $obj */
-            $cell->removeAttr('title');
-            return sprintf('<div class="status-created">%s</div>', $obj->getCreated(\Tk\Date::FORMAT_MED_DATE));
-        });
-
-        // Filters
         $filter = array();
         $filter['courseId'] = $this->getConfig()->getCourseId();
-        $list = \Uni\Db\StatusMap::create()->findKeys($filter);
-        $this->appendFilter(new \Tk\Form\Field\Select('fkey', $list))
-            ->prependOption('-- Type --', '')->setAttr('placeholder', 'Keywords');
-        $this->getRenderer()->removeFootRenderer('Limit');
-
-        return $this;
+        return StatusMap::create()->findKeys($filter);
     }
-
-    /**
-     * @param array $filter
-     * @param null|\Tk\Db\Tool $tool
-     * @return \Tk\Db\Map\ArrayObject|\Uni\Db\Status[]
-     * @throws \Exception
-     */
-    public function findList($filter = array(), $tool = null)
-    {
-        if (!$tool) $tool = $this->getTool('created DESC');
-        $filter = array_merge($this->getFilterValues(), $filter);
-        $list = \Uni\Db\StatusMap::create()->findCurrentStatus($filter, $tool);
-        return $list;
-    }
-
 }

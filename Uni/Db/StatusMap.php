@@ -21,6 +21,7 @@ use \Bs\Db\Mapper;
  * @license Copyright 2015 Michael Mifsud
  *
  * TODO: Extend the \Bs\Db\StatusMap sometime using the Config to get new instances
+ * @deprecated \Bs\Db\StatusMap
  */
 class StatusMap extends Mapper
 {

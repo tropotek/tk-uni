@@ -15,6 +15,7 @@ use Uni\Db\Traits\SubjectTrait;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @deprecated use \Bs\Db\Status
  */
 class Status
 // TODO: remove this extends once update complete
@@ -90,27 +91,27 @@ class Status
     // -------------------------------------------------------------
 
 
-    use CourseTrait;
-    use SubjectTrait;
-
-    /**
-     * (Required)
-     * TODO: Can we make this optional or create a base Status class
-     *      So we can use it in non-university applications (IE: the jobsystem)
-     * @var int
-     */
-    public $courseId = 0;
-
-    /**
-     * (optional) If this is 0 then it is assumed by the system that
-     * all subjects have access to change/view the status of this model.
-     * See the \App\Ui\Table\StatusPending
-     *
-     * // TODO: see the above comment  ^^^^^^^^^
-     *
-     * @var int
-     */
-    public $subjectId = 0;
+//    use CourseTrait;
+//    use SubjectTrait;
+//
+//    /**
+//     * (Required)
+//     * TODO: Can we make this optional or create a base Status class
+//     *      So we can use it in non-university applications (IE: the jobsystem)
+//     * @var int
+//     */
+//    public $courseId = 0;
+//
+//    /**
+//     * (optional) If this is 0 then it is assumed by the system that
+//     * all subjects have access to change/view the status of this model.
+//     * See the \App\Ui\Table\StatusPending
+//     *
+//     * // TODO: see the above comment  ^^^^^^^^^
+//     *
+//     * @var int
+//     */
+//    public $subjectId = 0;
 
 
 
@@ -299,29 +300,29 @@ class Status
      * @return Status|null
      * @throws Exception
      */
-    public static function findLastByUserType($status, $userType)
-    {
-        if (!$status) return $status;
-        if ($status->getUser() && $status->getUser()->hasType($userType)) {
-            return $status;
-        }
-        return self::findLastByUserType($status->getPrevious(), $userType);
-    }
+//    public static function findLastByUserType($status, $userType)
+//    {
+//        if (!$status) return $status;
+//        if ($status->getUser() && $status->getUser()->hasType($userType)) {
+//            return $status;
+//        }
+//        return self::findLastByUserType($status->getPrevious(), $userType);
+//    }
 
     /**
      * Return a unique list of users that have changed a status for this object
      *
-     * @param string|null $type
+     * @param string|null $userType
      * @return array
      * @throws Exception
      */
-    public function findUsersByType($type = '')
+    public function findUsersByType($userType = '')
     {
         $userList = array();
         $statusList = StatusMap::create()->findFiltered(array('model' => $this->getModel()));
         foreach ($statusList as $status) {
             if (!$status->getUser()) continue;
-            if ($type && $status->getUser()->getType() == $type) {
+            if ($userType && $status->getUser()->getType() == $userType) {
                 $userList[$status->getUserId()] = $status->getUser();
             }
         }

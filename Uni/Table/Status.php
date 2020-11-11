@@ -18,6 +18,7 @@ use Tk\Table\Cell;
  * @created 2019-05-23
  * @link http://tropotek.com.au/
  * @license Copyright 2019 Tropotek
+ * @deprecated use \Bs\Table\Status
  */
 class Status extends \App\TableIface
 {
