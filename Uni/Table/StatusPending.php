@@ -18,7 +18,6 @@ use Bs\Db\StatusMap;
  * @created 2019-05-23
  * @link http://tropotek.com.au/
  * @license Copyright 2019 Tropotek
- * @deprecated use \Bs\Table\StatusPending
  */
 class StatusPending extends \Bs\Table\StatusPending
 {
