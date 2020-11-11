@@ -15,7 +15,7 @@ use Uni\Db\StatusMap;
  * NOTE: The EMS still uses the uni\Db\Status system
  *       DO NOT REMOVE IT FROM EITHER LIBS YET!!!!!!
  *
- *
+ * @deprecated
  */
 trait StatusTrait
 {

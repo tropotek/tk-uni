@@ -1,22 +1,13 @@
 <?php
 namespace Uni\Db;
 
-use Bs\Db\Traits\ForeignKeyTrait;
-use Bs\Db\Traits\ForeignModelTrait;
 use Exception;
-use Tk\Db\Map\Model;
 use Tk\Db\ModelInterface;
 use Tk\Db\Tool;
 use Tk\Form\Field\Iface;
-use Tk\Log;
 use Tk\ObjectUtil;
-use Bs\Db\Traits\CreatedTrait;
-use Bs\Db\Traits\UserTrait;
-use DateTime;
 use Uni\Db\Traits\StatusTrait;
-use Uni\Event\StatusEvent;
 use Uni\Form\Field\StatusSelect;
-use Uni\StatusEvents;
 use Uni\Db\Traits\CourseTrait;
 use Uni\Db\Traits\SubjectTrait;
 
@@ -24,10 +15,81 @@ use Uni\Db\Traits\SubjectTrait;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
- * TODO: Extend the \Bs\Db\Status sometime using the Config to get new instances
  */
-class Status extends \Bs\Db\Status
+class Status
+// TODO: remove this extends once update complete
+    extends \Bs\Db\Status
 {
+
+    /**
+     * @param ModelInterface|StatusTrait $model
+     * @return \Bs\Db\Status
+     * @throws Exception
+     */
+    public static function create($model)
+    {
+        $status = \Bs\Db\Status::create($model);
+        self::updateStatus($status, $model);
+        return $status;
+    }
+
+    /**
+     * Populate the InstitutionId, CourseId, SubjectId where possible
+     * @param \Bs\Db\Status $status
+     * @param ModelInterface|StatusTrait $model
+     */
+    public static function updateStatus($status, $model)
+    {
+        // Auto set the subject and Course ID's if possible, when not possible execute should be set to false and set manually
+        if (!$status->getInstitutionId()) {
+            if (method_exists($model, 'getInstitutionId')) {
+                $status->setInstitutionId($model->getInstitutionId());
+            } else if ($status->getConfig()->getInstitutionId()) {
+                $status->setInstitutionId($status->getConfig()->getInstitutionId());
+            }
+        }
+
+        if (!$status->getCourseId()) {
+            if (method_exists($model, 'getCourseId')) {
+                $status->setCourseId($model->getCourseId());
+                if (!$status->getInstitutionId() && method_exists($model, 'getCourse')) {
+                    /** @var Course $course */
+                    $course = $model->getCourse();
+                    $status->setCourseId($course->getInstitutionId());
+                }
+            } else if ($status->getConfig()->getCourseId()) {
+                $status->setCourseId($status->getConfig()->getCourseId());
+            }
+        }
+
+        if (!$status->getSubjectId()) {
+            if (method_exists($model, 'getSubjectId')) {
+                $status->setSubjectId($model->getSubjectId());
+                if (!$status->getCourseId() && method_exists($model, 'getSubject')) {
+                    /** @var Subject $subject */
+                    $subject = $model->getSubject();
+                    $status->setCourseId($subject->getCourseId());
+                }
+            } else if ($status->getConfig()->getSubjectId()) {
+                $status->setSubjectId($status->getConfig()->getSubjectId());
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    // -------------------------------------------------------------
+    // NOTICE: all the below is now deprecated use \Bs\Db\Status
+    // -------------------------------------------------------------
+
+
     use CourseTrait;
     use SubjectTrait;
 
@@ -88,48 +150,6 @@ class Status extends \Bs\Db\Status
         $obj->setEvent($event);
         if ($execute)
             $obj->execute();
-        return $obj;
-    }
-
-    /**
-     * @param ModelInterface|StatusTrait $model
-     * @param string $name
-     * @return Status
-     * @throws Exception
-     */
-    public static function create($model, $name = '')
-    {
-        $obj = new static();
-        $obj->setForeignModel($model);
-        $obj->setName($model->getStatus());
-        $obj->setEvent($model->getStatusEvent());
-
-        $config = $obj->getConfig();
-        if ($config->getAuthUser()) {
-            $obj->setUserId($config->getAuthUser()->getId());
-            if ($config->getMasqueradeHandler()->isMasquerading()) {
-                $msqUser = $config->getMasqueradeHandler()->getMasqueradingUser();
-                if ($msqUser) {
-                    $obj->setMsqUserId($msqUser->getId());
-                }
-            }
-        }
-        // Auto set the subject and Course ID's if possible, when not possible execute should be set to false and set manually
-        if (method_exists($model, 'getCourseId')) {
-            $obj->setCourseId($model->getCourseId());
-        } else if ($obj->getConfig()->getCourseId()) {
-            $obj->setCourseId($obj->getConfig()->getCourseId());
-        }
-        if (method_exists($model, 'getSubjectId')) {
-            $obj->setSubjectId($model->getSubjectId());
-            if (!$obj->getCourseId() && method_exists($model, 'getSubject')) {
-                /** @var Subject $subject */
-                $subject = $model->getSubject();
-                $obj->setCourseId($subject->getCourseId());
-            }
-        } else if ($obj->getConfig()->getSubjectId()) {
-            $obj->setSubjectId($obj->getConfig()->getSubjectId());
-        }
         return $obj;
     }
 
