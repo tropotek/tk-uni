@@ -102,6 +102,7 @@ class Status extends \Bs\Db\Status
         $obj = new static();
         $obj->setForeignModel($model);
         $obj->setName($model->getStatus());
+        $obj->setEvent($model->getStatusEvent());
 
         $config = $obj->getConfig();
         if ($config->getAuthUser()) {
