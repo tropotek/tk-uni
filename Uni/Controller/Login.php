@@ -21,11 +21,6 @@ class Login extends \Bs\Controller\Login
      */
     protected $institution = null;
 
-    /**
-     * @var string
-     */
-    //protected $isInstLogin = false;
-
 
     /**
      * Login constructor.
@@ -35,7 +30,6 @@ class Login extends \Bs\Controller\Login
         $this->setPageTitle('Login');
     }
 
-
     /**
      * @param \Tk\Request $request
      * @param string $instHash
@@ -43,7 +37,6 @@ class Login extends \Bs\Controller\Login
      */
     public function doInsLogin(\Tk\Request $request, $instHash = '')
     {
-        //$this->isInstLogin = true;
         $this->institution = $this->getConfig()->getInstitutionMapper()->findByHash($instHash);
         if (!$this->institution && $request->attributes->has('institutionId')) {
             $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->attributes->get('institutionId'));
@@ -71,13 +64,6 @@ class Login extends \Bs\Controller\Login
      */
     public function doDefault(\Tk\Request $request)
     {
-//        if (!$this->institution) {
-//            $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getTkUri()->getHost());
-//            if (!$this->institution && $request->attributes->has('institutionId')) {
-//                $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->attributes->get('institutionId'));
-//            }
-//        }
-
         $this->init();
 
         if ($this->institution) {
@@ -133,7 +119,6 @@ class Login extends \Bs\Controller\Login
 
         return $template;
     }
-
 
     /**
      * @return \Dom\Template
