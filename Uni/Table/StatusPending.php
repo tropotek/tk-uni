@@ -78,10 +78,7 @@ class StatusPending extends \App\TableIface
         $list = \Uni\Db\StatusMap::create()->findKeys($filter);
         $this->appendFilter(new \Tk\Form\Field\Select('fkey', $list))
             ->prependOption('-- Type --', '')->setAttr('placeholder', 'Keywords');
-
-
         $this->getRenderer()->removeFootRenderer('Limit');
-
 
         return $this;
     }
