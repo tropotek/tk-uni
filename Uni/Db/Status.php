@@ -77,6 +77,62 @@ class Status
         }
     }
 
+    /**
+     * @param \Bs\Db\Status $status
+     * @return \Tk\Db\Map\Model|ModelInterface|Institution|null
+     * @throws Exception
+     */
+    public static function getInstitution($status)
+    {
+        return \Uni\Config::getInstance()->getInstitutionMapper()->find($status->getInstitutionId());
+    }
+
+    /**
+     * @param \Bs\Db\Status $status
+     * @return \Tk\Db\Map\Model|ModelInterface|Course|null
+     * @throws Exception
+     */
+    public static function getCourse($status)
+    {
+        return \Uni\Config::getInstance()->getCourseMapper()->find($status->getCourseId());
+    }
+
+    /**
+     * @param \Bs\Db\Status $status
+     * @return \Tk\Db\Map\Model|ModelInterface|Subject|null
+     * @throws Exception
+     */
+    public static function getSubject($status)
+    {
+        return \Uni\Config::getInstance()->getSubjectMapper()->find($status->getSubjectId());
+    }
+
+
+
+    /**
+     * Get some valid subject name text
+     * @return string
+     * @throws Exception
+     */
+    public static function getSubjectName($status)
+    {
+        $course = null;
+        $subject = null;
+        $name = '';
+        $course = self::getCourse($status);
+        $subject = self::getSubject($status);
+        if ($course)
+            $name = $course->getName();
+        if ($subject)
+            $name = $subject->getName();
+        return $name;
+    }
+
+
+
+
+
+
 
 
 
@@ -280,19 +336,19 @@ class Status
         return null;
     }
 
-    /**
-     * Get some valid subject name text
-     * @return string
-     * @throws Exception
-     */
-    public function getSubjectName()
-    {
-        $subjectName = $this->getCourse()->getName();
-        if ($this->getSubject()) {
-            $subjectName = $this->getSubject()->getName();
-        }
-        return $subjectName;
-    }
+//    /**
+//     * Get some valid subject name text
+//     * @return string
+//     * @throws Exception
+//     */
+//    public function getSubjectName()
+//    {
+//        $subjectName = $this->getCourse()->getName();
+//        if ($this->getSubject()) {
+//            $subjectName = $this->getSubject()->getName();
+//        }
+//        return $subjectName;
+//    }
 
     /**
      * @param Status|null $status
