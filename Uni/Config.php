@@ -1,6 +1,9 @@
 <?php
 namespace Uni;
 
+use Bs\Db\Status;
+use Bs\Db\StatusMap;
+use Tk\Db\ModelInterface;
 use Uni\Db\Course;
 use Uni\Db\Permission;
 use Uni\Db\User;
@@ -620,6 +623,16 @@ class Config extends \Bs\Config
     public function createPage($templatePath = '')
     {
         return new Page($templatePath);
+    }
+
+    /**
+     *
+     * @param ModelInterface $model
+     * @return Status
+     */
+    public function createStatus($model)
+    {
+        return \Uni\Util\Status::create($model);
     }
 
     /**
