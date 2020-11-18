@@ -55,9 +55,12 @@ class User extends \Bs\Form\User
                 $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getCourseMapper()
                     ->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId()), Tool::create('created DESC')));
                 if ($list->count()) {
-                    $this->appendField(new Field\Select('selCourse[]', $list), 'active')->setLabel('Course Selection')
+//                    $this->appendField(new Field\Select('selCourse[]', $list), 'active')->setLabel('Course Selection')
+//                        ->setNotes('Select the courses this staff member is allowed to access.')
+//                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Courses');
+                    $this->appendField(new Field\CheckboxGroup('selCourse[]', $list), 'active')->setLabel('Course Selection')
                         ->setNotes('Select the courses this staff member is allowed to access.')
-                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Courses');
+                        ->setTabGroup($tab);
                     $arr = $this->getConfig()->getCourseMapper()->findByUserId($this->getUser()->getId())->toArray('id');
                     $this->setFieldValue('selCourse', $arr);
                 }
@@ -66,9 +69,12 @@ class User extends \Bs\Form\User
                 $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getSubjectMapper()
                     ->findFiltered(array('institutionId' => $this->getConfig()->getInstitutionId()), Tool::create('created DESC')));
                 if ($list->count()) {
-                    $this->appendField(new Field\Select('selSubject[]', $list), 'active')->setLabel('Subject Selection')
+//                    $this->appendField(new Field\Select('selSubject[]', $list), 'active')->setLabel('Subject Selection')
+//                        ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
+//                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
+                    $this->appendField(new Field\CheckboxGroup('selSubject[]', $list), 'active')->setLabel('Subject Selection')
                         ->setNotes('This list only shows active and enrolled subjects. Use the enrollment form in the edit subject page if your subject is not visible.')
-                        ->setTabGroup($tab)->addCss('tk-dualSelect')->setAttr('data-title', 'Subjects');
+                        ->setTabGroup($tab);
                     $arr = $this->getConfig()->getSubjectMapper()->findByUserId($this->getUser()->getId())->toArray('id');
                     $this->setFieldValue('selSubject', $arr);
                 }
