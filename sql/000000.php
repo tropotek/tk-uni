@@ -9,11 +9,11 @@ $config = \Uni\Config::getInstance();
 try {
     $data = \Tk\Db\Data::create();
     if (!$data->get('site.title')) {
-        $data->set('site.title', 'Anatomic Pathology Database');
-        $data->set('site.short.title', 'APD');
+        $data->set('site.title', 'Base TkUni Site');
+        $data->set('site.short.title', 'TkUni');
     }
     if (!$data->get('site.email'))
-        $data->set('site.email', 'anat-vet@unimelb.edu.au');
+        $data->set('site.email', 'fvas-elearning@unimelb.edu.au');
 
     $data->save();
 
