@@ -22,8 +22,6 @@ class Permission extends \Bs\Db\Permission
      */
     const MANAGE_SUBJECT        = 'perm.manage.subject';
 
-
-
     /**
      * Coordinator: Manage settings/students/staff for linked subjects.
      * Advanced access rights to student and other course/subject system data allowed
@@ -49,6 +47,7 @@ class Permission extends \Bs\Db\Permission
     /**
      * Get all available permissions for a user type
      * If type is null then all available permissions should be returns, excluding the type permissions
+     * This is used to populate the select permission lists in forms/tables
      *
      * @param string $type
      * @return array
@@ -69,12 +68,12 @@ class Permission extends \Bs\Db\Permission
                 break;
             default:          // TYPE_STAFF
                 $arr = array(
+                    'Manage Site' => self::MANAGE_SITE,
                     'Manage Staff Records' => self::MANAGE_STAFF,
                     'Course, Subject And Enrollment Settings' => self::MANAGE_SUBJECT,
                     'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
                     'Staff Member is a Lecturer' => self::IS_LECTURER,
                     'Staff Member is a Student Mentor' => self::IS_MENTOR,
-
                     'Manage Site Plugins' => self::MANAGE_PLUGINS,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );

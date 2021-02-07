@@ -338,6 +338,8 @@ class Config extends \Bs\Config
     {
         $form = \Tk\Form::create($formId);
         $form->setDispatcher($this->getEventDispatcher());
+        // TODO: check this does not cause issues
+        $form->setRenderer($this->createFormRenderer($form));
         return $form;
     }
 

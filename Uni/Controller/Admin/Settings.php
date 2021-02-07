@@ -11,6 +11,17 @@ use Uni\Db\Permission;
  */
 class Settings extends \Bs\Controller\Admin\Settings
 {
+    /**
+     * Use this to init the form before execute is called
+     * @param \Tk\Request $request
+     */
+    public function initForm(\Tk\Request $request)
+    {
+
+        $this->getForm()->removeField('site.client.registration');
+        $this->getForm()->removeField('site.client.activation');
+
+    }
 
     public function initActionPanel()
     {
