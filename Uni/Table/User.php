@@ -37,7 +37,7 @@ class User extends \Bs\Table\User
     public function init()
     {
         parent::init();
-        if (!$this->getAuthUser()->isAdmin() && !$this->getAuthUser()->isClient())
+        if (!$this->getAuthUser()->isAdmin() && !$this->getAuthUser()->isClient() && !$this->getAuthUser()->hasPermission(Permission::MANAGE_STAFF))
             $this->removeAction('delete');
 
         if ($this->getTargetType() == \Uni\Db\User::TYPE_STUDENT) {
