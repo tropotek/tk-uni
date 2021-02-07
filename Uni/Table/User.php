@@ -119,6 +119,8 @@ class User extends \Bs\Table\User
             $arr[] = 'username';
             $arr[] = 'barcode';
             $arr[] = 'active';
+            $arr[] = 'mentor';
+            $arr[] = 'subjects';
         }
         $this->findAction('columns')->setUnselected($arr);
 
