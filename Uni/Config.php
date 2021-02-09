@@ -529,13 +529,14 @@ class Config extends \Bs\Config
     }
 
     /**
-     * @param string $type (optional) If set returns only the permissions for that user type otherwise returns all permissions
-     * @return array
+     * @return Permission|null
      */
-    public function getPermissionList($type = '')
+    public function getPermission()
     {
-         return Permission::getPermissionList($type);
+        return \Uni\Db\Permission::getInstance();
     }
+
+
 
     /**
      * @param \Tk\EventDispatcher\EventDispatcher $dispatcher

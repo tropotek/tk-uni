@@ -45,14 +45,10 @@ class Permission extends \Bs\Db\Permission
 
 
     /**
-     * Get all available permissions for a user type
-     * If type is null then all available permissions should be returns, excluding the type permissions
-     * This is used to populate the select permission lists in forms/tables
-     *
-     * @param string $type
-     * @return array
+     * @param string $type (optional) If set returns only the permissions for that user type otherwise returns all permissions
+     * @return array|string[]
      */
-    public static function getPermissionList($type = '')
+    public function getAvailablePermissionList($type = '')
     {
         $arr = array();
         switch ($type) {
@@ -74,7 +70,7 @@ class Permission extends \Bs\Db\Permission
                     'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
                     'Staff Member is a Lecturer' => self::IS_LECTURER,
                     'Staff Member is a Student Mentor' => self::IS_MENTOR,
-                    'Manage Site Plugins' => self::MANAGE_PLUGINS,
+                    //'Manage Site Plugins' => self::MANAGE_PLUGINS,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
         }
@@ -82,18 +78,18 @@ class Permission extends \Bs\Db\Permission
     }
 
     /**
-     * Return the default permission set for creating new user types.
-     *
-     * @param string $type
-     * @return array
+     * @param string $type (optional) If set returns only the permissions for that user type otherwise returns all permissions
+     * @return array|string[]
      */
-    public static function getDefaultPermissionList($type = '')
+    public function getDefaultUserPermissions($type = '')
     {
-        $list = self::getPermissionList($type);
-        if ($type = User::TYPE_STAFF) {
+        $list = array();
+        if ($type = User::TYPE_ADMIN || $type = User::TYPE_CLIENT) {
+            $list = $this->getAvailablePermissionList($type);
+        } else if ($type = User::TYPE_STAFF) {
             $list = array(
                 'Staff Member is a Lecturer' => self::IS_LECTURER,
-                'Manage Site Plugins' => self::MANAGE_PLUGINS,
+                //'Manage Site Plugins' => self::MANAGE_PLUGINS,
                 'Can Masquerade' => self::CAN_MASQUERADE
             );
         }
