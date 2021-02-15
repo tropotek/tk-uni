@@ -329,31 +329,32 @@ class Config extends \Bs\Config
         }
         return '';
     }
-
-    /**
-     * @param string $formId
-     * @return \Tk\Form
-     */
-    public function createForm($formId)
-    {
-        $form = \Tk\Form::create($formId);
-        $form->setDispatcher($this->getEventDispatcher());
-        // TODO: check this does not cause issues
-        $form->setRenderer($this->createFormRenderer($form));
-        return $form;
-    }
-
-    /**
-     * @param \Tk\Form $form
-     * @return \Tk\Form\Renderer\Dom|\Tk\Form\Renderer\Iface
-     */
-    public function createFormRenderer($form)
-    {
-        $obj = \Tk\Form\Renderer\Dom::create($form);
-        $obj->setFieldGroupRenderer($this->getFormFieldGroupRenderer($form));
-        $obj->getLayout()->setDefaultCol('col');
-        return $obj;
-    }
+//
+//    /**
+//     * @param string $formId
+//     * @return \Tk\Form
+//     */
+//    public function createForm($formId)
+//    {
+//        $form = \Tk\Form::create($formId);
+//        $form->setDispatcher($this->getEventDispatcher());
+//        // TODO: check this does not cause issues
+//        $form->setRenderer($this->createFormRenderer($form));
+//        return $form;
+//    }
+//
+//    /**
+//     * @param \Tk\Form $form
+//     * @return \Tk\Form\Renderer\Dom|\Tk\Form\Renderer\Iface
+//     */
+//    public function createFormRenderer($form)
+//    {
+//        $obj = \Tk\Form\Renderer\Dom::create($form);
+//        //$obj = \Tk\Form\Renderer\DomRenderer::create($form);
+//        $obj->setFieldGroupRenderer($this->getFormFieldGroupRenderer($form));
+//        $obj->getLayout()->setDefaultCol('col');
+//        return $obj;
+//    }
 
 
 
