@@ -56,6 +56,14 @@ class Subject extends TableIface
                 $value = $course->getName();
             return $value;
         });
+        $this->appendCell(new Text('enrolled'))->addOnPropertyValue(function ($cell, $obj, $value) {
+            $filter = array('subjectId' => $obj->getId());
+            $filter['type'] = array(\Uni\Db\User::TYPE_STUDENT);
+            $list = $this->getConfig()->getUserMapper()->findFiltered($filter, Tool::create('nameFirst'));
+            $value = $list->count();
+            return $value;
+        });
+
         $this->appendCell(new Email('email'));
         $this->appendCell(Date::createDate('dateStart', \Tk\Date::FORMAT_ISO_DATE));
         $this->appendCell(Date::createDate('dateEnd', \Tk\Date::FORMAT_ISO_DATE));

@@ -169,12 +169,12 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function getUsers()
     {
         $ids = $this->getConfig()->getSubjectMapper()->findUsers($this->getId());
+        if (!count($ids)) return [];
         return $this->getConfig()->getUserMapper()->findFiltered(array('id' => $ids));
     }
 
     /**
      * Enroll/Add students to a subject
-     *
      *
      * @param \Uni\Db\UserIface $user
      * @return Subject
