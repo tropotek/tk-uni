@@ -92,7 +92,7 @@ class Subject extends \Tk\Db\Map\Model implements \Uni\Db\SubjectIface
     public function __construct()
     {
         $this->_TimestampTrait();
-
+        $this->setInstitutionId($this->getConfig()->getInstitutionId());
         $this->dateStart = \Tk\Date::floor()->setDate($this->created->format('Y'), 1, 1);
         $this->dateEnd = \Tk\Date::ceil()->setDate($this->created->format('Y'), 12, 31);
     }
