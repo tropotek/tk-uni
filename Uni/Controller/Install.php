@@ -240,17 +240,6 @@ HTML;
         $this->institution->save();
 
 
-        if ($form->getFieldValue('exampleData') === true) {
-            // TODO: Implement the example data code
-            //\Tk\Alert::addWarning('TODO: Implement the example data code');
-
-            // See if we can run the command testData()
-
-        }
-
-        // remove default course records from install
-        $this->getConfig()->getDb()->exec('TRUNCATE course;');
-
         \Tk\Alert::addSuccess('Site Setup Successfully!');
         $event->setRedirect($this->getRedirectUrl());
 
@@ -265,6 +254,17 @@ HTML;
      */
     protected function doInstall($form, $event)
     {
+
+//        if ($form->getFieldValue('exampleData') === true) {
+//            // TODO: Implement the example data code
+//            //\Tk\Alert::addWarning('TODO: Implement the example data code');
+//
+//            // See if we can run the command testData()
+//
+//        }
+
+        // Do this in yor own sql not her or else add some SQL in the doInstall() function
+        //$this->getConfig()->getDb()->exec('TRUNCATE course;');
 
     }
 
