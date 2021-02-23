@@ -118,7 +118,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             });
             $this->userTable->init();
             $filter = array(
-                'id' => \Uni\Db\SubjectMap::create()->findUsers($this->subject->getId()),
+                'id' => $config->getSubjectMapper()->findUsers($this->subject->getId()),
                 'type' => \Uni\Db\User::TYPE_STUDENT
             );
             if (count($filter['id']))
