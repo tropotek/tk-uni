@@ -61,8 +61,18 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      */
     public function canMasqueradeAs($user, $msqUser)
     {
-        if (!$user->hasPermission(Permission::CAN_MASQUERADE) && !$user->hasType(User::TYPE_ADMIN)) return false;
+        if (
+            (!$user->hasPermission(Permission::CAN_MASQUERADE) &&
+            !$user->hasType(User::TYPE_ADMIN)) ||
+            $user->getId() == $msqUser->getId() ||      // Cannot masquerade as self
+            ($user->hasPermission(Permission::MANAGE_STAFF) && $msqUser->hasPermission(Permission::MANAGE_STAFF))   // Cannot masquerade as another manage staff user
+        )
+            return false;
+
         $b = parent::canMasqueradeAs($user, $msqUser);
+        if (!$b && $user->hasPermission(Permission::MANAGE_STAFF)) {
+            $b = true;
+        }
         // If not admins they must be of the same institution
         if ($user->getInstitutionId() != 0 && $user->getInstitutionId() != $msqUser->getInstitutionId()) {
             $b = false;
