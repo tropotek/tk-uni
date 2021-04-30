@@ -394,14 +394,23 @@ class SubjectMap extends Mapper
             $toolStr = ' '.$this->getToolSql($tool);
         }
 
-        $stm = $this->getDb()->prepare('SELECT a.subject_id, a.uid, a.email, a.username, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL,0,1) as enrolled
+//        $stm = $this->getDb()->prepare('SELECT a.subject_id, a.uid, a.email, a.username, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL,0,1) as enrolled
+//FROM  subject_pre_enrollment a
+//  LEFT JOIN  user b ON (b.email != \'\' AND b.email IS NOT NULL AND b.email = a.email)
+//  LEFT JOIN subject_has_user c ON (b.id = c.user_id AND c.subject_id = ?)
+//WHERE a.subject_id = ? ' . $toolStr);
+//        $stm->execute(array($filter['subjectId'], $filter['subjectId']));
+//        $arr = $stm->fetchAll();
+
+        $sql = sprintf('SELECT a.subject_id, a.uid, a.email, a.username, b.hash, b.id as \'user_id\', IF(c.subject_id IS NULL,0,1) as enrolled
 FROM  subject_pre_enrollment a 
   LEFT JOIN  user b ON (b.email != \'\' AND b.email IS NOT NULL AND b.email = a.email)  
-  LEFT JOIN subject_has_user c ON (b.id = c.user_id AND c.subject_id = ?)
-WHERE a.subject_id = ? ' . $toolStr);
-        $stm->execute(array($filter['subjectId'], $filter['subjectId']));
+  LEFT JOIN subject_has_user c ON (b.id = c.user_id AND c.subject_id = %s)
+WHERE a.subject_id = %s %s', (int)$filter['subjectId'], (int)$filter['subjectId'], $toolStr);
+        $res = $this->getDb()->query($sql);
+        $arr = $res->fetchAll();
 
-        $arr = $stm->fetchAll();
+
         $tool->setFoundRows(count($arr));
         return $arr;
     }
