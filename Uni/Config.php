@@ -493,7 +493,8 @@ class Config extends \Bs\Config
      */
     public function canChangePassword()
     {
-        return (!$this->getSession()->has('auth.password.access') || $this->getSession()->get('auth.password.access'));
+        //return (!$this->getSession()->has('auth.password.access') || $this->getSession()->get('auth.password.access', true));
+        return $this->getSession()->get('auth.password.access', true);
     }
 
     /**

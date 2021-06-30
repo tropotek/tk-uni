@@ -24,11 +24,15 @@ use Uni\Db\Permission;
 class User extends \Bs\Form\User
 {
 
+    protected $isNew = false;
+
+
     /**
      * @throws \Exception
      */
     public function init()
     {
+        $this->isNew = ($this->getUser()->getId() == 0);
         parent::init();
         $this->getField('update')->appendCallback(array($this, 'doSubjectUpdate'));
         $this->getField('save')->appendCallback(array($this, 'doSubjectUpdate'));
@@ -39,8 +43,11 @@ class User extends \Bs\Form\User
             $this->removeField('confPassword');
         }
 
-        $this->appendField(new Field\Input('uid'), 'username')->setLabel('UID')->addCss('tk-input-lock')->setTabGroup($tab)
+        $f = $this->appendField(new Field\Input('uid'), 'username')->setLabel('UID')->setTabGroup($tab)
             ->setNotes('The student or staff number assigned by the institution (if Applicable).');
+        if ($this->getUser()->getId()) {
+            $f->addCss('tk-input-lock');
+        }
 
         if ($this->getUser()->getId() == $this->getConfig()->getAuthUser()->getId()) {
             $this->removeField('active');
@@ -115,8 +122,12 @@ class User extends \Bs\Form\User
                 }
             }
         }
-        
+
         $this->getUser()->save();
+
+        if ($this->isNew && $this->getConfig()->getSubjectId()) {
+            $this->getConfig()->getSubjectMapper()->addUser($this->getConfig()->getSubjectId(), $this->getUser()->getVolatileId());
+        }
     }
 
     /**
