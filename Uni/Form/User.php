@@ -125,6 +125,7 @@ class User extends \Bs\Form\User
 
         $this->getUser()->save();
 
+        // TODO: make sure this does not have any unexpected side effects.
         if ($this->isNew && $this->getConfig()->getSubjectId()) {
             $this->getConfig()->getSubjectMapper()->addUser($this->getConfig()->getSubjectId(), $this->getUser()->getVolatileId());
         }
