@@ -58,13 +58,15 @@ class Edit extends \Uni\Controller\AdminEditIface
         return $this->subject;
     }
 
+    /**
+     * @param \Tk\Request $request
+     * @throws \Exception
+     */
     protected function createForm(\Tk\Request $request)
     {
-
         $this->setForm(\Uni\Form\Subject::create()->setModel($this->subject));
         $this->initForm($request);
         $this->getForm()->execute($request);
-
     }
 
 

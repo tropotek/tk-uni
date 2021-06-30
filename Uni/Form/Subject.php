@@ -81,14 +81,12 @@ class Subject extends \Uni\FormIface
         $this->getConfig()->getSubjectMapper()->mapForm($form->getValues(), $this->getSubject());
 
         // Do Custom Validations
-
         $form->addFieldErrors($this->getSubject()->validate());
         if ($form->hasErrors()) {
             return;
         }
         
         $isNew = !(bool)$this->getSubject()->getId();
-
         $this->getSubject()->setDescription(Str::stripStyles($this->getSubject()->getDescription()));
         $this->getSubject()->save();
 
@@ -96,8 +94,6 @@ class Subject extends \Uni\FormIface
         if ($this->getAuthUser()->isStaff()) {
             $this->getConfig()->getCourseMapper()->addUser($this->getSubject()->getCourseId(), $this->getAuthUser()->getId());
         }
-
-        // Do Custom data saving
 
         \Tk\Alert::addSuccess('Record saved!');
         $event->setRedirect($this->getBackUrl());
