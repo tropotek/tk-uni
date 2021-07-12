@@ -153,10 +153,9 @@ class CourseMap extends Mapper
             $filter->appendWhere('a.id = b.course_id AND b.user_id = %s AND ', (int)$filter['staffId']);
         }
         // TODO
-        if (!empty($filter['active'])) {        // Only with active courses???? (see SubjectMap)
+        if (!empty($filter['active'])) {        // Only with active subjects???? (see SubjectMap)
 
         }
-
 
         if (!empty($filter['exclude'])) {
             $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
