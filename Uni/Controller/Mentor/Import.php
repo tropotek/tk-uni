@@ -6,6 +6,9 @@ use Tk\Request;
 use Dom\Template;
 use \Tk\Form\Field;
 use \Tk\Form\Event;
+use Tk\Table;
+use Uni\Uri;
+use Uni\Util\MentorTool;
 
 
 /**
@@ -16,6 +19,10 @@ use \Tk\Form\Event;
 class Import extends \Uni\Controller\AdminEditIface
 {
 
+    /**
+     * @var null|Table
+     */
+    protected $mentorTable = null;
 
     /**
      * @throws \Exception
@@ -47,6 +54,26 @@ class Import extends \Uni\Controller\AdminEditIface
         //$this->getForm()->load($this->data->toArray());
         $this->getForm()->execute();
 
+        if ($request->has('updateList')) {
+            MentorTool::getInstance()->executeImport();
+            Uri::create()->remove('updateList')->redirect();
+        }
+
+        //$this->mentorTable = Table::create('mentorImport');
+        $this->mentorTable = $this->getConfig()->createTable('mentorImport');
+        $this->getConfig()->createTableRenderer($this->mentorTable);
+        $this->mentorTable->appendCell(Table\Cell\Text::create('row'))->setLabel('#')->addOnPropertyValue(
+            function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
+                return $cell->getRow()->getRowId()+1;
+            }
+        );
+        $this->mentorTable->appendCell(Table\Cell\Text::create('mentor_id'));
+        $this->mentorTable->appendCell(Table\Cell\Text::create('student_id'));
+        $this->mentorTable->appendAction(Table\Action\Csv::create());
+        $this->mentorTable->appendAction(Table\Action\Link::createLink('update', Uri::create()->set('updateList'), 'fa fa-refresh'))->setAttr('title', 'Assign mentor associations.');
+
+        $list = MentorTool::getInstance()->find(null, null, \Pdo::FETCH_ASSOC);
+        $this->mentorTable->setList($list);
 
     }
 
@@ -63,8 +90,7 @@ class Import extends \Uni\Controller\AdminEditIface
         $file = $form->getField('csvFile');
         $csv = '';
         if ($file && $file->hasFile()) {
-
-            $csv = file_get_contents($file->getUploadedFile()->getRealPath());
+            $csv = trim(file_get_contents($file->getUploadedFile()->getRealPath()));
         } else if (!empty($values['csvText'])) {
             $csv = $values['csvText'];
         }
@@ -78,21 +104,19 @@ class Import extends \Uni\Controller\AdminEditIface
             return;
         }
 
-        if ($form->getFieldValue('clear')) {
-            $this->getDb()->quote('TRUNCATE user_mentor');
-            \Tk\Log::info('Clearing existing mentor list');
-        }
+        $mentorTool = MentorTool::getInstance();
+        $mentorTool->setCsv($csv);
+        $mentorTool->executeImport($form->getFieldValue('clear'));
 
-        $results = $this->executeCsv($csv);
 
-        \Tk\Alert::addInfo('Mentor CSV list imported: Success['.count($results['success']).'] Fail['.count($results['fail']).']');
+        //\Tk\Alert::addInfo('Mentor CSV list imported: Success['.count($results['success']).'] Fail['.count($results['fail']).']');
 
         //$this->getSession()->set('csvMentorImportResult', $results);
         //vd($results['error'], $results['remCsv']);
-        if (count($results['error'])) {
-            $err = trim(implode("<br/>\n", $results['error']), "<br/>\n");
-            \Tk\Alert::addWarning('Import Error: <br/>' . $err . '<br/>Remaining CSV: <br/><pre>'.$results['remCsv'].'</pre>');
-        }
+//        if (count($results['error'])) {
+//            $err = trim(implode("<br/>\n", $results['error']), "<br/>\n");
+//            \Tk\Alert::addWarning('Import Error: <br/>' . $err . '<br/>Remaining CSV: <br/><pre>'.$results['remCsv'].'</pre>');
+//        }
 
         $event->setRedirect(\Tk\Uri::create());
     }
@@ -184,6 +208,10 @@ class Import extends \Uni\Controller\AdminEditIface
 
         $template->appendTemplate('panel', $this->getForm()->show());
 
+        if ($this->mentorTable) {
+            $template->appendTemplate('right-panel-01', $this->mentorTable->getRenderer()->show());
+        }
+
         return $template;
     }
 
@@ -195,21 +223,31 @@ class Import extends \Uni\Controller\AdminEditIface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="">
 
-  <div class="tk-panel" data-panel-icon="fa fa-users" var="panel"></div>
-  
+<div class="row">
+  <div class="col-8" var="left-panel">
     <div class="tk-panel" data-panel-title="Example CSV Format" data-panel-icon="fa fa-info" var="info">
-      <pre>mentorId, studentId
+<pre style="border: 1px solid #CCC; padding: 5px;background: #EFEFEF;">mentorId, studentId  // (optional)
 <b>115254,114241242</b>
 username,114241242
 email@example.com,114241242
 </pre>
-        <p>Both fields can be either staff/student numbers, emails, or username`s.</p>
-        <p>Recommended: Use the Staff Number for the mentorId and the Student Number for the studentId</p>
-    
+    <p>
+      Both fields can be either staff/student numbers, emails, or username`s.<br/>
+      Recommended: Use the Staff Number for the mentorId and the Student Number for the studentId
+    </p>
     </div>
+    <div class="tk-panel" data-panel-icon="fa fa-users" var="panel"></div>
+  </div>
+  <div class="col-4" var="right-panel">
 
+    <div class="tk-panel" data-panel-title="Current Unassociated Mentor List" data-panel-icon="fa fa-group" var="right-panel-01">
+      <p><small>
+        This is the current unassociated mentor lookup list. As users log in associations are updated then removed from this list.<br/>
+        NOTE: You may not see the student on your mentor list until they log in at least once.
+      </small></p>
+    </div>
+  </div>
 </div>
 HTML;
 
