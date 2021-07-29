@@ -85,8 +85,10 @@ class Manager extends \Uni\Controller\AdminManagerIface
         $this->setTable($this->createTable());
         if (!$this->getAuthUser()->isStudent())
             $this->getTable()->getActionCell()->removeButton('Masquerade');
+
         $this->initTable();
         $this->getTable()->init();
+        $this->postInitTable();
 
 
         if ($this->getTargetType() == User::TYPE_STAFF) {
@@ -176,6 +178,12 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
 
     public function initTable()
+    {
+        // Do any override inits here
+    }
+
+
+    public function postInitTable()
     {
         // Do any override inits here
     }
