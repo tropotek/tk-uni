@@ -184,9 +184,9 @@ class UserMap extends \Bs\Db\UserMap
         }
 
         if (!empty($filter['courseId'])) {
-            $filter->appendFrom(', %s e', $this->quoteTable('course_has_user'));
-            $filter->appendWhere('a.id = e.user_id AND ');
-            $w = $this->makeMultiQuery($filter['courseId'], 'e.course_id');
+            $filter->appendFrom(', %s f', $this->quoteTable('course_has_user'));
+            $filter->appendWhere('a.id = f.user_id AND ');
+            $w = $this->makeMultiQuery($filter['courseId'], 'f.course_id');
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
