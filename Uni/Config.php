@@ -177,6 +177,7 @@ class Config extends \Bs\Config
                 }
                 $route = $this->getRequest()->attributes->get('_route');
                 $routePath = $this->getRouteCollection()->get($route)->getPath();
+                // TODO: this is kinda odd and does not make sense to have the rout path if using the session (code need optimising)
                 if (!$subject && $this->getSession()->has(self::SID_SUBJECT) && strpos($routePath, '/{subjectCode}') !== false) {
                     $subject = $this->getSubjectMapper()->find(self::getSession()->get(self::SID_SUBJECT));
                 }
@@ -198,8 +199,9 @@ class Config extends \Bs\Config
     public function getSubjectId()
     {
         $sid = 0;
-        if ($this->getSubject())
+        if ($this->getSubject()) {
             $sid = $this->getSubject()->getId();
+        }
         return (int)$sid;
     }
 
