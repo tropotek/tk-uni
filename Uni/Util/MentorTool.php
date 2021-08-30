@@ -60,6 +60,7 @@ class MentorTool
             fputs($temp, $csv);
             rewind($temp);
             while ($csvRow = fgetcsv($temp)) {
+                vd($csvRow);
                 $row = array_map('trim', $csvRow);
                 if (count($row) != 2 || strtolower($row[0]) == 'mentorid' || strtolower($csvRow[1]) == 'studentid') continue;  // ignore header row
                 $rowId++;
@@ -85,7 +86,7 @@ class MentorTool
         $rowId = -1;
 
         if ($clearExisting) {
-            $this->getDb()->quote('TRUNCATE user_mentor');
+            $this->getDb()->query('TRUNCATE user_mentor');
             \Tk\Log::info('Clearing existing mentor list');
         }
 

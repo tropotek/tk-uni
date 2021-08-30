@@ -94,7 +94,6 @@ class Import extends \Uni\Controller\AdminEditIface
         } else if (!empty($values['csvText'])) {
             $csv = $values['csvText'];
         }
-
         if (!$csv) {
             $form->addFieldError('csvFile', 'Please upload a valid CSV file.');
             $form->addFieldError('csvText', 'Please past valid CSV text.');
@@ -125,13 +124,13 @@ class Import extends \Uni\Controller\AdminEditIface
      * @param string $csv
      * @return array|null
      * @throws \Exception
+     * @deprecated: moved to MentorTool
      */
     public function executeCsv($csv)
     {
         $csv = trim($csv);
         if (!$csv) throw new \Tk\Exception('Empty CSV string');
         try {
-
             $success = array();
             $fail = array();
             $error = array();
