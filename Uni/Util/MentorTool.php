@@ -49,18 +49,18 @@ class MentorTool
     public function setCsv(string $csv)
     {
         if (!$csv) throw new \Tk\Exception('Empty CSV string');
-        $csv = trim(utf8_encode($csv));
+        $csv = mb_convert_encoding(trim($csv), 'UTF-8');
         $rowId = -1;
-
         // clear import table and add new ones
         $this->remove();
-
         try {
             $temp = fopen('php://temp', 'r+');
             fputs($temp, $csv);
             rewind($temp);
             while ($csvRow = fgetcsv($temp)) {
-                vd($csvRow);
+                // HAC FIXK: for some reason the first row is getting a '﻿' char prepended, could be a stream issue
+                $csvRow = str_replace('﻿', '', $csvRow);
+
                 $row = array_map('trim', $csvRow);
                 if (count($row) != 2 || strtolower($row[0]) == 'mentorid' || strtolower($csvRow[1]) == 'studentid') continue;  // ignore header row
                 $rowId++;
