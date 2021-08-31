@@ -1,66 +1,9 @@
 <?php
-
-
 namespace Uni\Util;
-
 
 use Tk\ConfigTrait;
 
 /**
- *
- * Here is a macro for the FVAS mentor excell spreadsheet:
- * Sub toEmsCsv()
- *
-Application.ScreenUpdating = False
-Const NewSheet = "csv"
-Const EmailCol = "D"
-Const sn1Col = "E"
-Const sn2Col = "J"
-Const FirstRow = 4
-Dim SrcSheet As Worksheet
-Dim TrgSheet As Worksheet
-Dim SrcRow As Long
-Dim LastRow As Long
-Dim TrgRow As Long
-Dim StaffEmail As Variant
-
-Set SrcSheet = Worksheets("Sheet1")
-' Create new blank csv sheet
-For Each Sheet In ActiveWorkbook.Worksheets
-If Sheet.Name = NewSheet Then
-Application.DisplayAlerts = False
-Sheet.Delete
-Application.DisplayAlerts = True
-End If
-Next Sheet
-Set TrgSheet = Worksheets.Add(After:=Worksheets(Worksheets.Count))
-TrgSheet.Name = NewSheet
-
-' Loop through the rows
-Set TrgSheet = Worksheets(NewSheet)
-LastRow = SrcSheet.Cells(SrcSheet.Rows.Count, "I").End(xlUp).Row
-For SrcRow = FirstRow To LastRow
-
-If Not IsEmpty(SrcSheet.Cells(SrcRow, EmailCol)) Then
-StaffEmail = SrcSheet.Cells(SrcRow, EmailCol)
-End If
-
-If Not IsEmpty(SrcSheet.Cells(SrcRow, sn1Col)) Then
-TrgRow = TrgSheet.Cells(TrgSheet.Rows.Count, "A").End(xlUp).Row + 1
-TrgSheet.Cells(TrgRow, "A") = StaffEmail
-TrgSheet.Cells(TrgRow, "B") = SrcSheet.Cells(SrcRow, sn1Col)
-End If
-
-If Not IsEmpty(SrcSheet.Cells(SrcRow, sn2Col)) Then
-TrgRow = TrgSheet.Cells(TrgSheet.Rows.Count, "A").End(xlUp).Row + 1
-TrgSheet.Cells(TrgRow, "A") = StaffEmail
-TrgSheet.Cells(TrgRow, "B") = SrcSheet.Cells(SrcRow, sn2Col)
-End If
-
-Next SrcRow
-Application.ScreenUpdating = True
-End Sub
-
  *
  */
 class MentorTool
