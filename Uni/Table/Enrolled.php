@@ -107,7 +107,7 @@ class Enrolled extends \Uni\TableIface
         $this->appendCell(new \Tk\Table\Cell\Date('created'));
 
         // Actions
-        $this->appendAction(\Tk\Table\Action\Delete::create('delete')->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
+        $this->appendAction(\Tk\Table\Action\Delete::create('delete')->setLabel('Un-enroll')->addOnDelete(function (\Tk\Table\Action\Delete $action, $obj) {
             /** @var \Uni\Db\User $obj */
             $config = \Uni\Config::getInstance();
             $subject = $config->getSubject();
