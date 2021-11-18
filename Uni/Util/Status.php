@@ -63,7 +63,8 @@ class Status
                 if (!$status->getCourseId() && method_exists($model, 'getSubject')) {
                     /** @var Subject $subject */
                     $subject = $model->getSubject();
-                    $status->setCourseId($subject->getCourseId());
+                    if ($subject)
+                        $status->setCourseId($subject->getCourseId());
                 }
             } else if ($status->getConfig()->getSubjectId()) {
                 $status->setSubjectId($status->getConfig()->getSubjectId());
