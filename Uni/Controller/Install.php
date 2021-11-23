@@ -164,7 +164,7 @@ HTML;
             'institutionId' => 0
         ), $this->adminUser);
         // load Institution
-        $this->getConfig()->getUserMapper()->mapForm(array(
+        $this->getConfig()->getInstitutionMapper()->mapForm(array(
             'email' => $form->getFieldValue('site.email'),
             'name' => $form->getFieldValue('ins-name'),
             'description' => sprintf('<p>%s</p>', $form->getFieldValue('ins-name'))
