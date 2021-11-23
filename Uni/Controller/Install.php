@@ -172,6 +172,7 @@ HTML;
         // load Institution User
         $this->getConfig()->getUserMapper()->mapForm(array(
             'email' => $form->getFieldValue('site.email'),
+            'nameFirst' => $form->getFieldValue('ins-name'),
             'institutionId' => 0,
             'username' => $form->getFieldValue('ins-username')
         ), $this->instUser);
