@@ -61,8 +61,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
      */
     public function canMasqueradeAs($user, $msqUser)
     {
-
-
+        
         if (
             (!$user->hasType([User::TYPE_ADMIN, User::TYPE_CLIENT]) && !$user->hasPermission(Permission::CAN_MASQUERADE)) ||
             $user->getId() == $msqUser->getId() ||      // Cannot masquerade as self
