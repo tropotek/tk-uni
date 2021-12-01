@@ -440,20 +440,24 @@ WHERE a.subject_id = %s %s', (int)$filter['subjectId'], (int)$filter['subjectId'
      */
     public function hasPreEnrollment($subjectId, $email = '', $uid = '', $username = '')
     {
+        $rc = 0;
         if ($email) {
             $stm = $this->getDb()->prepare('SELECT * FROM subject_pre_enrollment WHERE subject_id = ? AND email = ?');
             $stm->execute(array($subjectId, $email));
-            if ($stm->rowCount()) return true;
+            $rc = $stm->rowCount();
         }
         if ($uid) {
             $stm = $this->getDb()->prepare('SELECT * FROM subject_pre_enrollment WHERE subject_id = ? AND uid = ?');
             $stm->execute(array($subjectId, $uid));
-            if ($stm->rowCount()) return true;
+            $rc = $stm->rowCount();
         }
         if ($username) {
             $stm = $this->getDb()->prepare('SELECT * FROM subject_pre_enrollment WHERE subject_id = ? AND username = ?');
             $stm->execute(array($subjectId, $username));
-            if ($stm->rowCount()) return true;
+            $rc = $stm->rowCount();
+        }
+        if ($rc) {
+            return true;
         }
         return false;
     }

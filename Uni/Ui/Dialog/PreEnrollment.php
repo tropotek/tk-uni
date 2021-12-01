@@ -119,7 +119,6 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
                 $info[] = $i . ' - User ' . $email . ' already enrolled, nothing done.';
             }
         }
-
         if (count($info)) {
             \Tk\Alert::addInfo(count($info) . ' records already enrolled and ignored.');
         }
