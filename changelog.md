@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.92 [2021-12-07]:
+-------------------------------
+  - Tagging and releasing branch `3.4` with version `3.4.90`.
+
+
 <<<<<<< HEAD
 Ver 3.4.90 [2021-11-26]:
 =======
