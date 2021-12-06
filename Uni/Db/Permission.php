@@ -78,6 +78,8 @@ class Permission extends \Bs\Db\Permission
     }
 
     /**
+     * Return the default user permission when creating a user
+     *
      * @param string $type (optional) If set returns only the permissions for that user type otherwise returns all permissions
      * @return array|string[]
      */
