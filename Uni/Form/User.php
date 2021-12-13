@@ -34,8 +34,8 @@ class User extends \Bs\Form\User
     {
         $this->isNew = ($this->getUser()->getId() == 0);
         parent::init();
-        $this->getField('update')->appendCallback(array($this, 'doSubjectUpdate'));
-        $this->getField('save')->appendCallback(array($this, 'doSubjectUpdate'));
+//        $this->getField('update')->appendCallback(array($this, 'doSubjectUpdate'));
+//        $this->getField('save')->appendCallback(array($this, 'doSubjectUpdate'));
 
         $tab = 'Details';
         if (!$this->getConfig()->canChangePassword()) {
@@ -97,8 +97,11 @@ class User extends \Bs\Form\User
      * @param Event\Iface $event
      * @throws \Exception
      */
-    public function doSubjectUpdate($form, $event)
+    //public function doSubjectUpdate($form, $event)
+    public function doSubmit($form, $event)
     {
+        parent::doSubmit($form, $event);
+
         if ($form->hasErrors()) return;
 
         if ($form->getField('selCourse')) {
@@ -115,7 +118,15 @@ class User extends \Bs\Form\User
         if ($form->getField('selSubject')) {
             // Add user to subjects
             $selected = $form->getFieldValue('selSubject');
+
             if ($this->getUser()->getId() && is_array($selected)) {
+                // Get existing subjects and remove pre-enrollment
+                $enrolled = $this->getConfig()->getSubjectMapper()->findByUserId($this->getUser()->getId());
+                foreach ($enrolled as $subject) {
+                    if (in_array($subject->getId(), $selected)) continue;
+                    $this->getConfig()->getSubjectMapper()->removePreEnrollment($subject->getId(), $this->getUser()->getEmail(), $this->getUser()->getUid(), $this->getUser()->getUsername());
+                }
+
                 $this->getConfig()->getSubjectMapper()->removeUser(null, $this->getUser()->getId());
                 foreach ($selected as $subjectId) {
                     $this->getConfig()->getSubjectMapper()->addUser($subjectId, $this->getUser()->getId());
