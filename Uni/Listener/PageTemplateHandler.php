@@ -3,6 +3,7 @@ namespace Uni\Listener;
 
 
 use Tk\ConfigTrait;
+use Uni\Uri;
 
 /**
  * This object helps cleanup the structure of the controller code
@@ -35,10 +36,17 @@ class PageTemplateHandler extends \Bs\Listener\PageTemplateHandler
             if ($user) {
                 $institutionId = $this->getConfig()->getInstitutionId();
                 $subjectId = $this->getConfig()->getSubjectId();
+
                 $js = <<<JS
 config.subjectId = $subjectId;
 config.institutionId = $institutionId;
+
 JS;
+                if ($this->getConfig()->getSubjectId()) {
+                    $subjectUrl = Uri::createSubjectUrl('/', $this->getConfig()->getSubject())->getRelativePath();
+                    $js .= 'config.subjectUrl = ' . $subjectUrl . ';';
+                }
+
                 $template->appendJs($js, array('data-jsl-priority' => -1000));
             }
 
