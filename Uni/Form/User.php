@@ -119,17 +119,20 @@ class User extends \Bs\Form\User
             // Add user to subjects
             $selected = $form->getFieldValue('selSubject');
 
-            if ($this->getUser()->getId() && is_array($selected)) {
+            //if ($this->getUser()->getId() && is_array($selected)) {
+            if ($this->getUser()->getId()) {
                 // Get existing subjects and remove pre-enrollment
                 $enrolled = $this->getConfig()->getSubjectMapper()->findByUserId($this->getUser()->getId());
                 foreach ($enrolled as $subject) {
-                    if (in_array($subject->getId(), $selected)) continue;
+                    if (is_array($selected) && in_array($subject->getId(), $selected)) continue;
                     $this->getConfig()->getSubjectMapper()->removePreEnrollment($subject->getId(), $this->getUser()->getEmail(), $this->getUser()->getUid(), $this->getUser()->getUsername());
                 }
 
                 $this->getConfig()->getSubjectMapper()->removeUser(null, $this->getUser()->getId());
-                foreach ($selected as $subjectId) {
-                    $this->getConfig()->getSubjectMapper()->addUser($subjectId, $this->getUser()->getId());
+                if (is_array($selected)) {
+                    foreach ($selected as $subjectId) {
+                        $this->getConfig()->getSubjectMapper()->addUser($subjectId, $this->getUser()->getId());
+                    }
                 }
             }
         }
