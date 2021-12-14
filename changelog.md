@@ -2,6 +2,12 @@
 
 Ver 3.4.96 [2021-12-15]:
 -------------------------------
+  - Merge branch '3.4' of ssh://github.com/tropotek/tk-uni into 3.4
+  - Tagging and releasing branch `3.4` with version `3.4.96`.
+
+
+Ver 3.4.96 [2021-12-15]:
+-------------------------------
 
 
 Ver 3.4.94 [2021-12-14]:
