@@ -74,7 +74,7 @@ class MasqueradeHandler extends \Bs\Listener\MasqueradeHandler
             $b = true;
         }
         // If not admins they must be of the same institution
-        if ($user->getAssessmentId() != 0 && $user->getAssessmentId() != $msqUser->getAssessmentId()) {
+        if ($user->getInstitutionId() != 0 && $user->getInstitutionId() != $msqUser->getInstitutionId()) {
             $b = false;
         }
         return $b;

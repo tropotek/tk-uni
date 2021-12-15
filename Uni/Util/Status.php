@@ -38,7 +38,7 @@ class Status
         // Auto set the subject and Course ID's if possible, when not possible execute should be set to false and set manually
         if (!$status->getInstitutionId()) {
             if (method_exists($model, 'getInstitutionId')) {
-                $status->setInstitutionId($model->getAssessmentId());
+                $status->setInstitutionId($model->getInstitutionId());
             } else if ($status->getConfig()->getInstitutionId()) {
                 $status->setInstitutionId($status->getConfig()->getInstitutionId());
             }
@@ -50,7 +50,7 @@ class Status
                 if (!$status->getInstitutionId() && method_exists($model, 'getCourse')) {
                     /** @var Course $course */
                     $course = $model->getCourse();
-                    $status->setCourseId($course->getAssessmentId());
+                    $status->setCourseId($course->getInstitutionId());
                 }
             } else if ($status->getConfig()->getCourseId()) {
                 $status->setCourseId($status->getConfig()->getCourseId());

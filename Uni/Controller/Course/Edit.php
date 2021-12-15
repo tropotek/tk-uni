@@ -48,7 +48,7 @@ class Edit extends AdminEditIface
     {
         if (!$this->course) {
             $this->course = new \Uni\Db\Course();
-            $this->course->setAssessmentId($this->getConfig()->getInstitutionId());
+            $this->course->setInstitutionId($this->getConfig()->getInstitutionId());
             if ($this->getConfig()->getRequest()->get('courseId')) {
                 $this->course = $this->getConfig()->getCourseMapper()->find($this->getConfig()->getRequest()->get('courseId'));
             }

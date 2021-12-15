@@ -62,7 +62,7 @@ class Edit extends \Uni\Controller\AdminEditIface
 
         $this->user = $this->getConfig()->createUser();
         if ($this->targetType != \Uni\Db\User::TYPE_ADMIN && $this->targetType != \Uni\Db\User::TYPE_CLIENT) {
-            $this->user->setAssessmentId($this->getConfig()->getInstitutionId());
+            $this->user->setInstitutionId($this->getConfig()->getInstitutionId());
         }
         $this->user->setType($this->targetType);
 
@@ -70,7 +70,7 @@ class Edit extends \Uni\Controller\AdminEditIface
             $this->user = $this->getConfig()->getUserMapper()->find($request->get('userId'));
             if (!$this->user)
                 throw new \Tk\Exception('Invalid user account.');
-            if ($this->getAuthUser()->isStaff() && $this->getAuthUser()->getAssessmentId() != $this->user->getAssessmentId())
+            if ($this->getAuthUser()->isStaff() && $this->getAuthUser()->getInstitutionId() != $this->user->getInstitutionId())
                 throw new \Tk\Exception('Invalid system details');
         }
 

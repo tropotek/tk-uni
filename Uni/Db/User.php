@@ -47,7 +47,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function getDataPath()
     {
-        if ($this->getAssessmentId()) {
+        if ($this->getInstitutionId()) {
             return sprintf('%s/user/%s', $this->getInstitution()->getDataPath(), $this->getVolatileId());
         }
         return sprintf('user/%s', $this->getVolatileId());
@@ -61,7 +61,7 @@ class User extends \Bs\Db\User implements UserIface
      */
     public function generateHash($isTemp = false)
     {
-        $key = sprintf('%s%s%s', $this->getVolatileId(), $this->getAssessmentId(), $this->getUsername());
+        $key = sprintf('%s%s%s', $this->getVolatileId(), $this->getInstitutionId(), $this->getUsername());
         if ($isTemp) {
             $key .= date('-YmdHis');
         }
@@ -75,7 +75,7 @@ class User extends \Bs\Db\User implements UserIface
     {
         if (!$this->_institution) {
             try {
-                $this->_institution = $this->getConfig()->getInstitutionMapper()->find($this->getAssessmentId());
+                $this->_institution = $this->getConfig()->getInstitutionMapper()->find($this->getInstitutionId());
                 if (!$this->_institution && $this->isClient()) {
                     $this->_institution = $this->getConfig()->getInstitutionMapper()->findByUserId($this->getId());
                 }
@@ -189,7 +189,7 @@ class User extends \Bs\Db\User implements UserIface
         $errors = array();
         $usermap = $this->getConfig()->getUserMapper();
 
-        if (!$this->getAssessmentId() && !$this->isAdmin() && !$this->isClient()) {
+        if (!$this->getInstitutionId() && !$this->isAdmin() && !$this->isClient()) {
             $errors['institutionId'] = 'Invalid field institutionId value';
         }
 
@@ -200,7 +200,7 @@ class User extends \Bs\Db\User implements UserIface
         if (!$this->getUsername()) {
             $errors['username'] = 'Invalid field username value';
         } else {
-            $dup = $usermap->findByUsername($this->getUsername(), $this->getAssessmentId());
+            $dup = $usermap->findByUsername($this->getUsername(), $this->getInstitutionId());
             if ($dup && $dup->getId() != $this->getId()) {
                 $errors['username'] = 'This username is already in use';
             }
@@ -214,10 +214,10 @@ class User extends \Bs\Db\User implements UserIface
                 $errors['email'] = 'Please enter a valid email address';
         }
         if ($this->getConfig()->get('system.auth.email.unique') && $this->getEmail()) {
-            $dup = $usermap->findByEmail($this->getEmail(), $this->getAssessmentId());
+            $dup = $usermap->findByEmail($this->getEmail(), $this->getInstitutionId());
             $dup = $usermap->findFiltered(array(
                 'email' => $this->getEmail(),
-                'institutionId' => $this->getAssessmentId(),
+                'institutionId' => $this->getInstitutionId(),
                 'type' => $this->getType()
             ))->current();
             if ($dup && $dup->getId() != $this->getId()) {
@@ -225,7 +225,7 @@ class User extends \Bs\Db\User implements UserIface
             }
         }
         if ($this->getUid()) {
-            $dup = $usermap->findByUid($this->getUid(), $this->getAssessmentId());
+            $dup = $usermap->findByUid($this->getUid(), $this->getInstitutionId());
             if ($dup && $dup->getId() != $this->getId()) {
                 $errors['uid'] = 'This UID is already in use';
             }

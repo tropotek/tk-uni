@@ -76,7 +76,7 @@ class User extends \Bs\Table\User
                     /** @var $obj \Uni\Db\User */
                     $subjectList = $obj->getConfig()->getSubjectMapper()->findFiltered(array(
                         'studentId' => $obj->getId(),
-                        'institutionId' => $obj->getAssessmentId()
+                        'institutionId' => $obj->getInstitutionId()
                     ), \Tk\Db\Tool::create('dateStart DESC'));
                     $html = array();
                     foreach ($subjectList as $subject) {

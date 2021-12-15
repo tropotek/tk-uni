@@ -168,7 +168,7 @@ class Config extends \Bs\Config
                 } else if ($this->getRequest()->has('subjectId')) {
                     /** @var Db\Subject $c */
                     $c = $this->getSubjectMapper()->find($this->getRequest()->get('subjectId'));
-                    if ($c && $this->getInstitution() && $c->getAssessmentId() == $this->getInstitution()->getId()) {
+                    if ($c && $this->getInstitution() && $c->getInstitutionId() == $this->getInstitution()->getId()) {
                         $subject = $c;
                     }
                 }
