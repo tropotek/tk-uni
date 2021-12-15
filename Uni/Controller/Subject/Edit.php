@@ -41,14 +41,14 @@ class Edit extends \Uni\Controller\AdminEditIface
             $this->subject = $this->getConfig()->getSubject();
             if (!$this->subject) {
                 $this->subject = $this->getConfig()->createSubject();
-                $this->subject->setInstitutionId($this->getConfig()->getInstitutionId());
+                $this->subject->setAssessmentId($this->getConfig()->getInstitutionId());
                 if ($this->getRequest()->has('courseId')) {
                     $this->subject->setCourseId($this->getRequest()->get('courseId'));
                 }
                 $this->subject->setEmail($this->getConfig()->getInstitution()->getEmail());
                 if ($request->get('subjectId')) {
                     $this->subject = $this->getConfig()->getSubjectMapper()->find($request->get('subjectId'));
-                    if ($this->getConfig()->getInstitutionId() != $this->subject->getInstitutionId()) {
+                    if ($this->getConfig()->getInstitutionId() != $this->subject->getAssessmentId()) {
                         \Tk\Alert::addError('You do not have permission to edit this subject.');
                         \Uni\Uri::createHomeUrl('/index.html')->redirect();
                     }

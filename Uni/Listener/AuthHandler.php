@@ -195,7 +195,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
                         if (!$course) {
                             // Create a new Course and Subject here if needed
                             $course = $config->createCourse();
-                            $course->setInstitutionId($adapter->getInstitution()->getId());
+                            $course->setAssessmentId($adapter->getInstitution()->getId());
                             $course->setName($subjectData['name']);
                             $course->setEmail($subjectData['email']);
                             $course->setCode($subjectData['courseCode']);

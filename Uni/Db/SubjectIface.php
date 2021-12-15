@@ -14,7 +14,7 @@ interface SubjectIface extends \Tk\Db\ModelInterface, \Tk\ValidInterface
     /**
      * @return int
      */
-    public function getInstitutionId();
+    public function getAssessmentId();
 
     /**
      * @return InstitutionIface

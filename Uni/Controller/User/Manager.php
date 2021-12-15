@@ -149,8 +149,8 @@ class Manager extends \Uni\Controller\AdminManagerIface
         }
 
         $filter = array();
-        if ($this->getAuthUser()->getInstitutionId()) {
-            $filter['institutionId'] = $this->getAuthUser()->getInstitutionId();
+        if ($this->getAuthUser()->getAssessmentId()) {
+            $filter['institutionId'] = $this->getAuthUser()->getAssessmentId();
         } else if ($this->getAuthUser()->isClient()) {
             $filter['institutionId'] = $this->getConfig()->getInstitutionId();
         }

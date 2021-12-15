@@ -152,7 +152,7 @@ class EnrollmentManager extends AdminIface
             $config = Config::getInstance();
             $data = $config->$this->getRequest()->all();
             $subject = $config->getSubject();
-            $user = $config->getUserMapper()->find($data['selectedId'], $subject->getInstitutionId());
+            $user = $config->getUserMapper()->find($data['selectedId'], $subject->getAssessmentId());
             if (!$user)
                 throw new \Tk\Exception('Invalid user selected');
             if (!$user || !$user->isStudent()) {
