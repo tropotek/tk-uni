@@ -84,7 +84,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
         $this->setTable($this->createTable());
         if (!$this->getAuthUser()->isStudent())
-            $this->getTable()->getActionCell()->removeButton('Masquerade');
+            $this->getTable()->getActionCell()->removeButton($this->getTable()->getActionCell()->findButtonByName('Masquerade'));
 
         $this->initTable();
         $this->getTable()->init();
