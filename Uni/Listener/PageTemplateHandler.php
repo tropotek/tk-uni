@@ -43,7 +43,7 @@ config.institutionId = $institutionId;
 
 JS;
                 if ($this->getConfig()->getSubjectId()) {
-                    $subjectUrl = Uri::createSubjectUrl('/', $this->getConfig()->getSubject())->getRelativePath();
+                    $subjectUrl = Uri::createSubjectUrl('/', $this->getConfig()->getSubject())->getPath();
                     $js .= 'config.subjectUrl = \'' . $subjectUrl . '\';';
                 }
 
