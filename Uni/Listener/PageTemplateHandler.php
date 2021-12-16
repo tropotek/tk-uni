@@ -44,7 +44,7 @@ config.institutionId = $institutionId;
 JS;
                 if ($this->getConfig()->getSubjectId()) {
                     $subjectUrl = Uri::createSubjectUrl('/', $this->getConfig()->getSubject())->getRelativePath();
-                    $js .= 'config.subjectUrl = ' . $subjectUrl . ';';
+                    $js .= 'config.subjectUrl = \'' . $subjectUrl . '\';';
                 }
 
                 $template->appendJs($js, array('data-jsl-priority' => -1000));
