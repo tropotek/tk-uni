@@ -138,7 +138,7 @@ class User extends \Bs\Form\User
 
         $this->getUser()->save();
 
-        // TODO: make sure this does not have any unexpected side effects.
+        // Add the user to the subject/course
         if ($this->isNew && $this->getConfig()->getSubjectId()) {
             if ($this->getUser()->isStudent()) {
                 $this->getConfig()->getSubjectMapper()->addUser($this->getConfig()->getSubjectId(), $this->getUser()->getVolatileId());
