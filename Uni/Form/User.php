@@ -52,7 +52,6 @@ class User extends \Bs\Form\User
         if ($this->getUser()->getId() == $this->getConfig()->getAuthUser()->getId()) {
             $this->removeField('active');
         }
-
         // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
         // TODO: This needs to be replaced with a dialog box and search feature so it works for a large number of subjects
         // TODO: done it twice so it is becoming something that needs to be looked at soon..... ;-)
@@ -141,7 +140,11 @@ class User extends \Bs\Form\User
 
         // TODO: make sure this does not have any unexpected side effects.
         if ($this->isNew && $this->getConfig()->getSubjectId()) {
-            $this->getConfig()->getSubjectMapper()->addUser($this->getConfig()->getSubjectId(), $this->getUser()->getVolatileId());
+            if ($this->getUser()->isStudent()) {
+                $this->getConfig()->getSubjectMapper()->addUser($this->getConfig()->getSubjectId(), $this->getUser()->getVolatileId());
+            } else if ($this->getUser()->isStaff()) {
+                $this->getConfig()->getCourseMapper()->addUser($this->getConfig()->getCourseId(), $this->getUser()->getVolatileId());
+            }
         }
     }
 
