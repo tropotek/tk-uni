@@ -42,20 +42,20 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
     public function execute()
     {
         $request = $this->getRequest();
+        $config = $this->getConfig();
+
+        $this->subject = $this->getConfig()->getSubject();
+        if ($request->get('subjectId'))
+            $this->subject = $config->getSubjectMapper()->find($request->get('subjectId'));
+        if (!$this->subject) {
+            throw new \Tk\Exception('Invalid subject details');
+        }
+        
         if (!$request->has('enroll')) {
             return;
         }
-        $config = \Uni\Config::getInstance();
-
-        $this->subject = \Uni\Config::getInstance()->getSubject();
-        if ($request->get('subjectId'))
-            $this->subject = $config->getSubjectMapper()->find($request->get('subjectId'));
-
-        if (!$this->subject)
-            throw new \Tk\Exception('Invalid subject details');
 
         $list = array();
-
         // Check file list
         if ($request->getUploadedFile('csvFile') && $request->getUploadedFile('csvFile')->getError() == \UPLOAD_ERR_OK) {
             $file = $request->getUploadedFile('csvFile');
@@ -110,9 +110,12 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
                 if ($user) {
                     if ($user->isStudent()) {
                         $config->getSubjectMapper()->addUser($this->subject->getId(), $user->getId());
+                        $user->setActive(true);
                     } else if ($user->isStaff()) {
                         $config->getCourseMapper()->addUser($this->subject->getCourseId(), $user->getId());
+                        $user->setActive(true);
                     }
+                    $user->save();
                 }
                 $success[] = $i . ' - Added ' . $email . ' to the subject enrollment list';
             } else {
@@ -141,7 +144,6 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
     {
         $list = array();
         $row = 1;
-
         while (($data = fgetcsv($stream, 1000, ',')) !== FALSE) {
             $num = count($data);
             $list[$row] = array('email' => '', 'uid' => '', 'username' => '');
@@ -174,24 +176,28 @@ class PreEnrollment extends \Tk\Ui\Dialog\Dialog
 
         $this->setContent($this->makeBodyHtml());
         $template = parent::show();
-
-
         $js = <<<JS
 jQuery(function($) {
   
   $('.tk-dialog-pre-enrollment').each(function () {
     var dialog = $(this);
-    var enrollBtn = $(dialog.data('enroll-btn'));
-    var enrollForm = $(dialog.data('enroll-form'));
+    var enrollBtn = $(dialog.data('enrollBtn'));
+    var enrollForm = $(dialog.data('enrollForm'));
     enrollBtn.on('click', function(e) {
-      $('<input type="submit" name="enroll" value="Enroll" />').hide().appendTo(enrollForm).click().remove();
+      //$('<input type="submit" name="enroll" value="Enroll" />').hide().appendTo(enrollForm).click().remove();
+      var btn = enrollForm.find('input[name=enroll]');
+      if (!btn.length) {
+        btn = $('<input type="submit" name="enroll" value="Enroll" />');
+        btn.hide().appendTo(enrollForm);
+      }
+      btn.click();
     });
   });
   
 });
 JS;
         $template->appendJs($js);
-        
+
         return $template;
     }
 
@@ -202,7 +208,7 @@ JS;
      */
     public function makeBodyHtml()
     {
-        $url = htmlentities(\Uni\Config::getInstance()->getRequest()->getTkUri()->toString());
+        $url = htmlentities(\Uni\Config::getInstance()->getRequest()->getTkUri()->set('subjectId', $this->subject->getId())->toString());
         $xhtml = <<<HTML
 <form id="addEnrollmentForm" method="POST" action="$url" enctype="multipart/form-data">
 
