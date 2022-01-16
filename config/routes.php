@@ -104,10 +104,11 @@ $routes->add('staff-course-manager', Route::create('/staff/courseManager.html', 
 $routes->add('staff-course-edit', Route::create('/staff/courseEdit.html', 'Uni\Controller\Course\Edit::doDefault'));
 
 $routes->add('staff-subject-manager', Route::create('/staff/subjectManager.html', 'Uni\Controller\Subject\Manager::doDefault'));
+$routes->add('staff-subject-edit', Route::create('/staff/{subjectCode}/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('staff-subject-add', Route::create('/staff/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
 $routes->add('staff-subject-add-enrollment', Route::create('/staff/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doDefault'));
 
-$routes->add('staff-subject-edit', Route::create('/staff/{subjectCode}/subjectEdit.html', 'Uni\Controller\Subject\Edit::doDefault'));
+
 $routes->add('staff-subject-enrollment', Route::create('/staff/{subjectCode}/subjectEnrollment.html', 'Uni\Controller\Subject\EnrollmentManager::doSubject'));
 
 $routes->add('staff-subject-user-manager', Route::create('/staff/{subjectCode}/{targetType}UserManager.html', 'Uni\Controller\User\Manager::doDefaultType'));
