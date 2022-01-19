@@ -65,13 +65,13 @@ class Permission extends \Bs\Db\Permission
             default:          // TYPE_STAFF
                 $arr = array(
                     'Manage Site' => self::MANAGE_SITE,
+                    //'Manage Site Plugins' => self::MANAGE_PLUGINS,
+                    'Can Masquerade' => self::CAN_MASQUERADE,
                     'Manage Staff Records' => self::MANAGE_STAFF,
                     'Course, Subject And Enrollment Settings' => self::MANAGE_SUBJECT,
                     'Staff Member is a Course Coordinator' => self::IS_COORDINATOR,
                     'Staff Member is a Lecturer' => self::IS_LECTURER,
                     'Staff Member is a Student Mentor' => self::IS_MENTOR,
-                    //'Manage Site Plugins' => self::MANAGE_PLUGINS,
-                    'Can Masquerade' => self::CAN_MASQUERADE
                 );
         }
         return $arr;
