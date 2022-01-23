@@ -28,7 +28,6 @@ class ImportStudents extends \Tk\Ui\Dialog\Dialog
     ];
 
 
-
     /**
      * @param $title
      */
@@ -83,7 +82,6 @@ class ImportStudents extends \Tk\Ui\Dialog\Dialog
             }
         }
 
-
         $error = array();
         $success = array();
         $info = array();
@@ -131,35 +129,8 @@ class ImportStudents extends \Tk\Ui\Dialog\Dialog
             $student->save();
 
             // Add student to this subject
-
             $config->getSubjectMapper()->addUser($this->subject->getId(), $student->getId());
 
-
-            //if (!$uid && !$username) {
-            //    continue;
-            //}
-
-//            // Add users if found
-//            if (!$config->getSubjectMapper()->hasPreEnrollment($this->subject->getId(), $email, $uid, $username)) {
-//                $config->getSubjectMapper()->addPreEnrollment($this->subject->getId(), $email, $uid, $username);
-//
-//                $user = $config->getUserMapper()->findByEmail($email, $this->subject->institutionId);
-//                if (!$user) $user = $config->getUserMapper()->findByUsername($username, $this->subject->institutionId);
-//                if (!$user) $user = $config->getUserMapper()->findFiltered(array('institutionId' => $this->subject->institutionId, 'uid' => $uid))->current();
-//                if ($user) {
-//                    if ($user->isStudent()) {
-//                        $config->getSubjectMapper()->addUser($this->subject->getId(), $user->getId());
-//                        $user->setActive(true);
-//                    } else if ($user->isStaff()) {
-//                        $config->getCourseMapper()->addUser($this->subject->getCourseId(), $user->getId());
-//                        $user->setActive(true);
-//                    }
-//                    $user->save();
-//                }
-//                $success[] = $i . ' - Added ' . $email . ' to the subject enrollment list';
-//            } else {
-//                $info[] = $i . ' - User ' . $email . ' already enrolled, nothing done.';
-//            }
         }
         if (count($info)) {
             \Tk\Alert::addInfo(count($info) . ' records already exist.');
