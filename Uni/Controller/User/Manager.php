@@ -2,6 +2,7 @@
 namespace Uni\Controller\User;
 
 
+use Tk\Ui\Link;
 use Uni\Db\Permission;
 use Uni\Db\User;
 
@@ -23,6 +24,11 @@ class Manager extends \Uni\Controller\AdminManagerIface
      * @var string
      */
     protected $targetType = '';
+
+    /**
+     * @var \Uni\Ui\Dialog\ImportStudents
+     */
+    protected $importDialog = null;
 
 
     /**
@@ -82,6 +88,14 @@ class Manager extends \Uni\Controller\AdminManagerIface
             }
         }
 
+
+        // Setup import students dialog
+        if ($this->getConfig()->isSubjectUrl() && ($this->getTargetType() == User::TYPE_STUDENT && $this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT))) {
+            $this->importDialog = new \Uni\Ui\Dialog\ImportStudents('Import Users To this Subject');
+            $this->importDialog->execute();
+        }
+
+
         $this->setTable($this->createTable());
         if (!$this->getAuthUser()->isStudent())
             $this->getTable()->getActionCell()->removeButton($this->getTable()->getActionCell()->findButtonByName('Masquerade'));
@@ -90,63 +104,6 @@ class Manager extends \Uni\Controller\AdminManagerIface
         $this->getTable()->init();
         $this->postInitTable();
 
-
-        if ($this->getTargetType() == User::TYPE_STAFF) {
-
-//            $list = array(
-//                'Coordinator' => Permission::IS_COORDINATOR,
-//                'Lecturer' => Permission::IS_LECTURER,
-//                'Mentor' => Permission::IS_MENTOR
-//            );
-//            $this->getTable()->appendFilter(new \Tk\Form\Field\CheckboxSelect('permission', $list));
-
-//            $this->getTable()->appendCell(new \Tk\Table\Cell\Text('role'), 'uid')
-//                ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
-//                    /** @var $obj \Uni\Db\User */
-//                    $value = '';
-//                    if ($obj->isCoordinator()) {
-//                        $value .= 'Coordinator, ';
-//                    } else if ($obj->isLecturer()) {
-//                        $value .= 'Lecturer, ';
-//                    }
-//                    if ($obj->isMentor()) {
-//                        $value .= 'Mentor, ';
-//                    }
-//                    if (!$value) {
-//                        $value = 'Staff';
-//                    }
-//                    return trim($value, ', ');
-//                });
-
-//        $actionsCell = $this->getTable()->getActionCell();
-//        $actionsCell->addButton(\Tk\Table\Cell\ActionButton::create('Masquerade', \Tk\Uri::create(),
-//            'fa fa-user-secret', 'tk-masquerade'))->setAttr('data-confirm', 'You are about to masquerade as the selected user?')
-//            ->addOnShow(function ($cell, $obj, $button) {
-//                /* @var $obj \Bs\Db\User */
-//                /* @var $button \Tk\Table\Cell\ActionButton */
-//                $config = \Bs\Config::getInstance();
-//                if ($config->getMasqueradeHandler()->canMasqueradeAs($config->getAuthUser(), $obj)) {
-//                    $button->setUrl(\Tk\Uri::create()->set(\Bs\Listener\MasqueradeHandler::MSQ, $obj->getHash()));
-//                } else {
-//                    $button->setAttr('disabled', 'disabled')->addCss('disabled');
-//                }
-//            });
-
-
-        } else {
-//            if ($this->getAuthUser()->isStaff()) {
-//                $this->getTable()->appendCell(new \Tk\Table\Cell\Text('barcode'), 'uid')
-//                    ->addOnPropertyValue(function (\Tk\Table\Cell\Iface $cell, $obj, $value) {
-//                        /** @var $obj \Uni\Db\User */
-//                        $value = '';
-//                        if ($obj->getData()->has('barcode')) {
-//                            $value .= $obj->getData()->get('barcode');
-//                        }
-//                        return $value;
-//                    });
-//
-//            }
-        }
 
         $filter = array();
         if ($this->getAuthUser()->getInstitutionId()) {
@@ -202,6 +159,12 @@ class Manager extends \Uni\Controller\AdminManagerIface
         if (!$this->getConfig()->isSubjectUrl() && ($this->getTargetType() == User::TYPE_STAFF && $this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_STAFF))) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Import Mentor List', \Uni\Uri::createHomeUrl('/mentorImport.html'), 'fa fa-users'));
         }
+        if ($this->importDialog) {
+            $this->getActionPanel()->append(Link::createBtn('Import Students','#', 'fa fa-user-plus'))
+                ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->importDialog->getId())
+                ->setAttr('title', 'Create student accounts and enroll into this subject');
+            //$this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Import Students', \Uni\Uri::createSubjectUrl('/studentImport.html'), 'fa fa-users'));
+        }
     }
 
     /**
@@ -213,6 +176,9 @@ class Manager extends \Uni\Controller\AdminManagerIface
         $template = parent::show();
 
         $template->appendTemplate('table', $this->table->show());
+
+        if ($this->importDialog)
+            $template->appendBodyTemplate($this->importDialog->show());
 
         return $template;
     }
