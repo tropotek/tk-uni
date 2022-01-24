@@ -163,7 +163,6 @@ class Manager extends \Uni\Controller\AdminManagerIface
             $this->getActionPanel()->append(Link::createBtn('Import Students','#', 'fa fa-user-plus'))
                 ->setAttr('data-toggle', 'modal')->setAttr('data-target', '#'.$this->importDialog->getId())
                 ->setAttr('title', 'Create student accounts and enroll into this subject');
-            //$this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Import Students', \Uni\Uri::createSubjectUrl('/studentImport.html'), 'fa fa-users'));
         }
     }
 
