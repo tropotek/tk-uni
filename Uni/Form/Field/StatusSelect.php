@@ -119,7 +119,7 @@ class StatusSelect extends \Tk\Form\Field\Select
     public function show()
     {
         $t = parent::show();
-        $t->appendJsUrl(\Uni\Uri::create('/vendor/ttek/tk-uni/Uni/Form/Field/jquery.statusSelect.js'));
+        $t->appendJsUrl(\Uni\Uri::create('/vendor/uom/tk-uni/Uni/Form/Field/jquery.statusSelect.js'));
         $js = <<<JS
 jQuery(function ($) {
     //$('.form-group.tk-statusselect').statusSelect();
