@@ -81,12 +81,12 @@ class Config extends \Bs\Config
                     // TODO: In cases of public pages there should be an institution url that
                     // TODO: uses the domain or the has path of that institution....
                     // OH! What about Client with institution_id = 0
-                } else if ($this->getRequest()->has('subjectId')) {
+                } else if ($this->getAuthUser() && $this->getRequest()->has('subjectId')) {
                     //\TK\Log::warning('This code should not be reached ever???');
                     /** @var Db\Subject $subject */
                     try {
                         $subject = $this->getSubjectMapper()->find($this->getRequest()->get('subjectId'));
-                        if ($subject) $obj = $subject->getInstitution();
+                        if ($subject && $subject->getCourse()) $obj = $subject->getCourse()->getInstitution();
                     } catch (\Exception $e) {
                         \Tk\Log::error($e->__toString());
                     }
