@@ -85,7 +85,7 @@ class Config extends \Bs\Config
                     //\TK\Log::warning('This code should not be reached ever???');
                     /** @var Db\Subject $subject */
                     try {
-                        $subject = $this->getSubjectMapper()->find($this->getRequest()->has('subjectId'));
+                        $subject = $this->getSubjectMapper()->find($this->getRequest()->get('subjectId'));
                         if ($subject) $obj = $subject->getInstitution();
                     } catch (\Exception $e) {
                         \Tk\Log::error($e->__toString());
