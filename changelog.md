@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.6.6 [2022-05-11]:
+-------------------------------
+  - Added public and private report buttons and a date filter
+
+
 Ver 3.6.4 [2022-03-17]:
 -------------------------------
   - Fixed placement export list for terraDotta
