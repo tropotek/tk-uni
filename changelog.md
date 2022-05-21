@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.6.8 [2022-05-22]:
+-------------------------------
+  - Added international agree checkbox and fixed sending of supervisor emails
+
+
 Ver 3.6.6 [2022-05-11]:
 -------------------------------
   - Added public and private report buttons and a date filter
