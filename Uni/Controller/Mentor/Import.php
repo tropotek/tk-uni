@@ -107,16 +107,6 @@ class Import extends \Uni\Controller\AdminEditIface
         $mentorTool->setCsv($csv);
         $mentorTool->executeImport($form->getFieldValue('clear'));
 
-
-        //\Tk\Alert::addInfo('Mentor CSV list imported: Success['.count($results['success']).'] Fail['.count($results['fail']).']');
-
-        //$this->getSession()->set('csvMentorImportResult', $results);
-        //vd($results['error'], $results['remCsv']);
-//        if (count($results['error'])) {
-//            $err = trim(implode("<br/>\n", $results['error']), "<br/>\n");
-//            \Tk\Alert::addWarning('Import Error: <br/>' . $err . '<br/>Remaining CSV: <br/><pre>'.$results['remCsv'].'</pre>');
-//        }
-
         $event->setRedirect(\Tk\Uri::create());
     }
 
