@@ -198,7 +198,7 @@ CSS;
         /** @var \Tk\Plugin\Iface $plugin */
         foreach ($plugins as $plugin) {
             $info = $plugin->getInfo();
-            $info->name = str_replace('ttek-plg/', '', $info->name);
+            $info->name = str_replace('uom-plg/', '', $info->name);
             $list[] = $info;
         }
         return $list;

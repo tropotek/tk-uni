@@ -146,11 +146,10 @@ class EnrollmentManager extends AdminIface
 
         $this->enrolStudentDialog = new AjaxSelect('Enrol Student', Uri::create('/ajax/user/findFiltered.html'));
         $this->enrolStudentDialog->setAjaxParams($filter);
-        //$this->enrolStudentDialog->setNotes('');
         $this->enrolStudentDialog->addOnSelect(function ($dialog) {
             /** @var User $user */
             $config = Config::getInstance();
-            $data = $config->$this->getRequest()->all();
+            $data = $config->getRequest()->all();
             $subject = $config->getSubject();
             $user = $config->getUserMapper()->find($data['selectedId'], $subject->getInstitutionId());
             if (!$user)

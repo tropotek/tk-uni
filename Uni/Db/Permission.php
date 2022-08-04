@@ -55,7 +55,7 @@ class Permission extends \Bs\Db\Permission
             case User::TYPE_ADMIN;
             case User::TYPE_CLIENT:
                 $arr = array(
-                    'Manage Site Plugins' => self::MANAGE_PLUGINS,
+                    //'Manage Site Plugins' => self::MANAGE_PLUGINS,
                     'Can Masquerade' => self::CAN_MASQUERADE
                 );
                 break;

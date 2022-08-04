@@ -1,5 +1,5 @@
 {
-    "name": "ttek/tk-uni",
+    "name": "uom/tk-uni",
     "type": "library",
     "description": "A base lib for all university institution sites",
     "keywords":  [
@@ -12,14 +12,7 @@
     "authors":  [
          {
             "name": "Michael Mifsud",
-            "email": "info@tropotek.com.au",
             "homepage": "http://www.tropotek.com/"
-        }
-    ],
-    "funding":  [
-         {
-            "type": "Paypal",
-            "url": "https://www.paypal.me/tropotek"
         }
     ],
     "autoload":  {
@@ -28,11 +21,11 @@
         }
     },
     "require":  {
-        "ttek/tk-base": "~3.2.0"
+        "uom/tk-base": "~3.4.0"
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "3.4.x-dev"
+            "dev-master": "3.6.x-dev"
         }
     }
 }

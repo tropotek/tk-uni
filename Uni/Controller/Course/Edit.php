@@ -56,6 +56,11 @@ class Edit extends AdminEditIface
         return $this->course;
     }
 
+    protected function createForm()
+    {
+        return \Uni\Form\Course::create();
+    }
+    
     /**
      * @param Request $request
      * @throws \Exception
@@ -68,7 +73,7 @@ class Edit extends AdminEditIface
         }
         $this->getCourse();
 
-        $this->setForm(\Uni\Form\Course::create()->setModel($this->getCourse()));
+        $this->setForm($this->createForm()->setModel($this->getCourse()));
         if (!$this->getCourse()->getId()) {
             $this->getForm()->removeField('update');
         }
