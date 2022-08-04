@@ -1,5 +1,5 @@
 {
-    "name": "uom/tk-uni",
+    "name": "ttek/tk-uni",
     "type": "library",
     "description": "A base lib for all university institution sites",
     "keywords":  [
@@ -21,7 +21,7 @@
         }
     },
     "require":  {
-        "uom/tk-base": "~3.4.0"
+        "ttek/tk-base": "~3.4.0"
     },
     "extra":  {
         "branch-alias":  {
