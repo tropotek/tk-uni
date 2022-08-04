@@ -25,7 +25,7 @@ class Config extends \Bs\Config
     protected function init()
     {
         parent::init();
-        $this->set('system.lib.uni.path', $this['system.vendor.path'] . '/uom/tk-uni');
+        $this->set('system.lib.uni.path', $this->getOrgVendor() . '/tk-uni');
     }
 
     /**
