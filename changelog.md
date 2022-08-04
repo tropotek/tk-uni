@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.6.12 [2022-08-05]:
+-------------------------------
+  - Merge remote-tracking branch 'uom/3.6' into 3.6
+
+
 Ver 3.6.10 [2022-08-03]:
 -------------------------------
   - removed comments
