@@ -1,7 +1,7 @@
 -- ---------------------------------
 -- Update SQL v3.4.82
 --
--- Author: Michael Mifsud <info@tropotek.com>
+-- Author: Michael Mifsud <http://www.tropotek.com/>
 -- ---------------------------------
 
 -- Adding a mentor impot lookup table

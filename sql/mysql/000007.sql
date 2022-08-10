@@ -1,7 +1,7 @@
 -- ---------------------------------
 -- Update SQL v3.4.0
 --
--- Author: Michael Mifsud <info@tropotek.com>
+-- Author: Michael Mifsud <http://www.tropotek.com/>
 -- ---------------------------------
 
 -- Create the new type field

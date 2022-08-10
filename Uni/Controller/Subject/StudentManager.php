@@ -8,7 +8,7 @@ use Tk\Request;
 
 
 /**
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  * @deprecated I think, not sure if it is used anywhere (24-01-2022)
