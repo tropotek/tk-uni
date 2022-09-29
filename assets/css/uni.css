@@ -5,3 +5,6 @@
   color: #999;
 }
 
+table summary {
+  display: list-item;
+}
