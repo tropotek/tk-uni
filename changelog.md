@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.6.18 [2022-09-30]:
+-------------------------------
+  - Added assessment manager
+
+
 Ver 3.6.16 [2022-08-11]:
 -------------------------------
   - Merge branch '3.6' of ssh://github.com/tropotek/tk-uni into 3.6
