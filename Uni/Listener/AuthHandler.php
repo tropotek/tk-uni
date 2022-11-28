@@ -249,9 +249,7 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             $config->getSession()->set('auth.password.access', false);
             $event->setResult(new \Tk\Auth\Result(\Tk\Auth\Result::SUCCESS, $config->getUserIdentity($user)));
         }
-
     }
-
 
     /**
      * @param AuthEvent $event
@@ -356,6 +354,5 @@ class AuthHandler extends \Bs\Listener\AuthHandler
             parent::getSubscribedEvents()
         );
     }
-
 
 }
