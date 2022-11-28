@@ -22,6 +22,7 @@ if (!$routes) return;
 $routes->add('login', Route::create('/login.html', 'Uni\Controller\Login::doInsLogin')); // Assumes the first institution is the only institution
 $routes->add('institution-login', Route::create('/inst/{instHash}/login.html', 'Uni\Controller\Login::doInsLogin'));
 $routes->add('institution-activate', Route::create('/inst/{instHash}/activate.html', 'Uni\Controller\Activate::doInsActivate'));
+$routes->remove('activate');
 $routes->add('admin-login', Route::create('/xlogin.html', 'Uni\Controller\Login::doDefault'));
 
 $routes->add('recover', Route::create('/recover.html', 'Uni\Controller\Recover::doDefault'));

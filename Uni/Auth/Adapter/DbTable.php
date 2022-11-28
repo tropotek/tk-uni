@@ -65,7 +65,7 @@ class DbTable extends \Tk\Auth\Adapter\DbTable
         } catch (\Exception $e) {
             \Tk\Log::debug($e->__toString());
             \Tk\Log::warning('The supplied parameters failed to produce a valid sql statement, please check table and column names for validity.');
-            throw new \Tk\Auth\Exception('Authentication server error.');
+            //throw new \Tk\Auth\Exception('Authentication server error.');
         }
         return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, $username, 'Invalid username or password.');
     }
