@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.6.20 [2022-12-01]:
+-------------------------------
+  - added activate account email for user accounts with no password
+
+
 Ver 3.6.18 [2022-09-30]:
 -------------------------------
   - Added assessment manager
