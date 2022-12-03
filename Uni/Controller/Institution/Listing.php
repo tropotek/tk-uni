@@ -83,7 +83,7 @@ class Listing extends \Uni\Controller\AdminIface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="institution-list">
+<div class="container institution-list">
   <h2 class="title">Institutions</h2>
   
   <p>Select an Institution you would like to login to.</p>

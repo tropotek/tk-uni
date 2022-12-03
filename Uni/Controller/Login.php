@@ -52,7 +52,6 @@ class Login extends \Bs\Controller\Login
             \Tk\Alert::addWarning('Invalid or inactive Institution. Setup an active institution to continue.');
             \Uni\Uri::create('/index.html')->redirect();
         }
-
         $this->doDefault($request);
     }
 
@@ -97,8 +96,8 @@ class Login extends \Bs\Controller\Login
             $this->form->addCss('form-horizontal');
         }
         parent::init();
-        $this->form->removeField('forgotPassword');
-        $this->form->removeField('register');
+        //$this->form->removeField('forgotPassword');
+        //$this->form->removeField('register');
 
         $this->form->appendField(new Event\Submit('login', array($this, 'doLogin')))->removeCss('btn-default')
             ->addCss('btn btn-lg btn-primary btn-ss');

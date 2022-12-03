@@ -107,7 +107,7 @@ class UserMap extends \Bs\Db\UserMap
      * @return null|Model|User
      * @throws \Exception
      */
-    public function findByEmail($email, $institutionId = null, $type = null)
+    public function findByEmail($email, $institutionId = 0, $type = null)
     {
         // TODO: I think we have a logic issue here?????
         if (!$this->getConfig()->get('system.auth.email.unique') && !$this->getConfig()->get('system.auth.email.require')) {

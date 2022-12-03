@@ -18,6 +18,11 @@ class Recover extends Iface
 {
 
     /**
+     * @var \Uni\Db\Institution
+     */
+    protected $institution = null;
+
+    /**
      * @var \Tk\Form
      */
     protected $form = null;
@@ -49,6 +54,24 @@ class Recover extends Iface
         return parent::getPage();
     }
 
+    public function doInsRecover(\Tk\Request $request, $instHash = '')
+    {
+        $this->institution = $this->getConfig()->getInstitutionMapper()->findByHash($instHash);
+        if (!$this->institution && $request->attributes->has('institutionId')) {
+            $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->attributes->get('institutionId'));
+        }
+        // get institution by hostname
+        if (!$this->institution || !$this->institution->active ) {
+            $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getTkUri()->getHost());
+        }
+
+        // Get the first available institution
+        if (!$this->institution || !$this->institution->active ) {
+            $this->institution = $this->getConfig()->getInstitutionMapper()->findFiltered(array())->current();
+        }
+
+        $this->doDefault($request);
+    }
 
     /**
      * @param Request $request
@@ -72,7 +95,8 @@ class Recover extends Iface
             $this->form->addCss('form-horizontal');
         }
 
-        $this->form->appendField(new Field\Input('account'));
+        $this->form->appendField(new Field\InputGroup('account'))->setAttr('placeholder', 'Username');
+
         $this->form->appendField(new Event\Submit('recover', array($this, 'doRecover')))->removeCss('btn-default')->addCss('btn btn-primary btn-ss');
         $this->form->appendField(new Event\Link('login', \Tk\Uri::create('/login.html'), ''))
             ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-login-url');
@@ -98,25 +122,30 @@ class Recover extends Iface
         $account = $form->getFieldValue('account');
         /** @var \Uni\Db\User $user */
         $user = null;
-        if (filter_var($account, FILTER_VALIDATE_EMAIL)) {
-            $user = $this->getConfig()->getUserMapper()->findByEmail($account);
-        } else {
-            $user = $this->getConfig()->getUserMapper()->findByUsername($account);
+        $iid = 0;
+        if ($this->institution) {
+            $iid = $this->institution->getId();
         }
-        if (!$user) {
+        if (filter_var($account, FILTER_VALIDATE_EMAIL)) {
+            $user = $this->getConfig()->getUserMapper()->findByEmail($account, $iid);
+        } else {
+            $user = $this->getConfig()->getUserMapper()->findByUsername($account, $iid);
+        }
+
+        if (!$user || $user->getId() == 1) {
             $form->addFieldError('account', 'Please enter a valid username or email');
             return;
         }
 
-        $newPass = \Tk\Config::createPassword(10);
-        $user->password = $this->getConfig()->hashPassword($newPass, $user);
-        $user->save();
+//        $newPass = \Tk\Config::createPassword(10);
+//        $user->password = $this->getConfig()->hashPassword($newPass, $user);
+//        $user->save();
 
         // Fire the login event to allow developing of misc auth plugins
         $e = new \Tk\Event\Event();
         $e->set('form', $form);
         $e->set('user', $user);
-        $e->set('password', $newPass);
+        //$e->set('password', $newPass);
         $this->getConfig()->getEventDispatcher()->dispatch(AuthEvents::RECOVER, $e);
 
         \Tk\Alert::addSuccess('You new access details have been sent to your email address.');
