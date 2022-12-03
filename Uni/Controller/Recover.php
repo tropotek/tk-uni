@@ -48,8 +48,6 @@ class Recover extends Iface
                 $templatePath = $this->getConfig()->getSitePath() . $this->getConfig()->get('template.login');
             }
             $this->page = $this->getConfig()->createPage($templatePath);
-            // TODO: Is this correct???
-            //$this->page->setController($this);
         }
         return parent::getPage();
     }
@@ -63,11 +61,6 @@ class Recover extends Iface
         // get institution by hostname
         if (!$this->institution || !$this->institution->active ) {
             $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getTkUri()->getHost());
-        }
-
-        // Get the first available institution
-        if (!$this->institution || !$this->institution->active ) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->findFiltered(array())->current();
         }
 
         $this->doDefault($request);
@@ -132,20 +125,15 @@ class Recover extends Iface
             $user = $this->getConfig()->getUserMapper()->findByUsername($account, $iid);
         }
 
-        if (!$user || $user->getId() == 1) {
+        if (!$user || !$user->isActive() || $user->getId() == 1) {
             $form->addFieldError('account', 'Please enter a valid username or email');
             return;
         }
-
-//        $newPass = \Tk\Config::createPassword(10);
-//        $user->password = $this->getConfig()->hashPassword($newPass, $user);
-//        $user->save();
 
         // Fire the login event to allow developing of misc auth plugins
         $e = new \Tk\Event\Event();
         $e->set('form', $form);
         $e->set('user', $user);
-        //$e->set('password', $newPass);
         $this->getConfig()->getEventDispatcher()->dispatch(AuthEvents::RECOVER, $e);
 
         \Tk\Alert::addSuccess('You new access details have been sent to your email address.');

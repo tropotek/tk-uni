@@ -16,13 +16,10 @@ use Tk\Form\Event;
  */
 class Activate extends \Bs\Controller\Activate
 {
-
     /**
      * @var \Uni\Db\Institution
      */
     protected $institution = null;
-
-
 
     /**
      * @param \Tk\Request $request
@@ -39,36 +36,21 @@ class Activate extends \Bs\Controller\Activate
         if (!$this->institution || !$this->institution->active ) {
             $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getTkUri()->getHost());
         }
-        // Get the first available institution
-        if (!$this->institution || !$this->institution->active ) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->findFiltered(array())->current();
-        }
-
-        if (!$this->institution || !$this->institution->active ) {
-            \Tk\Alert::addWarning('Invalid or inactive Institution. Setup an active institution to continue.');
-            \Uni\Uri::create('/index.html')->redirect();
-        }
 
         $this->doDefault($request);
     }
 
-    public function doDefault(Request $request)
+    /**
+     * @param string $hash
+     * @return \Bs\Db\User|\Tk\Db\Map\Model|\Uni\Db\User|null
+     */
+    protected function findUser($hash)
     {
-        $hash = $request->get('h');
-        $this->user = $this->getConfig()->getUserMapper()->findByHash($hash, $this->institution->getId());
-        if (!$this->user || $this->user->getPassword()) {       // Only allow access for users without a password set
-            Alert::addError('Invalid user account');
-            Uri::create('/')->redirect();
-        }
-
-        $this->init();
-
+        $iid = 0;
         if ($this->institution) {
-            $this->form->appendField(new Field\Hidden('instHash', $this->institution->getHash()));
+            $iid = $this->institution->getId();
         }
-
-        $this->form->execute();
-
+        return $this->getConfig()->getUserMapper()->findByHash($hash, $iid);
     }
 
     public function getLoginUrl()

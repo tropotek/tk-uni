@@ -23,9 +23,10 @@ $routes->add('login', Route::create('/login.html', 'Uni\Controller\Login::doInsL
 $routes->add('institution-login', Route::create('/inst/{instHash}/login.html', 'Uni\Controller\Login::doInsLogin'));
 $routes->add('institution-activate', Route::create('/inst/{instHash}/activate.html', 'Uni\Controller\Activate::doInsActivate'));
 $routes->add('institution-recover', Route::create('/inst/{instHash}/recover.html', 'Uni\Controller\Recover::doInsRecover'));
-$routes->remove('activate');
 $routes->add('admin-login', Route::create('/xlogin.html', 'Uni\Controller\Login::doDefault'));
 
+
+$routes->add('activate', Route::create('/activate.html', 'Uni\Controller\Activate::doInsActivate'));
 $routes->add('recover', Route::create('/recover.html', 'Uni\Controller\Recover::doDefault'));
 $routes->add('register', Route::create('/register.html', 'Uni\Controller\Register::doDefault'));
 $routes->add('logout', Route::create('/logout.html', 'Uni\Controller\Logout::doDefault'));
