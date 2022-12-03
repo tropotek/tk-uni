@@ -50,7 +50,12 @@ class Activate extends \Bs\Controller\Activate
         if ($this->institution) {
             $iid = $this->institution->getId();
         }
-        return $this->getConfig()->getUserMapper()->findByHash($hash, $iid);
+        $user = $this->getConfig()->getUserMapper()->findByHash($hash, $iid);
+
+        if ($user && !$this->getConfig()->getUserMapper()->hasRecover($user->getId())) {
+            $user = null;
+        }
+        return $user;
     }
 
     public function getLoginUrl()
