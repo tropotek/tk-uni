@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.6.22 [2022-12-04]:
+-------------------------------
+  - Added timeout on password recovery
+  - Fixed recover password pages
+
+
 Ver 3.6.20 [2022-12-01]:
 -------------------------------
   - added activate account email for user accounts with no password
