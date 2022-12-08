@@ -25,7 +25,6 @@ $routes->add('institution-activate', Route::create('/inst/{instHash}/activate.ht
 $routes->add('institution-recover', Route::create('/inst/{instHash}/recover.html', 'Uni\Controller\Recover::doInsRecover'));
 $routes->add('admin-login', Route::create('/xlogin.html', 'Uni\Controller\Login::doDefault'));
 
-
 $routes->add('activate', Route::create('/activate.html', 'Uni\Controller\Activate::doInsActivate'));
 $routes->add('recover', Route::create('/recover.html', 'Uni\Controller\Recover::doDefault'));
 $routes->add('register', Route::create('/register.html', 'Uni\Controller\Register::doDefault'));
@@ -33,6 +32,12 @@ $routes->add('logout', Route::create('/logout.html', 'Uni\Controller\Logout::doD
 $routes->add('institution-list', Route::create('/institutions.html', 'Uni\Controller\Institution\Listing::doDefault'));
 
 $routes->add('install', Route::create('/install.html', 'Uni\Controller\Install::doDefault'));
+
+$routes->add('login-microsoft', Route::create('/microsoftLogin.html', 'Uni\Auth\Microsoft\Controller::doLogin'));
+$routes->add('institution-login-microsoft', Route::create('/inst/{instHash}/microsoftLogin.html', 'Uni\Auth\Microsoft\Controller::doInsLogin'));
+$routes->add('auth-microsoft', Route::create('/microsoftAuth.html',  'Uni\Auth\Microsoft\Controller::doAuth'));
+
+
 
 
 // Admin Pages

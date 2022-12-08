@@ -145,6 +145,11 @@ class Login extends \Bs\Controller\Login
   <div class="not-member" choice="register">
     <p>Not a member? <a href="/register.html">Register here</a></p>
   </div>
+  <div class="external row" choice="inst">
+    <a href="/microsoftLogin.html" class="btn btn-lg btn-default col-12" choice="microsoft">Microsoft</a>
+<!--    <a href="/googleLogin.html" class="btn btn-lg btn-warning col-12" choice="google">Google</a>-->
+<!--    <a href="/githubLogin.html" class="btn btn-lg btn-default col-12" choice="github">Github</a>-->
+  </div>
 
 </div>
 HTML;
