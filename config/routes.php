@@ -34,7 +34,6 @@ $routes->add('institution-list', Route::create('/institutions.html', 'Uni\Contro
 $routes->add('install', Route::create('/install.html', 'Uni\Controller\Install::doDefault'));
 
 $routes->add('login-microsoft', Route::create('/microsoftLogin.html', 'Uni\Auth\Microsoft\Controller::doLogin'));
-$routes->add('institution-login-microsoft', Route::create('/inst/{instHash}/microsoftLogin.html', 'Uni\Auth\Microsoft\Controller::doInsLogin'));
 $routes->add('auth-microsoft', Route::create('/microsoftAuth.html',  'Uni\Auth\Microsoft\Controller::doAuth'));
 
 

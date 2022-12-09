@@ -35,6 +35,8 @@ class Login extends \Bs\Controller\Login
      */
     public function doInsLogin(\Tk\Request $request, $instHash = '')
     {
+        $this->getSession()->remove('auth.institutionId');
+
         $this->institution = $this->getConfig()->getInstitutionMapper()->findByHash($instHash);
         if (!$this->institution && $request->attributes->has('institutionId')) {
             $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->attributes->get('institutionId'));
@@ -51,7 +53,14 @@ class Login extends \Bs\Controller\Login
         if (!$this->institution || !$this->institution->active ) {
             \Tk\Alert::addWarning('Invalid or inactive Institution. Setup an active institution to continue.');
             \Uni\Uri::create('/index.html')->redirect();
+        } else {
+            if (!$this->getAuthUser() && $this->institution->getData()->get('inst.microsoftLogin')) {
+                // Add it ID to the session for the microsoft login to work as expected
+                $this->getSession()->set('auth.institutionId', $this->institution->getId());
+                \Uni\Uri::create('/microsoftLogin.html')->redirect();
+            }
         }
+
         $this->doDefault($request);
     }
 

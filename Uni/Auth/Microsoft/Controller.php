@@ -2,6 +2,8 @@
 
 namespace Uni\Auth\Microsoft;
 
+use Tk\Exception;
+use Uni\Db\Institution;
 use Uni\Db\User;
 use Tk\ExtAuth\Microsoft\Token;
 use Uni\Uri;
@@ -37,46 +39,9 @@ use Uni\Uri;
  *    <a href="/microsoftLogin.html" class="btn btn-lg btn-default col-12" choice="microsoft">Microsoft</a>
  * ```
  *
- *
- *
  */
 class Controller extends \Tk\ExtAuth\Microsoft\Controller
 {
-
-    /**
-     * @var \Uni\Db\Institution
-     */
-    protected $institution = null;
-
-
-    /**
-     * @param \Tk\Request $request
-     * @param string $instHash
-     * @throws \Exception
-     */
-    public function doInsLogin(\Tk\Request $request, $instHash = '')
-    {
-        $this->institution = $this->getConfig()->getInstitutionMapper()->findByHash($instHash);
-        if (!$this->institution && $request->attributes->has('institutionId')) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->find($request->attributes->get('institutionId'));
-        }
-
-        // get institution by hostname
-        if (!$this->institution || !$this->institution->active ) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->findByDomain($request->getTkUri()->getHost());
-        }
-
-        if (!$this->institution || !$this->institution->active ) {
-            \Tk\Alert::addWarning('Invalid or inactive Institution. Setup an active institution for Microsoft SSO to continue.');
-            \Uni\Uri::create('/index.html')->redirect();
-        }
-        $this->doLogin($request);
-    }
-
-    protected function getLoginUrl()
-    {
-        return Uri::createInstitutionUrl('/microsoftLogin.html', $this->institution);
-    }
 
     /**
      * Find/Create user once the token is validated.
@@ -89,28 +54,37 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
      */
     protected function findUser($token)
     {
+        /** @var Institution $institution */
+        $institution = $this->getConfig()->getInstitutionMapper()->find($this->getSession()->get('auth.institutionId'));
+        if (!$institution) throw new Exception('Error finding institution login page. Please Try again.');
+        if (!$institution->getData()->get('inst.microsoftLogin')) {
+            $this->error = 'Microsoft login not enabled on this account, please contact your administrator: ' . $institution->getEmail();
+            return;
+        }
+
         $idToken = json_decode($token->idToken);
         // Email (use domain portion to ident institution)
         // If not found check the site standard users for a match (exclude admin)
         $username = $idToken->preferred_username;
 
         // Try to find an existing user
-        $user = $this->getConfig()->getUserMapper()->findByEmail($username, $this->institution->getId());
+        $user = $this->getConfig()->getUserMapper()->findByEmail($username, $institution->getId());
         if (!$user) {
-            $user = $this->getConfig()->getUserMapper()->findByUsername($username, $this->institution->getId());
+            $user = $this->getConfig()->getUserMapper()->findByUsername($username, $institution->getId());
         }
         if (!$user) {
-            $this->error = 'No user account found! Please contact your institution`s administrator at: ' . $this->institution->getEmail();
+            $this->error = 'No user account found! Please contact your institution`s administrator at: ' . $institution->getEmail();
             return;
         }
         $token->userId = $user->getId();
         $token->save();
 
-        $this->getConfig()->getAuth()->getStorage()->write($user->getUsername());
-        if ($user && $user->isActive()) {
+        $this->getConfig()->getAuth()->getStorage()->write($this->getConfig()->getUserIdentity($user));
+        if ($user->isActive()) {
             $this->getConfig()->setAuthUser($user);
         }
         // Redirect to home page
+        $this->getSession()->remove('auth.institutionId');
         $this->getConfig()->getSession()->set('auth.password.access', false);
         \Bs\Uri::createHomeUrl('/index.html', $user)->redirect();
     }

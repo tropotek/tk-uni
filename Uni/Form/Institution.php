@@ -91,6 +91,11 @@ class Institution extends \Uni\FormIface
 
 
         $tab = 'Account';
+
+        $this->appendField(new Field\Checkbox('inst.microsoftLogin'))
+            ->setLabel('Microsoft SSO')
+            ->setTabGroup($tab)->setCheckboxLabel('Microsoft SSO login enabled/disabled.');
+
         if ($this->getAuthUser()->isAdmin()) {
 
             $this->setAttr('autocomplete', 'off');
