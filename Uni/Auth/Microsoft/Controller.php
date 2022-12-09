@@ -73,7 +73,8 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
             $user = $this->getConfig()->getUserMapper()->findByUsername($username, $institution->getId());
         }
         if (!$user) {
-            $this->error = 'No user account found! Please contact your institution`s administrator at: ' . $institution->getEmail();
+            $this->error = 'No user account found! Your institution administrator has been notified and should contact you soon: ' . $institution->getEmail();
+            $this->emailAdmin($institution, $idToken);
             return;
         }
         $token->userId = $user->getId();
@@ -88,5 +89,50 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
         $this->getConfig()->getSession()->set('auth.password.access', false);
         \Bs\Uri::createHomeUrl('/index.html', $user)->redirect();
     }
+
+    /**
+     * @param Institution $institution
+     * @param \stdClass $idToken
+     * @return void
+     */
+    public function emailAdmin($institution, $idToken)
+    {
+
+
+        $message = $this->getConfig()->createMessage();
+        $content = <<<HTML
+    <h2>New User Request For {institutionName}.</h2>
+    <p>
+      A user from your institution has attempted to login using the Microsoft SSO login page.
+      However the user does not have an account or the account email/username is not correct.
+    </p>
+    <p>
+      If you wish to grant this user access to the APD, <a href="{url}">login to the APD</a> and create 
+      or update the user account with the following details.
+    </p>
+    <p>
+       <b>Name:</b> {name}<br/>
+       <b>Username:</b> {username}<br/>
+       <b>Email:</b> {email}<br/>
+       <b>Institution:</b> {institutionName}
+    </p>
+
+    <p>
+      Once completed contact the user at {email} and ask them to signin.
+    </p>
+
+HTML;
+        $message->set('content', $content);
+        $message->setSubject(' New User Request For ' . $institution->getName());
+        $message->addTo($institution->getEmail());
+        $message->set('institutionName', $institution->getName());
+        $message->set('name', $idToken->name);
+        $message->set('username', $idToken->preferred_username);
+        $message->set('email', $idToken->preferred_username);
+        $message->set('url', $institution->getLoginUrl()->toString());
+
+        \Bs\Config::getInstance()->getEmailGateway()->send($message);
+    }
+
 
 }

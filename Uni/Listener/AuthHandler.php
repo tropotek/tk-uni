@@ -303,9 +303,9 @@ class AuthHandler extends \Bs\Listener\AuthHandler
 
         if (!$event->getRedirect()) {
             $url = \Tk\Uri::create('/');
-            if ($user && !$user->isClient() && !$user->isAdmin() && $user->getInstitution()) {
-                $url = \Uni\Uri::createInstitutionUrl('/login.html', $user->getInstitution());
-            }
+//            if ($user && !$user->isClient() && !$user->isAdmin() && $user->getInstitution()) {
+//                $url = \Uni\Uri::createInstitutionUrl('/login.html', $user->getInstitution());
+//            }
             $event->setRedirect($url);
         }
 
