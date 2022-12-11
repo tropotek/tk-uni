@@ -59,9 +59,7 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
         $institution = $this->getConfig()->getInstitutionMapper()->find($this->getSession()->get('auth.institutionId'));
 
         if (!$institution) {
-            $this->error = 'Cannot find institution`s login page. Please <a href="'
-                . htmlentities($this->getConfig()->get('auth.microsoft.logout'))
-                . '">logout</a> and try again';
+            $this->error = 'Cannot find institution`s login page.';
             return;
             //Alert::addWarning('Cannot find your institution`s login page. Please Try again.');
             //\Tk\Uri::create('/index.html')->redirect();
