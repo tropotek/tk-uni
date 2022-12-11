@@ -2,6 +2,7 @@
 
 namespace Uni\Auth\Microsoft;
 
+use Tk\Alert;
 use Tk\Exception;
 use Uni\Db\Institution;
 use Uni\Db\User;
@@ -56,7 +57,11 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
     {
         /** @var Institution $institution */
         $institution = $this->getConfig()->getInstitutionMapper()->find($this->getSession()->get('auth.institutionId'));
-        if (!$institution) throw new Exception('Error finding institution login page. Please Try again.');
+        if (!$institution) {
+            //throw new Exception('Error finding institution login page. Please Try again.');
+            Alert::addWarning('Error finding institution login page. Please Try again.');
+            \Tk\Uri::create('/index.html')->redirect();
+        }
         if (!$institution->getData()->get('inst.microsoftLogin')) {
             $this->error = 'Microsoft login not enabled on this account, please contact your administrator: ' . $institution->getEmail();
             return;
