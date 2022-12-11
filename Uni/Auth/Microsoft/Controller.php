@@ -70,6 +70,7 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
         }
 
         $idToken = json_decode($token->idToken);
+        vd($idToken);
         // Email (use domain portion to ident institution)
         // If not found check the site standard users for a match (exclude admin)
         $username = $idToken->preferred_username;
