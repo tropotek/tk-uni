@@ -57,10 +57,14 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
     {
         /** @var Institution $institution */
         $institution = $this->getConfig()->getInstitutionMapper()->find($this->getSession()->get('auth.institutionId'));
+
         if (!$institution) {
-            //throw new Exception('Error finding institution login page. Please Try again.');
-            Alert::addWarning('Error finding institution login page. Please Try again.');
-            \Tk\Uri::create('/index.html')->redirect();
+            $this->error = 'Cannot find institution`s login page. Please <a href="'
+                . htmlentities($this->getConfig()->get('auth.microsoft.logout'))
+                . '">logout</a> and try again';
+            return;
+            //Alert::addWarning('Cannot find your institution`s login page. Please Try again.');
+            //\Tk\Uri::create('/index.html')->redirect();
         }
         if (!$institution->getData()->get('inst.microsoftLogin')) {
             $this->error = 'Microsoft login not enabled on this account, please contact your administrator: ' . $institution->getEmail();
@@ -102,8 +106,6 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
      */
     public function emailAdmin($institution, $idToken)
     {
-
-
         $message = $this->getConfig()->createMessage();
         $content = <<<HTML
     <h2>New User Request For {institutionName}.</h2>
