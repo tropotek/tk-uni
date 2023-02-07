@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.6.34 [2023-02-07]:
+-------------------------------
+  - fixed logo upload
+
+
 Ver 3.6.32 [2023-02-07]:
 -------------------------------
   - Fixed Azure MS logout issue
