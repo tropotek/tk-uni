@@ -22,17 +22,13 @@ use Tk\Str;
  */
 class Institution extends \Uni\FormIface
 {
-
-
     /**
      * @throws \Exception
      */
     public function init()
     {
-
         $tab = 'Details';
         $this->appendField(new Field\Input('name'))->setRequired(true)->setTabGroup($tab);
-
 
         $field = $this->appendField(new Field\Input('email'))->setRequired(true)->setTabGroup($tab);
         if (!$this->getAuthUser()->isAdmin()) {
@@ -89,7 +85,6 @@ class Institution extends \Uni\FormIface
         $this->appendField(new Field\GmapAddress('address'))->setTabGroup($tab)
             ->setNotes('Select a location on the map or enter the address manually');
 
-
         $tab = 'Account';
 
         $this->appendField(new Field\Checkbox('inst.microsoftLogin'))
@@ -113,7 +108,6 @@ class Institution extends \Uni\FormIface
             if (!$this->getInstitution()->getId())
                 $f->setRequired(true);
         }
-
 
         $this->appendField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->appendField(new Event\Submit('save', array($this, 'doSubmit')));
@@ -145,7 +139,6 @@ class Institution extends \Uni\FormIface
         $this->getConfig()->getUserMapper()->mapForm($form->getValues(), $this->getInstitution()->getUser());
         $data = $this->getInstitution()->getData();
         $data->replace($form->getValues('/^(inst)/'));
-
 
         $form->addFieldErrors($this->getInstitution()->validate());
         $form->addFieldErrors($this->getInstitution()->getUser()->validate());
@@ -202,9 +195,6 @@ class Institution extends \Uni\FormIface
             $pwd = $this->getConfig()->createPassword(10);
             $this->getInstitution()->getUser()->setNewPassword($pwd);
             $this->getInstitution()->getUser()->save();
-
-            // TODO: Email user to update the account password.
-
         }
         if (!$this->getInstitution()->getId() && !$this->getInstitution()->userId) {
             $this->getInstitution()->userId = $this->getInstitution()->getUser()->getId();       // ?? This was commented out??? WHY???????
