@@ -85,7 +85,7 @@ class Institution extends \Uni\FormIface
         $this->appendField(new Field\GmapAddress('address'))->setTabGroup($tab)
             ->setNotes('Select a location on the map or enter the address manually');
 
-        $tab = 'Account';
+        $tab = 'Settings';
 
         $this->appendField(new Field\Checkbox('inst.microsoftLogin'))
             ->setLabel('Microsoft SSO')
