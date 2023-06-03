@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.6.36 [2023-06-03]:
+-------------------------------
+  - Added option to ue text client name
+
+
 Ver 3.6.34 [2023-02-07]:
 -------------------------------
   - fixed logo upload
