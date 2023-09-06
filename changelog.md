@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.6.38 [2023-09-06]:
+-------------------------------
+  - Add permission descriptions
+
+
 Ver 3.6.36 [2023-06-03]:
 -------------------------------
   - Added option to ue text client name
