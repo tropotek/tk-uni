@@ -97,4 +97,18 @@ class Permission extends \Bs\Db\Permission
         }
         return $list;
     }
+
+    public function getPermissionDescriptions(): array
+    {
+        return [
+            self::MANAGE_SITE => 'Can manage site settings and manage site configuration (Notes, Cms content)',
+            self::MANAGE_PLUGINS => 'Can manage site plugins (deprecated)',
+            self::CAN_MASQUERADE => 'Can masquerade as lower permission users to view their data',
+            self::MANAGE_STAFF => 'Can create/update other staff user accounts',
+            self::MANAGE_SUBJECT => 'Can manage Subject settings, enrollment',
+            self::IS_COORDINATOR => 'Is the coordinator of a Course, access/emails/notifications of associated Courses, Subjects and Students ',
+            self::IS_LECTURER => 'Is a lecturer of a subject, access/email/notifications of associated Subjects, Students',
+            self::IS_MENTOR => 'Is a mentor of a student, restricted access to student/site information',
+        ];
+    }
 }
