@@ -156,7 +156,7 @@ class Register extends Iface
         $e->set('user', $this->user);
         $e->set('pass', $this->form->getFieldValue('password'));
         $e->set('institution', $this->institution);
-        \Uni\Config::getInstance()->getEventDispatcher()->dispatch(AuthEvents::REGISTER, $e);
+        \Uni\Config::getInstance()->getEventDispatcher()->dispatch($e, AuthEvents::REGISTER);
 
         // Redirect with message to check their email
         \Tk\Alert::addSuccess('Your New Account Has Been Created.');
@@ -199,7 +199,7 @@ class Register extends Iface
         $e->set('request', $request);
         $e->set('user', $user);
         $e->set('institution', $institution);
-        \Uni\Config::getInstance()->getEventDispatcher()->dispatch(AuthEvents::REGISTER_CONFIRM, $e);
+        \Uni\Config::getInstance()->getEventDispatcher()->dispatch($e, AuthEvents::REGISTER_CONFIRM);
 
         \Tk\Alert::addSuccess('Account Activation Successful.');
         \Tk\Uri::create('/login.html')->redirect();

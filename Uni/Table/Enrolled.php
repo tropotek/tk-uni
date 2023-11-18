@@ -53,7 +53,7 @@ class Enrolled extends \Uni\TableIface
             $event->set('subjectFromId', $config->getSubject()->getId());
             $event->set('subjectToId', $data['selectedId']);
             $event->set('userId', $data['userId']);
-            $dispatcher->dispatch(\Uni\UniEvents::SUBJECT_MIGRATE_USER, $event);
+            $dispatcher->dispatch($event, \Uni\UniEvents::SUBJECT_MIGRATE_USER);
 
             if (!$event->isPropagationStopped()) {
                 /** @var \Uni\Db\User $user */
