@@ -70,13 +70,13 @@ class Manager extends \Uni\Controller\AdminManagerIface
     public function doDefault(\Tk\Request $request)
     {
         switch($this->getTargetType()) {
-            case \Uni\Db\User::TYPE_ADMIN:
+            case User::TYPE_ADMIN:
                 $this->setPageTitle('Admin Users');
                 break;
-            case \Uni\Db\User::TYPE_STAFF:
+            case User::TYPE_STAFF:
                 $this->setPageTitle('Staff Manager');
                 break;
-            case \Uni\Db\User::TYPE_STUDENT:
+            case User::TYPE_STUDENT:
                 $this->setPageTitle('Student Manager');
                 break;
         }
@@ -90,7 +90,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
 
 
         // Setup import students dialog
-        if ($this->getConfig()->isSubjectUrl() && ($this->getTargetType() == User::TYPE_STUDENT && $this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT))) {
+        if ($this->getConfig()->isSubjectUrl() && $this->getSubject() && ($this->getTargetType() == User::TYPE_STUDENT && $this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_SUBJECT))) {
             $this->importDialog = new \Uni\Ui\Dialog\ImportStudents('Import Users To this Subject');
             $this->importDialog->execute();
         }
@@ -156,7 +156,7 @@ class Manager extends \Uni\Controller\AdminManagerIface
             $this->getConfig()->getAuthUser()->isClient() || $this->getConfig()->getAuthUser()->isAdmin()) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Create ' . ucfirst($this->getTargetType()), $this->getTable()->getEditUrl(), 'fa fa-user-plus'));
         }
-        if (!$this->getConfig()->isSubjectUrl() && ($this->getTargetType() == User::TYPE_STAFF && $this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_STAFF))) {
+        if (!$this->getConfig()->isSubjectUrl() && $this->getSubject() && ($this->getTargetType() == User::TYPE_STAFF && $this->getConfig()->getAuthUser()->hasPermission(\Uni\Db\Permission::MANAGE_STAFF))) {
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Import Mentor List', \Uni\Uri::createHomeUrl('/mentorImport.html'), 'fa fa-users'));
         }
         if ($this->importDialog) {
