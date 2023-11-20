@@ -2,7 +2,10 @@
 namespace Uni\Controller\User;
 
 
+use Bs\Listener\MasqueradeHandler;
+use Tk\Ui\Link;
 use Uni\Db\User;
+use Uni\Uri;
 
 /**
  * @author Michael Mifsud <http://www.tropotek.com/>
@@ -105,14 +108,14 @@ class Edit extends \Uni\Controller\AdminEditIface
     {
         if ($this->user->getId()) {
             if ($this->getConfig()->getMasqueradeHandler()->canMasqueradeAs($this->getAuthUser(), $this->user)) {
-                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Masquerade',
-                    \Uni\Uri::create()->reset()->set(\Uni\Listener\MasqueradeHandler::MSQ, $this->user->getHash()), 'fa fa-user-secret'))
+                $this->getActionPanel()->append(Link::createBtn('Masquerade',
+                    Uri::create()->set(MasqueradeHandler::MSQ, $this->user->getHash()), 'fa fa-user-secret'))
                     ->setAttr('data-confirm', 'You are about to masquerade as the selected user?')->addCss('tk-masquerade');
             }
 
             if ($this->user->isMentor() && $this->getAuthUser()->hasType(User::TYPE_STAFF, User::TYPE_CLIENT)) {
-                $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Mentee`s',
-                    \Uni\Uri::createHomeUrl('/mentorList.html')->set('userId', $this->user->getId()), 'fa fa-users'));
+                $this->getActionPanel()->append(Link::createBtn('Mentee`s',
+                    Uri::createHomeUrl('/mentorList.html')->set('userId', $this->user->getId()), 'fa fa-users'));
             }
         }
     }
