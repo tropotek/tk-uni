@@ -113,7 +113,7 @@ class Edit extends \Uni\Controller\AdminEditIface
                     ->setAttr('data-confirm', 'You are about to masquerade as the selected user?')->addCss('tk-masquerade');
             }
 
-            if ($this->user->isMentor() && $this->getAuthUser()->hasType(User::TYPE_STAFF, User::TYPE_CLIENT)) {
+            if ($this->getConfig()->get('site.courses.enabled', true) && $this->user->isMentor() && $this->getAuthUser()->hasType(User::TYPE_STAFF, User::TYPE_CLIENT)) {
                 $this->getActionPanel()->append(Link::createBtn('Mentee`s',
                     Uri::createHomeUrl('/mentorList.html')->set('userId', $this->user->getId()), 'fa fa-users'));
             }
@@ -148,11 +148,9 @@ class Edit extends \Uni\Controller\AdminEditIface
      */
     public function __makeTemplate()
     {
-
         $xhtml = <<<HTML
 <div class="tk-panel" data-panel-icon="fa fa-user" var="panel"></div>
 HTML;
-
         return \Dom\Loader::load($xhtml);
     }
 

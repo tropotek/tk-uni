@@ -55,7 +55,7 @@ class User extends \Bs\Form\User
         // TODO: This needs to be made into a searchable system as once there are many subjects it will be unmanageable
         // TODO: This needs to be replaced with a dialog box and search feature so it works for a large number of subjects
         // TODO: done it twice so it is becoming something that needs to be looked at soon..... ;-)
-        if ($this->getUser()->getId()) {
+        if ($this->getUser()->getId() && $this->getConfig()->get('site.courses.enabled', true)) {
             if ($this->getUser()->isStaff()) {
                 $tab = 'Course';
                 $list = \Tk\Form\Field\Option\ArrayObjectIterator::create($this->getConfig()->getCourseMapper()
