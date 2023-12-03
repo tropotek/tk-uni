@@ -1,16 +1,10 @@
 <?php
 namespace Uni\Controller\User;
 
-
 use Tk\Ui\Link;
 use Uni\Db\Permission;
 use Uni\Db\User;
 
-/**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @link http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
- */
 class Manager extends \Uni\Controller\AdminManagerIface
 {
 
