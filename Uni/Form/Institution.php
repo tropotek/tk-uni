@@ -89,7 +89,7 @@ class Institution extends \Uni\FormIface
 
         $this->appendField(new Field\Checkbox('inst.microsoftLogin'))
             ->setLabel('Microsoft SSO')
-            ->setTabGroup($tab)->setCheckboxLabel('Microsoft SSO login enabled/disabled.');
+            ->setTabGroup($tab)->setCheckboxLabel('Microsoft SSO login enabled.');
 
         if ($this->getAuthUser()->isAdmin()) {
 

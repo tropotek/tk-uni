@@ -95,6 +95,7 @@ class UserList extends User
         $this->removeCell('actions');
         $this->removeCell('phone');
         $this->removeCell('uid');
+        $this->removeCell('perms');
         $this->removeCell('type');
         $this->removeCell('active');
         $this->removeCell('lastLogin');
