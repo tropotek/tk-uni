@@ -46,7 +46,6 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
 
     /**
      * Find/Create user once the token is validated.
-     *
      * redirect to user homepage or set an error if not found
      *
      * @param Token $token
@@ -56,8 +55,9 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
     protected function findUser($token)
     {
         /** @var Institution $institution */
-        $institution = $this->getConfig()->getInstitutionMapper()->find($this->getSession()->get('auth.institutionId'));
+        $institution = $this->getConfig()->getInstitutionMapper()->find($this->getSession()->get('auth.institutionId', 1));
 
+        // TODO Using 1 as the default institution here! Not good if we are going to have more institution accounts
         if (!$institution) {
             $this->error = 'Cannot find institution`s login page.';
             return;
@@ -78,6 +78,9 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
         // Try to find an existing user
         $user = $this->getConfig()->getUserMapper()->findByEmail($username, $institution->getId());
         if (!$user) {
+            if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+                [$username, $domain] = explode('@', $username);
+            }
             $user = $this->getConfig()->getUserMapper()->findByUsername($username, $institution->getId());
         }
         if (!$user) {

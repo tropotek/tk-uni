@@ -16,16 +16,11 @@ use Uni\Db\Permission;
  *   $template->appendTemplate('form', $formTemplate);
  * </code>
  *
- * @author Mick Mifsud
- * @created 2018-11-19
- * @link http://tropotek.com.au/
- * @license Copyright 2018 Tropotek
  */
 class User extends \Bs\Form\User
 {
 
     protected $isNew = false;
-
 
     /**
      * @throws \Exception
@@ -38,10 +33,10 @@ class User extends \Bs\Form\User
 //        $this->getField('save')->appendCallback(array($this, 'doSubjectUpdate'));
 
         $tab = 'Details';
-        if (!$this->getConfig()->canChangePassword()) {
+        //if (!$this->getConfig()->canChangePassword()) {
             $this->removeField('newPassword');
             $this->removeField('confPassword');
-        }
+        //}
 
         $f = $this->appendField(new Field\Input('uid'), 'username')->setLabel('UID')->setTabGroup($tab)
             ->setNotes('The student or staff number assigned by the institution (if Applicable).');
@@ -86,8 +81,6 @@ class User extends \Bs\Form\User
                 }
             }
         }
-
-
 
     }
 

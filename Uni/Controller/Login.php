@@ -105,16 +105,19 @@ class Login extends \Bs\Controller\Login
             $this->form->addCss('form-horizontal');
         }
         parent::init();
-        //$this->form->removeField('forgotPassword');
+        $this->form->removeField('forgotPassword');
         //$this->form->removeField('register');
 
         $this->form->appendField(new Event\Submit('login', array($this, 'doLogin')))->removeCss('btn-default')
             ->addCss('btn btn-lg btn-primary btn-ss');
 
-        if (!$this->institution) {
-            $this->form->appendField(new Event\Link('forgotPassword', \Tk\Uri::create('/recover.html'), ''))
-                ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-recover-url');
+        $recoverUrl = \Tk\Uri::create('/recover.html');
+        if ($this->institution) {
+            $recoverUrl = \Uni\Uri::createInstitutionUrl('/recover.html');
         }
+
+        $this->form->appendField(new Event\Link('forgotPassword', $recoverUrl, ''))
+            ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-recover-url');
     }
 
     /**
@@ -134,6 +137,11 @@ class Login extends \Bs\Controller\Login
             $template->insertText('instName', $this->institution->name);
             $template->setVisible('inst');
             $this->getPage()->getTemplate()->setVisible('hasInst');
+
+            if ($this->institution->getData()->get('inst.microsoftLogin')) {
+                vd();
+                $template->setVisible('microsoft');
+            }
         } else {
             $template->setVisible('noInst');
             $template->setVisible('recover');
@@ -154,8 +162,9 @@ class Login extends \Bs\Controller\Login
   <div class="not-member" choice="register">
     <p>Not a member? <a href="/register.html">Register here</a></p>
   </div>
-  <div class="external row" choice="inst">
-    <a href="/microsoftLogin.html" class="btn btn-lg btn-default col-12" choice="microsoft">Microsoft</a>
+  <div class="external " choice="inst">
+<!--    <a href="/microsoftLogin.html" class="btn btn-lg btn-default col-12" choice="microsoft"><i class="fa fa-windows"></i> Microsoft</a>-->
+    <a href="/microsoftLogin.html" class="btn btn-lg btn-default col-12" title="Login using your Microsoft account" choice="microsoft"><img src="/html/app/img/mslogo.png" style="width: 1em;margin-bottom: 4px;"/> Microsoft</a>
 <!--    <a href="/googleLogin.html" class="btn btn-lg btn-warning col-12" choice="google">Google</a>-->
 <!--    <a href="/githubLogin.html" class="btn btn-lg btn-default col-12" choice="github">Github</a>-->
   </div>

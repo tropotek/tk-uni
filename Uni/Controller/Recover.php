@@ -7,6 +7,7 @@ use Tk\Form\Event;
 use Tk\Request;
 use Tk\Auth\AuthEvents;
 use Bs\Controller\Iface;
+use Uni\Uri;
 
 
 /**
@@ -91,7 +92,13 @@ class Recover extends Iface
         $this->form->appendField(new Field\InputGroup('account'))->setAttr('placeholder', 'Username');
 
         $this->form->appendField(new Event\Submit('recover', array($this, 'doRecover')))->removeCss('btn-default')->addCss('btn btn-primary btn-ss');
-        $this->form->appendField(new Event\Link('login', \Tk\Uri::create('/login.html'), ''))
+
+        $loginUrl = \Tk\Uri::create('/xlogin.html');
+        if ($this->institution) {
+            $loginUrl = \Uni\Uri::createInstitutionUrl('/login.html');
+        }
+
+        $this->form->appendField(new Event\Link('login', $loginUrl, ''))
             ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-login-url');
 
     }
@@ -105,7 +112,7 @@ class Recover extends Iface
     public function doRecover($form, $event)
     {
         if (!$form->getFieldValue('account')) {
-            $form->addFieldError('account', 'Please enter a valid username or email');
+            $form->addFieldError('account', 'Please enter your username or email');
         }
 
         if ($form->hasErrors()) {
@@ -134,6 +141,12 @@ class Recover extends Iface
         $e = new \Tk\Event\Event();
         $e->set('form', $form);
         $e->set('user', $user);
+
+        if ($this->getConfig()->getInstitution()) {
+            $activateUrl = Uri::createInstitutionUrl(\Bs\Config::getInstance()->get('url.auth.activate'));
+            $e->set('activateUrl', $activateUrl);
+        }
+
         $this->getConfig()->getEventDispatcher()->dispatch($e, AuthEvents::RECOVER);
 
         \Tk\Alert::addSuccess('You new access details have been sent to your email address.');

@@ -21,7 +21,10 @@ class Dispatch extends \Bs\Dispatch
 
         $dispatcher->addSubscriber(new \Uni\Listener\InstitutionHandler());
         $dispatcher->addSubscriber(new \Uni\Listener\UserLogHandler());
-        $dispatcher->addSubscriber(new \Uni\Listener\MentorUpdateHandler());
+
+        if ($this->getConfig()->get('site.mentors.enabled', true)) {
+            $dispatcher->addSubscriber(new \Uni\Listener\MentorUpdateHandler());
+        }
 
     }
 

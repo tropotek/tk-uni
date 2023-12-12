@@ -37,10 +37,10 @@ class Uri extends \Bs\Uri
      *
      * @param null|string|\Tk\Uri $spec
      * @param null|Db\InstitutionIface $institution
-     * @param bool $useDomain If set to false then the institution path is prepended (todo: see if this is needed)
+     * @param bool $useHashUrl Force the url to be a hash URL even if a domain exists
      * @return string|\Tk\Uri|static
      */
-    public static function createInstitutionUrl($spec = null, $institution = null, $useDomain = true)
+    public static function createInstitutionUrl($spec = null, $institution = null, $useHashUrl = false)
     {
         if ($spec instanceof \Tk\Uri) {
             return clone $spec;
@@ -53,13 +53,12 @@ class Uri extends \Bs\Uri
         if (!$institution) {
             return static::create($spec);
         }
-        try {
-            $url = self::create('/inst/' . $institution->getHash() . '/' . trim($spec, '/'));
-            if ($institution->getDomain() && $useDomain) {
-                // $url = self::create($spec);
-                $url = $url->setHost($institution->getDomain());
-            }
-        } catch (\Exception $e) { \Tk\Log::warning($e->getMessage()); }
+
+        $url = self::create('/inst/' . $institution->getHash() . '/' . trim($spec, '/'));
+        if ($institution->getDomain() && !$useHashUrl) {
+            $url = self::create($spec);
+            $url = $url->setHost($institution->getDomain());
+        }
 
         return $url;
     }
