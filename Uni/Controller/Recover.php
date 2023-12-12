@@ -29,7 +29,6 @@ class Recover extends Iface
     protected $form = null;
 
 
-
     /**
      * Login constructor.
      */
@@ -78,9 +77,6 @@ class Recover extends Iface
         $this->form->execute();
     }
 
-    /**
-     *
-     */
     protected function init()
     {
         if (!$this->form) {
@@ -89,7 +85,8 @@ class Recover extends Iface
             $this->form->addCss('form-horizontal');
         }
 
-        $this->form->appendField(new Field\InputGroup('account'))->setAttr('placeholder', 'Username');
+        $this->form->appendField(new Field\InputGroup('account'))
+            ->setAttr('placeholder', 'Username');
 
         $this->form->appendField(new Event\Submit('recover', array($this, 'doRecover')))->removeCss('btn-default')->addCss('btn btn-primary btn-ss');
 
@@ -100,9 +97,7 @@ class Recover extends Iface
 
         $this->form->appendField(new Event\Link('login', $loginUrl, ''))
             ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-login-url');
-
     }
-
 
     /**
      * @param \Tk\Form $form

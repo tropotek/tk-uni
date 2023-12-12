@@ -52,12 +52,7 @@ class DbTable extends \Tk\Auth\Adapter\DbTable
             $user = \Uni\Config::getInstance()->getUserMapper()->findByUsername($username, $iid);
 
             if ($user && !$user->password) {
-                // Then the user has reset the password or it is their first login?
-                // WHAT TO DO????? (Send email with new validation link, same as forgo password request...)
-
-                // 1. Email a reset password message to user with unique link to reset password page (The link should expire within 60 min and/or after they submit the form)
                 throw new \Tk\Exception('Please validate your account first.');
-                //  It may not get to this point yet...
             }
             if ($user && $this->hashPassword($password, $user) == $user->{$this->passwordColumn}) {
                 return new Result(Result::SUCCESS, \Uni\Config::getInstance()->getUserIdentity($user));

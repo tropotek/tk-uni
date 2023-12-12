@@ -139,7 +139,6 @@ class Login extends \Bs\Controller\Login
             $this->getPage()->getTemplate()->setVisible('hasInst');
 
             if ($this->institution->getData()->get('inst.microsoftLogin')) {
-                vd();
                 $template->setVisible('microsoft');
             }
         } else {
