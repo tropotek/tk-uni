@@ -105,7 +105,7 @@ class Login extends \Bs\Controller\Login
             $this->form->addCss('form-horizontal');
         }
         parent::init();
-        $this->form->removeField('forgotPassword');
+        $this->form->removeField('recoverPassword');
         //$this->form->removeField('register');
 
         $this->form->appendField(new Event\Submit('login', array($this, 'doLogin')))->removeCss('btn-default')
@@ -116,7 +116,7 @@ class Login extends \Bs\Controller\Login
             $recoverUrl = \Uni\Uri::createInstitutionUrl('/recover.html');
         }
 
-        $this->form->appendField(new Event\Link('forgotPassword', $recoverUrl, ''))
+        $this->form->appendField(new Event\Link('recoverPassword', $recoverUrl, ''))
             ->removeCss('btn btn-sm btn-default btn-once')->addCss('tk-recover-url');
     }
 

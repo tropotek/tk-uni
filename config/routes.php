@@ -35,7 +35,7 @@ $routes->add('install', Route::create('/install.html', 'Uni\Controller\Install::
 
 $routes->add('login-microsoft', Route::create('/microsoftLogin.html', 'Uni\Auth\Microsoft\Controller::doLogin'));
 $routes->add('auth-microsoft', Route::create('/microsoftAuth.html',  'Uni\Auth\Microsoft\Controller::doAuth'));
-//$routes->add('logout-microsoft', Route::create('/microsoftLogout.html',  'Uni\Auth\Microsoft\Controller::doLogout'));
+$routes->add('logout-microsoft', Route::create('/microsoftLogout.html',  'Uni\Auth\Microsoft\Controller::doLogout'));
 
 
 

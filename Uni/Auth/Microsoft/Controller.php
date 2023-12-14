@@ -60,13 +60,13 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
         // TODO Using 1 as the default institution here! Not good if we are going to have more institution accounts
         if (!$institution) {
             $this->error = 'Cannot find institution`s login page.';
-            return;
-            //Alert::addWarning('Cannot find your institution`s login page. Please Try again.');
-            //\Tk\Uri::create('/index.html')->redirect();
+            throw new Exception($this->error);
+            //return;
         }
         if (!$institution->getData()->get('inst.microsoftLogin')) {
             $this->error = 'Microsoft login not enabled on this account, please contact your administrator: ' . $institution->getEmail();
-            return;
+            throw new Exception($this->error);
+            //return;
         }
 
         $idToken = json_decode($token->idToken);
@@ -79,14 +79,15 @@ class Controller extends \Tk\ExtAuth\Microsoft\Controller
         $user = $this->getConfig()->getUserMapper()->findByEmail($username, $institution->getId());
         if (!$user) {
             if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-                [$username, $domain] = explode('@', $username);
+                [$un, $domain] = explode('@', $username);
             }
-            $user = $this->getConfig()->getUserMapper()->findByUsername($username, $institution->getId());
+            $user = $this->getConfig()->getUserMapper()->findByUsername($un, $institution->getId());
         }
         if (!$user) {
-            $this->error = 'No user account found! Your institution administrator has been notified and should contact you soon: ' . $institution->getEmail();
-            $this->emailAdmin($institution, $idToken);
-            return;
+            $this->error = 'No user account found for '.$username.'! Please contact your institution administrator: ' . $institution->getEmail();
+            //$this->emailAdmin($institution, $idToken);
+            throw new Exception($this->error);
+            //return;
         }
         $token->userId = $user->getId();
         $token->save();
