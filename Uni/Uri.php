@@ -59,7 +59,6 @@ class Uri extends \Bs\Uri
             $url = self::create($spec);
             $url = $url->setHost($institution->getDomain());
         }
-
         return $url;
     }
 

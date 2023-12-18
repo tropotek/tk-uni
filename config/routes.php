@@ -19,7 +19,8 @@ if (!$routes) return;
 
 
 // Public Pages
-$routes->add('login', Route::create('/login.html', 'Uni\Controller\Login::doInsLogin')); // required domain attached to client account
+$routes->remove('login');
+//$routes->add('login', Route::create('/login.html', 'Uni\Controller\Login::doInsLogin')); // required domain attached to client account
 $routes->add('institution-login', Route::create('/inst/{instHash}/login.html', 'Uni\Controller\Login::doInsLogin'));
 $routes->add('institution-activate', Route::create('/inst/{instHash}/activate.html', 'Uni\Controller\Activate::doInsActivate'));
 $routes->add('institution-recover', Route::create('/inst/{instHash}/recover.html', 'Uni\Controller\Recover::doInsRecover'));

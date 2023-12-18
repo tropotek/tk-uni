@@ -47,20 +47,26 @@ class Login extends \Bs\Controller\Login
         }
         // Get the first available institution
         if (!$this->institution || !$this->institution->active ) {
-            $this->institution = $this->getConfig()->getInstitutionMapper()->findFiltered(array())->current();
+            \Uni\Uri::create('/xlogin.html')->redirect();
+            //$this->institution = $this->getConfig()->getInstitutionMapper()->findFiltered([])->current();
         }
 
         if (!$this->institution || !$this->institution->active ) {
             \Tk\Alert::addWarning('Invalid or inactive Institution. Setup an active institution to continue.');
             \Uni\Uri::create('/index.html')->redirect();
-        } else {
-            if (!$this->getAuthUser() && $this->institution->getData()->get('inst.microsoftLogin')) {
-                // Add it ID to the session for the microsoft login to work as expected
-                $this->getSession()->set('auth.institutionId', $this->institution->getId());
-                \Uni\Uri::create('/microsoftLogin.html')->redirect();
-            }
         }
+        // no automatic microsoft logins add button
+//        else {
+//            if (!$this->getAuthUser() && $this->institution->getData()->get('inst.microsoftLogin')) {
+//                // Add it ID to the session for the microsoft login to work as expected
+//                $this->getSession()->set('auth.institutionId', $this->institution->getId());
+//                \Uni\Uri::create('/microsoftLogin.html')->redirect();
+//            }
+//        }
 
+        if ($this->getAuthUser()) {
+            \Bs\Uri::createHomeUrl('/index.html')->redirect();
+        }
         $this->doDefault($request);
     }
 
@@ -111,9 +117,9 @@ class Login extends \Bs\Controller\Login
         $this->form->appendField(new Event\Submit('login', array($this, 'doLogin')))->removeCss('btn-default')
             ->addCss('btn btn-lg btn-primary btn-ss');
 
-        $recoverUrl = \Tk\Uri::create('/recover.html');
+        $recoverUrl = \Uni\Uri::create('/recover.html');
         if ($this->institution) {
-            $recoverUrl = \Uni\Uri::createInstitutionUrl('/recover.html');
+            $recoverUrl = \Uni\Uri::createInstitutionUrl('/recover.html', $this->institution);
         }
 
         $this->form->appendField(new Event\Link('recoverPassword', $recoverUrl, ''))

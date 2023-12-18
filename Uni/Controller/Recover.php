@@ -92,7 +92,7 @@ class Recover extends Iface
 
         $loginUrl = \Tk\Uri::create('/xlogin.html');
         if ($this->institution) {
-            $loginUrl = \Uni\Uri::createInstitutionUrl('/login.html');
+            $loginUrl = \Uni\Uri::createInstitutionUrl('/login.html', $this->institution);
         }
 
         $this->form->appendField(new Event\Link('login', $loginUrl, ''))
