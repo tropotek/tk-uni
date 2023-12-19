@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 3.6.42 [2023-12-19]:
+-------------------------------
+  - updated MS SSO and login page
+  - Remove delete from user rename to enable/disable
+  - Fix masquerade return url
+
+
 Ver 3.6.40 [2023-11-18]:
 -------------------------------
 
